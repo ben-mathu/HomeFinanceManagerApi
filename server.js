@@ -1,6 +1,6 @@
 var express = require('express'),
     app = express(),
-    port = process.env.PORT || 80,
+    port = process.env.PORT || 8080,
     mongoose = require('mongoose'),
     Item = require('./api/models/financeManagerModel'),
     User = require('./api/models/financierUserModel'),
