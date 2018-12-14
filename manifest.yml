@@ -1,0 +1,4 @@
+applications:
+- name: home-financier
+  random-route: true
+  memory: 128M
