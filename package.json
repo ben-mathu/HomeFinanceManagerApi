@@ -1,6 +1,6 @@
 {
   "name": "financemanagerapi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Help manage home finances.",
   "main": "index.js",
   "scripts": {
@@ -23,13 +23,10 @@
     "url": "https://github.com/ben-mathu/HomeFinanceManager/issues"
   },
   "homepage": "https://github.com/ben-mathu/HomeFinanceManager#readme",
-  "devDependencies": {
-    "nodemon": "^1.18.8"
-  },
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
-    "mongoose": "^5.3.15"
+    "mongoose": "^5.7.11"
   }
 }

@@ -1,6 +1,6 @@
 const express = require('express'),
     app = express(),
-    port = process.env.PORT || 8080,
+    port = process.env.PORT || 8000,
     path = require('path'),
     temphbs = require('express-handlebars'),
     mongoose = require('mongoose'),
