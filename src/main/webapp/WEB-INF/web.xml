@@ -9,4 +9,11 @@
         <welcome-file>default.htm</welcome-file>
         <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
+
+    <security-constraint>
+        <web-resources-collection>
+            <web-resource-name>images</web-resource-name>
+            <url-pattern>/static/images</url-pattern>
+        </web-resources-collection>
+    </security-constraint>
 </web-app>

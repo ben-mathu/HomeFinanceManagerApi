@@ -1,0 +1,12 @@
+@import "_font.css";
+html, body {
+    background-image: url(../images/Background_Image_bak.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed
+}
+
+p {
+    color: white;
+}
