@@ -7,10 +7,28 @@
         <title>HFMS - Welcome</title>
     </head>
     <body>
-        <div class="container">
-            <div>
-                <p>Hello, World!</p>
+        <div class="container items-center text-center">
+            <div class="first_half">
+                <img src="static/images/logo.png" height="150px" width="150px" />
+                <div>
+                    <p>Manage you Finances na Jamaa.</p>
+                </div>
+            </div>
+
+            <div class="second-half">
+                <div class="btn-containers">
+                    <form action="static/views/register.html">
+                        <button type="submit" class="btn-rounded text-center">Register</button>
+                    </form>
+                </div>
+                <div class="btn-containers">
+                    <form action="static/views/login.html">
+                        <button type="submit" class="btn-rounded text-center">Login</button>
+                    </form>
+                </div>
             </div>
         </div>
+
+        <p class="copy-right text-muted text-center">&copy; 2017-2019</p>
     </body>
 </html>

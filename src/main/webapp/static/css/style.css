@@ -1,12 +1,34 @@
+@import "_background.css";
 @import "_font.css";
-html, body {
-    background-image: url(../images/Background_Image_bak.jpg);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-attachment: fixed
+@import "_common.css";
+
+.container {
+    margin-top: 100px;
+}
+
+.btn-rounded {
+    background-color: #0093D6;
+    border: none;
+    color: white;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 5px;
+    height: auto;
+    width: 150px;
+}
+
+.btn-containers {
+    display: inline-block;
 }
 
 p {
     color: white;
+}
+
+.copy-right {
+    bottom: 0%;
+    position: fixed;
+    width: 100%;
 }

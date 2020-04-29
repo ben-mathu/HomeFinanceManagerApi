@@ -2,6 +2,7 @@ package com.miiguar.hfms.api.registration;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.api.base.BaseServlet;
+import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.model.user.User;
 import com.miiguar.hfms.data.status.MessageReport;
 import com.miiguar.hfms.utils.BufferRequest;
@@ -14,9 +15,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Properties;
 
-import static com.miiguar.hfms.utils.Constants.DB_USERNAME;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -49,7 +49,9 @@ public class RegistrationServlet extends BaseServlet {
                 writer.print(jsonResp);
             } else {
 
-                createDb(user.getUsername(), user.getPassword());
+                createDb(user.getUsername());
+
+                // TODO: Add user to database
 
                 report = new MessageReport(HttpServletResponse.SC_OK, "Success");
                 String jsonResp = gson.toJson(report);
@@ -62,8 +64,13 @@ public class RegistrationServlet extends BaseServlet {
         }
     }
 
-    private void createDb(String username, String password) throws SQLException {
+    private void createDb(String username) throws SQLException {
+        ConfigureDb configureDb = new ConfigureDb();
+        Properties prop = configureDb.readProperties();
+
+        String dbName = username + "_db";
         PreparedStatement statement = connection.prepareStatement("CREATE DATABASE " +
-                username + "_db OWNER " + DB_USERNAME + " ");
+                dbName + " OWNER " + prop.getProperty("db.username") + " ");
+        connection = jdbcConnection.getConnection(dbName);
     }
 }

@@ -11,9 +11,9 @@
     </welcome-file-list>
 
     <security-constraint>
-        <web-resources-collection>
+        <web-resource-collection>
             <web-resource-name>images</web-resource-name>
             <url-pattern>/static/images</url-pattern>
-        </web-resources-collection>
+        </web-resource-collection>
     </security-constraint>
 </web-app>

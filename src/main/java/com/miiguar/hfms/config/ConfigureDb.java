@@ -18,7 +18,7 @@ import java.util.Properties;
 public class ConfigureDb {
     public Properties readProperties() {
         Properties properties = new Properties();
-        Path path = Paths.get("/src/main/resources/db.properties");
+        Path path = Paths.get("src/main/resources/db.properties");
 
         try(BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             properties.load(reader);
@@ -26,21 +26,5 @@ public class ConfigureDb {
             e.printStackTrace();
         }
         return properties;
-    }
-
-    public static void main(String[] args) {
-        ConfigureDb configureDb = new ConfigureDb();
-        Properties prop = configureDb.readProperties();
-
-        String url = prop.getProperty("db.url");
-        String username = prop.getProperty("db.username");
-        String password = prop.getProperty("db.password");
-
-        JdbcConnection jdbcConnection = new JdbcConnection();
-        try(Connection con = jdbcConnection.getConnection("", username, password, url)) {
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
     }
 }
