@@ -27,12 +27,7 @@ public abstract class BaseServlet extends HttpServlet {
     private final String TAG = this.getClass().getSimpleName();
 
     public JdbcConnection jdbcConnection = new JdbcConnection();
-    public Logger logger = getLogger();
-
-    private Logger getLogger() {
-        BasicConfigurator.configure();
-        return Logger.getRootLogger();
-    }
+    public Logger logger = Logger.getRootLogger();
 
     public Connection connection = null;
     public Gson gson = new Gson();
