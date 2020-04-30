@@ -1,2 +1,2 @@
 # HomeFinanceManagerApi
-Maintains all entries from the android app.
+Managing home finances for family and friends.
