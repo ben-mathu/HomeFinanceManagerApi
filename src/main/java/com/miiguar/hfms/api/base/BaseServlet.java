@@ -34,14 +34,12 @@ public abstract class BaseServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
         Throwable throwable =  (Throwable) req.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         handleLogging(throwable, req);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
         String uri = req.getRequestURI();
 
         if (uri.equals("/login")) {
@@ -55,7 +53,6 @@ public abstract class BaseServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
         Throwable throwable =  (Throwable) req.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         handleLogging(throwable, req);
     }
@@ -73,10 +70,6 @@ public abstract class BaseServlet extends HttpServlet {
             logger.error(TAG, throwable);
         } else {
             logger.log(Level.INFO, "URL: " + req.getRequestURL());
-            logger.log(Level.INFO, "Authentication Type: " +
-                    (req.getAuthType().isEmpty() ? "None Specified" : req.getAuthType()));
-            logger.log(Level.INFO, "Authorization: " +
-                    (req.getHeader("Authorization").isEmpty() ? "N/A" : req.getHeader("Authorization")));
         }
     }
 

@@ -6,17 +6,29 @@
     margin-top: 100px;
 }
 
-.btn-rounded {
+.btn {
     background-color: #0093D6;
     border: none;
     color: white;
-    padding: 12px;
+    padding: 10px;
     text-decoration: none;
     font-size: 16px;
     margin: 5px;
     border-radius: 5px;
     height: auto;
-    width: 150px;
+    width: 120px;
+}
+
+.btn2 {
+    background-color: #0093D6;
+    border: none;
+    color: white;
+    padding: 10px 50px 10px 50px;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 5px;
+    height: auto;
 }
 
 .btn-containers {

@@ -7,6 +7,7 @@ import com.miiguar.hfms.data.model.user.User;
 import com.miiguar.hfms.data.status.MessageReport;
 import com.miiguar.hfms.utils.BufferRequest;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,14 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @WebServlet("/registration")
 public class RegistrationServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doGet(req, resp);
+
+        RequestDispatcher rd = req.getRequestDispatcher("views/registration.jsp");
+        rd.include(req, resp);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
