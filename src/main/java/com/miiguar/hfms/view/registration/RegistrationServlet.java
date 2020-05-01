@@ -1,4 +1,4 @@
-package com.miiguar.hfms.api.registration;
+package com.miiguar.hfms.view.registration;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.api.base.BaseServlet;

@@ -1,9 +1,7 @@
-package com.miiguar.hfms.api.login;
+package com.miiguar.hfms.view.login;
 
-import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.data.model.user.User;
 import com.miiguar.hfms.data.status.MessageReport;
-import com.miiguar.hfms.utils.BufferRequest;
+import com.miiguar.hfms.view.base.BaseServlet;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
