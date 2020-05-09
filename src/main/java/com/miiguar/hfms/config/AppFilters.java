@@ -1,18 +1,23 @@
-package com.miiguar.hfms.utils;
+package com.miiguar.hfms.config;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.data.status.MessageReport;
+import com.miiguar.hfms.utils.Constants;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.miiguar.hfms.utils.Constants.API;
+
 /**
  * @author bernard
  */
+@WebFilter(urlPatterns = "/api/*", description = "Session Checker Filter.")
 public class AppFilters implements Filter {
     private FilterConfig config = null;
 
@@ -33,10 +38,7 @@ public class AppFilters implements Filter {
         StringBuffer url = req.getRequestURL();
         System.out.println(url.toString());
         StringBuffer endPoint = req.getRequestURL();
-        if (!req.getRequestURI().endsWith("/validate-user")
-                && !req.getRequestURI().endsWith("/")
-                && !req.getRequestURI().contains("static")
-        ) {
+        if (!req.getRequestURI().endsWith(API + "/validate-user")) {
             if (req.getHeader("Authorization") == null) {
                 resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 PrintWriter writer = resp.getWriter();

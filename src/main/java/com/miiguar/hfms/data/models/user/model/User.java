@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.model.user;
+package com.miiguar.hfms.data.models.user.model;
 
 /**
  *

@@ -5,4 +5,7 @@ package com.miiguar.hfms.utils;
  */
 public class Constants {
     public static final String ISSUER = "miiguar";
+
+    // URL
+    public static final String API = "/api";
 }

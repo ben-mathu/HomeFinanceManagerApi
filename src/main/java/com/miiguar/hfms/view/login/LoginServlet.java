@@ -27,32 +27,4 @@ public class LoginServlet extends BaseServlet {
         RequestDispatcher rd = req.getRequestDispatcher("views/login.jsp");
         rd.include(req, resp);
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        super.doPost(request, response);
-
-        response.setContentType(APPLICATION_JSON);
-        PrintWriter writer;
-        MessageReport report = null;
-
-        if (connection == null) {
-            report = new MessageReport(HttpServletResponse.SC_FORBIDDEN,
-                    "Invalid entry for username/password");
-
-            String jsonResp = gson.toJson(report);
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            writer = response.getWriter();
-            writer.print(jsonResp);
-        } else {
-
-            // TODO: Check password
-
-            report = new MessageReport(HttpServletResponse.SC_OK, "Success");
-            String jsonResp = gson.toJson(report);
-            response.setStatus(HttpServletResponse.SC_OK);
-            writer = response.getWriter();
-            writer.print(jsonResp);
-        }
-    }
 }

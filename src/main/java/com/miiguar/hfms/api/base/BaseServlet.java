@@ -2,14 +2,11 @@ package com.miiguar.hfms.api.base;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
-import com.miiguar.hfms.data.model.user.User;
+import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.utils.BufferRequest;
 import com.miiguar.hfms.utils.HandleLogging;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
