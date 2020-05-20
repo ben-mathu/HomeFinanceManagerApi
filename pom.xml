@@ -67,7 +67,8 @@
             <groupId>com.miiguar</groupId>
             <artifactId>token-generation</artifactId>
             <version>1.0.0</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/token-generation.jar</systemPath>
         </dependency>
     </dependencies>
     <build>
