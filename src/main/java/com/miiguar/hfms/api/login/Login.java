@@ -1,8 +1,7 @@
 package com.miiguar.hfms.api.login;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.data.status.MessageReport;
-import com.miiguar.hfms.utils.Constants;
+import com.miiguar.hfms.data.status.Report;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,11 +27,12 @@ public class Login extends BaseServlet {
 
         response.setContentType(APPLICATION_JSON);
         PrintWriter writer;
-        MessageReport report = null;
+        Report report = null;
 
         if (connection == null) {
-            report = new MessageReport(HttpServletResponse.SC_FORBIDDEN,
-                    "Invalid entry for username/password");
+            report = new Report();
+            report.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            report.setMessage("Invalid entry for username/password");
 
             String jsonResp = gson.toJson(report);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -42,7 +42,10 @@ public class Login extends BaseServlet {
 
             // TODO: Check password
 
-            report = new MessageReport(HttpServletResponse.SC_OK, "Success");
+            report = new Report();
+            report.setMessage("Success");
+            report.setStatus(HttpServletResponse.SC_OK);
+
             String jsonResp = gson.toJson(report);
             response.setStatus(HttpServletResponse.SC_OK);
             writer = response.getWriter();

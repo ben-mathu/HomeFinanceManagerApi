@@ -1,9 +1,14 @@
-<%@ include file = "page_setting_top.jsp" %>
+<% 
+	String pageTitle = "Login";
+	pageContext.setAttribute("title", pageTitle);
+%>
+<%@ include file="../page_setting_top.jsp" %>
+    <%@ include file="validate_entries.jsp" %>
     <div class="container text-center">
-        <div class="row">
+        <div class="row text-center">
             <div class="sections first-half">
                 <img src="static/images/logo.png" alt="HFMS Logo" height="150px" width="150px" />
-                <div>
+                <div class="tagline">
                     <p>Manage your finances na jamaa yako.</p>
                 </div>
             </div>
@@ -12,14 +17,14 @@
 
             <div class="sections second-half">
                 <div>
-                    <form action="api/login" method="POST">
-                        <input class="input-style" id="email" type="input" name="email" placeholder="Email"><br>
-                        <input class="input-style" id="username" type="input" name="username" placeholder="Username"><br>
-                        <input class="input-style" id="password" type="input" name="password" placeholder="Password"><br>
+                    <form action="login" method="POST">
+                        <input class="input-style" id="username" type="text" name="username" placeholder="Username"><br>
+                        <input class="input-style" id="password" type="password" name="password" placeholder="Password"><br>
                         <div class="submit-area">
-                            <input class="btn2 submit" type="submit" name="login" value="Login">
+                            <a class="link" id="forgot_password" href="#">Forgot password?</a>
+                            <input class="btn2" type="submit" name="login" value="Login">
                         </div>
-                        <a class="link register-link" href="login">Already have an account?</a>
+                        <a class="link register-link" href="registration">Create an account.</a>
                     </form>
                 </div>
                 <div class="login-using-socials">
@@ -35,7 +40,7 @@
                         <img src="static/images/google.png" alt="Google">
                     </div>
                 </div>
-            </>
+            </div>
         </div>
     </div>
-<%@ include file = "page_setting_bottom.jsp" %>
+<%@ include file = "../page_setting_bottom.jsp" %>

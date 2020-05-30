@@ -2,9 +2,10 @@ package com.miiguar.hfms.api.base;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
+import com.miiguar.hfms.data.models.user.UserRequest;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.utils.BufferRequest;
-import com.miiguar.hfms.utils.HandleLogging;
+import com.miiguar.hfms.utils.Log;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -32,29 +33,40 @@ public abstract class BaseServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HandleLogging.handleLogging(req, logger, TAG);
+        Log.handleLogging(req, logger, TAG);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
-        if (uri.equals("/login")) {
+        if (uri.endsWith("/login")) {
             String jsonRequest = BufferRequest.bufferRequest(req);
-            User user = gson.fromJson(jsonRequest, User.class);
-            connection = jdbcConnection.getConnection(user.getUsername() + "_db");
+            UserRequest userRequest = gson.fromJson(jsonRequest, UserRequest.class);
+            User user = userRequest.getUser();
+            connection = jdbcConnection.getConnection(
+                    user.getUsername() + "_db",
+                    user.getUsername(),
+                    user.getPassword()
+            );
+        } else if (uri.endsWith("/registration")){
+            connection = jdbcConnection.getConnection(
+                    "b_matt_db",
+                    "ben_hfms",
+                    "password"
+            );
         }
 
-        HandleLogging.handleLogging(req, logger, TAG);
+        Log.handleLogging(req, logger, TAG);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HandleLogging.handleLogging(req, logger, TAG);
+        Log.handleLogging(req, logger, TAG);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HandleLogging.handleLogging(req, logger, TAG);
+        Log.handleLogging(req, logger, TAG);
     }
 
     public boolean isUserDbCreated(String username) throws SQLException {

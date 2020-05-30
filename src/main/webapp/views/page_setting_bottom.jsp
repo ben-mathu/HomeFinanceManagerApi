@@ -1,4 +1,4 @@
-        <div class="footer copy-right text-muted text-center">
+        <div class="footer text-muted text-center">
             <p>
                 <code>twitter:</code> <a class="link" href="https://twitter.com/beniemathu">@beniemathu</a>&ensp;&ensp;&ensp;
                 <code>github:</code> <a class="link" href="https://github.com/ben-mathu">@ben-mathu</a>&ensp;2017-2019

@@ -1,7 +1,7 @@
 package com.miiguar.hfms.config;
 
 import com.google.gson.Gson;
-import com.miiguar.hfms.data.status.MessageReport;
+import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.Constants;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import static com.miiguar.hfms.utils.Constants.API;
 
 /**
  * @author bernard
@@ -37,13 +35,16 @@ public class AppFilters implements Filter {
 
         StringBuffer url = req.getRequestURL();
         System.out.println(url.toString());
-        StringBuffer endPoint = req.getRequestURL();
-        if (!req.getRequestURI().endsWith(API + "/validate-user")) {
+        String endPoint = req.getRequestURI();
+        boolean istru = endPoint.endsWith("/login");
+        if (!endPoint.endsWith("/login") && !endPoint.endsWith("/registration")) {
             if (req.getHeader("Authorization") == null) {
                 resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 PrintWriter writer = resp.getWriter();
 
-                MessageReport report = new MessageReport(HttpServletResponse.SC_FORBIDDEN, "Requires token");
+                Report report = new Report();
+                report.setMessage("Requires token");
+                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
                 Gson gson = new Gson();
                 writer.write(gson.toJson(report));
@@ -55,7 +56,9 @@ public class AppFilters implements Filter {
                     resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     PrintWriter writer = resp.getWriter();
 
-                    MessageReport report = new MessageReport(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
+                    Report report = new Report();
+                    report.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    report.setMessage("Invalid token");
 
                     Gson gson = new Gson();
                     writer.write(gson.toJson(report));

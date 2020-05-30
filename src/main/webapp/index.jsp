@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+    	<link rel="shortcut icon" type="image/ico" href="static/images/favicon.ico" />
         <link rel="stylesheet" type="text/css" href="static/css/style.css?time=<%= (new java.util.Date()).toLocaleString()%>"/>
 
         <title>HFMS - Welcome</title>
@@ -25,7 +26,7 @@
             </div>
         </div>
 
-        <p class="copy-right text-muted text-center">
+        <p class="footer text-muted text-center">
             <code>twitter</code><a class="link" href="https://twitter.com/beniemathu">@beniemathu </a>
             <code>github</code><a class="link" href="https://github.com/ben-mathu">@ben-mathu </a>
             2017-2019

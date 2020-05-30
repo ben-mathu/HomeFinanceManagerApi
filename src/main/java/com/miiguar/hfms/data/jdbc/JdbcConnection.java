@@ -16,14 +16,19 @@ public class JdbcConnection implements PostgresConnection {
     private static final String TAG = JdbcConnection.class.getSimpleName();
 
     @Override
-    public Connection getConnection(String databaseName) {
+    public Connection getConnection(String databaseName, String username, String password) {
         ConfigureDb configureDb = new ConfigureDb();
         Properties prop = configureDb.readProperties();
         PoolProperties pool = new PoolProperties();
         pool.setUrl(prop.getProperty("db.url") + (databaseName.isEmpty() ? "" : "/" + databaseName));
         pool.setDriverClassName(prop.getProperty("db.driver"));
-        pool.setUsername(prop.getProperty("db.username"));
-        pool.setPassword(prop.getProperty("db.password"));
+        if (username.equals("ben_hfms")) {
+            pool.setUsername(prop.getProperty("db.username"));
+            pool.setPassword(prop.getProperty("db.password"));
+        } else {
+            pool.setUsername(username);
+            pool.setPassword(password);
+        }
         pool.setJmxEnabled(true);
         pool.setTestWhileIdle(false);
         pool.setTestOnBorrow(true);

@@ -3,9 +3,13 @@ package com.miiguar.hfms.api.register;
 import com.google.gson.Gson;
 import com.miiguar.hfms.api.base.BaseServlet;
 import com.miiguar.hfms.config.ConfigureDb;
+import com.miiguar.hfms.data.models.user.UserRequest;
+import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
-import com.miiguar.hfms.data.status.MessageReport;
+import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.BufferRequest;
+import com.miiguar.hfms.utils.Log;
+import com.miiguar.tokengeneration.JwtTokenUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,63 +20,104 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static com.miiguar.hfms.utils.Constants.API;
+import static com.miiguar.hfms.utils.Constants.ISSUER;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * @author bernard
  */
-@WebServlet(API + "/register")
+@WebServlet(API + "/registration")
 public class Register extends BaseServlet {
     private static final long serialVersionUID = 1L;
+    private static final String TAG = Register.class.getSimpleName();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
-
         String jsonRequest = BufferRequest.bufferRequest(req);
 
         Gson gson = new Gson();
-        User user = gson.fromJson(jsonRequest, User.class);
+        UserRequest userRequest = gson.fromJson(jsonRequest, UserRequest.class);
+        User user = userRequest.getUser();
 
         resp.setContentType(APPLICATION_JSON);
         PrintWriter writer;
+        Report report = null;
         try {
-            MessageReport report = null;
             if (isUserDbCreated(user.getUsername())) {
-                report = new MessageReport(HttpServletResponse.SC_FORBIDDEN,
-                        "username already in use");
+                report = new Report();
+                report.setMessage("username already in use");
+                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-                String jsonResp = gson.toJson(report);
+                UserResponse response = new UserResponse();
+                response.setReport(report);
+                String jsonResp = gson.toJson(response);
+
                 resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 writer = resp.getWriter();
-                writer.print(jsonResp);
+                writer.write(jsonResp);
             } else {
 
-                createDb(user.getUsername());
+                // create a db
+                createDb(user.getUsername(), user.getPassword());
 
-                // TODO: Add user to database
+                // generate a token
+                JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
+                long millis = TimeUnit.DAYS.toMillis(2);
+                String token = jwtTokenUtil.generateToken(ISSUER, user.getUsername(), new Date(millis));
+                report = new Report();
+                report.setMessage("Success");
+                report.setStatus(HttpServletResponse.SC_OK);
+                report.setToken(token);
+                UserResponse response = new UserResponse();
+                response.setReport(report);
+                String jsonResp = gson.toJson(response);
 
-                report = new MessageReport(HttpServletResponse.SC_OK, "Success");
-                String jsonResp = gson.toJson(report);
-                resp.setStatus(HttpServletResponse.SC_OK);
                 writer = resp.getWriter();
                 writer.print(jsonResp);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(TAG, e);
+
+            report = new Report();
+            report.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            report.setMessage(e.getMessage());
+            UserResponse response = new UserResponse();
+            response.setReport(report);
+            String jsonResp = gson.toJson(response);
+
+            writer = resp.getWriter();
+            writer.write(jsonResp);
+        } catch (IOException e) {
+            Log.e(TAG, "error: ", logger, e);
         }
     }
 
-    private void createDb(String username) throws SQLException {
+    /**
+     * Create a db for individual users
+     *
+     * @param username
+     * @param password
+     * @throws SQLException
+     */
+    private void createDb(String username, String password) throws SQLException {
         ConfigureDb configureDb = new ConfigureDb();
         Properties prop = configureDb.readProperties();
 
+        PreparedStatement createUser = connection.prepareStatement(
+                "CREATE USER " + username + " ENCRYPTED PASSWORD '" + password + "'"
+        );
+        createUser.execute();
+
         String dbName = username + "_db";
         PreparedStatement statement = connection.prepareStatement("CREATE DATABASE " +
-                dbName + " OWNER " + prop.getProperty("db.username") + " ");
-        connection = jdbcConnection.getConnection(dbName);
+                dbName + " OWNER " + username + " TABLESPACE " + prop.getProperty("db.tablespace"));
+        statement.execute();
+        connection = jdbcConnection.getConnection(dbName, username, password);
     }
 }
