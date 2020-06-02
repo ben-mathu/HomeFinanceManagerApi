@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author bernard
@@ -19,6 +20,7 @@ public abstract class BaseServlet extends HttpServlet {
 
     public Logger logger = Logger.getRootLogger();
     public Gson gson = new Gson();
+    public PrintWriter writer;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

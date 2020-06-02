@@ -1,6 +1,5 @@
 package com.miiguar.hfms.view.registration;
 
-import com.miiguar.hfms.data.models.user.Identification;
 import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.data.status.Report;
@@ -9,66 +8,70 @@ import com.miiguar.hfms.view.base.BaseServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-import static com.miiguar.hfms.data.utils.URL.GENERATE_CODE;
+import static com.miiguar.hfms.data.utils.URL.CHANGE_EMAIL;
 import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
 import static com.miiguar.hfms.utils.Constants.*;
 
 /**
  * @author bernard
  */
-@WebServlet(API + "/registration/get-confirmation-code")
-public class GetCodeServlet extends BaseServlet {
+@WebServlet("/registration/change-change-email")
+public class ChangeEmailServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
 
-        PrintWriter writer = null;
-
-        String password = (String) req.getSession().getAttribute(PASSWORD);
-        String username = (String) req.getSession().getAttribute(USERNAME);
-        String email = (String) req.getSession().getAttribute(EMAIL);
-        int userId = (int) req.getSession().getAttribute(USER_ID);
-
+        String email = req.getParameter(EMAIL);
+        String username = req.getParameter(USERNAME);
+        String password = req.getParameter(PASSWORD);
+        String token = getToken(req);
         User user = new User();
-        user.setPassword(password);
         user.setEmail(email);
+        user.setPassword(password);
         user.setUsername(username);
-        user.setUserId(userId);
-        Identification id = new Identification();
-        id.setUser(user);
 
-        String token = (String) req.getSession().getAttribute(TOKEN);
-        if (token == null) token = "";
-
-        InitUrlConnection<Identification, Report> connection = new InitUrlConnection<>();
-        BufferedReader streamReader = connection.getReader(id, REGISTRATION, token);
+        InitUrlConnection<User, Report> conn = new InitUrlConnection<>();
+        BufferedReader streamReader = conn.getReader(user, REGISTRATION, token);
 
         String line = "";
         Report report = null;
         while((line = streamReader.readLine()) != null) {
             report = gson.fromJson(line, Report.class);
         }
-
+        
         if (report != null) {
             if (report.getStatus() != 200) {
-                String jsonStr = gson.toJson(report);
+                String response = gson.toJson(report);
+                
                 resp.setStatus(report.getStatus());
                 writer = resp.getWriter();
-                writer.write(jsonStr);
+                writer.write(response);
             } else {
-                String jsonStr = gson.toJson(report);
+                String response = gson.toJson(report);
+
                 resp.setStatus(report.getStatus());
                 writer = resp.getWriter();
-                writer.write(jsonStr);
+                writer.write(response);
             }
         }
+    }
+
+    private String getToken(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+        for (Cookie cookie :
+                cookies) {
+            if ("token".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return "";
     }
 }

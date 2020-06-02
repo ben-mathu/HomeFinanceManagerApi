@@ -14,6 +14,21 @@
         <listener-class>com.miiguar.hfms.init.AppContextListener</listener-class>
     </listener>
 
+    <servlet>
+        <servlet-name>ErrorHandler</servlet-name>
+        <jsp-file>/WEB-INF/error_404.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ErrorHandler</servlet-name>
+        <url-pattern>/404</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404</location>
+    </error-page>
+
     <!-- Login -->
     <servlet>
         <servlet-name>login</servlet-name>
@@ -37,18 +52,6 @@
         <url-pattern>/registration</url-pattern>
     </servlet-mapping>
 
-    <!-- Validate entries -->
-    <servlet>
-        <servlet-name>ValidateUser</servlet-name>
-        <jsp-file>/WEB-INF/registration/validate_entries.jsp</jsp-file>
-        <async-supported>true</async-supported>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ValidateUser</servlet-name>
-        <url-pattern>/registration/validate-user</url-pattern>
-    </servlet-mapping>
-
     <!-- Confirm User -->
     <servlet>
         <servlet-name>ConfirmUser</servlet-name>
@@ -58,5 +61,16 @@
     <servlet-mapping>
         <servlet-name>ConfirmUser</servlet-name>
         <url-pattern>/registration/confirm-user</url-pattern>
+    </servlet-mapping>
+
+    <!-- Dashboard -->
+    <servlet>
+        <servlet-name>Dashboard</servlet-name>
+        <jsp-file>/WEB-INF/dashboard/dashboard.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Dashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
     </servlet-mapping>
 </web-app>

@@ -1,6 +1,6 @@
 package com.miiguar.hfms.view.config;
 
-import com.miiguar.hfms.utils.Constants;
+import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
 import javax.servlet.*;
@@ -10,11 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.miiguar.hfms.utils.Constants.ISSUER;
+
 /**
  * @author bernard
  */
-@WebFilter(urlPatterns = "/*", description = "Front-end Session checker/filter.")
-public class AppFilter implements Filter {
+@WebFilter(urlPatterns = "/dashboard", description = "Front-end Session checker/filter.")
+public class TokenFilter implements Filter {
+    private static final String TAG = TokenFilter.class.getSimpleName();
     private FilterConfig config;
 
     @Override
@@ -33,17 +36,19 @@ public class AppFilter implements Filter {
         JwtTokenUtil tokenUtil = new JwtTokenUtil();
 
         String token = getTokenFromCookie(req);
+        String endpoint = req.getRequestURI();
+        Log.d(TAG, endpoint);
 
-        if (token.isEmpty()) {
-            resp.sendRedirect("registration/login");
-        } else {
+        if (!token.isEmpty()) {
             token = normalizeToken(token);
 
-            if (tokenUtil.verifyToken(Constants.ISSUER, "login", token)) {
+            if (tokenUtil.verifyToken(ISSUER, "login", token)) {
                 resp.sendRedirect("dashboard");
             } else {
-                resp.sendRedirect("registration/login");
+                resp.sendRedirect("login");
             }
+        } else {
+
         }
     }
 

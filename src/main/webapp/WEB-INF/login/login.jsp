@@ -3,7 +3,6 @@
 	pageContext.setAttribute("title", pageTitle);
 %>
 <%@ include file="../page_setting_top.jsp" %>
-    <%@ include file="validate_entries.jsp" %>
     <div class="container text-center">
         <div class="row text-center">
             <div class="sections first-half">

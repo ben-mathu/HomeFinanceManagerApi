@@ -48,7 +48,7 @@ function sendRequest() {
             var password = "password=" + escape(document.getElementById("password").value);
             var data = email + "&" + username + "&" + password;
 
-            request.open("POST", "registration/register-user", true);
+            request.open("POST", "registration/email-confirmed", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             request.send(data);
         } else {
@@ -73,7 +73,7 @@ function sendRequest() {
             password = "password=" + escape(document.getElementById("password").value);
             data = email + "&" + username + "&" + password;
             
-            request.open("POST", "registration/register-user", true);
+            request.open("POST", "registration/change-change-email", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             request.send(data);
         }

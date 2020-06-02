@@ -1,6 +1,7 @@
 package com.miiguar.hfms.view.registration;
 
 import java.io.*;
+import java.lang.reflect.Type;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
@@ -8,17 +9,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.reflect.TypeToken;
 import com.miiguar.hfms.data.models.user.UserRequest;
 import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
-import com.miiguar.hfms.utils.Constants;
+import com.miiguar.hfms.utils.Patterns;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.hfms.view.base.BaseServlet;
 import com.miiguar.hfms.view.result.ErrorResults;
 
-import static com.miiguar.hfms.api.utils.Constants.REGISTRATION;
-import static com.miiguar.hfms.api.utils.Constants.USER_ID;
+import static com.miiguar.hfms.data.utils.DbEnvironment.COL_USER_ID;
+import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
 import static com.miiguar.hfms.utils.Constants.*;
 
 /**
@@ -67,9 +69,9 @@ public class RegistrationServlet extends BaseServlet {
 
 		if (isParamsValid) {
 
-			final String usernameValidity = Constants.isUsernameValid(username);
-			final String validity = Constants.isPasswordValid(password);
-			if (!Constants.EMAIL_VERIFICATION_PATTERN.matcher(email).matches()) {
+			final String usernameValidity = Patterns.isUsernameValid(username);
+			final String validity = Patterns.isPasswordValid(password);
+			if (!Patterns.EMAIL_VERIFICATION_PATTERN.matcher(email).matches()) {
 
 				final ErrorResults pass = new ErrorResults();
 				pass.setEmailError("Your email is invalid");
@@ -104,7 +106,13 @@ public class RegistrationServlet extends BaseServlet {
 				final UserRequest params = new UserRequest(user);
 
 				InitUrlConnection<UserRequest, UserResponse> connection = new InitUrlConnection<>();
-				UserResponse item = connection.getReader(params, REGISTRATION);
+				BufferedReader streamReader = connection.getReader(params, REGISTRATION);
+
+				String line = "";
+				UserResponse item = null;
+				while((line = streamReader.readLine()) != null) {
+					item = gson.fromJson(line, UserResponse.class);
+				}
 
 				if (item != null) {
 					if (item.getReport().getStatus() != 200) {
@@ -119,7 +127,7 @@ public class RegistrationServlet extends BaseServlet {
 						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
 						request.getSession().setAttribute(PASSWORD, item.getUser().getPassword());
 						request.getSession().setAttribute(TOKEN, item.getReport().getToken());
-						request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+						request.getSession().setAttribute(COL_USER_ID, item.getUser().getUserId());
 						writer = response.getWriter();
 						String redirect = request.getContextPath() + "/registration/confirm-user";
 						writer.write(redirect);

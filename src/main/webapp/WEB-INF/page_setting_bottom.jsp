@@ -1,6 +1,7 @@
         
         <div class="footer-container" >    
             <div id="progress" class="progress-container" hidden>
+                <p id="message"></p>
                 <progress class="progress-bar" max="100"></progress>
             </div>
 

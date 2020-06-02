@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static com.miiguar.hfms.api.utils.Constants.*;
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -30,7 +30,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
  */
 public abstract class BaseServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final String TAG = this.getClass().getSimpleName();
+    public final String TAG = this.getClass().getSimpleName();
 
     public JdbcConnection jdbcConnection = new JdbcConnection();
     public Logger logger = Logger.getRootLogger();
@@ -105,25 +105,21 @@ public abstract class BaseServlet extends HttpServlet {
     private void createAllTables() throws SQLException {
         PreparedStatement users = connection.prepareStatement(
                 "CREATE TABLE " + USERS_TB_NAME + " ("+
-                        USER_ID + " SERIAL,"+
-                        USERNAME + " varchar(25) NOT NULL,"+
-                        EMAIL + " text NOT NULL UNIQUE,"+
-                        PASSWORD + " varchar(255) NOT NULL,"+
-                        IS_ADMIN + " BOOLEAN NOT NULL," +
-                        "CONSTRAINT " + PRIV_KEY_USERS + " PRIMARY KEY(" +
-                        USER_ID + "," +
-                        USERNAME + "," +
-                        EMAIL + "))"
+                        COL_USER_ID + " SERIAL PRIMARY KEY,"+
+                        COL_USERNAME + " varchar(25) NOT NULL UNIQUE,"+
+                        COL_EMAIL + " text NOT NULL UNIQUE,"+
+                        COL_PASSWORD + " varchar(255) NOT NULL,"+
+                        COL_IS_ADMIN + " BOOLEAN NOT NULL)"
         );
         users.execute();
 
         // Create table for code
         PreparedStatement code = connection.prepareStatement(
                 "CREATE TABLE " + CODE_TB_NAME + " ("+
-                        CODE + " integer," +
-                        USER_ID + " integer REFERENCES " + USERS_TB_NAME + "," +
-                        "CONSTRAINT pk_username_email PRIMARY KEY(" +
-                        USER_ID + "))"
+                        COL_CODE + " integer," +
+                        COL_USER_ID + " integer REFERENCES " + USERS_TB_NAME + " (" + COL_USER_ID + ")," +
+                        "CONSTRAINT " + PRIV_KEY_CODE + " PRIMARY KEY(" +
+                        COL_CODE + "))"
         );
         code.execute();
     }

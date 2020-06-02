@@ -16,7 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.miiguar.hfms.api.utils.Constants.*;
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.utils.Constants.API;
 
 /**
@@ -65,14 +65,14 @@ public class Confirm extends BaseServlet {
         connection = jdbcConnection.getConnection(dbName, username, password);
 
         PreparedStatement codeConfirm = connection.prepareStatement(
-                "SELECT * FROM " + CODE_TB_NAME + " WHERE " + USER_ID + "=?"
+                "SELECT * FROM " + CODE_TB_NAME + " WHERE " + COL_USER_ID + "=?"
         );
         codeConfirm.setInt(1, id.getUser().getUserId());
 
         ResultSet resultSet = codeConfirm.executeQuery();
         String code = "";
         while (resultSet.next()) {
-            code = resultSet.getString(CODE);
+            code = resultSet.getString(COL_CODE);
         }
 
         if (code.equals(id.getCode())) {

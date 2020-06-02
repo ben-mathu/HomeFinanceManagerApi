@@ -25,7 +25,7 @@ public class Log {
         if (throwable != null) {
             logger.error(tag, throwable);
         } else {
-            logger.log(Level.INFO, "URL: " + req.getRequestURL());
+            logger.log(Level.INFO, "URL: " + req.getRequestURL() + " " + tag);
         }
     }
 

@@ -3,6 +3,10 @@
 @import url("_common.css");
 @import url("_links.css");
 
+.code-sender {
+    margin-left: 30px;
+}
+
 .progress-container {
     width: fit-content;
     align-content: flex-end;
@@ -33,6 +37,7 @@
 
 .confirm-code-container {
     width: fit-content;
+    margin-left: 10px;
 }
 
 .footer {

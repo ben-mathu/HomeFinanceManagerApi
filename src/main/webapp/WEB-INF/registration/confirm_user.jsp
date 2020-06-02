@@ -10,7 +10,10 @@
         <div class="info" >
             <p class="text-center">Use the code sent to your email for confirmation.</p>
             <div class="links" >
-                <p><%= session.getAttribute("email") == null ? "" : session.getAttribute("email") %></p>
+                <p>
+                    <%= session.getAttribute("email") == null ? "" : session.getAttribute("email") %>
+                    <input class="link confirm-email" type="submit" value="Change Email" onclick="changeEmail()" />
+                </p>
             </div>
         </div>
         <form class="confirm-code-container" method="POST">
@@ -26,18 +29,12 @@
             <div class="input-container">
                 <div>
                     <input class="input-style" id="code" type="text" name="code" placeholder="999-999" />
-                    <span id="code-error"></span>
+                    <span id="code-error" disabled></span>
                 </div>
             </div>
 
-            <div class="code-func-parameters" >
-                <div >
-                    <input class="link confirm-email" type="submit" value="Change Email" onclick="changeEmail()" />
-                </div>
-                
-                <div >
-                    <input class="link confirm-email" type="submit" value="Send the code again" onclick="sendCode()" />
-                </div>
+            <div class="code-sender">
+                <input class="link confirm-email" type="submit" value="Send the code again" onclick="sendCode()" />
             </div>
             
             <div class="btn-code">
@@ -46,9 +43,5 @@
         </form>
     </div>
 
-    <script>
-        window.onload = function() {
-            sendCode();
-        }
-    </script>
+    <script src="${pageContext.request.contextPath}/static/js/confirm_code.js"></script>
 <%@ include file = "../page_setting_bottom.jsp" %>

@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Random;
 
-import static com.miiguar.hfms.api.utils.Constants.*;
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.utils.Constants.API;
 
 /**
@@ -76,10 +76,10 @@ public class GenerateConfirmationCode extends BaseServlet {
                 user.getPassword());
         PreparedStatement insertCode = connection.prepareStatement(
                 "INSERT INTO " + CODE_TB_NAME + "(" +
-                        CODE + "," + USER_ID + ")" +
+                        COL_CODE + "," + COL_USER_ID + ")" +
                         "VALUES (" + code + "," + user.getUserId() + ")" +
-                        " ON CONFLICT (" + USER_ID + ") DO UPDATE" +
-                        " SET " + CODE + "=?"
+                        " ON CONFLICT (" + COL_USER_ID + ") DO UPDATE" +
+                        " SET " + COL_CODE + "=?"
         );
         insertCode.executeUpdate();
     }

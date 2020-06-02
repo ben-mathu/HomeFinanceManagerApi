@@ -1,11 +1,7 @@
 package com.miiguar.hfms.api.register;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.miiguar.hfms.api.base.BaseServlet;
 import com.miiguar.hfms.config.ConfigureApp;
-import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.models.user.UserRequest;
 import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
@@ -14,7 +10,6 @@ import com.miiguar.hfms.utils.BufferRequest;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
-import javax.interceptor.ExcludeClassInterceptors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Modifier;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,10 +24,9 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static com.miiguar.hfms.api.utils.Constants.*;
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.utils.Constants.API;
 import static com.miiguar.hfms.utils.Constants.ISSUER;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * @author bernard
@@ -122,7 +114,7 @@ public class Register extends BaseServlet {
     private void addUser(User user) throws SQLException {
         PreparedStatement insertSmt = connection.prepareStatement(
                 "INSERT INTO " + USERS_TB_NAME + " (" +
-                        USERNAME + "," + EMAIL + "," + PASSWORD + "," + IS_ADMIN + ") " +
+                        COL_USERNAME + "," + COL_EMAIL + "," + COL_PASSWORD + "," + COL_IS_ADMIN + ") " +
                         "VALUES ('" +
                         user.getUsername() + "','" +
                         user.getEmail() + "','" +
@@ -140,11 +132,11 @@ public class Register extends BaseServlet {
         );
         ResultSet result = getUserSmt.executeQuery();
         while (result.next()) {
-            user.setUserId(result.getInt(USER_ID));
-            user.setUsername(result.getString(USERNAME));
-            user.setEmail(result.getString(EMAIL));
-            user.setPassword(result.getString(PASSWORD));
-            user.setAdmin(result.getBoolean(IS_ADMIN));
+            user.setUserId(result.getInt(COL_USER_ID));
+            user.setUsername(result.getString(COL_USERNAME));
+            user.setEmail(result.getString(COL_EMAIL));
+            user.setPassword(result.getString(COL_PASSWORD));
+            user.setAdmin(result.getBoolean(COL_IS_ADMIN));
         }
         return user;
     }

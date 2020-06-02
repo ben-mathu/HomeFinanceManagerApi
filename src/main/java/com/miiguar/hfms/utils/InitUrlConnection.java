@@ -4,14 +4,13 @@ package com.miiguar.hfms.utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miiguar.hfms.config.ConfigureApp;
-import com.miiguar.hfms.data.models.ConfirmationResponse;
+import com.miiguar.hfms.utils.typetoken.CustomTypeToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
@@ -26,7 +25,7 @@ public class InitUrlConnection<T,E> {
     private BufferedReader streamReader;
     private OutputStreamWriter outputStreamWriter;
 
-    public E getReader(T item, String endPoint) throws IOException {
+    public BufferedReader getReader(T item, String endPoint) throws IOException {
         ConfigureApp conf = new ConfigureApp();
         Properties prop  = conf.getProperties();
 
@@ -49,17 +48,10 @@ public class InitUrlConnection<T,E> {
         streamReader = new BufferedReader(
                 new InputStreamReader(conn.getInputStream())
         );
-
-        String line = "";
-        E response = null;
-        while((line = streamReader.readLine()) != null) {
-            Type typeToken = new TypeToken<E>() {}.getType();
-            response = gson.fromJson(line, typeToken);
-        }
-        return response;
+        return streamReader;
     }
 
-    public E getReader(T item, String endPoint, String token) throws IOException {
+    public BufferedReader getReader(T item, String endPoint, String token) throws IOException {
         ConfigureApp conf = new ConfigureApp();
         Properties prop  = conf.getProperties();
 
@@ -84,14 +76,7 @@ public class InitUrlConnection<T,E> {
         streamReader = new BufferedReader(
                 new InputStreamReader(conn.getInputStream())
         );
-
-        String line = "";
-        E response = null;
-        while((line = streamReader.readLine()) != null) {
-            Type typeToken = new TypeToken<E>() {}.getType();
-            response = gson.fromJson(line, typeToken);
-        }
-        return response;
+        return streamReader;
     }
 
     public void close() throws IOException {

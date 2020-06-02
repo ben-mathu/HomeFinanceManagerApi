@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebServlet;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard")
+@WebServlet("/items")
 public class DashboardServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 }

@@ -1,9 +1,7 @@
 package com.miiguar.hfms.view.registration;
 
-import com.google.gson.Gson;
-import com.miiguar.hfms.config.ConfigureApp;
-import com.miiguar.hfms.data.models.ConfirmationResponse;
 import com.miiguar.hfms.data.models.user.Identification;
+import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
@@ -15,12 +13,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
 
-import static com.miiguar.hfms.api.utils.Constants.*;
-import static com.miiguar.hfms.utils.Constants.TOKEN;
+import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
+import static com.miiguar.hfms.utils.Constants.*;
 
 /**
  * @author bernard
@@ -56,7 +51,14 @@ public class ConfirmEmailServlet extends BaseServlet {
             if (token == null) token = "";
 
             InitUrlConnection<Identification, Report> connection = new InitUrlConnection<>();
-            Report item = connection.getReader(id, CONFIRM, token);
+            BufferedReader streamReader = connection.getReader(id, REGISTRATION, token);
+
+            String line = "";
+            Report item = null;
+            while((line = streamReader.readLine()) != null) {
+                item = gson.fromJson(line, Report.class);
+            }
+
             if (item != null) {
                 if (item.getStatus() != 200) {
                     String response = gson.toJson(item);

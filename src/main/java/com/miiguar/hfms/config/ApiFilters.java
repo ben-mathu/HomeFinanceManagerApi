@@ -2,7 +2,7 @@ package com.miiguar.hfms.config;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.data.status.Report;
-import com.miiguar.hfms.utils.Constants;
+import com.miiguar.hfms.utils.Patterns;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static com.miiguar.hfms.utils.Constants.ISSUER;
 
 /**
  * @author bernard
@@ -54,7 +56,7 @@ public class ApiFilters implements Filter {
                 writer.write(gson.toJson(report));
             } else {
                 String token = normalizeToken(req);
-                if (jwtTokenUtil.verifyToken(Constants.ISSUER, "login", token)) {
+                if (jwtTokenUtil.verifyToken(ISSUER, "login", token)) {
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
