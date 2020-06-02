@@ -14,8 +14,8 @@
             </div>
         </div>
         <form class="confirm-code-container" method="POST">
-            <input type="hidden" name="username" value="<%= session.getAttribute("username")%>">
-            <input type="hidden" name="password" value="<%= session.getAttribute("password")%>">
+            <input type="hidden" id="username" name="username" value="<%= session.getAttribute("username")%>">
+            <input type="hidden" id="password" name="password" value="<%= session.getAttribute("password")%>">
             <div class="input-container">
                 <div>
                     <input class="input-style" id="email" type="hidden" name="email" placeholder="Email: example@gmail.com" />

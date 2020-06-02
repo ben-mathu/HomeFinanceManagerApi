@@ -22,6 +22,7 @@ function changeEmail() {
 }
 
 function sendRequest() {
+    document.getElementById("progress").hidden = false;
     var request = getXmlHttpRequest();
     
     try {
@@ -33,13 +34,19 @@ function sendRequest() {
             request.onreadystatechange = function() {
                 if (request.readyState == 4) {
                     if (request.status != 200) {
-                        document.getElementById("emailError").innerHTML = "Sorry that code is invalid, send another <input class=\"link confirm-email\" type=\"submit\" value=\"Send the code again\" onclick=\"sendCode()\" />";
+                        document.getElementById("code-error").innerHTML = "Sorry that code is invalid</br> Please try again or send another <input class=\"link confirm-email\" type=\"submit\" value=\"Send the code again\" onclick=\"sendCode()\" />";
+                        document.getElementById("progress").hidden = true;
                     } else {
-                        document.getElementById("emailError").innerHTML = "Please stand by...";
+                        document.getElementById("code-error").innerHTML = "Please stand by...";
                         window.location.href = request.responseText;
+                        document.getElementById("progress").hidden = true;
                     }
                 }
             }
+            var email = "email=" + escape(document.getElementById("email").value);
+            var username = "username=" + escape(document.getElementById("username").value);
+            var password = "password=" + escape(document.getElementById("password").value);
+            var data = email + "&" + username + "&" + password;
 
             request.open("POST", "registration/register-user", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -51,13 +58,20 @@ function sendRequest() {
                 if (request.readyState == 4) {
                     if (request.status != 200) {
                         var obj = JSON.parse(request.responseText);
-                        document.getElementById("emailError").innerHTML = obj.email_error;
+                        document.getElementById("email-error").innerHTML = obj.email_error;
+                        document.getElementById("progress").hidden = true;
                     } else {
-                        document.getElementById("emailError").innerHTML = "Please stand by...";
+                        document.getElementById("email-error").innerHTML = "Please stand by...";
                         window.location.href = request.responseText;
+                        document.getElementById("progress").hidden = true;
                     }
                 }
             }
+
+            email = "email=" + escape(document.getElementById("email").value);
+            username = "username=" + escape(document.getElementById("username").value);
+            password = "password=" + escape(document.getElementById("password").value);
+            data = email + "&" + username + "&" + password;
             
             request.open("POST", "registration/register-user", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
