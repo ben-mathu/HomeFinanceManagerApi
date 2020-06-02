@@ -1,0 +1,272 @@
+@import url("_background.css");
+@import url("_font.css");
+@import url("_common.css");
+@import url("_links.css");
+
+.progress-container {
+    width: fit-content;
+    align-content: flex-end;
+    background-color: rgb(42, 39, 49);
+    margin-left: auto;
+    margin-right: 30px;
+    padding: 3%;
+    border-radius: 5px;
+}
+
+.code-func-parameters {
+    display: inline;
+}
+
+.confirm-email {
+    color: #0093D6;
+}
+
+.info {
+    width: fit-content;
+    margin: 10px;
+    padding: 10px;
+}
+
+.btn-code {
+    text-align: right;
+}
+
+.confirm-code-container {
+    width: fit-content;
+}
+
+.footer {
+    font-size: 12px;
+    margin-bottom: 30px;
+}
+
+.footer-container {
+    bottom: 0%;
+    position: fixed;
+    width: 100%;
+    font-size: 12px;
+    z-index: 1;
+}
+
+@media screen and (max-width: 360px) {
+    .footer {
+        margin-bottom: 10px;
+    }
+}
+
+.resp {
+    text-align: left;
+    margin: 0;
+    padding: 5px;
+    color: #FEC800;
+    font-size: 12px;
+}
+
+.image-size img:hover {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+}
+
+.image-size img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.image-size:hover {
+    background-color: #FEC800;
+}
+
+.image-size {
+    height: 40px;
+    width: 40px;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.login-using-socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.register-link {
+    margin-top: 30px;
+}
+
+.btn-containers {
+    display: inline-block;
+}
+
+@media screen and (max-width: 360px) {
+    .btn2 {
+        display: flex;
+    }
+}
+
+.btn2 {
+    background-color: #0093D6;
+    border: none;
+    color: white;
+    padding: 10px 30px 10px 30px;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 5px;
+    height: auto;
+}
+
+.btn {
+    background-color: #0093D6;
+    border: none;
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 5px;
+    border-radius: 5px;
+    height: auto;
+    width: 120px;
+}
+
+.submit {
+    text-align: center;
+}
+
+.submit-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a.link {
+    font-size: 12px;
+    margin-top: 30px;
+    margin-right: 30px;
+}
+
+.submit-area input {
+    text-align: right;
+}
+
+.input-style:focus {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-color: #FEC800;
+}
+
+
+.input-style {
+    width: 260px;
+    background-color: rgb(54, 50, 61);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-color: #0093D6;
+    border-top: none;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.input-container {
+    display: flex;
+    text-align: left;
+}
+
+.form-container {
+    display: inline;
+}
+
+.first-half, .second-half {
+    height: 300px;
+    width: 300px;
+    margin-right: 60px;
+    margin-left: 60px;
+}
+
+@media screen and (max-width: 360px) {
+    .first-half, .second-half {
+        height: 100px;
+        width: 100px;
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+
+.second-half {
+    height: auto;
+    width: auto;
+    padding: 15px;
+    text-align: center;
+    align-items: center;
+}
+
+.vertical-line {
+    border-left: 1px solid rgb(54, 50, 61);
+    height: 300px;
+}
+
+@media screen and (max-width: 360px) {
+    .vertical-line {
+        display: none;
+    }
+
+    .tagline {
+        display: none;
+    }
+}
+
+.first-half {
+    padding: 15px;
+}
+
+.row {
+    border-radius: 5px;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px;
+    height: 500px;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+@media screen and (max-width: 360px) {
+    .row {
+        border-radius: 5px;
+        margin: 10px;
+        height: auto;
+        box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .container {
+        margin-top: 50px;
+    }
+}
+
+.container {
+    margin-top: 100px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.items-center {
+    align-items: center;
+}
+
+html {
+    height: 100%;
+    color: white;
+}
