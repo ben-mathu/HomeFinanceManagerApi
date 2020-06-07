@@ -1,7 +1,7 @@
         
         <div class="footer-container" >    
-            <div id="progress" class="progress-container" hidden>
-                <p id="message"></p>
+            <div id="progress" class="progress-container align-right" hidden>
+                <p id="message">Loading...</p>
                 <progress class="progress-bar" max="100"></progress>
             </div>
 

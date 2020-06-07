@@ -6,9 +6,13 @@ import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.data.models.user.UserRequest;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.utils.BufferRequest;
+import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
+import com.miiguar.hfms.utils.sender.EmailSession;
+
 import org.apache.log4j.Logger;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Random;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -89,6 +94,41 @@ public abstract class BaseServlet extends HttpServlet {
         Log.handleLogging(req, TAG);
     }
 
+    public String generateCode() {
+        GenerateRandomString rand = new GenerateRandomString(6, new Random(), "0123456789");
+        return rand.nextString();
+    }
+
+    public void sendCodeToEmail(User user, String code) throws MessagingException {
+        EmailSession session = new EmailSession();
+        session.sendEmail(
+                user.getEmail(),
+                "Email Confirmation Code",
+                "<div style=\"text-align: center;\">" +
+                        "<h5>User this code to confirm your email</h5>" +
+                        "<h2>" + code + "</h2>" +
+                        "</div>"
+        );
+    }
+
+    public void saveCode(String code, User user) throws SQLException {
+        connection = jdbcConnection.getConnection(
+                user.getUsername() + "_db",
+                user.getUsername(),
+                user.getPassword());
+        PreparedStatement insertCode = connection.prepareStatement(
+                "INSERT INTO " + CODE_TB_NAME + "(" +
+                        COL_CODE + "," + COL_USER_ID + ")" +
+                        "VALUES (" + code + "," + user.getUserId() + ")" +
+                        " ON CONFLICT (" + COL_USER_ID + ")" +
+                        " DO UPDATE" +
+                        " SET " + COL_CODE + "=?"+
+                        " WHERE " + CODE_TB_NAME + "." + COL_USER_ID + "=" + user.getUserId()
+        );
+        insertCode.setInt(1, Integer.parseInt(code));
+        insertCode.executeUpdate();
+    }
+
     public boolean isUserDbCreated(String username) throws SQLException {
         DatabaseMetaData dbMetaData = connection.getMetaData();
         ResultSet result = dbMetaData.getCatalogs();
@@ -105,21 +145,23 @@ public abstract class BaseServlet extends HttpServlet {
     private void createAllTables() throws SQLException {
         PreparedStatement users = connection.prepareStatement(
                 "CREATE TABLE " + USERS_TB_NAME + " ("+
-                        COL_USER_ID + " SERIAL PRIMARY KEY,"+
+                        COL_USER_ID + " SERIAL,"+
                         COL_USERNAME + " varchar(25) NOT NULL UNIQUE,"+
                         COL_EMAIL + " text NOT NULL UNIQUE,"+
                         COL_PASSWORD + " varchar(255) NOT NULL,"+
-                        COL_IS_ADMIN + " BOOLEAN NOT NULL)"
+                        COL_IS_ADMIN + " BOOLEAN NOT NULL," +
+                        "CONSTRAINT " + PRIV_KEY_USERS + " PRIMARY KEY (" + COL_USER_ID + "))"
         );
         users.execute();
 
         // Create table for code
         PreparedStatement code = connection.prepareStatement(
                 "CREATE TABLE " + CODE_TB_NAME + " ("+
-                        COL_CODE + " integer," +
-                        COL_USER_ID + " integer REFERENCES " + USERS_TB_NAME + " (" + COL_USER_ID + ")," +
-                        "CONSTRAINT " + PRIV_KEY_CODE + " PRIMARY KEY(" +
-                        COL_CODE + "))"
+                        COL_CODE + " varchar(6)," +
+                        COL_USER_ID + " integer UNIQUE," +
+                        COL_EMAIL_CONFIRMED + " BOOLEAN DEFAULT false," +
+                        "CONSTRAINT " + PRIV_KEY_CODE + " PRIMARY KEY (" + COL_CODE + ")," +
+                        "CONSTRAINT " + FK_TB_CODE_USER_ID + " FOREIGN KEY (" + COL_USER_ID + ") REFERENCES " + USERS_TB_NAME + "(" + COL_USER_ID + "))"
         );
         code.execute();
     }

@@ -1,7 +1,6 @@
 package com.miiguar.hfms.view.registration;
 
 import com.miiguar.hfms.data.models.user.Identification;
-import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
@@ -13,24 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import static com.miiguar.hfms.data.utils.URL.GENERATE_CODE;
-import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
+import static com.miiguar.hfms.data.utils.URL.GET_CONFIRMATION_CODE;
 import static com.miiguar.hfms.utils.Constants.*;
 
 /**
  * @author bernard
  */
-@WebServlet(API + "/registration/get-confirmation-code")
+@WebServlet(GET_CONFIRMATION_CODE)
 public class GetCodeServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
-
-        PrintWriter writer = null;
 
         String password = (String) req.getSession().getAttribute(PASSWORD);
         String username = (String) req.getSession().getAttribute(USERNAME);
@@ -45,11 +41,11 @@ public class GetCodeServlet extends BaseServlet {
         Identification id = new Identification();
         id.setUser(user);
 
-        String token = (String) req.getSession().getAttribute(TOKEN);
+        String token = getTokenFromCookie(req);
         if (token == null) token = "";
 
-        InitUrlConnection<Identification, Report> connection = new InitUrlConnection<>();
-        BufferedReader streamReader = connection.getReader(id, REGISTRATION, token);
+        InitUrlConnection<Identification> connection = new InitUrlConnection<>();
+        BufferedReader streamReader = connection.getReader(id, GENERATE_CODE, token);
 
         String line = "";
         Report report = null;
@@ -58,17 +54,10 @@ public class GetCodeServlet extends BaseServlet {
         }
 
         if (report != null) {
-            if (report.getStatus() != 200) {
-                String jsonStr = gson.toJson(report);
-                resp.setStatus(report.getStatus());
-                writer = resp.getWriter();
-                writer.write(jsonStr);
-            } else {
-                String jsonStr = gson.toJson(report);
-                resp.setStatus(report.getStatus());
-                writer = resp.getWriter();
-                writer.write(jsonStr);
-            }
+            String jsonStr = gson.toJson(report);
+            resp.setStatus(report.getStatus());
+            writer = resp.getWriter();
+            writer.write(jsonStr);
         }
     }
 }

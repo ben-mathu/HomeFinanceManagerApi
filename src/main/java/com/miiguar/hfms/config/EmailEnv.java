@@ -7,6 +7,6 @@ import java.util.Properties;
  */
 public class EmailEnv extends Configuration {
     public Properties getProperties() {
-        return readProperties(System.getProperty("user.home") + "/email.properties");
+        return readProperties("email.properties");
     }
 }

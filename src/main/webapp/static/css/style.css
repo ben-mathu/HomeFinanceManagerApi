@@ -3,6 +3,35 @@
 @import url("_common.css");
 @import url("_links.css");
 
+.avatar-username {
+    margin-left: 5px;
+}
+
+img.avatar {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    border: 3px;
+    border-style: solid;
+    border-radius: 50px;
+    border-color: #FEC800;
+    background-color: white;
+}
+
+.avatar-container {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+}
+
+.header-container {
+    width: 100%;
+    height: fit-content;
+    position: fixed;
+    margin-top: -50px;
+    background-color: rgb(40, 36, 48);
+}
+
 .code-sender {
     margin-left: 30px;
 }
@@ -11,10 +40,8 @@
     width: fit-content;
     align-content: flex-end;
     background-color: rgb(42, 39, 49);
-    margin-left: auto;
-    margin-right: 30px;
-    padding: 3%;
     border-radius: 5px;
+    padding: 3%;
 }
 
 .code-func-parameters {
@@ -260,7 +287,12 @@ a.link {
 }
 
 .container {
-    margin-top: 100px;
+    margin-top: 50px;
+}
+
+.align-right {
+    margin-left: auto;
+    margin-right: 30px;
 }
 
 .text-center {

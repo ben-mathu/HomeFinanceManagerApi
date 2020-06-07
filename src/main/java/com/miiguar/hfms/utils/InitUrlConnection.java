@@ -2,15 +2,12 @@ package com.miiguar.hfms.utils;
 
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.miiguar.hfms.config.ConfigureApp;
-import com.miiguar.hfms.utils.typetoken.CustomTypeToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
@@ -21,7 +18,7 @@ import java.util.Properties;
  * @param <T> Request made to the server/backend
  * @param <E> Response received after the request has been processed.
  */
-public class InitUrlConnection<T,E> {
+public class InitUrlConnection<T> {
     private BufferedReader streamReader;
     private OutputStreamWriter outputStreamWriter;
 

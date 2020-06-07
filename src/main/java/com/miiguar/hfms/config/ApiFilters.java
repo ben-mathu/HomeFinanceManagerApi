@@ -2,7 +2,6 @@ package com.miiguar.hfms.config;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.data.status.Report;
-import com.miiguar.hfms.utils.Patterns;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 

@@ -11,13 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.miiguar.hfms.utils.Constants.API;
+import static com.miiguar.hfms.data.utils.URL.API;
+import static com.miiguar.hfms.data.utils.URL.LOGIN;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * @author bernard
  */
-@WebServlet(API + "/login")
+@WebServlet(API + LOGIN)
 public class Login extends BaseServlet {
     private static final long serialVersionUID = 1L;
 

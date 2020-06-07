@@ -1,6 +1,5 @@
 package com.miiguar.hfms.view.registration;
 
-import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
@@ -21,7 +20,7 @@ import static com.miiguar.hfms.utils.Constants.*;
 /**
  * @author bernard
  */
-@WebServlet("/registration/change-change-email")
+@WebServlet(CHANGE_EMAIL)
 public class ChangeEmailServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +37,7 @@ public class ChangeEmailServlet extends BaseServlet {
         user.setPassword(password);
         user.setUsername(username);
 
-        InitUrlConnection<User, Report> conn = new InitUrlConnection<>();
+        InitUrlConnection<User> conn = new InitUrlConnection<>();
         BufferedReader streamReader = conn.getReader(user, REGISTRATION, token);
 
         String line = "";
@@ -48,19 +47,11 @@ public class ChangeEmailServlet extends BaseServlet {
         }
         
         if (report != null) {
-            if (report.getStatus() != 200) {
-                String response = gson.toJson(report);
-                
-                resp.setStatus(report.getStatus());
-                writer = resp.getWriter();
-                writer.write(response);
-            } else {
-                String response = gson.toJson(report);
-
-                resp.setStatus(report.getStatus());
-                writer = resp.getWriter();
-                writer.write(response);
-            }
+            String response = gson.toJson(report);
+            
+            resp.setStatus(report.getStatus());
+            writer = resp.getWriter();
+            writer.write(response);
         }
     }
 

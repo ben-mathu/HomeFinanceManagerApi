@@ -28,27 +28,35 @@ function sendRequest() {
     try {
         document.getElementById("code-error").innerHTML = "";
         document.getElementById("email-error").innerHTML = "";
-        if (document.getElementById("email").type == 'hidden') {
+        if (document.getElementById("email").hidden) {
+            var path = document.getElementById("contextPath").value;
 
             // to check if code submitted is valid
             request.onreadystatechange = function() {
                 if (request.readyState == 4) {
-                    if (request.status != 200) {
-                        document.getElementById("code-error").innerHTML = "Sorry that code is invalid</br> Please try again or send another <input class=\"link confirm-email\" type=\"submit\" value=\"Send the code again\" onclick=\"sendCode()\" />";
+                    if (request.status == 404) {
+                        console.log("no page");
+                    }
+                    if (request.status == 406) {
+                        var obj = JSON.parse(request.responseText);
+                        document.getElementById("code-error").innerHTML = obj.message;
+                        document.getElementById("code-sender").hidden = false;
                         document.getElementById("progress").hidden = true;
                     } else {
                         document.getElementById("code-error").innerHTML = "Please stand by...";
-                        window.location.href = request.responseText;
                         document.getElementById("progress").hidden = true;
+                        window.location.href = path + "/dashboard";
                     }
                 }
             }
+
             var email = "email=" + escape(document.getElementById("email").value);
             var username = "username=" + escape(document.getElementById("username").value);
             var password = "password=" + escape(document.getElementById("password").value);
-            var data = email + "&" + username + "&" + password;
+            var code = "code=" + escape(document.getElementById("code").value);
+            var data = email + "&" + username + "&" + password + "&" + code;
 
-            request.open("POST", "registration/email-confirmed", true);
+            request.open("POST", path + "/registration/confirm-user/email-confirmation", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             request.send(data);
         } else {
@@ -57,13 +65,12 @@ function sendRequest() {
             request.onreadystatechange = function() {
                 if (request.readyState == 4) {
                     if (request.status != 200) {
-                        var obj = JSON.parse(request.responseText);
-                        document.getElementById("email-error").innerHTML = obj.email_error;
+                        document.getElementById("email-error").innerHTML = request.responseText;
                         document.getElementById("progress").hidden = true;
                     } else {
                         document.getElementById("email-error").innerHTML = "Please stand by...";
-                        window.location.href = request.responseText;
                         document.getElementById("progress").hidden = true;
+                        window.location.href = request.responseText;
                     }
                 }
             }
@@ -73,7 +80,8 @@ function sendRequest() {
             password = "password=" + escape(document.getElementById("password").value);
             data = email + "&" + username + "&" + password;
             
-            request.open("POST", "registration/change-change-email", true);
+            var contextPath = document.getElementById("contextPath").value;
+            request.open("POST", contextPath + "/change-email-address", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             request.send(data);
         }
@@ -102,15 +110,15 @@ function registerUser() {
                     
                     document.getElementById("passwordError").innerHTML = obj.password_error;
 
-                    document.getElementById("progress").hidden = true
+                    document.getElementById("progress").hidden = true;
                 } else if (request.status == 403) {
                     var error = JSON.parse(request.responseText);
                     document.getElementById("result").innerHTML = error.message;
-                    document.getElementById("progress").hidden = true
+                    document.getElementById("progress").hidden = true;
                 } else {
                     document.getElementById("result").innerHTML = "<span style=\"color: green;\">Success. Please wait while you are redirected...</span>";
                     window.location.href = request.responseText;
-                    document.getElementById("progress").hidden = true
+                    document.getElementById("progress").hidden = true;
                 }
             }
         }

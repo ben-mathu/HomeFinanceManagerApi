@@ -42,7 +42,7 @@
                         </div>
                     </form>
                     <div class="submit-area">
-                            <button class="btn2 submit" onclick="registerUser()" id="submit">Submit</button>
+                        <button class="btn2 submit" onclick="registerUser()" id="submit">Submit</button>
                     </div>
                     <a class="link register-link" href="login">Already have an account?</a>
                 </div>

@@ -20,21 +20,22 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
-import static com.miiguar.hfms.utils.Constants.API;
+import static com.miiguar.hfms.data.utils.URL.API;
+import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
 import static com.miiguar.hfms.utils.Constants.ISSUER;
 
 /**
  * @author bernard
  */
-@WebServlet(API + "/registration")
+@WebServlet(API + REGISTRATION)
 public class Register extends BaseServlet {
     private static final long serialVersionUID = 1L;
-    private static final String TAG = Register.class.getSimpleName();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -71,14 +72,15 @@ public class Register extends BaseServlet {
 
                 // generate a token
                 JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
-                long millis = TimeUnit.DAYS.toMillis(2);
-                String token = jwtTokenUtil.generateToken(ISSUER, user.getUsername(), new Date(millis));
-                
+                Calendar calendar = Calendar.getInstance();
+                Date date = new Date(calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(2));
+                String token = jwtTokenUtil.generateToken(ISSUER, "login", date);
+
                 report = new Report();
                 report.setMessage("Success");
                 report.setStatus(HttpServletResponse.SC_OK);
                 report.setToken(token);
-                
+
                 UserResponse response = new UserResponse();
                 response.setReport(report);
                 response.setUser(user);
@@ -91,12 +93,12 @@ public class Register extends BaseServlet {
             Log.e(TAG, "Error creating user", e);
 
             report = new Report();
-            report.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
             String msg = "";
-            if (e.getMessage().contains(user.getUsername()))
+            if (e.getMessage().contains(user.getUsername())) {
+                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 msg = "User exists, please try another username";
-            else {
+            } else {
                 String email = prop.getProperty("admin.email");
                 msg = "An error has occurred, please contact the developer: " + email;
             }

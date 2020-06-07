@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.miiguar.hfms.utils.Constants.ISSUER;
+import static com.miiguar.hfms.utils.Constants.TOKEN;
 
 /**
  * @author bernard
@@ -57,7 +58,7 @@ public class TokenFilter implements Filter {
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
+                if (TOKEN.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }

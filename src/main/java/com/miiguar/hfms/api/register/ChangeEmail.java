@@ -17,12 +17,13 @@ import java.sql.SQLException;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.COL_EMAIL;
 import static com.miiguar.hfms.data.utils.DbEnvironment.USERS_TB_NAME;
-import static com.miiguar.hfms.utils.Constants.API;
+import static com.miiguar.hfms.data.utils.URL.API;
+import static com.miiguar.hfms.data.utils.URL.CHANGE_EMAIL;
 
 /**
  * @author bernard
  */
-@WebServlet(API + "/change-email-address")
+@WebServlet(API + CHANGE_EMAIL)
 public class ChangeEmail extends BaseServlet {
     private static final long serialVersionUID = 1L;
 

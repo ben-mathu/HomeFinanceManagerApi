@@ -1,7 +1,5 @@
 package com.miiguar.hfms.data.models.user.model;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  *
  * @author bernard

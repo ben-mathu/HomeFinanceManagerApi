@@ -8,5 +8,6 @@
         <title>${title}</title>
 
         <script src="${pageContext.request.contextPath}/${script}"></script>
+        <script src="${pageContext.request.contextPath}/${coder}"></script>
     </head>
     <body>
