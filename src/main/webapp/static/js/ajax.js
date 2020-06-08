@@ -10,7 +10,6 @@ function getXmlHttpRequest() {
     return request;
 }
 
-
 function changeEmail() {
     if(document.getElementById("email").type == 'hidden') {
         document.getElementById("email").type = "text";
@@ -34,18 +33,17 @@ function sendRequest() {
             // to check if code submitted is valid
             request.onreadystatechange = function() {
                 if (request.readyState == 4) {
-                    if (request.status == 404) {
-                        console.log("no page");
-                    }
-                    if (request.status == 406) {
+                    if (request.status != 200) {
+
                         var obj = JSON.parse(request.responseText);
                         document.getElementById("code-error").innerHTML = obj.message;
                         document.getElementById("code-sender").hidden = false;
                         document.getElementById("progress").hidden = true;
                     } else {
+
                         document.getElementById("code-error").innerHTML = "Please stand by...";
                         document.getElementById("progress").hidden = true;
-                        window.location.href = path + "/dashboard";
+                        window.location.href = request.responseText;
                     }
                 }
             }
@@ -65,12 +63,13 @@ function sendRequest() {
             request.onreadystatechange = function() {
                 if (request.readyState == 4) {
                     if (request.status != 200) {
+
                         document.getElementById("email-error").innerHTML = request.responseText;
                         document.getElementById("progress").hidden = true;
                     } else {
+
                         document.getElementById("email-error").innerHTML = "Please stand by...";
                         document.getElementById("progress").hidden = true;
-                        window.location.href = request.responseText;
                     }
                 }
             }
@@ -103,22 +102,22 @@ function registerUser() {
         request.onreadystatechange = function() {
             if (request.readyState == 4) {
                 if (request.status == 400) {
+
                     var obj = JSON.parse(request.responseText);
                     document.getElementById("emailError").innerHTML = obj.email_error;
-                    
                     document.getElementById("usernameError").innerHTML = obj.username_error;
-                    
                     document.getElementById("passwordError").innerHTML = obj.password_error;
-
                     document.getElementById("progress").hidden = true;
                 } else if (request.status == 403) {
+
                     var error = JSON.parse(request.responseText);
                     document.getElementById("result").innerHTML = error.message;
                     document.getElementById("progress").hidden = true;
-                } else {
+                } else if(request.status == 200) {
+
                     document.getElementById("result").innerHTML = "<span style=\"color: green;\">Success. Please wait while you are redirected...</span>";
-                    window.location.href = request.responseText;
                     document.getElementById("progress").hidden = true;
+                    window.location.href = request.responseText;
                 }
             }
         }

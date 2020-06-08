@@ -16,7 +16,7 @@ public class JdbcConnection implements PostgresConnection {
     private static final String TAG = JdbcConnection.class.getSimpleName();
 
     @Override
-    public Connection getConnection(String databaseName, String username, String password) {
+    public Connection getConnection(String databaseName, String username, String password) throws SQLException {
         ConfigureDb configureDb = new ConfigureDb();
         Properties prop = configureDb.getProperties();
         PoolProperties pool = new PoolProperties();
@@ -42,12 +42,6 @@ public class JdbcConnection implements PostgresConnection {
                 "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
         DataSource dataSource = new DataSource();
         dataSource.setPoolProperties(pool);
-        try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
-            Logger logger = Logger.getRootLogger();
-            logger.error(TAG, e);
-            return null;
-        }
+        return dataSource.getConnection();
     }
 }

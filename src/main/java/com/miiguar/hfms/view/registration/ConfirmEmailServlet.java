@@ -65,12 +65,16 @@ public class ConfirmEmailServlet extends BaseServlet {
 
             if (item != null) {
                 if (item.getStatus() != 200) {
-//                    String response = gson.toJson(item);
+                    String response = gson.toJson(item);
 
                     resp.setStatus(item.getStatus());
                     writer = resp.getWriter();
-                    writer.write(item.getMessage());
+                    writer.write(response);
                 } else {
+                    req.getSession().setAttribute(USERNAME, user.getUsername());
+                    req.getSession().setAttribute(EMAIL, user.getEmail());
+                    req.getSession().setAttribute(USER_ID, user.getUserId());
+
                     writer = resp.getWriter();
                     String redirect = req.getContextPath() + "/dashboard";
                     writer.write(redirect);

@@ -60,7 +60,7 @@ public class ChangeEmail extends BaseServlet {
         String password = user.getPassword();
         String dbName = user.getPassword();
 
-        connection = jdbcConnection.getConnection(dbName, username, password);
+        connection = jdbcConnection.getConnection(dbName, username, username);
 
         PreparedStatement changeEmail = connection.prepareStatement(
                 "UPDATE " + USERS_TB_NAME +

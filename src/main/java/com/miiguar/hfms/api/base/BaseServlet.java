@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Random;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
+import static com.miiguar.hfms.utils.Constants.USERNAME;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -35,14 +36,13 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
  */
 public abstract class BaseServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    public final String TAG = this.getClass().getSimpleName();
+    protected final String TAG = this.getClass().getSimpleName();
 
-    public JdbcConnection jdbcConnection = new JdbcConnection();
-    public Logger logger = Logger.getRootLogger();
+    protected JdbcConnection jdbcConnection = new JdbcConnection();
 
-    public Connection connection = null;
-    public Gson gson = new Gson();
-    public PrintWriter writer;
+    protected Connection connection = null;
+    protected Gson gson = new Gson();
+    protected PrintWriter writer;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -55,16 +55,7 @@ public abstract class BaseServlet extends HttpServlet {
         resp.setContentType(APPLICATION_JSON);
 
         String uri = req.getRequestURI();
-        if (uri.endsWith("/login")) {
-            String jsonRequest = BufferRequest.bufferRequest(req);
-            UserRequest userRequest = gson.fromJson(jsonRequest, UserRequest.class);
-            User user = userRequest.getUser();
-            connection = jdbcConnection.getConnection(
-                    user.getUsername() + "_db",
-                    user.getUsername(),
-                    user.getPassword()
-            );
-        } else if (uri.endsWith("/registration")){
+        if (uri.endsWith("/registration")){
             // get database properties
             ConfigureDb dbProps = new ConfigureDb();
             Properties prop = dbProps.getProperties();
@@ -72,11 +63,15 @@ public abstract class BaseServlet extends HttpServlet {
             String username = prop.getProperty("db.username");
             String password = prop.getProperty("db.password");
 
-            connection = jdbcConnection.getConnection(
-                    mainDb,
-                    username,
-                    password
-            );
+            try {
+                connection = jdbcConnection.getConnection(
+                        mainDb,
+                        username,
+                        password
+                );
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error has occurred connecting to the db", throwables);
+            }
         }
 
         Log.handleLogging(req, TAG);
@@ -94,12 +89,12 @@ public abstract class BaseServlet extends HttpServlet {
         Log.handleLogging(req, TAG);
     }
 
-    public String generateCode() {
+    protected String generateCode() {
         GenerateRandomString rand = new GenerateRandomString(6, new Random(), "0123456789");
         return rand.nextString();
     }
 
-    public void sendCodeToEmail(User user, String code) throws MessagingException {
+    protected void sendCodeToEmail(User user, String code) throws MessagingException {
         EmailSession session = new EmailSession();
         session.sendEmail(
                 user.getEmail(),
@@ -111,11 +106,11 @@ public abstract class BaseServlet extends HttpServlet {
         );
     }
 
-    public void saveCode(String code, User user) throws SQLException {
+    protected void saveCode(String code, User user) throws SQLException {
         connection = jdbcConnection.getConnection(
                 user.getUsername() + "_db",
                 user.getUsername(),
-                user.getPassword());
+                user.getUsername());
         PreparedStatement insertCode = connection.prepareStatement(
                 "INSERT INTO " + CODE_TB_NAME + "(" +
                         COL_CODE + "," + COL_USER_ID + ")" +
@@ -129,7 +124,7 @@ public abstract class BaseServlet extends HttpServlet {
         insertCode.executeUpdate();
     }
 
-    public boolean isUserDbCreated(String username) throws SQLException {
+    protected boolean isUserDbCreated(String username) throws SQLException {
         DatabaseMetaData dbMetaData = connection.getMetaData();
         ResultSet result = dbMetaData.getCatalogs();
 
@@ -157,7 +152,7 @@ public abstract class BaseServlet extends HttpServlet {
         // Create table for code
         PreparedStatement code = connection.prepareStatement(
                 "CREATE TABLE " + CODE_TB_NAME + " ("+
-                        COL_CODE + " varchar(6)," +
+                        COL_CODE + " text," +
                         COL_USER_ID + " integer UNIQUE," +
                         COL_EMAIL_CONFIRMED + " BOOLEAN DEFAULT false," +
                         "CONSTRAINT " + PRIV_KEY_CODE + " PRIMARY KEY (" + COL_CODE + ")," +
@@ -173,7 +168,7 @@ public abstract class BaseServlet extends HttpServlet {
      * @param password
      * @throws SQLException
      */
-    public void createDb(String username, String password) throws SQLException {
+    protected void createDb(String username, String password) throws SQLException {
         ConfigureDb configureDb = new ConfigureDb();
         Properties prop = configureDb.getProperties();
 
@@ -181,7 +176,7 @@ public abstract class BaseServlet extends HttpServlet {
 
         // Create user/role
         PreparedStatement createUserSmt = connection.prepareStatement(
-                "CREATE USER " + username + " ENCRYPTED PASSWORD '" + password + "'"
+                "CREATE USER " + username + " ENCRYPTED PASSWORD '" + username + "'"
         );
         createUserSmt.execute();
 
@@ -189,7 +184,7 @@ public abstract class BaseServlet extends HttpServlet {
         addDb(username, prop);
 
         // initialize the connection to the new database and db role
-        connection = jdbcConnection.getConnection(dbName, username, password);
+        connection = jdbcConnection.getConnection(dbName, username, username);
         createAllTables();
     }
 

@@ -1,6 +1,7 @@
 <% 
 	String pageTitle = "Login";
 	pageContext.setAttribute("title", pageTitle);
+    pageContext.setAttribute("login", "static/js/login/login.js");
 %>
 <%@ include file="../page_setting_top.jsp" %>
     <div class="container text-center">
@@ -16,15 +17,27 @@
 
             <div class="sections second-half">
                 <div>
-                    <form action="login" method="POST">
-                        <input class="input-style" id="username" type="text" name="username" placeholder="Username"><br>
-                        <input class="input-style" id="password" type="password" name="password" placeholder="Password"><br>
-                        <div class="submit-area">
-                            <a class="link" id="forgot_password" href="#">Forgot password?</a>
-                            <input class="btn2" type="submit" name="login" value="Login">
+            		<span id="result" class="resp">${error.usernameError}</span>
+            	</div>
+                <div>
+                    <form method="POST">
+                        <div class="input-container">
+                            <div>
+                            	<input class="input-style" id="username" type="text" name="username" placeholder="Username" value="${username}">
+                            </div>
+                            <span id="usernameError" class="resp">${usernameError.usernameError}</span>
                         </div>
-                        <a class="link register-link" href="registration">Create an account.</a>
+                        <div class="input-container">
+                            <div>
+                            	<input class="input-style" id="password" type="password" name="password" placeholder="Password">
+                            </div>
+                            <span id="passwordError" class="resp">${passwordError.passwordError}</span>
+                        </div>
                     </form>
+                    <div class="submit-area">
+                        <button class="btn2 submit" onclick="loginUser()" id="submit">Login</button>
+                    </div>
+                    <a class="link register-link" href="registration">Create an account.</a>
                 </div>
                 <div class="login-using-socials">
                     <div class="image-size">

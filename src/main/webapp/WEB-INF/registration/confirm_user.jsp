@@ -1,10 +1,12 @@
 <% 
 	String pageTitle = "Confirm Registration";
     String scripts = "static/js/ajax.js";
+    String icon = "logo.png";
 
 	pageContext.setAttribute("title", pageTitle);
     pageContext.setAttribute("script", scripts);
     pageContext.setAttribute("coder", "static/js/send_code.js");
+    pageContext.setAttribute("timer", "static/js/dashboard/dashboard.js");
     boolean isCodeSent = false;
 %>
 <%@ include file = "../page_setting_top.jsp" %>

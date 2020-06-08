@@ -2,6 +2,8 @@ package com.miiguar.hfms.data.status;
 
 import com.google.gson.annotations.SerializedName;
 
+import static com.miiguar.hfms.utils.Constants.SUBJECT;
+
 public class Report {
     @SerializedName("status")
     private int status = 200;
@@ -9,6 +11,8 @@ public class Report {
     private String message = "";
     @SerializedName("token")
     private String token = "";
+    @SerializedName(SUBJECT)
+    private String subject = "";
 
     public int getStatus() {
         return status;
@@ -32,5 +36,13 @@ public class Report {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

@@ -9,5 +9,7 @@
 
         <script src="${pageContext.request.contextPath}/${script}"></script>
         <script src="${pageContext.request.contextPath}/${coder}"></script>
+        <script src="${pageContext.request.contextPath}/${timer}"></script>
+        <script src="${pageContext.request.contextPath}/${login}"></script>
     </head>
     <body>

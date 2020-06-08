@@ -123,13 +123,15 @@ public class RegistrationServlet extends BaseServlet {
 
 						request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
 						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
-						request.getSession().setAttribute(PASSWORD, item.getUser().getPassword());
 						request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
 						request.getSession().setAttribute("isAlreadySent", false);
 
 						// save the session
 						Cookie cookie = new Cookie(TOKEN, item.getReport().getToken());
 						response.addCookie(cookie);
+
+						Cookie subjectCookie = new Cookie(SUBJECT, item.getReport().getSubject());
+						response.addCookie(subjectCookie);
 
 						request.getSession().setAttribute("isAlreadySent", false);
 

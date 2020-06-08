@@ -1,5 +1,6 @@
 package com.miiguar.hfms.view.config;
 
+import com.miiguar.hfms.config.ConfigureApp;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
@@ -9,16 +10,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Properties;
 
-import static com.miiguar.hfms.utils.Constants.ISSUER;
-import static com.miiguar.hfms.utils.Constants.TOKEN;
+import static com.miiguar.hfms.utils.Constants.*;
 
 /**
  * @author bernard
  */
-@WebFilter(urlPatterns = "/dashboard", description = "Front-end Session checker/filter.")
-public class TokenFilter implements Filter {
-    private static final String TAG = TokenFilter.class.getSimpleName();
+@WebFilter(urlPatterns = "/login", description = "Front-end Session checker/filter.")
+public class LoginTokenFilter implements Filter {
+    private static final String TAG = LoginTokenFilter.class.getSimpleName();
     private FilterConfig config;
 
     @Override
@@ -42,14 +43,17 @@ public class TokenFilter implements Filter {
 
         if (!token.isEmpty()) {
             token = normalizeToken(token);
+            ConfigureApp app = new ConfigureApp();
+            Properties prop = app.getProperties();
+            String subject = prop.getProperty(SUBJECT, "");
 
-            if (tokenUtil.verifyToken(ISSUER, "login", token)) {
+            if (tokenUtil.verifyToken(ISSUER, subject, token)) {
                 resp.sendRedirect("dashboard");
             } else {
-                resp.sendRedirect("login");
+                filterChain.doFilter(servletRequest, servletResponse);
             }
         } else {
-
+            filterChain.doFilter(servletRequest, servletResponse);
         }
     }
 

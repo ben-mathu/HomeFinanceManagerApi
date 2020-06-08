@@ -18,8 +18,12 @@ function sendCode(isCodeSent){
 
         request.onreadystatechange = function () {
             if (request.readyState == 4) {
-                if (request.status == 200) {
-                    console.log("Code has been sent...")
+                if (request.status != 200) {
+                    var obj = JSON.parse(request.responseText);
+                    document.getElementById("code-error").innerHTML = obj.message;
+                    document.getElementById("progress").hidden = true;
+                } else {
+                    console.log("Nothing to do, code has been sent.");
                 }
             }
         }
@@ -36,6 +40,7 @@ function sendCode(isCodeSent){
 
 setTimeout(() => {
     if (!sessionStorage.getItem("isAlreadySent")) {
+        document.getElementById("progress").hidden = false;
         sendCode(true);
     }
 }, 500);

@@ -60,7 +60,7 @@ public class Confirm extends BaseServlet {
         String username = id.getUser().getUsername();
         String password = id.getUser().getPassword();
         String dbName = username + "_db";
-        connection = jdbcConnection.getConnection(dbName, username, password);
+        connection = jdbcConnection.getConnection(dbName, username, username);
 
         PreparedStatement codeConfirm = connection.prepareStatement(
                 "SELECT * FROM " + CODE_TB_NAME + " WHERE " + COL_USER_ID + "=?"

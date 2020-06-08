@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Properties;
 
-import static com.miiguar.hfms.utils.Constants.ISSUER;
+import static com.miiguar.hfms.utils.Constants.*;
 
 /**
  * @author bernard
@@ -42,7 +43,7 @@ public class ApiFilters implements Filter {
         Log.d(TAG, url.toString());
 
         String endPoint = req.getRequestURI();
-        if (!endPoint.endsWith("/login") && !endPoint.endsWith("/registration")) {
+        if (!endPoint.endsWith("/login-user") && !endPoint.endsWith("/registration")) {
             if (req.getHeader("Authorization") == null) {
                 resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 PrintWriter writer = resp.getWriter();
@@ -54,8 +55,12 @@ public class ApiFilters implements Filter {
                 Gson gson = new Gson();
                 writer.write(gson.toJson(report));
             } else {
+                // get Subject
+                ConfigureApp app = new ConfigureApp();
+                Properties prop = app.getProperties();
+                String subject = prop.getProperty(SUBJECT, "");
                 String token = normalizeToken(req);
-                if (jwtTokenUtil.verifyToken(ISSUER, "login", token)) {
+                if (jwtTokenUtil.verifyToken(ISSUER, subject, token)) {
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {
                     resp.setStatus(HttpServletResponse.SC_FORBIDDEN);

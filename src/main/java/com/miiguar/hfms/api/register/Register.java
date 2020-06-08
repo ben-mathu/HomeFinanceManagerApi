@@ -7,6 +7,7 @@ import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.BufferRequest;
+import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
@@ -29,6 +30,7 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.API;
 import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
 import static com.miiguar.hfms.utils.Constants.ISSUER;
+import static com.miiguar.hfms.utils.Constants.SUBJECT;
 
 /**
  * @author bernard
@@ -74,7 +76,9 @@ public class Register extends BaseServlet {
                 JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
                 Calendar calendar = Calendar.getInstance();
                 Date date = new Date(calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(2));
-                String token = jwtTokenUtil.generateToken(ISSUER, "login", date);
+
+                String subject = prop.getProperty(SUBJECT, "");
+                String token = jwtTokenUtil.generateToken(ISSUER, subject, date);
 
                 report = new Report();
                 report.setMessage("Success");

@@ -3,6 +3,26 @@
 @import url("_common.css");
 @import url("_links.css");
 
+.nav-container {
+    width: 50px;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    background-color: rgb(40, 36, 48);
+}
+
+.nav-icon {
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.time-container {
+    width: 100%;
+    margin-bottom: -20px;
+}
+
 .avatar-username {
     margin-left: 5px;
 }
@@ -29,6 +49,7 @@ img.avatar {
     height: fit-content;
     position: fixed;
     margin-top: -50px;
+    display: flex;
     background-color: rgb(40, 36, 48);
 }
 

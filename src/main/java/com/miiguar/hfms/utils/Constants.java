@@ -11,6 +11,7 @@ public class Constants {
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String TOKEN = "token";
+    public static final String SUBJECT = "subject";
     public static final String CODE = "code";
     public static final String USER_ID = "user_id";
 }
