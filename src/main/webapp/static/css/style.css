@@ -2,91 +2,11 @@
 @import url("_font.css");
 @import url("_common.css");
 @import url("_links.css");
-
-.nav-container {
-    width: 50px;
-    height: 100%;
-    position: fixed;
-    display: flex;
-    background-color: rgb(40, 36, 48);
-}
-
-.nav-icon {
-    width: 40px;
-    height: 40px;
-    margin-top: 10px;
-    margin-left: 15px;
-}
-
-.time-container {
-    width: 100%;
-    margin-bottom: -20px;
-}
-
-.avatar-username {
-    margin-left: 5px;
-}
-
-img.avatar {
-    width: 30px;
-    height: 30px;
-    margin-top: 10px;
-    border: 3px;
-    border-style: solid;
-    border-radius: 50px;
-    border-color: #FEC800;
-    background-color: white;
-}
-
-.avatar-container {
-    width: fit-content;
-    height: fit-content;
-    display: flex;
-}
-
-.header-container {
-    width: 100%;
-    height: fit-content;
-    position: fixed;
-    margin-top: -50px;
-    display: flex;
-    background-color: rgb(40, 36, 48);
-}
-
-.code-sender {
-    margin-left: 30px;
-}
-
-.progress-container {
-    width: fit-content;
-    align-content: flex-end;
-    background-color: rgb(42, 39, 49);
-    border-radius: 5px;
-    padding: 3%;
-}
-
-.code-func-parameters {
-    display: inline;
-}
-
-.confirm-email {
-    color: #0093D6;
-}
-
-.info {
-    width: fit-content;
-    margin: 10px;
-    padding: 10px;
-}
-
-.btn-code {
-    text-align: right;
-}
-
-.confirm-code-container {
-    width: fit-content;
-    margin-left: 10px;
-}
+@import url("_nav_menu.css");
+@import url("_nav_menu_items.css");
+@import url("_dashboard_content.css");
+@import url("_header.css");
+@import url("_confirm_email.css");
 
 .footer {
     font-size: 12px;
@@ -303,12 +223,25 @@ a.link {
     }
 
     .container {
-        margin-top: 50px;
+        margin-top: 65px;
     }
 }
 
 .container {
-    margin-top: 50px;
+    margin-top: 65px;
+    margin-left: 60px;
+}
+
+.rounded-corner {
+    border-radius: 5px;
+}
+
+.shadow-2pt {
+    box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.shadow-1pt {
+    box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.493);
 }
 
 .align-right {

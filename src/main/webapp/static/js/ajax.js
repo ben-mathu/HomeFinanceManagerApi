@@ -41,18 +41,34 @@ function sendRequest() {
                         document.getElementById("progress").hidden = true;
                     } else {
 
+                        obj = JSON.parse(request.responseText);
                         document.getElementById("code-error").innerHTML = "Please stand by...";
                         document.getElementById("progress").hidden = true;
-                        window.location.href = request.responseText;
+
+                        var form = document.createElement("form");
+                        document.body.appendChild(form);
+                        form.method = 'post';
+                        form.action = path + obj.redirect;
+                        
+                        var input = document.createElement("input");
+                        input.type = 'hidden';
+                        input.name = 'token';
+                        input.value = obj.token;
+                        form.appendChild(input);
+
+                        form.submit();
                     }
                 }
             }
+
+            var token = "token=" + escape(window.localStorage.getItem("token"));
+            var userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
 
             var email = "email=" + escape(document.getElementById("email").value);
             var username = "username=" + escape(document.getElementById("username").value);
             var password = "password=" + escape(document.getElementById("password").value);
             var code = "code=" + escape(document.getElementById("code").value);
-            var data = email + "&" + username + "&" + password + "&" + code;
+            var data = email + "&" + username + "&" + password + "&" + code + "&" + token + "&" + userId;
 
             request.open("POST", path + "/registration/confirm-user/email-confirmation", true);
             request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -74,10 +90,13 @@ function sendRequest() {
                 }
             }
 
+            var token = "token=" + escape(window.localStorage.getItem("token"));
+            var userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
+
             email = "email=" + escape(document.getElementById("email").value);
             username = "username=" + escape(document.getElementById("username").value);
             password = "password=" + escape(document.getElementById("password").value);
-            data = email + "&" + username + "&" + password;
+            data = email + "&" + username + "&" + password + "&" + token + "&" + userId;
             
             var contextPath = document.getElementById("contextPath").value;
             request.open("POST", contextPath + "/change-email-address", true);
@@ -99,6 +118,7 @@ function registerUser() {
 
     var request = getXmlHttpRequest();
     try {
+        var path = document.getElementById("contextPath").value;
         request.onreadystatechange = function() {
             if (request.readyState == 4) {
                 if (request.status == 400) {
@@ -115,9 +135,13 @@ function registerUser() {
                     document.getElementById("progress").hidden = true;
                 } else if(request.status == 200) {
 
+                    obj = JSON.parse(request.responseText);
+                    window.localStorage.setItem("token", obj.report.token);
+                    window.localStorage.setItem("user_id", obj.user.user_id);
+
                     document.getElementById("result").innerHTML = "<span style=\"color: green;\">Success. Please wait while you are redirected...</span>";
                     document.getElementById("progress").hidden = true;
-                    window.location.href = request.responseText;
+                    window.location.href = path + "/registration/confirm-user";
                 }
             }
         }

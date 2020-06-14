@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static com.miiguar.hfms.utils.Constants.TOKEN;
+import static com.miiguar.hfms.utils.Constants.USER_ID;
 
 /**
  * @author bernard
@@ -51,6 +52,19 @@ public abstract class BaseServlet extends HttpServlet {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (TOKEN.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return "";
+    }
+
+    protected String getUserIdFromCookie(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (USER_ID.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }

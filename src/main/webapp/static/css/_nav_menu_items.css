@@ -1,0 +1,76 @@
+.unFade {
+    -webkit-animation-name: unFadeText;
+    -moz-animation-name: unFadeText;
+    -ms-animation-name: unFadeText;
+    -o-animation-name: unFadeText;
+    animation-name: unFadeText;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.4s;
+    -moz-animation-duration: 0.4s;
+    -ms-animation-duration: 0.4s;
+    -o-animation-duration: 0.4s;
+    animation-duration: 0.4s;
+}
+
+.fade {
+    -webkit-animation-name: fadeText;
+    -moz-animation-name: fadeText;
+    -ms-animation-name: fadeText;
+    -o-animation-name: fadeText;
+    animation-name: fadeText;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.4s;
+    -moz-animation-duration: 0.4s;
+    -ms-animation-duration: 0.4s;
+    -o-animation-duration: 0.4s;
+    animation-duration: 0.4s;
+}
+
+@keyframes fadeText {
+    from {color: rgb(255, 255, 255, 1.0);}
+    to {color: rgb(255, 255, 255, 0.0);}
+}
+
+@keyframes unFadeText {
+    from {color: rgb(255, 255, 255, 0.0);}
+    to {color: rgb(255, 255, 255, 1.0);}
+}
+
+.menu-title {
+    margin-top: 5px;
+    margin-left: 20px;
+    color: rgb(255, 255, 255, 0.0);
+}
+
+.menu-item-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.menu-item {
+    display: flex;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-bottom: 30px;
+}
+
+.menu {
+    display: block;
+    margin: 5px;
+}
+
+.horizontal-separator {
+    width: 100%;
+    height: 1px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(20, 20, 20);
+}

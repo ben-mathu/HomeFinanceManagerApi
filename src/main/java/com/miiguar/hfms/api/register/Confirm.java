@@ -65,12 +65,12 @@ public class Confirm extends BaseServlet {
         PreparedStatement codeConfirm = connection.prepareStatement(
                 "SELECT * FROM " + CODE_TB_NAME + " WHERE " + COL_USER_ID + "=?"
         );
-        codeConfirm.setInt(1, id.getUser().getUserId());
+        codeConfirm.setString(1, id.getUser().getUserId());
 
         ResultSet resultSet = codeConfirm.executeQuery();
         String code = "";
         while (resultSet.next()) {
-            int c = resultSet.getInt(COL_CODE);
+            String c = resultSet.getString(COL_CODE);
             code = String.valueOf(c);
         }
 

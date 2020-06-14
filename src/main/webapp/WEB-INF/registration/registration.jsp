@@ -22,6 +22,7 @@
             	</div>
                 <div>
                     <form class="form-container" method="POST">
+                        <input type="hidden" id="contextPath" name="path" value="${pageContext.request.contextPath}">
                     	<div class="input-container">
                             <div>
                             	<input class="input-style" id="email" type="text" name="email" placeholder="Email" value="${email}">

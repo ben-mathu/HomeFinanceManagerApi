@@ -114,13 +114,16 @@ public abstract class BaseServlet extends HttpServlet {
         PreparedStatement insertCode = connection.prepareStatement(
                 "INSERT INTO " + CODE_TB_NAME + "(" +
                         COL_CODE + "," + COL_USER_ID + ")" +
-                        "VALUES (" + code + "," + user.getUserId() + ")" +
+                        "VALUES (?,?)" +
                         " ON CONFLICT (" + COL_USER_ID + ")" +
                         " DO UPDATE" +
                         " SET " + COL_CODE + "=?"+
-                        " WHERE " + CODE_TB_NAME + "." + COL_USER_ID + "=" + user.getUserId()
+                        " WHERE " + CODE_TB_NAME + "." + COL_USER_ID + "=?"
         );
-        insertCode.setInt(1, Integer.parseInt(code));
+        insertCode.setString(1, code);
+        insertCode.setString(2, user.getUserId());
+        insertCode.setString(3, code);
+        insertCode.setString(4, user.getUserId());
         insertCode.executeUpdate();
     }
 
@@ -140,7 +143,7 @@ public abstract class BaseServlet extends HttpServlet {
     private void createAllTables() throws SQLException {
         PreparedStatement users = connection.prepareStatement(
                 "CREATE TABLE " + USERS_TB_NAME + " ("+
-                        COL_USER_ID + " SERIAL,"+
+                        COL_USER_ID + " varchar(12),"+
                         COL_USERNAME + " varchar(25) NOT NULL UNIQUE,"+
                         COL_EMAIL + " text NOT NULL UNIQUE,"+
                         COL_PASSWORD + " varchar(255) NOT NULL,"+
@@ -153,7 +156,7 @@ public abstract class BaseServlet extends HttpServlet {
         PreparedStatement code = connection.prepareStatement(
                 "CREATE TABLE " + CODE_TB_NAME + " ("+
                         COL_CODE + " text," +
-                        COL_USER_ID + " integer UNIQUE," +
+                        COL_USER_ID + " varchar(12) UNIQUE," +
                         COL_EMAIL_CONFIRMED + " BOOLEAN DEFAULT false," +
                         "CONSTRAINT " + PRIV_KEY_CODE + " PRIMARY KEY (" + COL_CODE + ")," +
                         "CONSTRAINT " + FK_TB_CODE_USER_ID + " FOREIGN KEY (" + COL_USER_ID + ") REFERENCES " + USERS_TB_NAME + "(" + COL_USER_ID + "))"

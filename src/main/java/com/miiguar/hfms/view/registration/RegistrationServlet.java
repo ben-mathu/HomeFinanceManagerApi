@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.miiguar.hfms.data.models.user.UserRequest;
 import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.data.models.user.model.User;
+import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.Patterns;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.utils.Log;
@@ -43,7 +44,6 @@ public class RegistrationServlet extends BaseServlet {
 	public void includeRequest(final HttpServletRequest request, final HttpServletResponse response)
 			throws IOException {
 		boolean isParamsValid = true;
-		PrintWriter writer = null;
 		
 		final String email = request.getParameter(EMAIL).trim();
 		final String username = request.getParameter(USERNAME).trim();
@@ -96,7 +96,7 @@ public class RegistrationServlet extends BaseServlet {
 				
 			} else {
 
-				final User user = new User();
+				User user = new User();
 				user.setAdmin(true);
 				user.setEmail(request.getParameter(EMAIL));
 				user.setUsername(request.getParameter(USERNAME));
@@ -124,20 +124,30 @@ public class RegistrationServlet extends BaseServlet {
 						request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
 						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
 						request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+						request.getSession().setAttribute(TOKEN, item.getReport().getToken());
 						request.getSession().setAttribute("isAlreadySent", false);
 
 						// save the session
 						Cookie cookie = new Cookie(TOKEN, item.getReport().getToken());
+						cookie.setMaxAge(60*60*24);
 						response.addCookie(cookie);
 
-						Cookie subjectCookie = new Cookie(SUBJECT, item.getReport().getSubject());
-						response.addCookie(subjectCookie);
+						Cookie userIdCookie = new Cookie(USER_ID, item.getUser().getUserId());
+						userIdCookie.setMaxAge(60*60*24);
+						response.addCookie(userIdCookie);
 
 						request.getSession().setAttribute("isAlreadySent", false);
 
+						Report report = item.getReport();
+						user = item.getUser();
+						UserResponse obj = new UserResponse();
+						obj.setReport(report);
+						obj.setUser(user);
+
+						String responseStr = gson.toJson(obj);
+
 						writer = response.getWriter();
-						String redirect = request.getContextPath() + "/registration/confirm-user";
-						writer.write(redirect);
+						writer.write(responseStr);
 					}
 				}
 

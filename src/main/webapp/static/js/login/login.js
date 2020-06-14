@@ -33,11 +33,18 @@ function loginUser() {
                     document.getElementById("progress").hidden = true;
                 } else if (request.status == 200) {
 
+                    var path = document.getElementById("contextPath").value;
+
+                    obj = JSON.parse(request.responseText);
+                    window.localStorage.setItem("token", obj.report.token);
+                    window.localStorage.setItem("user_id", obj.user.user_id);
+
                     document.getElementById("result").innerHTML = "<span style=\"color: green;\">Success. Please wait while you are redirected...</span>";
                     document.getElementById("progress").hidden = true;
-                    window.location.href = request.responseText;
+                    window.location.href = path + "/dashboard";
                 } else {
-                    
+                    document.getElementById("result").hidden = true;
+                    document.getElementById("result").innerHTML = "Error: Contact Developer: hfms.mathu@gmail.com";
                 }
             }
         }

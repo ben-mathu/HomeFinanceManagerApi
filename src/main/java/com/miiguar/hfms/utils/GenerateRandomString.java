@@ -45,4 +45,19 @@ public class GenerateRandomString {
 		return new String(buffer);
 	}
 
+	public static String getAlphaNumeric() {
+		return alphaNumeric;
+	}
+
+	public static String getDigits() {
+		return digits;
+	}
+
+	public static String getUpperAlphas() {
+		return upperAlphas;
+	}
+
+	public static String getLowerAlphas() {
+		return lowerAlphas;
+	}
 }

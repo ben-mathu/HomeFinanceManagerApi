@@ -8,7 +8,7 @@ import com.miiguar.hfms.data.status.Report;
  * @author bernard
  */
 public class UserResponse {
-    @SerializedName("response")
+    @SerializedName("report")
     private Report report;
     @SerializedName("user")
     private User user;

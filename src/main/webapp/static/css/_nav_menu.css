@@ -1,0 +1,202 @@
+.status-section {
+    margin: 10px 10px 10px 30px;
+}
+
+.status-text {
+    color: rgba(0, 0, 0, 0.0);
+}
+
+.user-name {
+    color: rgba(0, 0, 0, 0.0);
+}
+
+.status.status-indicator {
+    margin-top: 10px;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border: solid;
+    border-width: 2px;
+    border-radius: 50%;
+    background-color: rgb(14, 177, 23);
+}
+
+.status {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+}
+
+.user-details-container {
+    display: flex;
+}
+
+.nav-avatar-container {
+    left: 10px;
+}
+
+.avatar-container {
+    width: fit-content;
+    position: relative;
+}
+
+.avatar-container img{
+    width: 100%;
+    height: auto;
+}
+
+.avatar-container .status-indicator {
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    transform: translate(0%, 0%);
+}
+
+.animate-nav-close {
+    -webkit-animation-name: closeNav;
+    -moz-animation-name: closeNav;
+    -ms-animation-name: closeNav;
+    -o-animation-name: closeNav;
+    animation-name: closeNav;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.5s;
+    -moz-animation-duration: 0.5s;
+    -ms-animation-duration: 0.5s;
+    -o-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
+.animate-nav-open {
+    -webkit-animation-name: openNav;
+    -moz-animation-name: openNav;
+    -ms-animation-name: openNav;
+    -o-animation-name: openNav;
+    animation-name: openNav;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.5s;
+    -moz-animation-duration: 0.5s;
+    -ms-animation-duration: 0.5s;
+    -o-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
+.nav-container {
+    width: 50px;
+    height: 100%;
+    position: fixed;
+    margin-top: -65px;
+    background-color: rgb(40, 36, 48);
+}
+
+@keyframes openNav {
+    from {
+        width: 50px;
+    }
+    to {
+        width: 15%;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+    }
+}
+
+@keyframes closeNav {
+    from {
+        width: 15%;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+    }
+    to {
+        width: 50px;
+    }
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.back-btn-translation-close {
+    -webkit-animation-name: navMenuIconTransitionClosingDrawer;
+    -moz-animation-name: navMenuIconTransitionClosingDrawer;
+    -ms-animation-name: navMenuIconTransitionClosingDrawer;
+    -o-animation-name: navMenuIconTransitionClosingDrawer;
+    animation-name: navMenuIconTransitionClosingDrawer;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.5s;
+    -moz-animation-duration: 0.5s;
+    -ms-animation-duration: 0.5s;
+    -o-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
+@keyframes navMenuIconTransitionClosingDrawer {
+    from {
+        width: 20px;
+        height: 20px;
+        margin-left: 75%;
+    }
+    to {
+        width: 20px;
+        height: 20px;
+        -webkit-transform: rotate(-180deg);
+        -moz-transform: rotate(-180deg);
+        -ms-transform: rotate(-180deg);
+        -o-transform: rotate(-180deg);
+        transform: rotate(-180deg);
+        margin-left: 0;
+    }
+}
+
+.back-btn-translation-open {
+    -webkit-animation-name: navMenuIconTransitionOpeningDrawer;
+    -moz-animation-name: navMenuIconTransitionOpeningDrawer;
+    -ms-animation-name: navMenuIconTransitionOpeningDrawer;
+    -o-animation-name: navMenuIconTransitionOpeningDrawer;
+    animation-name: navMenuIconTransitionOpeningDrawer;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.5s;
+    -moz-animation-duration: 0.5s;
+    -ms-animation-duration: 0.5s;
+    -o-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
+@keyframes navMenuIconTransitionOpeningDrawer {
+    from {
+        width: 20px;
+        height: 20px;
+        margin-left: 0;
+    }
+    to {
+        width: 20px;
+        height: 20px;
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+        margin-left: 75%;
+    }
+}
+
+.nav-icon-container {
+    width: fit-content;
+    height: fit-content;
+    margin: 15px;
+}

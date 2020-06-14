@@ -1,6 +1,6 @@
 <div class="header-container" >
     <div class="nav-icon-container" >
-        <img class="nav-icon" src="${pageContext.request.contextPath}/static/images/<%= icon %>" alt="nav-icon">
+        <img class="nav-icon" src="${pageContext.request.contextPath}/static/images/logo.png" alt="nav-icon">
     </div>
     <div class="time-container text-center" >
         <h4 id="timeNow"></h4>

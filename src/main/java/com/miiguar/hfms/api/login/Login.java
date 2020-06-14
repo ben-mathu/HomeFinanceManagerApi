@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @WebServlet(API + LOGIN)
 public class Login extends BaseServlet {
     private static final long serialVersionUID = 1L;
+
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -62,7 +65,8 @@ public class Login extends BaseServlet {
             );
 
             // validate credentials
-            if (isCredentialsValid(username, password)) {
+            User u = validateCredentials(username, password);
+            if (u != null) {
                 JwtTokenUtil tokenUtil = new JwtTokenUtil();
                 Calendar calendar = Calendar.getInstance();
                 Date date = new Date(calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(2));
@@ -80,10 +84,14 @@ public class Login extends BaseServlet {
                 report.setSubject(subject);
                 report.setToken(token);
 
-                String jsonResp = gson.toJson(report);
+                UserResponse resp = new UserResponse();
+                resp.setReport(report);
+                resp.setUser(u);
+
+                String jsonResp = gson.toJson(resp);
                 response.setStatus(HttpServletResponse.SC_OK);
                 writer = response.getWriter();
-                writer.print(jsonResp);
+                writer.write(jsonResp);
             } else {
 
                 report = new Report();
@@ -93,7 +101,7 @@ public class Login extends BaseServlet {
                 String jsonResp = gson.toJson(report);
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 writer = response.getWriter();
-                writer.print(jsonResp);
+                writer.write(jsonResp);
             }
         } catch (SQLException throwables) {
             Log.e(TAG, "Error: logging in the user.", throwables);
@@ -116,12 +124,12 @@ public class Login extends BaseServlet {
             res.setReport(report);
             String jsonResp = gson.toJson(res);
             writer = response.getWriter();
-            writer.print(jsonResp);
+            writer.write(jsonResp);
         }
     }
 
-    private boolean isCredentialsValid(String username, String password) throws SQLException {
-        if (username.isEmpty() || password.isEmpty()) return false;
+    private User validateCredentials(String username, String password) throws SQLException {
+        if (username.isEmpty() || password.isEmpty()) return null;
 
         PreparedStatement query = connection.prepareStatement(
                 "SELECT * FROM " + USERS_TB_NAME + " WHERE " + COL_USERNAME + "=?"
@@ -130,11 +138,17 @@ public class Login extends BaseServlet {
         ResultSet result = query.executeQuery();
 
         while (result.next()) {
-            if (!username.equals(result.getString(COL_USERNAME)) && !password.equals(result.getString(COL_PASSWORD))) {
-                return false;
+            if (username.equals(result.getString(COL_USERNAME)) && password.equals(result.getString(COL_PASSWORD))) {
+                User user = new User();
+                user.setUsername(result.getString(COL_USERNAME));
+                user.setPassword(result.getString(COL_PASSWORD));
+                user.setEmail(result.getString(COL_EMAIL));
+                user.setAdmin(result.getBoolean(COL_IS_ADMIN));
+                user.setUserId(result.getString(COL_USER_ID));
+                return user;
             }
         }
 
-        return true;
+        return null;
     }
 }

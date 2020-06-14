@@ -1,21 +1,28 @@
 package com.miiguar.hfms.data.models.user.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  *
  * @author bernard
  */
 public class User {
-    private int userId;
+    @SerializedName("user_id")
+    private String userId;
+    @SerializedName("email")
     private String email = "";
+    @SerializedName("username")
     private String username = "";
+    @SerializedName("password")
     private String password = "";
+    @SerializedName("is_admin")
     private boolean isAdmin = false;
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

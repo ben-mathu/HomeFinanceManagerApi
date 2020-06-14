@@ -1,0 +1,35 @@
+.time-container {
+    width: 100%;
+    margin-bottom: -20px;
+}
+
+.avatar-username {
+    margin-left: 5px;
+}
+
+img.avatar {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    border: 3px;
+    border-style: solid;
+    border-radius: 50px;
+    border-color: #FEC800;
+    background-color: white;
+}
+
+.avatar-container {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+}
+
+.header-container {
+    width: 100%;
+    height: fit-content;
+    position: fixed;
+    margin-top: -65px;
+    display: flex;
+    background-color: rgb(40, 36, 48);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+}

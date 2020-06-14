@@ -31,7 +31,7 @@ public class GetCodeServlet extends BaseServlet {
         String password = (String) req.getSession().getAttribute(PASSWORD);
         String username = (String) req.getSession().getAttribute(USERNAME);
         String email = (String) req.getSession().getAttribute(EMAIL);
-        int userId = (int) req.getSession().getAttribute(USER_ID);
+        String userId = getUserIdFromCookie(req);
 
         User user = new User();
         user.setPassword(password);

@@ -21,9 +21,12 @@ function sendCode(isCodeSent){
                 if (request.status != 200) {
                     var obj = JSON.parse(request.responseText);
                     document.getElementById("code-error").innerHTML = obj.message;
+                    document.getElementById("code-sender").hidden = false;
                     document.getElementById("progress").hidden = true;
                 } else {
                     console.log("Nothing to do, code has been sent.");
+                    document.getElementById("progress").hidden = true;
+                    document.getElementById("code-sender").hidden = true;
                 }
             }
         }

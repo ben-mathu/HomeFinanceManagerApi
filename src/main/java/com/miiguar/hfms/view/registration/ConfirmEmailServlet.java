@@ -1,5 +1,6 @@
 package com.miiguar.hfms.view.registration;
 
+import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.data.models.user.Identification;
 import com.miiguar.hfms.data.models.user.model.User;
 import com.miiguar.hfms.data.status.Report;
@@ -33,9 +34,7 @@ public class ConfirmEmailServlet extends BaseServlet {
         String password = req.getParameter(PASSWORD);
         String email = req.getParameter(EMAIL);
 
-        int userId = 0;
-        if (req.getSession().getAttribute(USER_ID) != null)
-            userId = (int) req.getSession().getAttribute(USER_ID);
+        String userId = req.getParameter(USER_ID);
 
         final ErrorResults results = new ErrorResults();
         if (code.length() != 6) {
@@ -51,7 +50,7 @@ public class ConfirmEmailServlet extends BaseServlet {
             id.setCode(code);
             id.setUser(user);
 
-            String token = getTokenFromCookie(req);
+            String token = req.getParameter(TOKEN);
             if (token == null) token = "";
 
             InitUrlConnection<Identification> urlConnection = new InitUrlConnection<>();
@@ -75,12 +74,40 @@ public class ConfirmEmailServlet extends BaseServlet {
                     req.getSession().setAttribute(EMAIL, user.getEmail());
                     req.getSession().setAttribute(USER_ID, user.getUserId());
 
+//                    resp.sendRedirect("Dashboard");
                     writer = resp.getWriter();
-                    String redirect = req.getContextPath() + "/dashboard";
-                    writer.write(redirect);
+                    String redirect = "/dashboard";
+                    TokenResponse tokenResponse = new TokenResponse();
+                    tokenResponse.setRedirect(redirect);
+                    tokenResponse.setToken(token);
+                    String jsonStr = gson.toJson(tokenResponse);
+                    writer.write(jsonStr);
                 }
             }
             urlConnection.close();
+        }
+    }
+
+    public class TokenResponse {
+        @SerializedName("token")
+        private String token = "";
+        @SerializedName("redirect")
+        private String redirect = "";
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getRedirect() {
+            return redirect;
+        }
+
+        public void setRedirect(String redirect) {
+            this.redirect = redirect;
         }
     }
 }

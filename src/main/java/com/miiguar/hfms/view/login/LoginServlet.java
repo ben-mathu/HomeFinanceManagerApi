@@ -21,6 +21,7 @@ import static com.miiguar.hfms.data.utils.URL.LOGIN;
 import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
 import static com.miiguar.hfms.utils.Constants.*;
 import static com.miiguar.hfms.utils.Constants.TOKEN;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * @author bernard
@@ -86,6 +87,7 @@ public class LoginServlet extends BaseServlet {
 
                     request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
                     request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+                    request.getSession().setAttribute(TOKEN, item.getReport().getToken());
                     request.getSession().setAttribute("isAlreadySent", false);
 
                     // save the session
@@ -97,9 +99,12 @@ public class LoginServlet extends BaseServlet {
 
                     request.getSession().setAttribute("isAlreadySent", false);
 
+                    String responseStr = gson.toJson(item);
+
+                    response.setStatus(item.getReport().getStatus());
+                    response.setContentType(APPLICATION_JSON);
                     writer = response.getWriter();
-                    String redirect = request.getContextPath() + "/registration/confirm-user";
-                    writer.write(redirect);
+                    writer.write(responseStr);
                 }
             }
 

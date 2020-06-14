@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.SecureRandom;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -118,10 +119,16 @@ public class Register extends BaseServlet {
     }
 
     private void addUser(User user) throws SQLException {
+        GenerateRandomString randomString = new GenerateRandomString(
+                12,
+                new SecureRandom(), GenerateRandomString.getAlphaNumeric()
+        );
+        String userId = randomString.nextString();
         PreparedStatement insertSmt = connection.prepareStatement(
                 "INSERT INTO " + USERS_TB_NAME + " (" +
-                        COL_USERNAME + "," + COL_EMAIL + "," + COL_PASSWORD + "," + COL_IS_ADMIN + ") " +
+                        COL_USER_ID + "," + COL_USERNAME + "," + COL_EMAIL + "," + COL_PASSWORD + "," + COL_IS_ADMIN + ") " +
                         "VALUES ('" +
+                        userId + "','" +
                         user.getUsername() + "','" +
                         user.getEmail() + "','" +
                         user.getPassword() + "'," +
@@ -138,7 +145,7 @@ public class Register extends BaseServlet {
         );
         ResultSet result = getUserSmt.executeQuery();
         while (result.next()) {
-            user.setUserId(result.getInt(COL_USER_ID));
+            user.setUserId(result.getString(COL_USER_ID));
             user.setUsername(result.getString(COL_USERNAME));
             user.setEmail(result.getString(COL_EMAIL));
             user.setPassword(result.getString(COL_PASSWORD));

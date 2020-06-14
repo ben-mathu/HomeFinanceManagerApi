@@ -10,7 +10,7 @@
     <body>
         <div class="container text-center">
 			<h1>Are you lost?</h1>
-			<form action="${pageContext.request.contextPath}" method="get">
+			<form action="<%= request.getContextPath() %>/" method="get">
 				Use this button to navigate back <input class="btn2" type="submit" value="Home">
 			</form>
         </div>

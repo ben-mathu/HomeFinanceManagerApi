@@ -11,5 +11,6 @@
         <script src="${pageContext.request.contextPath}/${coder}"></script>
         <script src="${pageContext.request.contextPath}/${timer}"></script>
         <script src="${pageContext.request.contextPath}/${login}"></script>
+        <script src="${pageContext.request.contextPath}/${dashboard}"></script>
     </head>
     <body>
