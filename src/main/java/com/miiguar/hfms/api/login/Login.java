@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -59,9 +58,7 @@ public class Login extends BaseServlet {
         try {
             // initialize connection
             connection = jdbcConnection.getConnection(
-                    user.getUsername() + "_db",
-                    user.getUsername(),
-                    user.getUsername()
+                    user.getUsername() + "_db"
             );
 
             // validate credentials

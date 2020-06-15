@@ -38,6 +38,12 @@
                     Members
                 </div>
             </div>
+            <div id="settings" class="menu-item">
+                <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/settings.png" alt="image_1">
+                <div class="menu-title" >
+                    Settings
+                </div>
+            </div>
         </div>
     </div>
 </div>

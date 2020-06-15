@@ -1,6 +1,7 @@
 var timeInterval = setInterval(function() {myTimer()}, 1000);
 var navClickOpen = false;
 var ctx = "";
+var 
 
 function getXmlHttpRequest() {
     var request;
@@ -12,6 +13,10 @@ function getXmlHttpRequest() {
         request = null;
     }
     return request;
+}
+
+document.getElementById("settings").onclick = function() {
+    window.location.href = 
 }
 
 function myTimer() {
@@ -73,7 +78,7 @@ function getMembers() {
             if (request.status != 200) {
                 
             } else {
-                
+
             }
         }
     }

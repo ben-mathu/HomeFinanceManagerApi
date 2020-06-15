@@ -1,7 +1,6 @@
 package com.miiguar.hfms.data.jdbc;
 
 import com.miiguar.hfms.config.ConfigureDb;
-import org.apache.log4j.Logger;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 
@@ -16,19 +15,14 @@ public class JdbcConnection implements PostgresConnection {
     private static final String TAG = JdbcConnection.class.getSimpleName();
 
     @Override
-    public Connection getConnection(String databaseName, String username, String password) throws SQLException {
+    public Connection getConnection(String databaseName) throws SQLException {
         ConfigureDb configureDb = new ConfigureDb();
         Properties prop = configureDb.getProperties();
         PoolProperties pool = new PoolProperties();
         pool.setUrl(prop.getProperty("db.url") + (databaseName.isEmpty() ? "" : "/" + databaseName));
         pool.setDriverClassName(prop.getProperty("db.driver"));
-        if (username.equals("ben_hfms")) {
-            pool.setUsername(prop.getProperty("db.username"));
-            pool.setPassword(prop.getProperty("db.password"));
-        } else {
-            pool.setUsername(username);
-            pool.setPassword(password);
-        }
+        pool.setUsername(prop.getProperty("db.username"));
+        pool.setPassword(prop.getProperty("db.password"));
         pool.setJmxEnabled(true);
         pool.setTestWhileIdle(false);
         pool.setTestOnBorrow(true);

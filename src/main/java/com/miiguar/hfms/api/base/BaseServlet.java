@@ -3,14 +3,10 @@ package com.miiguar.hfms.api.base;
 import com.google.gson.Gson;
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
-import com.miiguar.hfms.data.models.user.UserRequest;
 import com.miiguar.hfms.data.models.user.model.User;
-import com.miiguar.hfms.utils.BufferRequest;
 import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.hfms.utils.sender.EmailSession;
-
-import org.apache.log4j.Logger;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -28,7 +24,6 @@ import java.util.Properties;
 import java.util.Random;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
-import static com.miiguar.hfms.utils.Constants.USERNAME;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -44,6 +39,16 @@ public abstract class BaseServlet extends HttpServlet {
     protected Gson gson = new Gson();
     protected PrintWriter writer;
 
+    protected String username;
+    protected String password;
+
+    protected BaseServlet() {
+        ConfigureDb dbConfigure = new ConfigureDb();
+        Properties properties = dbConfigure.getProperties();
+        this.username = properties.getProperty("db.username");
+        this.password = properties.getProperty("db.password");
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(APPLICATION_JSON);
@@ -55,19 +60,15 @@ public abstract class BaseServlet extends HttpServlet {
         resp.setContentType(APPLICATION_JSON);
 
         String uri = req.getRequestURI();
-        if (uri.endsWith("/registration")){
-            // get database properties
-            ConfigureDb dbProps = new ConfigureDb();
-            Properties prop = dbProps.getProperties();
-            String mainDb = prop.getProperty("db.main_db");
-            String username = prop.getProperty("db.username");
-            String password = prop.getProperty("db.password");
+        // get database properties
+        ConfigureDb dbProps = new ConfigureDb();
+        Properties prop = dbProps.getProperties();
+        String mainDb = prop.getProperty("db.main_db");
 
+        if (uri.endsWith("registration")) {
             try {
                 connection = jdbcConnection.getConnection(
-                        mainDb,
-                        username,
-                        password
+                        mainDb
                 );
             } catch (SQLException throwables) {
                 Log.e(TAG, "An error has occurred connecting to the db", throwables);
@@ -108,9 +109,8 @@ public abstract class BaseServlet extends HttpServlet {
 
     protected void saveCode(String code, User user) throws SQLException {
         connection = jdbcConnection.getConnection(
-                user.getUsername() + "_db",
-                user.getUsername(),
-                user.getUsername());
+                user.getUsername() + "_db"
+        );
         PreparedStatement insertCode = connection.prepareStatement(
                 "INSERT INTO " + CODE_TB_NAME + "(" +
                         COL_CODE + "," + COL_USER_ID + ")" +
@@ -140,7 +140,7 @@ public abstract class BaseServlet extends HttpServlet {
         return false;
     }
 
-    private void createAllTables() throws SQLException {
+    private void createAllTables(String dbName) throws SQLException {
         PreparedStatement users = connection.prepareStatement(
                 "CREATE TABLE " + USERS_TB_NAME + " ("+
                         COL_USER_ID + " varchar(12),"+
@@ -162,33 +162,47 @@ public abstract class BaseServlet extends HttpServlet {
                         "CONSTRAINT " + FK_TB_CODE_USER_ID + " FOREIGN KEY (" + COL_USER_ID + ") REFERENCES " + USERS_TB_NAME + "(" + COL_USER_ID + "))"
         );
         code.execute();
+
+        // Create table for group
+        PreparedStatement group = connection.prepareStatement(
+                "CREATE TABLE " + GROUP_TB_NAME + " ("+
+                        COL_GROUP_ID + " varchar(12)," +
+                        COL_GROUP_NAME + " varchar(40) UNIQUE," +
+                        "CONSTRAINT " + PRIV_KEY_GROUP + " PRIMARY KEY (" + COL_GROUP_ID + ")"
+        );
+        group.execute();
+
+        // Create table for group
+        PreparedStatement members = connection.prepareStatement(
+                "CREATE TABLE " + MEMBERS_TB_NAME + " ("+
+                        COL_MEMBERS_ID + " varchar(12)," +
+                        COL_GROUP_ID + " varchar(12) NOT NULL UNIQUE," +
+                        COL_USER_ID + " varchar(12) NOT NULL UNIQUE," +
+                        COL_USERNAME + " varchar(25) NOT NULL UNIQUE," +
+                        "CONSTRAINT " + PRIV_KEY_MEMBERS + " PRIMARY KEY (" + COL_MEMBERS_ID + ")," +
+                        "CONSTRAINT " + FK_TB_MEMBERS_GROUP_ID + " FOREIGN KEY (" + COL_GROUP_ID + ") REFERENCES " + GROUP_TB_NAME + "(" + COL_GROUP_ID + "))"
+        );
+        members.execute();
     }
 
     /**
-     * Create a db for individual users
+     * Create a db for users
      *
-     * @param username
-     * @param password
-     * @throws SQLException
+     * @param username used for db creation since the username needs to be unique
+     * @throws SQLException throws an exception to be caught and handled
      */
-    protected void createDb(String username, String password) throws SQLException {
+    protected void createDb(String username) throws SQLException {
         ConfigureDb configureDb = new ConfigureDb();
         Properties prop = configureDb.getProperties();
 
         String dbName = username + "_db";
 
-        // Create user/role
-        PreparedStatement createUserSmt = connection.prepareStatement(
-                "CREATE USER " + username + " ENCRYPTED PASSWORD '" + username + "'"
-        );
-        createUserSmt.execute();
-
         // that role create a db
         addDb(username, prop);
 
         // initialize the connection to the new database and db role
-        connection = jdbcConnection.getConnection(dbName, username, username);
-        createAllTables();
+        connection = jdbcConnection.getConnection(dbName);
+        createAllTables(dbName);
     }
 
     private void addDb(String username, Properties prop) throws SQLException {

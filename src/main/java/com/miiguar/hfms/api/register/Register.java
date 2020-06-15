@@ -40,6 +40,10 @@ import static com.miiguar.hfms.utils.Constants.SUBJECT;
 public class Register extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
+    private Register() {
+        super();
+    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
@@ -68,7 +72,7 @@ public class Register extends BaseServlet {
             } else {
 
                 // create a db
-                createDb(user.getUsername(), user.getPassword());
+                createDb(user.getUsername());
 
                 addUser(user);
                 user = getUser();
