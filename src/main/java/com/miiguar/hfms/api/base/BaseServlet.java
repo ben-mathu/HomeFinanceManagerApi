@@ -52,7 +52,7 @@ public abstract class BaseServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(APPLICATION_JSON);
-        Log.handleLogging(req, TAG);
+        Log.d(TAG, req.getPathInfo());
     }
 
     @Override
@@ -75,19 +75,19 @@ public abstract class BaseServlet extends HttpServlet {
             }
         }
 
-        Log.handleLogging(req, TAG);
+        Log.d(TAG, req.getPathInfo());
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(APPLICATION_JSON);
-        Log.handleLogging(req, TAG);
+        Log.d(TAG, req.getPathInfo());
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType(APPLICATION_JSON);
-        Log.handleLogging(req, TAG);
+        Log.d(TAG, req.getPathInfo());
     }
 
     protected String generateCode() {

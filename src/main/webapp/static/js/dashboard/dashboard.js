@@ -1,7 +1,10 @@
 var timeInterval = setInterval(function() {myTimer()}, 1000);
 var navClickOpen = false;
 var ctx = "";
-var 
+var urlMap = {};
+var cookieName = "historyLocation";
+var daysToExpire = 365;
+var countBackPress = 0;
 
 function getXmlHttpRequest() {
     var request;
@@ -13,10 +16,6 @@ function getXmlHttpRequest() {
         request = null;
     }
     return request;
-}
-
-document.getElementById("settings").onclick = function() {
-    window.location.href = 
 }
 
 function myTimer() {
@@ -45,7 +44,14 @@ function getLength(s) {
     return [...s].length;
 }
 
-window.onload = function() {
+function loadWindow() {
+    // use this when the page is reloaded to obtain the recent visited page
+    loadHistoryLocation();
+
+    // get context path
+    cxt = document.getElementById("contextPath").value;
+
+    urlMap["mainContent"] = cxt + "/dashboard";
     var navigationDrawer = document.getElementById("navigationDrawer");
     var menuTitles = document.getElementsByClassName("menu-title");
     var statusAvatar = document.getElementById("statusIndicatorAvatar");
@@ -66,8 +72,185 @@ window.onload = function() {
         }
     };
 
+    document.getElementById("settings").onclick = function() {
+        getPage("settings-title");
+    }
+
+    document.getElementById("members").onclick = function() {
+        getPage("members-title");
+    }
+
     // get members when window loads
     getMembers();
+}
+
+function getPage(id) {
+    var request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+            if (request.status == 200) {
+                var obj = JSON.parse(request.responseText);
+
+                if (obj.title != "") {
+                    var lastKey = getLastHistoryKey();
+                    window.history.pushState(obj.title, obj.title, obj.url);
+                    urlMap[obj.title] = obj.url;
+                    document.getElementById(lastKey == "" ? "mainContent" : lastKey).hidden = true;
+                    document.getElementById(obj.title).hidden = false;
+                } else {
+                    var lastKey = getLastHistoryKey();
+                    document.getElementById(lastKey == "" ? "mainContent" : lastKey).hidden = false;
+                    if (!document.getElementById("mainContent").hidden) {
+                        document.getElementById("mainContent").hidden = true;
+                    }
+                }
+            }
+        }
+    }
+    
+    var title = "title=" + escape(id == "refresh" ? id : document.getElementById(id).value);
+    var data = title;
+
+    var path = document.getElementById("contextPath").value;
+    request.open("GET", path + "/dashboard/controller?" + data, true);
+    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.send();
+}
+
+/**
+ * Handle on back button pressed
+ */
+window.onpopstate = function(e) {
+    var lastKey = Object.keys(urlMap).pop();
+    removeKeyFromMap(lastKey);
+    document.getElementById(e.state.id).hidden = true;
+
+    var lastKeyInHistory = getLastHistoryKey();
+    document.getElementById(lastKeyInHistory).hidden = false;
+}
+
+function removeKeyFromMap(lastKey) {
+    Object.keys(urlMap).forEach(function(key) {
+        if (key == lastKey) {
+            delete urlMap[lastKey];
+        }
+    });
+}
+
+function getLastHistoryKey() {
+    var count = 0;
+    var size = Object.keys(urlMap).length;
+    var lastKey = "";
+    Object.keys(urlMap).forEach( function(key) {
+        if (count == (size - 1) ) {
+            lastKey = key;
+        }
+        count += 1;
+    });
+
+    return lastKey;
+}
+
+window.onbeforeunload = function() {
+    saveHistory();
+}
+
+/**
+ * Save history of visited location in cookie
+ * format "key:location"
+ */
+function saveHistory() {
+    var dateExpires =  new Date();
+    dateExpires.setTime(dateExpires.getTime() + (60*10*1000));
+
+    var count = 0;
+    var location = "";
+    var size = Object.keys(urlMap).length;
+    var lastLocation = "";
+    var lastKey = "";
+    Object.keys(urlMap).forEach( function(key) {
+        if (count == (size - 1) ) {
+            location += key + ":" + urlMap[key];
+            lastLocation = urlMap[key];
+            lastKey = key;
+        } else {
+            location += key + ":" + urlMap[key] + ">";
+        }
+        count += 1;
+    });
+
+    urlMap.clear();
+    saveCookie(cookieName, dateExpires, location);
+}
+
+function saveCookie(name, dateExpires, history) {
+    document.cookie = name + "=" + history + ((dateExpires == null) ? "" : "; expires=" + dateExpires.toGMTString());
+}
+
+function loadHistoryLocation() {
+    var history = getCookie(cookieName);
+    if (!history) {
+        return;
+    }
+
+    var locations = history.split(">");
+    for (let i = 0; i < locations.length; i++) {
+        var location = locations[i];
+
+        // get key value pairs
+        var items = location.split(":");
+        var key = "";
+        var value = "";
+        if (items.length ==  2) {
+            key = items[0]
+            value = items[1];
+        }
+
+        // save the history into urlMap
+        urlMap[key] = value;
+    }
+
+    document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+
+    if (Object.keys(urlMap).length > 1) {
+        var count = 0;
+        var size = Object.keys(urlMap).length;
+        Object.keys(urlMap).forEach( function(key) {
+            if (count == (size - 1) ) {
+                if (document.getElementById(key).hidden) {
+                    window.history.pushState(key, key, value);
+                    document.getElementById(key).hidden = false;
+                    if (!document.getElementById("mainContent").hidden) {
+                        document.getElementById("mainContent").hidden = true;
+                    }
+                }
+            }
+            count += 1;
+        });
+    }
+}
+
+function getCookie(name) {
+    var arr = document.cookie.split(";");
+
+    for (let i = 0; i < arr.length; i++) {
+        var attr = arr[i].split("=");
+        if (attr[0].match(name)) {
+            return attr[1];
+        }
+    }
+    return null;
+}
+
+function getCookieVal(offSet) {
+    var endstr = document.cookie.indexOf(";", offset);
+    if (endstr == -1) endstr = document.cookie.length;
+    return unescape(document.cookie.substring(offset, endstr));
+}
+
+function updateBreadcrumbs() {
+    var history = "";
 }
 
 function getMembers() {
@@ -125,6 +308,7 @@ function closeNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status
     for (i = 0; i < menuTitles.length; i++) {
         menuTitles[i].classList.add("fade");
         menuTitles[i].classList.remove("unFade");
+        menuTitles[i].style = "display: none;"
     }
 
     statusAvatar.hidden = false;
@@ -151,6 +335,7 @@ function openNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status,
     for (i = 0; i < menuTitles.length; i++) {
         menuTitles[i].classList.remove("fade");
         menuTitles[i].classList.add("unFade");
+        menuTitles[i].style = "display: inline;"
     }
 
     statusAvatar.hidden = true;

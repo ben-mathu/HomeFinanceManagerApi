@@ -32,15 +32,17 @@
                     Messages
                 </div>
             </div>
-            <div class="menu-item">
+            <div id="members" class="menu-item">
                 <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/members.png" alt="image_1">
                 <div class="menu-title" >
+                    <input type="hidden" id="members-title" name="settings" value="Members">
                     Members
                 </div>
             </div>
             <div id="settings" class="menu-item">
                 <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/settings.png" alt="image_1">
                 <div class="menu-title" >
+                    <input type="hidden" id="settings-title" name="settings" value="Settings">
                     Settings
                 </div>
             </div>

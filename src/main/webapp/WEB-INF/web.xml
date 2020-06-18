@@ -73,4 +73,15 @@
         <servlet-name>Dashboard</servlet-name>
         <url-pattern>/dashboard</url-pattern>
     </servlet-mapping>
+
+    <!-- Dashboard Controller -->
+    <servlet>
+        <servlet-name>DashboardController</servlet-name>
+        <jsp-file>/WEB-INF/dashboard/dashboard.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DashboardController</servlet-name>
+        <url-pattern>/dashboard/*</url-pattern>
+    </servlet-mapping>
 </web-app>
