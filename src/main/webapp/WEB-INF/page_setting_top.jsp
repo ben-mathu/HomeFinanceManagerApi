@@ -12,5 +12,6 @@
         <script src="<%= request.getContextPath() %>/${timer}"></script>
         <script src="<%= request.getContextPath() %>/${login}"></script>
         <script src="<%= request.getContextPath() %>/${dashboard}"></script>
+        <script src="<%= request.getContextPath() %>/${settings}"></script>
     </head>
     <body onLoad="JavaScript:loadWindow();">

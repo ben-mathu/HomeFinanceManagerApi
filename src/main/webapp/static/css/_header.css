@@ -5,12 +5,14 @@
 
 .avatar-username {
     margin-left: 5px;
+    margin-top: 15px;
 }
 
 img.avatar {
     width: 30px;
     height: 30px;
     margin-top: 10px;
+    margin-bottom: 0;
     border: 3px;
     border-style: solid;
     border-radius: 50px;
@@ -24,6 +26,10 @@ img.avatar {
     display: flex;
 }
 
+.avatar-container:hover {
+    cursor: pointer;
+}
+
 .header-container {
     width: 100%;
     height: fit-content;
@@ -32,4 +38,82 @@ img.avatar {
     display: flex;
     background-color: rgb(40, 36, 48);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+}
+
+.menu-options {
+    background-color: white;
+    border-radius: 5px;
+    position: fixed;
+    color: #3F3A4B;
+    transition: 0.4s;
+}
+
+.option-menu-item {
+    width: 0;
+    height: 0;
+    display: none;
+    padding:10px;
+}
+
+.option-menu-item:hover {
+    cursor: pointer;
+    background-color: rgb(199, 199, 199);
+}
+
+.close-options {
+    -webkit-animation-name: closeOptionMenu;
+    -moz-animation-name: closeOptionMenu;
+    -ms-animation-name: closeOptionMenu;
+    -o-animation-name: closeOptionMenu;
+    animation-name: closeOptionMenu;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.4s;
+    -moz-animation-duration: 0.4s;
+    -ms-animation-duration: 0.4s;
+    -o-animation-duration: 0.4s;
+    animation-duration: 0.4s;
+}
+
+@keyframes closeOptionMenu {
+    from {
+        width: fit-content;
+        height: fit-content;
+    }
+    to {
+        width: 0;
+        height: 0;
+    }
+}
+
+.open-options {
+    -webkit-animation-name: openOptionMenu;
+    -moz-animation-name: openOptionMenu;
+    -ms-animation-name: openOptionMenu;
+    -o-animation-name: openOptionMenu;
+    animation-name: openOptionMenu;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.4s;
+    -moz-animation-duration: 0.4s;
+    -ms-animation-duration: 0.4s;
+    -o-animation-duration: 0.4s;
+    animation-duration: 0.4s;
+}
+
+@keyframes openOptionMenu {
+    from {
+        width: 0;
+        height: 0;
+    }
+    to {
+        width: fit-content;
+        height: fit-content;
+    }
 }

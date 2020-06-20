@@ -19,9 +19,9 @@
     </div>
     <div class="horizontal-separator"></div>
     <div class="menu-container" >
-        <div class="menu">
+        <div id="menu" class="menu">
             <div class="menu-item">
-                <img class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/dashboard.png" alt="image_1">
+                <img class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/home_2.png" alt="image_1">
                 <div class="menu-title" >
                     Dashboard
                 </div>

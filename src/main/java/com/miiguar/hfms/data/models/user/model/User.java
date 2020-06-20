@@ -17,6 +17,8 @@ public class User {
     private String password = "";
     @SerializedName("is_admin")
     private boolean isAdmin = false;
+    @SerializedName("is_online")
+    private boolean isOnline = false;
 
     public String getUserId() {
         return userId;
@@ -56,5 +58,13 @@ public class User {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
     }
 }

@@ -4,6 +4,7 @@
 
     pageContext.setAttribute("title", pageTitle);
     pageContext.setAttribute("dashboard", "static/js/dashboard/dashboard.js");
+    pageContext.setAttribute("settings", "static/js/dashboard/settings.js");
 %>
 <%@ include file = "../page_setting_top.jsp" %>
     <%@ include file = "../header.jsp" %>

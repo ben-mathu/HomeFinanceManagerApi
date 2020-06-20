@@ -124,6 +124,7 @@ public class RegistrationServlet extends BaseServlet {
 						request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
 						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
 						request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
 						request.getSession().setAttribute(TOKEN, item.getReport().getToken());
 						request.getSession().setAttribute("isAlreadySent", false);
 

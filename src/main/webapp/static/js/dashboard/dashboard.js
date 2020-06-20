@@ -5,6 +5,11 @@ var urlMap = {};
 var cookieName = "historyLocation";
 var daysToExpire = 365;
 var countBackPress = 0;
+var isOptionsMenuOpen = false;
+
+// Elements
+var optionsMenuItems;
+var optionsMenu;
 
 function getXmlHttpRequest() {
     var request;
@@ -60,17 +65,17 @@ function loadWindow() {
     var statusDetails = document.getElementById("statusIndicator");
     var details = document.getElementById("details");
     
-    document.getElementById("navIcon").onmouseover = function() {
-        if (!navClickOpen) {
-            openNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status, statusDetails, details);
-        }
-    };
+    // document.getElementById("navIcon").onmouseover = function() {
+    //     if (!navClickOpen) {
+    //         openNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status, statusDetails, details);
+    //     }
+    // };
 
-    document.getElementById("navIcon").onmouseout = function() {
-        if (!navClickOpen) {
-            closeNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status, statusDetails, details);
-        }
-    };
+    // navigationDrawer.onmouseout = function() {
+    //     if (!navClickOpen) {
+    //         closeNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status, statusDetails, details);
+    //     }
+    // };
 
     document.getElementById("settings").onclick = function() {
         getPage("settings-title");
@@ -80,11 +85,67 @@ function loadWindow() {
         getPage("members-title");
     }
 
+    document.getElementById("option-logout").onclick = function() {
+        logout();
+    }
+
+    optionsMenu = document.getElementById("optionsMenu");
+    optionsMenuItems = document.getElementsByClassName("option-menu-item");
+
+    document.getElementById("avatarContainer").onclick = function() {
+        if (!isOptionsMenuOpen) {
+            openOptionsMenu();
+            isOptionsMenuOpen = true;
+        } else {
+            closeOptionsMenu();
+            isOptionsMenuOpen = false;
+        }
+    }
+
+    document.getElementById("settings-item").onclick = function() {
+        getPage("settings-option");
+    }
+
+    configureSettings();
     // get members when window loads
     getMembers();
 }
 
+function openOptionsMenu() {
+    
+    optionsMenu.classList.add("open-options");
+    optionsMenu.classList.remove("close-options");
+
+    for (let i = 0; i < optionsMenuItems.length; i++) {
+        const item = optionsMenuItems[i];
+        item.style.width = "80px";
+        item.style.height = "inherit";
+        item.style.display = "block";
+    }
+}
+
+function closeOptionsMenu() {
+    optionsMenu.classList.remove("open-options");
+    optionsMenu.classList.add("close-options");
+
+    for (let i = 0; i < optionsMenuItems.length; i++) {
+        const item = optionsMenuItems[i];
+        item.style.width = "0";
+        item.style.height = "0";
+        item.style.display = "none";
+    }
+}
+
+/**
+ * gets the page to display/server
+ * @param {*} id menu item type eg. 'refresh', 'menu-title', 'menu-option'
+ */
 function getPage(id) {
+    // if option menu item clicked close option menu
+    if (id.match("^.*option")) {
+        closeOptionsMenu();
+        isOptionsMenuOpen = false;
+    }
     var request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {
@@ -277,19 +338,20 @@ function openOrCloseNav() {
     var status = document.getElementById("status");
     var statusDetails = document.getElementById("statusIndicator");
     var details = document.getElementById("details");
+    ctx = document.getElementById("contextPath").value;
 
     if (navClickOpen) {
 
         icon.classList.remove("back-btn-translation-open");
         icon.classList.add("back-btn-translation-close");
-        icon.src = ctx + "static/images/nav_menu_bar.png";
+        icon.src = ctx + "/static/images/nav_menu_bar.png";
 
         navClickOpen = closeNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status, statusDetails, details);
 
         document.getElementById("navIcon").style = "width: fit-content;";
     } else {
 
-        icon.src = ctx + "static/images/right_arrow.png";
+        icon.src = ctx + "/static/images/right_arrow.png";
 
         icon.classList.add("back-btn-translation-open");
         icon.classList.remove("back-btn-translation-close");
@@ -322,12 +384,13 @@ function closeNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status
 
     statusDetails.hidden = true;
 
-    details.style = "background-image: url(\"\")";
+    details.style.backgroundImage = "url(\"\")";
     
     return false;
 }
 
 function openNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status, statusDetails, details) {
+    ctx = document.getElementById("contextPath").value;
     navigationDrawer.classList.add("animate-nav-open");
     navigationDrawer.classList.remove("animate-nav-close");
 
@@ -349,7 +412,7 @@ function openNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status,
 
     statusDetails.hidden = false;
 
-    details.style = "background-image: url(static/images/avatar_bg.png)";
+    details.style.backgroundImage = "url(" + ctx + "/static/images/avatar_bg.png)";
 
     return true;
 }
