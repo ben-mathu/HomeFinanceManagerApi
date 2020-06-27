@@ -1,3 +1,10 @@
+// Enumeration for household fields
+let householdFieldNames = {
+    NAME: 'household_name',
+    DESCRIPTION: 'description',
+    ID: 'household_id'
+}
+
 function getXmlHttpRequest() {
     var request;
     if (window.XMLHttpRequest) {
@@ -28,6 +35,7 @@ function sendRequest() {
         document.getElementById("code-error").innerHTML = "";
         document.getElementById("email-error").innerHTML = "";
         if (document.getElementById("email").hidden) {
+            // send confirmation code
             var path = document.getElementById("contextPath").value;
 
             // to check if code submitted is valid
@@ -63,9 +71,9 @@ function sendRequest() {
 
             var token = "token=" + escape(window.localStorage.getItem("token"));
             var userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
+            var username = "username=" + escape(window.localStorage.getItem("username"));
 
             var email = "email=" + escape(document.getElementById("email").value);
-            var username = "username=" + escape(document.getElementById("username").value);
             var password = "password=" + escape(document.getElementById("password").value);
             var code = "code=" + escape(document.getElementById("code").value);
             var data = email + "&" + username + "&" + password + "&" + code + "&" + token + "&" + userId;
@@ -90,11 +98,11 @@ function sendRequest() {
                 }
             }
 
-            var token = "token=" + escape(window.localStorage.getItem("token"));
-            var userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
+            token = "token=" + escape(window.localStorage.getItem("token"));
+            userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
+            username = "username=" + escape(window.localStorage.getItem("username"));
 
             email = "email=" + escape(document.getElementById("email").value);
-            username = "username=" + escape(document.getElementById("username").value);
             password = "password=" + escape(document.getElementById("password").value);
             data = email + "&" + username + "&" + password + "&" + token + "&" + userId;
             
@@ -127,6 +135,7 @@ function registerUser() {
                     document.getElementById("emailError").innerHTML = obj.email_error;
                     document.getElementById("usernameError").innerHTML = obj.username_error;
                     document.getElementById("passwordError").innerHTML = obj.password_error;
+                    document.getElementById("householdIdError").innerHTML = obj.household_id_error;
                     document.getElementById("progress").hidden = true;
                 } else if (request.status == 403) {
 
@@ -138,6 +147,8 @@ function registerUser() {
                     obj = JSON.parse(request.responseText);
                     window.localStorage.setItem("token", obj.report.token);
                     window.localStorage.setItem("user_id", obj.user.user_id);
+                    window.localStorage.setItem("username", obj.user.username);
+                    window.localStorage.setItem("household_id", obj.household.house_id);
 
                     document.getElementById("result").innerHTML = "<span style=\"color: green;\">Success. Please wait while you are redirected...</span>";
                     document.getElementById("progress").hidden = true;
@@ -155,8 +166,20 @@ function registerUser() {
         var email = "email=" + escape(document.getElementById("email").value);
         var username = "username=" + escape(document.getElementById("username").value);
         var password = "password=" + escape(document.getElementById("password").value);
-        var data = email + "&" + username + "&" + password;
+        
+        var householdName = householdFieldNames.NAME + "=" + escape(document.getElementById("householdName").value)
+        var householdDesc = householdFieldNames.DESCRIPTION + "=" + escape(document.getElementById("householdDesc").value);
+        var householdId = escape(document.getElementById("householdId").value);
 
+        var data = "";
+        if (householdId == "" || householdId == null) {
+            data = email + "&" + username + "&" + password + "&" + householdName + "&" + householdDesc + "&joinHousehold=false";
+        } else {
+
+            householdId = householdFieldNames.ID + "=" + householdId;
+            data = email + "&" + username + "&" + password + "&" + householdId + "&joinHousehold=true";
+        }
+        
         request.open("POST", "registration/register-user", true);
         request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         request.send(data);

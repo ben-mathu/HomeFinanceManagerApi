@@ -1,23 +1,42 @@
-package com.miiguar.hfms.data.models.user.model;
+package com.miiguar.hfms.data.user.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.miiguar.hfms.init.Column;
+import com.miiguar.hfms.init.Constraint;
+import com.miiguar.hfms.init.PrimaryKey;
+import com.miiguar.hfms.init.Table;
+import com.miiguar.hfms.utils.Constants;
+
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 
 /**
  *
  * @author bernard
  */
+@Table(tableName = USERS_TB_NAME)
 public class User {
-    @SerializedName("user_id")
-    private String userId;
-    @SerializedName("email")
+    @SerializedName(USER_ID)
+    @PrimaryKey(columnName = USER_ID)
+    private String userId = "";
+
+    @SerializedName(EMAIL)
+    @Column(columnName = EMAIL, characterLength = 45, unique = true)
     private String email = "";
-    @SerializedName("username")
+
+    @SerializedName(USERNAME)
+    @Column(columnName = USERNAME, characterLength = 25, unique = true)
     private String username = "";
-    @SerializedName("password")
+
+    @SerializedName(PASSWORD)
+    @Column(columnName = PASSWORD, characterLength = 255)
     private String password = "";
-    @SerializedName("is_admin")
+
+    @SerializedName(IS_ADMIN)
+    @Column(columnName = IS_ADMIN)
     private boolean isAdmin = false;
-    @SerializedName("is_online")
+
+    @SerializedName(IS_ONLINE)
+    @Column(columnName = IS_ONLINE)
     private boolean isOnline = false;
 
     public String getUserId() {

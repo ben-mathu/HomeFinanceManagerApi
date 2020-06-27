@@ -16,15 +16,41 @@
         <div class="expenses-section" >
             <div class="grocery-subsection rounded-corner shadow-1pt" >
                 <div class="grocery-list" >
-                    <h4>Grocery</h4>
+                    <div id="empty" hidden>
+                        Your grocery list is empty.
+                    </div>
+                    <table id="groceryItems">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Remaining</th>
+                                <th>Required</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
                 </div>
                 <div class="grocery-schedule" >
-                    <h4>Schedule</h4>
+                    <div id="emptySchedule" hidden>
+                        Your grocery list is empty.
+                    </div>
+                    <table id="scheduleItems">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <input id="btnOpenScheduleModal" class="btn2" type="button" value="+ Add Schedule">
                 </div>
             </div>
             
             <div class="transaction rounded-corner shadow-1pt" >
-                <h4>Transaction</h4>
+                <h4>Regular Expenditure</h4>
             </div>
         </div>
     </div>

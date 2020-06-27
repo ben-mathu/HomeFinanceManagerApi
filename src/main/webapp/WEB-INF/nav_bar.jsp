@@ -20,9 +20,10 @@
     <div class="horizontal-separator"></div>
     <div class="menu-container" >
         <div id="menu" class="menu">
-            <div class="menu-item">
+            <div id="home" class="menu-item">
                 <img class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/home_2.png" alt="image_1">
                 <div class="menu-title" >
+                    <input type="hidden" id="home-title" name="home" value="mainContent">
                     Dashboard
                 </div>
             </div>

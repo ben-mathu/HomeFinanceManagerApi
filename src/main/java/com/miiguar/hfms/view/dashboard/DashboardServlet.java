@@ -1,6 +1,5 @@
 package com.miiguar.hfms.view.dashboard;
 
-import com.miiguar.hfms.data.models.user.UserResponse;
 import com.miiguar.hfms.view.base.BaseServlet;
 
 import javax.servlet.ServletException;

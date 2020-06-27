@@ -8,10 +8,13 @@
         <title>${title}</title>
 
         <script src="<%= request.getContextPath() %>/${script}"></script>
+        <script src="<%= request.getContextPath() %>/${registration}"></script>
         <script src="<%= request.getContextPath() %>/${coder}"></script>
         <script src="<%= request.getContextPath() %>/${timer}"></script>
         <script src="<%= request.getContextPath() %>/${login}"></script>
         <script src="<%= request.getContextPath() %>/${dashboard}"></script>
         <script src="<%= request.getContextPath() %>/${settings}"></script>
+        <script src="<%= request.getContextPath() %>/${schedule}"></script>
+        <script src="<%= request.getContextPath() %>/${income}"></script>
     </head>
     <body onLoad="JavaScript:loadWindow();">

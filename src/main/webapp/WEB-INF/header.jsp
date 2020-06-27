@@ -14,10 +14,15 @@
                 <img id="avatar" class="avatar" src="<%= request.getContextPath() %>/static/images/person_no_avatar.png" alt="img">
             </div>
             <div class="avatar-username" >
-                <span><%= session.getAttribute("username") == null ? "img" : session.getAttribute("username") %></span>
+                <span id="username"><%= session.getAttribute("username") == null ? "Your username" : session.getAttribute("username") %></span>
             </div>
         </div>
         <div id="optionsMenu" class="menu-options">
+            <div class="income-menu text-center" >
+                <span id="income" class="income" hidden>Income: </span>
+                <input id="openIncomeModal" type="button" value="Add Income">
+            </div>
+            <div class="horizontal-separator"></div>
             <div id="settings-item" class="option-menu-item" >
                 <input type="hidden" id="settings-option" name="settings" value="Settings">
                 Settings

@@ -1,8 +1,8 @@
 package com.miiguar.hfms.view.registration;
 
 import com.google.gson.annotations.SerializedName;
-import com.miiguar.hfms.data.models.user.Identification;
-import com.miiguar.hfms.data.models.user.model.User;
+import com.miiguar.hfms.data.user.Identification;
+import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -10,11 +10,11 @@ import com.miiguar.hfms.view.result.ErrorResults;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.*;
 import static com.miiguar.hfms.utils.Constants.*;
 
@@ -54,7 +54,7 @@ public class ConfirmEmailServlet extends BaseServlet {
             if (token == null) token = "";
 
             InitUrlConnection<Identification> urlConnection = new InitUrlConnection<>();
-            BufferedReader streamReader = urlConnection.getReader(id, CONFIRM, token);
+            BufferedReader streamReader = urlConnection.getReader(id, CONFIRM, token, "POST");
 
             String line = "";
             Report item = null;

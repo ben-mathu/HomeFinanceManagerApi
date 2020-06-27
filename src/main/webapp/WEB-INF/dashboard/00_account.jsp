@@ -28,6 +28,6 @@
     </div>
     <div class="delete-segment" >
         <input class="btn3-warn" type="button" name="delete" value="Delete Account">
-        <p class="faded-txt">If you choose to delete your account, please consider</br> that you will not be able to recover it.</p>
+        <p class="error-text">If you choose to delete your account, please consider</br> that you will not be able to recover it.</p>
     </div>
 </div>

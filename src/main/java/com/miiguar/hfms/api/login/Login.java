@@ -2,12 +2,15 @@ package com.miiguar.hfms.api.login;
 
 import com.miiguar.hfms.api.base.BaseServlet;
 import com.miiguar.hfms.config.ConfigureApp;
+import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.config.EmailEnv;
-import com.miiguar.hfms.data.models.user.UserRequest;
-import com.miiguar.hfms.data.models.user.UserResponse;
-import com.miiguar.hfms.data.models.user.model.User;
+import com.miiguar.hfms.data.jdbc.JdbcConnection;
+import com.miiguar.hfms.data.user.UserRequest;
+import com.miiguar.hfms.data.user.UserResponse;
+import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
-import com.miiguar.hfms.utils.BufferRequest;
+import com.miiguar.hfms.data.utils.DbEnvironment;
+import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,11 +44,14 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class Login extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-
+    private ConfigureDb db;
+    private Properties prop;
+    private JdbcConnection jdbcConnection;
+    private Connection connection;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String jsonRequest = BufferRequest.bufferRequest(request);
+        String jsonRequest = BufferRequestReader.bufferRequest(request);
 
         PrintWriter writer;
         Report report = null;
@@ -54,15 +61,15 @@ public class Login extends BaseServlet {
         String username = user.getUsername();
         String password = user.getPassword();
 
+        this.db = new ConfigureDb();
+        this.prop = db.getProperties();
+        this.jdbcConnection = new JdbcConnection();
         response.setContentType(APPLICATION_JSON);
         try {
-            // initialize connection
-            connection = jdbcConnection.getConnection(
-                    user.getUsername() + "_db"
-            );
+            connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
 
             // validate credentials
-            User u = validateCredentials(username, password);
+            User u = validateCredentials(username, password, connection);
             if (u != null) {
                 JwtTokenUtil tokenUtil = new JwtTokenUtil();
                 Calendar calendar = Calendar.getInstance();
@@ -95,11 +102,15 @@ public class Login extends BaseServlet {
                 report.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 report.setMessage("Invalid entry for username/password");
 
-                String jsonResp = gson.toJson(report);
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                UserResponse obj = new UserResponse();
+                obj.setReport(report);
+
+                String jsonResp = gson.toJson(obj);
                 writer = response.getWriter();
                 writer.write(jsonResp);
             }
+
+            closeConnection();
         } catch (SQLException throwables) {
             Log.e(TAG, "Error: logging in the user.", throwables);
 
@@ -125,27 +136,36 @@ public class Login extends BaseServlet {
         }
     }
 
-    private User validateCredentials(String username, String password) throws SQLException {
+    private User validateCredentials(String username, String password, Connection connection) throws SQLException {
         if (username.isEmpty() || password.isEmpty()) return null;
 
         PreparedStatement query = connection.prepareStatement(
-                "SELECT * FROM " + USERS_TB_NAME + " WHERE " + COL_USERNAME + "=?"
+                "SELECT * FROM " + USERS_TB_NAME + " WHERE " + DbEnvironment.USERNAME + "=?"
         );
         query.setString(1, username);
         ResultSet result = query.executeQuery();
 
         while (result.next()) {
-            if (username.equals(result.getString(COL_USERNAME)) && password.equals(result.getString(COL_PASSWORD))) {
+            if (username.equals(result.getString(DbEnvironment.USERNAME)) && password.equals(result.getString(DbEnvironment.PASSWORD))) {
                 User user = new User();
-                user.setUsername(result.getString(COL_USERNAME));
-                user.setPassword(result.getString(COL_PASSWORD));
-                user.setEmail(result.getString(COL_EMAIL));
-                user.setAdmin(result.getBoolean(COL_IS_ADMIN));
-                user.setUserId(result.getString(COL_USER_ID));
+                user.setUsername(result.getString(DbEnvironment.USERNAME));
+                user.setPassword(result.getString(DbEnvironment.PASSWORD));
+                user.setEmail(result.getString(DbEnvironment.EMAIL));
+                user.setAdmin(result.getBoolean(IS_ADMIN));
+                user.setUserId(result.getString(DbEnvironment.USER_ID));
                 return user;
             }
         }
 
         return null;
+    }
+
+    @Override
+    public void closeConnection() throws SQLException {
+        if (!connection.isClosed())
+            connection.close();
+        connection = null;
+        jdbcConnection.disconnect();
+        jdbcConnection = null;
     }
 }

@@ -9,6 +9,7 @@
 @import url("_confirm_email.css");
 @import url("_settings.css");
 @import url("_account.css");
+@import url("_modal.css");
 
 .footer {
     font-size: 12px;
@@ -131,6 +132,30 @@ a.link {
 
 .submit-area input {
     text-align: right;
+}
+
+.number-style:hover {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-color: #FEC800;
+}
+
+.number-style {
+    width: 40px;
+    background-color: rgb(54, 50, 61);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-color: #0093D6;
+    border-top: none;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 10px;
+    margin: 10px;
 }
 
 .input-style:focus {
@@ -268,6 +293,39 @@ a.link {
 html {
     height: 100%;
     color: white;
+}
+
+.error-text {
+    color: rgb(214, 0, 71);
+    font-style: italic bold;
+}
+
+input[type="checkbox"] {
+    cursor: pointer;
+}
+
+input[type="button"] {
+    cursor: pointer;
+}
+
+input[type="submit"] {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
+
+.checkbox-container {
+    align-items: right;
+}
+
+.checkbox {
+    display: block;
+    cursor: pointer;
+    font-size: 14px;
+    width: fit-content;
+    right: 0;
 }
 
 /* width */

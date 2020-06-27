@@ -1,6 +1,6 @@
 .transaction {
-    height: 192px;
-    background-color: rgb(40, 36, 48);
+    height: auto;
+    background-color: rgba(40, 36, 48, 0.322);
 }
 
 .grocery-schedule {
@@ -16,25 +16,30 @@
 
 .grocery-list {
     width: 48%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    overflow-x: auto;
 }
 
 .grocery-subsection {
+    height: auto;
     display: flex;
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: rgb(40, 36, 48);
+    background-color: rgb(40, 36, 48, 0.322);
 }
 
 .expenses-section {
     width: 625px;
-    height: 300px;
+    height: auto;
 }
 
 .members {
     width: 625px;
-    height: 300px;
+    height: auto;
     margin-right: 25px;
-    background-color: rgb(40, 36, 48);
+    background-color: rgb(40, 36, 48, 0.322);
 }
 
 .grocery-members-container {
@@ -47,14 +52,14 @@
 .chat-container {
     width: 400px;
     height: 300px;
-    background-color: rgb(40, 36, 48);
+    background-color: rgb(40, 36, 48, 0.322);
 }
 
 .chart-container {
     width: 850px;
     height: 300px;
     margin-right: 25px;
-    background-color: rgb(40, 36, 48);
+    background-color: rgb(40, 36, 48, 0.322);
 }
 
 .chart-chat-section {

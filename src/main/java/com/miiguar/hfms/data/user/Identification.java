@@ -1,6 +1,6 @@
-package com.miiguar.hfms.data.models.user;
+package com.miiguar.hfms.data.user;
 
-import com.miiguar.hfms.data.models.user.model.User;
+import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 
 /**

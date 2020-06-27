@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.models;
+package com.miiguar.hfms.data.user;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.data.status.Report;

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
+import static com.miiguar.hfms.data.utils.DbEnvironment.USER_ID;
 import static com.miiguar.hfms.utils.Constants.*;
 
 /**

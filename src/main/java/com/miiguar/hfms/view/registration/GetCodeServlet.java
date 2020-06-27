@@ -1,7 +1,7 @@
 package com.miiguar.hfms.view.registration;
 
-import com.miiguar.hfms.data.models.user.Identification;
-import com.miiguar.hfms.data.models.user.model.User;
+import com.miiguar.hfms.data.user.Identification;
+import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.GENERATE_CODE;
 import static com.miiguar.hfms.data.utils.URL.GET_CONFIRMATION_CODE;
-import static com.miiguar.hfms.utils.Constants.*;
 
 /**
  * @author bernard
@@ -45,7 +45,7 @@ public class GetCodeServlet extends BaseServlet {
         if (token == null) token = "";
 
         InitUrlConnection<Identification> connection = new InitUrlConnection<>();
-        BufferedReader streamReader = connection.getReader(id, GENERATE_CODE, token);
+        BufferedReader streamReader = connection.getReader(id, GENERATE_CODE, token, "POST");
 
         String line = "";
         Report report = null;

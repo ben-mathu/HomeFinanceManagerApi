@@ -7,5 +7,5 @@ import java.sql.SQLException;
  * @author bernard
  */
 public interface PostgresConnection {
-    Connection getConnection(String databaseName) throws SQLException;
+    Connection getConnection(String property) throws SQLException;
 }

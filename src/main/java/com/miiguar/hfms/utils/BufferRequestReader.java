@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * @author bernard
  */
-public class BufferRequest {
+public class BufferRequestReader {
     public static String bufferRequest(HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
         String line = "";

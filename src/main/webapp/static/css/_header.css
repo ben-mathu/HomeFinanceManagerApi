@@ -41,11 +41,12 @@ img.avatar {
 }
 
 .menu-options {
-    background-color: white;
+    display: none;
     border-radius: 5px;
     position: fixed;
     color: #3F3A4B;
     transition: 0.4s;
+    background-color: white;
 }
 
 .option-menu-item {
