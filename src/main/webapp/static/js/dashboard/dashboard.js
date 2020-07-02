@@ -1,6 +1,12 @@
 let user;
 let income;
-let household;
+let householdArr;
+let accountStatus;
+
+const Status = {
+    COMPLETE: 'Complete',
+    PARTIAL: 'Partial'
+}
 
 var timeInterval = setInterval(function() {myTimer()}, 1000);
 var navClickOpen = false;
@@ -15,25 +21,17 @@ var isOptionsMenuOpen = false;
 var optionsMenuItems;
 var optionsMenu;
 
-/**
- * Grocery table
- */
-var groceryListTBody;
-var groceryListObj = {};
-var grocerySelected;
-var isGroceryUpdate = false;
-
-var modal;
+var groceryModal;
 var scheduleModal;
 var incomeModal;
+var householdModal;
+
 /**
- * Grocery Modal
+ * Required settings in account
  */
-var groceryName;
-var groceryDesc;
-var groceryPrice;
-var groceryRequired;
-var groceryRemaining;
+var incomplete = {};
+var complete = {};
+var scheduled = {};
 
 /**
  * Enumerations to represent folders in settings page
@@ -79,6 +77,14 @@ const requestMethod = {
     UPDATE: 'UPDATE',
     POST: 'POST',
     DELETE: 'DELETE'
+}
+
+const accountStatusField = {
+    HOUSEHOLD: 'household_status',
+    EXPENSES: 'expenses_status',
+    GROCERY: 'grocery_status',
+    INCOME: 'income_status',
+    ACCOUNT: 'account_status'
 }
 
 function loadWindow() {
@@ -142,40 +148,14 @@ function loadWindow() {
         getPage("settings-option");
     }
 
-    modal = document.getElementById("groceryModal");
+    groceryModal = document.getElementById("groceryModal");
     scheduleModal = document.getElementById("scheduleModal");
     incomeModal = document.getElementById("incomeModal");
-
-    // initialize modal variables
-    groceryName = document.getElementById("groceryName");
-    groceryDesc = document.getElementById("groceryDesc");
-    groceryPrice = document.getElementById("itemPrice");
-    groceryRequired = document.getElementById("requireQuantity");
-    groceryRemaining = document.getElementById("remainingQuantity");
-    
-    var btnOpenGroceryModal = document.getElementById("btnOpenGroceryModal");
-    btnOpenGroceryModal.onclick = function() {
-        modal.style.display = "block";
-        groceryDesc.value = "";
-        groceryName.value = "";
-        groceryPrice.value = "";
-        groceryRequired.value = "";
-        groceryRemaining.value = "";
-    }
-
-    var btnCloseGroceryModal = document.getElementById("cancelGroceryModal");
-    btnCloseGroceryModal.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    var btnAddGrocery = document.getElementById("addItem");
-    btnAddGrocery.onclick = function() {
-        sendRequestGrocery(modal);
-    }
+    householdModal = document.getElementById("householdModal");
 
     window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+        if (event.target == groceryModal) {
+            groceryModal.style.display = "none";
         } else if (event.target == scheduleModal) {
             scheduleModal.style.display = "none";
         } else if (event.target == incomeModal) {
@@ -189,13 +169,14 @@ function loadWindow() {
     getMembers();
     
     // get grocery list
-    groceryListTBody = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
     getGroceries();
 
     // configuration when window loads
     configureSettings();
     configureSchedule();
     configureIncomeElements();
+    configureGrocery();
+    configureHousehold();
 }
 
 /**
@@ -219,7 +200,17 @@ function getUserDetails() {
                 var obj = JSON.parse(request.responseText);
                 user = obj.user;
                 income = obj.income;
-                household = obj.household;
+                
+                householdArr = obj.households;
+                accountStatus = obj.account_status_update;
+
+                // create a list of not complete settings
+                var status = {};
+                status[accountStatusField.INCOME] = accountStatus.income_status;
+                status[accountStatusField.GROCERY] = accountStatus.grocery_status;
+                status[accountStatusField.HOUSEHOLD] = accountStatus.household_status;
+
+                openNotCompleteModals(status);
                 
                 var usernameEle = document.getElementById("username");
                 usernameEle.innerHTML = user.username;
@@ -236,6 +227,108 @@ function getUserDetails() {
     request.open("GET", ctx + "/dashboard/user-controller?" + data, true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
     request.send();
+}
+
+/**
+ * Open Modals whose settings have not been completed.
+ * 
+ * @param {Map} statusMap holds all account settings updates
+ */
+function openNotCompleteModals(statusMap) {
+    var keys = Object.keys(statusMap);
+
+    // Loop through the hashmap checking date and status
+    for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        if (statusMap[key] != null) {
+            var obj = JSON.parse(statusMap[key]);
+            var status = obj.status;
+            var dateStr = obj.date;
+    
+            var now = new Date();
+            if (dateStr != "" && status != Status.COMPLETE) {
+                if (now > new Date(dateStr)) {
+                    if (key == accountStatusField.INCOME) {
+                        incomplete[key] = incomeModal;
+                    } else if (key == accountStatusField.GROCERY) {
+                        incomplete[key] = groceryModal;
+                    } else if (key == accountStatusField.HOUSEHOLD) {
+                        incomplete[key] = householdModal;
+                    }
+                } else if (now < new Date(dateStr)) {
+                    if (key == accountStatusField.INCOME) {
+                        scheduled[key] = incomeModal;
+                    } else if (key == accountStatusField.GROCERY) {
+                        scheduled[key] = groceryModal;
+                    } else if (key == accountStatusField.HOUSEHOLD) {
+                        scheduled[key] = householdModal;
+                    }
+                }
+            }
+        } else {
+            if (key == accountStatusField.INCOME) {
+                incomplete[key] = incomeModal;
+            } else if (key == accountStatusField.GROCERY) {
+                incomplete[key] = groceryModal;
+            } else if (key == accountStatusField.HOUSEHOLD) {
+                incomplete[key] = householdModal;
+            }
+        }
+    }
+
+    // call a function with a callback
+    var len = Object.keys(incomplete).length;
+    if (len > 1) {
+        var modalKeys = Object.keys(incomplete);
+
+        openIncompleteModals(modalKeys);
+    } else if (len == 1) {
+        modalKeys = Object.keys(incomplete);
+        openIncompleteModals(modalKeys);
+    }
+}
+
+function openIncompleteModals(modalKeys) {
+    openModal({
+        key: modalKeys[0],
+        button: "Next",
+        isLastModal: false,
+        onNext: function(callback) {
+            modalKeys = Object.keys(incomplete);
+            callback.key = modalKeys[0];
+            callback.button = "Next";
+            openModal(callback);
+        },
+        onDone: function(callback) {
+            modalKeys = Object.keys(incomplete);
+            callback.key = modalKeys[0];
+            callback.button = "Submit";
+            openModal(callback);
+        },
+        onComplete: function() {
+            console.log("You have completed updating your account.");
+        }
+    });
+}
+
+function send(callback) {
+    if (callback.key == accountStatusField.INCOME) {
+        updateIncome(callback);
+    } else if (callback.key == accountStatusField.GROCERY) {
+        sendRequestGrocery();
+    } else if (callback.key == accountStatusField.HOUSEHOLD) {
+        updateHousehold(callback);
+    }
+}
+
+window.openModal = function(modal) {
+    if (modal.key == accountStatusField.INCOME) {
+        openIncomeModal(modal);
+    } else if (modal.key == accountStatusField.GROCERY) {
+        openGroceryModal(modal);
+    } else if (modal.key == accountStatusField.HOUSEHOLD) {
+        openHouseholdModal(modal);
+    }
 }
 
 function getXmlHttpRequest() {
@@ -278,127 +371,6 @@ function myTimer() {
  */
 function getLength(s) {
     return [...s].length;
-}
-
-/**
- * sends a request throught the controller to add an item to grocery
- */
-function sendRequestGrocery(modal) {
-    var request = getXmlHttpRequest();
-
-    request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
-                var json = request.responseText;
-                var obj = JSON.parse(json);
-                groceryListObj[obj.grocery_id] = obj;
-                var item = groceryListObj[obj.grocery_id];
-
-                // get index of new/old entry
-                var index = getGroceryItemIndex(item.grocery_id);
-
-                // get number of rows
-                var row;
-
-                if (isGroceryUpdate) {
-                    row = groceryListTBody.rows[index];
-                    var cells = row.cells;
-                    cells[0].innerHTML = item.grocery_name;
-                    cells[1].innerHTML = item.grocery_price;
-                    cells[2].innerHTML = item.remaining_quantity;
-                    cells[3].innerHTML = item.required_quantity;
-                    isGroceryUpdate = false;
-                } else {
-                    row = groceryListTBody.insertRow(index);
-                    var name = row.insertCell(0);
-                    var price = row.insertCell(1);
-                    var quantity = row.insertCell(2);
-                    var required = row.insertCell(3);
-
-                    name.innerHTML = item.grocery_name;
-                    price.innerHTML = item.grocery_price;
-                    quantity.innerHTML = item.remaining_quantity;
-                    required.innerHTML = item.required_quantity;
-                }
-
-                row.onclick = (function() {
-                    return function() {
-                        onItemClick(obj.grocery_id);
-                    }
-                })();
-
-                if (index%2 == 0) {
-                    row.style.backgroundColor = "#534c63d2";
-                }
-                row.style.cursor = "pointer";
-
-                modal.style.display = "none";
-
-                grocerySelected = null;
-            } else {
-                var error = document.getElementById("grocery-modal-error");
-                error.innerHTML = "An Error occured please try again.";
-                error.hidden = false;
-            }
-        }
-    }
-
-    var userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
-    var token = "token=" + escape(window.localStorage.getItem("token"));
-    var username = "username=" + escape(window.localStorage.getItem("username"));
-
-    // serialize grocery items details
-    var id = grocerySelected == null ? "" : grocerySelected.grocery_id;
-    var name = groceryName.value;
-    var desc = groceryDesc.value;
-    var price = groceryPrice.value;
-    var required = groceryRequired.value;
-    var remaining = groceryRemaining.value;
-
-    if (name == "" || desc == "" || price == "" || required == "" || remaining == "") {
-
-        var error = document.getElementById("grocery-modal-error");
-        error.innerHTML = "All fields are required!";
-        error.hidden = false;
-        return;
-    }
-
-    id = "grocery_id=" + escape(id);
-    remaining = "remaining_quantity=" + escape(remaining);
-    required = "required_quantity=" + escape(required);
-    price = "grocery_price=" + escape(price);
-    desc = "grocery_description=" + escape(desc);
-    name = "grocery_name=" + escape(name);
-
-    var data = userId + "&";
-    data += token + "&";
-    data += username + "&";
-    data += name + "&";
-    data += desc + "&";
-    data += price + "&";
-    data += required + "&";
-    data += remaining + "&";
-    data += id;
-
-
-    request.open("PUT", ctx + "/dashboard/groceries-controller?" + data, true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send();
-}
-
-function getGroceryItemIndex(sample) {
-    var count = 0;
-    var keys = Object.keys(groceryListObj);
-    for (let i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        if (sample == key) {
-            break;
-        } else {
-            count++;
-        }
-    }
-
-    return count;
 }
 
 function getGroceries() {
@@ -444,7 +416,7 @@ function getGroceries() {
                     groceryListObj[items[i].grocery_id] = items[i];
                 }
             } else {
-                var error = document.getElementById("grocery-modal-error");
+                var error = document.getElementById("grocery-groceryModal-error");
                 error.innerHTML = "An Error occured please try again.";
                 error.hidden = false;
                 console.log("Error status: " + request.status);
@@ -460,29 +432,6 @@ function getGroceries() {
     request.open("GET", ctx + "/dashboard/groceries-controller?" + data, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send();
-}
-
-/**
- * defines a function triggered when the user selects an item in the grocery list.
- * @param {integer} row defines the position of the selected row
- */
-function onItemClick(row) {
-    modal.style.display = "block";
-    
-    grocerySelected = groceryListObj[row];
-    var name = grocerySelected.grocery_name;
-    var desc = grocerySelected.grocery_description;
-    var price = grocerySelected.grocery_price;
-    var required = grocerySelected.required_quantity;
-    var remaining = grocerySelected.remaining_quantity;
-
-    groceryName.value = name;
-    groceryDesc.value = desc;
-    groceryPrice.value = price;
-    groceryRequired.value = required;
-    groceryRemaining.value = remaining;
-
-    isGroceryUpdate = true;
 }
 
 function openOptionsMenu() {

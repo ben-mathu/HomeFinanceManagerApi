@@ -110,6 +110,7 @@ public class Application {
             PreparedStatement createUser = connection.prepareStatement(
                     "CREATE USER " + prop.getProperty("db.username") + " SUPERUSER ENCRYPTED PASSWORD '" + prop.getProperty("db.password") + "'"
             );
+            Log.d(TAG, "\n" + createUser.toString() + "\n");
             createUser.execute();
         } catch (SQLException e) {
             Log.e(TAG, "Username already exists", e);
@@ -120,6 +121,7 @@ public class Application {
             PreparedStatement createDbSmt = connection.prepareStatement(
                     "CREATE DATABASE " + prop.getProperty("db.main_db") + " OWNER " + prop.get("db.username")
             );
+            Log.d(TAG, "\n" + createDbSmt.toString() + "\n");
             createDbSmt.execute();
         } catch (SQLException e) {
             Log.e(TAG, "Database already exists", e);
@@ -174,6 +176,7 @@ public class Application {
                 }
             }
             PreparedStatement createSchema = connection.prepareStatement(str.toString());
+            Log.d(TAG, "\n" + createSchema.toString() + "\n");
             createSchema.execute();
             str = new StringBuilder();
         }
@@ -188,6 +191,7 @@ public class Application {
                         .append(" FOREIGN KEY (").append(columnName).append(") REFERENCES ")
                         .append(constraint.tableName()).append("(").append(columnName).append(")");
                 PreparedStatement alter = connection.prepareStatement(str.toString());
+                Log.d(TAG, "\n" + alter.toString() + "\n");
                 alter.execute();
             }
         }

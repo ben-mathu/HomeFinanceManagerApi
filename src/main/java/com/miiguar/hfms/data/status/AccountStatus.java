@@ -23,27 +23,27 @@ public class AccountStatus {
     private String userId = "";
 
     @SerializedName(ACCOUNT_STATUS)
-    @Column(columnName = ACCOUNT_STATUS, notNull = false)
+    @Column(columnName = ACCOUNT_STATUS, notNull = false, characterLength = 255)
     private String accountStatus = "";
 
     @SerializedName(INCOME_STATUS)
-    @Column(columnName = INCOME_STATUS, notNull = false)
+    @Column(columnName = INCOME_STATUS, notNull = false, characterLength = 255)
     private String incomeStatus = "";
 
     @SerializedName(GROCERY_STATUS)
-    @Column(columnName = GROCERY_STATUS, notNull = false)
+    @Column(columnName = GROCERY_STATUS, notNull = false, characterLength = 255)
     private String groceryStatus = "";
 
     @SerializedName(EXPENSES_STATUS)
-    @Column(columnName = EXPENSES_STATUS, notNull = false)
+    @Column(columnName = EXPENSES_STATUS, notNull = false, characterLength = 255)
     private String expensesStatus = "";
 
     @SerializedName(HOUSEHOLD_STATUS)
-    @Column(columnName = HOUSEHOLD_STATUS, notNull = false)
+    @Column(columnName = HOUSEHOLD_STATUS, notNull = false, characterLength = 255)
     private String householdStatus = "";
 
     @SerializedName(COMPLETE_AT)
-    @Column(columnName = COMPLETE_AT, notNull = false)
+    @Column(columnName = COMPLETE_AT, notNull = false, characterLength = 125)
     private String reminder = "";
 
     public String getUserId() {

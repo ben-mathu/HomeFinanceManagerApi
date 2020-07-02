@@ -5,6 +5,7 @@ import com.miiguar.hfms.utils.Log;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,8 +18,15 @@ public class AccountStatusDao implements Dao<AccountStatus> {
     public static final String TAG = AccountStatusDao.class.getSimpleName();
     @Override
     public int save(AccountStatus item, Connection connection) throws SQLException {
-
-        return 0;
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO " + ACCOUNT_STATUS_TB_NAME + "(" +
+                        USER_ID + ")" +
+                        " VALUES (?)"
+        );
+        preparedStatement.setString(1, item.getUserId());
+        int affectedRows = preparedStatement.executeUpdate();
+        if (affectedRows == 1) Log.d(TAG, "Affected Rows: " + affectedRows);
+        return affectedRows;
     }
 
     @Override
@@ -33,7 +41,24 @@ public class AccountStatusDao implements Dao<AccountStatus> {
 
     @Override
     public AccountStatus get(String id, Connection connection) throws SQLException {
-        return null;
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM " + ACCOUNT_STATUS_TB_NAME +
+                        " WHERE " + USER_ID + "=?"
+        );
+        preparedStatement.setString(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        AccountStatus accountStatus = new AccountStatus();
+        while (resultSet.next()) {
+            accountStatus.setUserId(id);
+            accountStatus.setIncomeStatus(resultSet.getString(INCOME_STATUS));
+            accountStatus.setGroceryStatus(resultSet.getString(GROCERY_STATUS));
+            accountStatus.setAccountStatus(resultSet.getString(ACCOUNT_STATUS));
+            accountStatus.setExpensesStatus(resultSet.getString(EXPENSES_STATUS));
+            accountStatus.setHouseholdStatus(resultSet.getString(HOUSEHOLD_STATUS));
+            accountStatus.setReminder(resultSet.getString(COMPLETE_AT));
+        }
+        return accountStatus;
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.miiguar.hfms.data.household.model.Household;
 import com.miiguar.hfms.data.income.IncomeDao;
 import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
+import com.miiguar.hfms.data.status.AccountStatus;
+import com.miiguar.hfms.data.status.AccountStatusDao;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdDao;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
 import com.miiguar.hfms.data.user.UserDao;
@@ -43,6 +45,8 @@ public class UserApi extends BaseServlet {
     private IncomeDao incomeDao = new IncomeDao();
     private HouseholdDao householdDao = new HouseholdDao();
     private UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
+    private AccountStatusDao accountStatusDao = new AccountStatusDao();
+
     private ConfigureDb db;
     private Properties prop;
     private JdbcConnection jdbcConnection;
@@ -72,19 +76,27 @@ public class UserApi extends BaseServlet {
                 households.add(household);
             }
 
+            // get account status
+            AccountStatus accountStatus = accountStatusDao.get(user.getUserId(), connection);
+
             UserDto dto = new UserDto();
             dto.setUser(user);
             dto.setIncome(income);
             dto.setHouseholds(households);
+            dto.setAccountStatus(accountStatus);
 
             String response = gson.toJson(dto);
 
             writer = resp.getWriter();
             writer.write(response);
-
-            closeConnection();
         } catch (SQLException throwables) {
             Log.e(TAG, "Error retrieving user details", throwables);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
 
     }

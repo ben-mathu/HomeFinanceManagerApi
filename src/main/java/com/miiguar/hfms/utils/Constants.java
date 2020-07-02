@@ -21,14 +21,21 @@ public class Constants {
     public static final String URL_SETTINGS = "/dashboard/settings";
     public static final String REFRESH = "refresh";
 
-    public static final String GROCERIES = "groceries";
 
     public static final String PARTIAL = "Partial";
     public static final String COMPLETE = "Complete";
-    public class Status {
+    public static class Status {
         public static final String STATUS = "status";
         public static final String DATE = "date";
     }
 
     public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
+
+    /**
+     * JSON Field Names
+     */
+    public static final String USER = "user";
+    public static final String INCOME = "income";
+    public static final String ACCOUNT_STATUS_UPDATE = "account_status_update";
+    public static final String GROCERY = "grocery";
 }

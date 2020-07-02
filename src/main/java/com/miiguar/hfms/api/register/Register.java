@@ -122,6 +122,12 @@ public class Register extends BaseServlet {
                 addUser(user, household, userId, connection);
                 user.setUserId(userId);
 
+                AccountStatus accountStatus = new AccountStatus();
+                accountStatus.setUserId(user.getUserId());
+                int affectedRows = accountStatusDao.save(accountStatus, connection);
+
+                Log.d(TAG, "Affected Rows: " + affectedRows);
+
                 UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
                 if (isJoinHouseHold) {
                     userHouseholdRel.setHouseId(household.getId());
@@ -130,15 +136,15 @@ public class Register extends BaseServlet {
                     addUserToHousehold(userHouseholdRel, connection);
 
                     updateHouseholdStatus(user.getUserId());
-                } else if (household.getName().isEmpty()) {
+                } else if (!household.getName().isEmpty()) {
                     String houseId = randomString.nextString();
+                    household.setId(houseId);
+                    householdDao.save(household, connection);
+
                     userHouseholdRel.setUserId(user.getUserId());
                     userHouseholdRel.setHouseId(houseId);
 
                     addUserToHousehold(userHouseholdRel, connection);
-
-                    household.setId(houseId);
-                    householdDao.save(household, connection);
 
                     updateHouseholdStatus(user.getUserId());
                 }
@@ -167,8 +173,6 @@ public class Register extends BaseServlet {
                 writer = resp.getWriter();
                 writer.write(jsonResp);
             }
-
-            closeConnection();
         } catch (SQLException e) {
             Log.e(TAG, "Error creating user", e);
 
@@ -194,6 +198,12 @@ public class Register extends BaseServlet {
 
             PrintWriter out = resp.getWriter();
             out.write(jsonResp);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
     }
 

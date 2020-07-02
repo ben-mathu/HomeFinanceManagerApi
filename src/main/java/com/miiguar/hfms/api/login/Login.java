@@ -109,8 +109,6 @@ public class Login extends BaseServlet {
                 writer = response.getWriter();
                 writer.write(jsonResp);
             }
-
-            closeConnection();
         } catch (SQLException throwables) {
             Log.e(TAG, "Error: logging in the user.", throwables);
 
@@ -133,6 +131,12 @@ public class Login extends BaseServlet {
             String jsonResp = gson.toJson(res);
             writer = response.getWriter();
             writer.write(jsonResp);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
     }
 

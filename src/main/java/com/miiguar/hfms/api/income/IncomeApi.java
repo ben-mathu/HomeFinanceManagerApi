@@ -89,6 +89,12 @@ public class IncomeApi extends BaseServlet {
             updateIncomeStatus(userId);
         } catch (SQLException throwables) {
             Log.e(TAG, "Error adding income: ", throwables);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
     }
 

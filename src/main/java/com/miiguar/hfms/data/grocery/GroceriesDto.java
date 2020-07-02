@@ -5,13 +5,13 @@ import com.miiguar.hfms.data.grocery.model.Grocery;
 
 import java.util.ArrayList;
 
-import static com.miiguar.hfms.utils.Constants.GROCERIES;
+import static com.miiguar.hfms.data.utils.DbEnvironment.GROCERIES_TB_NAME;
 
 /**
  * @author bernard
  */
 public class GroceriesDto {
-    @SerializedName(GROCERIES)
+    @SerializedName(GROCERIES_TB_NAME)
     private ArrayList<Grocery> groceries;
 
     public ArrayList<Grocery> getGroceries() {

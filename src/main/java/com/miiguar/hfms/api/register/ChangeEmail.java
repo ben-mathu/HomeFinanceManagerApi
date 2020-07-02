@@ -56,8 +56,6 @@ public class ChangeEmail extends BaseServlet {
             String responseStr = gson.toJson(report);
             writer = resp.getWriter();
             writer.write(responseStr);
-
-            closeConnection();
         } catch (SQLException throwables) {
 
             report.setMessage("Error changing email");
@@ -66,6 +64,12 @@ public class ChangeEmail extends BaseServlet {
             writer = resp.getWriter();
             writer.write(responseStr);
             Log.e(TAG, "Error changing email", throwables);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
     }
 

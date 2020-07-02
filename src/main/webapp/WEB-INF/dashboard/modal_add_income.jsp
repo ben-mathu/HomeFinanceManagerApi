@@ -1,6 +1,6 @@
 <div id="incomeModal" class="modal">
     <div class="modal-content" >
-        <h4 class="modal-title">Add Income</h4>
+        <h4 id="incomeModalTitle" class="modal-title">Add Income</h4>
         <p id="income-modal-error" class="error-text"></p>
         <div>
             <input id="incomeDescription" class="input-style" type="text" placeholder="eg. Account name/Acctount type, etc" />

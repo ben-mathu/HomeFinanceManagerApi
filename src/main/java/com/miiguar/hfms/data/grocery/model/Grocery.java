@@ -13,8 +13,8 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
  */
 @Table(tableName = GROCERIES_TB_NAME,
         constraint = {@Constraint(
-                columnName = USER_ID,
-                tableName = USER_ID,
+                columnName = HOUSEHOLD_ID,
+                tableName = HOUSEHOLD_TB_NAME,
                 name = FK_GROCERY_REF_HOUSEHOLD_ID
         )}
 )
@@ -95,11 +95,11 @@ public class Grocery {
         this.remaining = remaining;
     }
 
-    public String getUserId() {
+    public String getHouseholdId() {
         return householdId;
     }
 
-    public void setUserId(String householdId) {
+    public void setHouseholdId(String householdId) {
         this.householdId = householdId;
     }
 }

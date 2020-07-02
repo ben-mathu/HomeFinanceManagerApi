@@ -26,7 +26,7 @@ public class DbEnvironment {
     /**
      * User-Household table relationship
      */
-    public static final String USER_HOUSEHOLD_TB_NAME = "user_household";
+    public static final String USER_HOUSEHOLD_TB_NAME = "user_households";
     // user_id reference
     // household_id reference
     public static final String FK_USERS_HOUSEHOLD_HOUSEHOLD_ID = "fk_users_household_id_ref_households";
@@ -35,7 +35,7 @@ public class DbEnvironment {
     /**
      * Code table
      */
-    public static final String CODE_TB_NAME = "user_gen_code";
+    public static final String CODE_TB_NAME = "user_gen_codes";
     public static final String CODE = "code";
     public static final String EMAIL_CONFIRMED = "is_email_confirmed";
     public static final String PRIV_KEY_CODE = "pk_code";
@@ -77,7 +77,7 @@ public class DbEnvironment {
     /**
      * Income table
      */
-    public static final String INCOME_TB_NAME = "income";
+    public static final String INCOME_TB_NAME = "incomes";
     public static final String INCOME_ID = "income_id";
     public static final String ACCOUNT_TYPE = "account_type";
     public static final String AMOUNT = "amount";
@@ -88,7 +88,7 @@ public class DbEnvironment {
     /**
      * Account Status
      */
-    public static final String ACCOUNT_STATUS_TB_NAME = "account_status_update";
+    public static final String ACCOUNT_STATUS_TB_NAME = "account_status_updates";
     public static final String ACCOUNT_STATUS = "account_status";
     // Reference user_id from users table
     public static final String INCOME_STATUS = "income_status";

@@ -6,6 +6,7 @@ import com.miiguar.hfms.data.grocery.GroceriesDto;
 import com.miiguar.hfms.data.grocery.model.Grocery;
 import com.miiguar.hfms.data.grocery.GroceryDao;
 import com.miiguar.hfms.data.grocery.GroceryDto;
+import com.miiguar.hfms.data.household.HouseholdDao;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.data.status.AccountStatus;
 import com.miiguar.hfms.data.status.AccountStatusDao;
@@ -45,6 +46,7 @@ public class GroceriesApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     AccountStatusDao accountStatusDao = new AccountStatusDao();
+    HouseholdDao householdDao = new HouseholdDao();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
@@ -77,6 +79,9 @@ public class GroceriesApi extends BaseServlet {
         if (uri.endsWith(ADD_GROCERY)) {
             try {
                 connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
+                // get house id using user id
+                String houseId = getHouseId(user.getUserId(), connection);
+                grocery.setHouseholdId(houseId);
                 if (GroceryDao.save(grocery, groceryId, connection)) {
                     grocery.setGroceryId(groceryId);
                     dto.setGrocery(grocery);
@@ -100,16 +105,16 @@ public class GroceriesApi extends BaseServlet {
                 throwables.printStackTrace();
             } finally {
                 try {
-                    if (!connection.isClosed())
-                        connection.close();
-                    connection = null;
-                    jdbcConnection.disconnect();
-                    jdbcConnection = null;
+                    closeConnection();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
             }
         }
+    }
+
+    private String getHouseId(String userId, Connection connection) throws SQLException {
+        return householdDao.getHouseholdId(userId, connection);
     }
 
     private void updateStatus(String userId) throws SQLException {
@@ -149,10 +154,14 @@ public class GroceriesApi extends BaseServlet {
 
             writer = resp.getWriter();
             writer.write(response);
-
-            closeConnection();
         } catch (SQLException throwables) {
             Log.e(TAG, "Error whilst getting groceries.", throwables);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
     }
 

@@ -59,7 +59,20 @@ public class HouseholdDao implements Dao<Household> {
 
     @Override
     public Household get(String id, Connection connection) throws SQLException {
-        return null;
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM " + HOUSEHOLD_TB_NAME +
+                        " WHERE " + HOUSEHOLD_ID + "=?"
+        );
+        preparedStatement.setString(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        Household household = new Household();
+        while (resultSet.next()) {
+            household.setId(id);
+            household.setDescription(resultSet.getString(HOUSEHOLD_DESCRIPTION));
+            household.setName(resultSet.getString(HOUSEHOLD_NAME));
+        }
+        return household;
     }
 
     @Override
@@ -70,5 +83,20 @@ public class HouseholdDao implements Dao<Household> {
     @Override
     public List<Household> getAll(String id, Connection connection) throws SQLException {
         return null;
+    }
+
+    public String getHouseholdId(String userId, Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT " + HOUSEHOLD_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
+                        " WHERE " + USER_ID + "=?"
+        );
+        preparedStatement.setString(1, userId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        String householdId = "";
+        while (resultSet.next()) {
+            householdId = resultSet.getString(HOUSEHOLD_ID);
+        }
+        return householdId;
     }
 }

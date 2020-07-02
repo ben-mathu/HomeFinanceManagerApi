@@ -68,6 +68,12 @@ public class Confirm extends BaseServlet {
             }
         } catch (SQLException e) {
             Log.e(TAG, "Error confirming code", e);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
     }
 

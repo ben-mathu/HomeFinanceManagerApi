@@ -64,8 +64,6 @@ public class GenerateConfirmationCode extends BaseServlet {
             String responseStr = gson.toJson(report);
             writer = resp.getWriter();
             writer.write(responseStr);
-
-            closeConnection();
         } catch (SQLException | MessagingException e) {
             Report report = new Report();
             report.setMessage("Error occurred please send the code again.");
@@ -74,6 +72,12 @@ public class GenerateConfirmationCode extends BaseServlet {
             writer = resp.getWriter();
             writer.write(responseStr);
             Log.e(TAG, "Error storing confirmation code.", e);
+        } finally {
+            try {
+                closeConnection();
+            } catch (SQLException throwables) {
+                Log.e(TAG, "An error occurred while closing connection", throwables);
+            }
         }
     }
 

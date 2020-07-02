@@ -36,12 +36,12 @@ public class IncomeDao implements Dao<Income> {
                 "INSERT INTO " + INCOME_TB_NAME + "(" +
                         INCOME_ID + "," + AMOUNT + "," + ACCOUNT_TYPE + "," +
                         USER_ID + "," + CREATED_AT + ")" +
-                        " VALUE (?,?,?,?)"
+                        " VALUES (?,?,?,?,?)"
         );
 
         preparedStatement.setString(1, item.getIncomeId());
-        preparedStatement.setDouble(3, item.getAmount());
-        preparedStatement.setString(2, item.getAccountType());
+        preparedStatement.setDouble(2, item.getAmount());
+        preparedStatement.setString(3, item.getAccountType());
         preparedStatement.setString(4, item.getUserId());
         preparedStatement.setString(5, item.getCreatedAt());
 
@@ -67,9 +67,8 @@ public class IncomeDao implements Dao<Income> {
         preparedStatement.setString(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        Income income = null;
+        Income income = new Income();
         while(resultSet.next()) {
-            income = new Income();
             income.setAmount(resultSet.getDouble(AMOUNT));
             income.setCreatedAt(resultSet.getString(CREATED_AT));
             income.setAccountType(resultSet.getString(ACCOUNT_TYPE));

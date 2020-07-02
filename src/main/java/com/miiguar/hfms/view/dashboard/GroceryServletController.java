@@ -23,7 +23,7 @@ import static com.miiguar.hfms.utils.Constants.*;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/groceries-controller")
+@WebServlet("/dashboard/groceries-controller/*")
 public class GroceryServletController extends BaseServlet {
     private static final long serialVersionUID = 1L;
 

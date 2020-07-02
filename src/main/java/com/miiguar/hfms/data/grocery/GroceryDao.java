@@ -25,15 +25,17 @@ public class GroceryDao implements Dao<Grocery> {
                         GROCERY_DESCRIPTION + "," +
                         GROCERY_PRICE + "," +
                         REQUIRED_QUANTITY + "," +
-                        REMAINING_QUANTITY + ")" +
-                        "VALUES (?,?,?,?,?,?)" +
+                        REMAINING_QUANTITY + "," +
+                        HOUSEHOLD_ID + ")" +
+                        "VALUES (?,?,?,?,?,?,?)" +
                         " ON CONFLICT (" + GROCERY_ID + ")" +
                         " DO UPDATE" +
                         " SET " + GROCERY_NAME + "=?," +
                             GROCERY_DESCRIPTION + "=?," +
                             GROCERY_PRICE + "=?," +
                             REQUIRED_QUANTITY + "=?," +
-                            REMAINING_QUANTITY + "=?" +
+                            REMAINING_QUANTITY + "=?," +
+                            HOUSEHOLD_ID + "=?" +
                         " WHERE " + GROCERIES_TB_NAME + "." + GROCERY_ID + "=?"
         );
         insert.setString(1, groceryId);
@@ -42,12 +44,14 @@ public class GroceryDao implements Dao<Grocery> {
         insert.setDouble(4, grocery.getPrice());
         insert.setInt(5, grocery.getRequired());
         insert.setInt(6, grocery.getRemaining());
-        insert.setString(7, grocery.getName());
-        insert.setString(8, grocery.getDescription());
-        insert.setDouble(9, grocery.getPrice());
-        insert.setInt(10, grocery.getRequired());
-        insert.setInt(11, grocery.getRemaining());
-        insert.setString(12, groceryId);
+        insert.setString(7, grocery.getHouseholdId());
+        insert.setString(8, grocery.getName());
+        insert.setString(9, grocery.getDescription());
+        insert.setDouble(10, grocery.getPrice());
+        insert.setInt(11, grocery.getRequired());
+        insert.setInt(12, grocery.getRemaining());
+        insert.setString(14, grocery.getHouseholdId());
+        insert.setString(13, groceryId);
         int affectedRows = insert.executeUpdate();
 
         if (affectedRows == 1) {
