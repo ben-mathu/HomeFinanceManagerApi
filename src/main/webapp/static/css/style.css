@@ -10,6 +10,7 @@
 @import url("_settings.css");
 @import url("_account.css");
 @import url("_modal.css");
+@import url("_envelope.css");
 
 .footer {
     font-size: 12px;
@@ -314,6 +315,10 @@ input[type="submit"] {
 
 button {
     cursor: pointer;
+}
+
+tb {
+    padding: 5px;
 }
 
 .checkbox-container {

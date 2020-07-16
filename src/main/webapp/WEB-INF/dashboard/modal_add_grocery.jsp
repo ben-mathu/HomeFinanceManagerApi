@@ -18,7 +18,7 @@
             <input id="remainingQuantity" class="input-style" type="text" name="remaining_quantity" placeholder="Remaining Quantity" />
         </div>
         <div>
-            <input id="addItem" class="btn2" type="button" value="Submit" />
+            <input id="addItem" class="btn2" type="button" value="Add" />
             <input id="cancelGroceryModal" class="btn4-caution" type="button" value="Cancel">
         </div>
     </div>

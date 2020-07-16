@@ -38,4 +38,20 @@ public class Constants {
     public static final String INCOME = "income";
     public static final String ACCOUNT_STATUS_UPDATE = "account_status_update";
     public static final String GROCERY = "grocery";
+    public static final String LIABILITIES = "liabilities";
+    public static final String ENVELOPE = "envelope";
+    public static final String EXPENSE = "expense";
+    public static final String ENVELOPE_ELEMENTS = "envelope_elements";
+
+    public static class ScheduleType {
+        public static final String SCHEDULED = "Scheduled";
+        public static final String DAILY = "Daily";
+        public static final String WEEKLY = "Weekly";
+        public static final String MONTHLY = "Monthly";
+    }
+
+    public static class EnvelopeType {
+        public static final String GROCERY_CATEGORY = "Groceries";
+        public static final String EXPENSE_CATEGORY = "Expenses";
+    }
 }

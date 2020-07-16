@@ -4,7 +4,6 @@ import com.miiguar.hfms.config.ConfigureDb;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -14,10 +13,8 @@ import java.util.Properties;
 public class JdbcConnection implements PostgresConnection {
     private static final String TAG = JdbcConnection.class.getSimpleName();
 
-    private Connection connection = null;
-
     @Override
-    public Connection getConnection(String property) throws SQLException {
+    public DataSource getDataSource(String property) {
         ConfigureDb configureDb = new ConfigureDb();
         Properties prop = configureDb.getProperties();
         String mainDb = prop.getProperty("default.db");
@@ -38,25 +35,24 @@ public class JdbcConnection implements PostgresConnection {
         pool.setTestWhileIdle(false);
         pool.setTestOnBorrow(true);
         pool.setTestOnReturn(false);
-        pool.setTimeBetweenEvictionRunsMillis(1000);
-        pool.setMaxActive(500);
-        pool.setMinEvictableIdleTimeMillis(500);
-        pool.setMaxIdle(50);
+        pool.setValidationQuery("SELECT 1");
+
+        pool.setMaxActive(10);
+        pool.setMaxIdle(10);
+        pool.setMinIdle(5);
+        pool.setMaxWait(30000);
+        pool.setInitialSize(1);
+        pool.setTimeBetweenEvictionRunsMillis(5000);
+        pool.setMinEvictableIdleTimeMillis(60000);
+        pool.setRemoveAbandonedTimeout(60);
+
         pool.setLogAbandoned(true);
-        pool.setRemoveAbandonedTimeout(1000);
         pool.setRemoveAbandoned(true);
         pool.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"+
                 "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
         DataSource dataSource = new DataSource();
         dataSource.setPoolProperties(pool);
 
-        connection = dataSource.getConnection();
-        return connection;
-    }
-
-    public void disconnect() throws SQLException {
-        if (!connection.isClosed()) {
-            connection.close();
-        }
+        return dataSource;
     }
 }

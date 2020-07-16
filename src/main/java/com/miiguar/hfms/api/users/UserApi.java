@@ -14,7 +14,6 @@ import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
 import com.miiguar.hfms.data.user.UserDao;
 import com.miiguar.hfms.data.user.UserDto;
 import com.miiguar.hfms.data.user.model.User;
-import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
 
 import javax.servlet.ServletException;
@@ -23,12 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -46,77 +42,42 @@ public class UserApi extends BaseServlet {
     private HouseholdDao householdDao = new HouseholdDao();
     private UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
     private AccountStatusDao accountStatusDao = new AccountStatusDao();
-
-    private ConfigureDb db;
-    private Properties prop;
-    private JdbcConnection jdbcConnection;
-    private Connection connection;
+    private UserDao userDao = new UserDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        ConfigureDb db = new ConfigureDb();
-        this.prop = db.getProperties();
-        this.jdbcConnection = new JdbcConnection();
 
         //get user details
         // get income
         // get household
 
         String username = req.getParameter(USERNAME);
-        try {
-            connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
-            User user = UserDao.getUserDetails(connection, username);
-            Income income = incomeDao.get(user.getUserId(), connection);
-            List<UserHouseholdRel> list = userHouseholdDao.getAll(user.getUserId(), connection);
+        User user = userDao.getUserDetails(username);
+        Income income = incomeDao.get(user.getUserId());
+        List<UserHouseholdRel> list = userHouseholdDao.getAll(user.getUserId());
 
-            ArrayList<Household> households = new ArrayList<>();
-            for (UserHouseholdRel userHouseholdRel: list) {
-                Household household = getHousehold(userHouseholdRel, connection);
-                households.add(household);
-            }
-
-            // get account status
-            AccountStatus accountStatus = accountStatusDao.get(user.getUserId(), connection);
-
-            UserDto dto = new UserDto();
-            dto.setUser(user);
-            dto.setIncome(income);
-            dto.setHouseholds(households);
-            dto.setAccountStatus(accountStatus);
-
-            String response = gson.toJson(dto);
-
-            writer = resp.getWriter();
-            writer.write(response);
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error retrieving user details", throwables);
-        } finally {
-            try {
-                closeConnection();
-            } catch (SQLException throwables) {
-                Log.e(TAG, "An error occurred while closing connection", throwables);
-            }
+        ArrayList<Household> households = new ArrayList<>();
+        for (UserHouseholdRel userHouseholdRel: list) {
+            Household household = getHousehold(userHouseholdRel);
+            households.add(household);
         }
 
+        // get account status
+        AccountStatus accountStatus = accountStatusDao.get(user.getUserId());
+
+        UserDto dto = new UserDto();
+        dto.setUser(user);
+        dto.setIncome(income);
+        dto.setHouseholds(households);
+        dto.setAccountStatus(accountStatus);
+
+        String response = gson.toJson(dto);
+
+        writer = resp.getWriter();
+        writer.write(response);
     }
 
-    private Household getHousehold(UserHouseholdRel item, Connection connection) {
-        Household household = new Household();
-        try {
-            household = householdDao.get(item.getHouseId(), connection);
-        } catch (SQLException throwables) {
-            Log.e(TAG + "/ getHousehold ", " Error whilst getting household.", throwables);
-        }
-        return household;
-    }
-
-    @Override
-    public void closeConnection() throws SQLException {
-        if (!connection.isClosed())
-            connection.close();
-        connection = null;
-        jdbcConnection.disconnect();
-        jdbcConnection = null;
+    private Household getHousehold(UserHouseholdRel item) {
+        return householdDao.get(item.getHouseId());
     }
 }

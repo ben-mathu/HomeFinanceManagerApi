@@ -18,10 +18,10 @@ public class URL {
     public static final String GET_CONFIRMATION_CODE = "/registration/confirm-user/get-confirmation-code";
 
     // Groceries HTTP Methods
-    public static final String GROCERIES = "/groceries/*";
-    public static final String ADD_GROCERY = "/groceries/add-grocery";
-    public static final String GET_GROCERY = "/groceries/get-grocery";
-    public static final String GET_ALL_GROCERIES = "/groceries/get-all_groceries";
+    public static final String ENVELOPES = "/envelopes/*";
+    public static final String ADD_ENVELOPE = "/envelopes/add-envelope";
+    public static final String GET_ENVELOPE = "/envelopes/get-envelope";
+    public static final String GET_ALL_ENVELOPES = "/envelopes/get-all_envelopes";
 
     public static final String USER_DETAILS = "/users/*";
     public static final String GET_USER_DETAILS = "/users/user";

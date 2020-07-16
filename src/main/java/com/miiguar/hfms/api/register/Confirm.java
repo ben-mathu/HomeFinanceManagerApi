@@ -35,7 +35,6 @@ public class Confirm extends BaseServlet {
     private ConfigureDb db;
     private Properties prop;
     private JdbcConnection jdbcConnection;
-    private Connection connection;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,53 +46,32 @@ public class Confirm extends BaseServlet {
         this.db = new ConfigureDb();
         this.prop = db.getProperties();
         this.jdbcConnection = new JdbcConnection();
-        try {
-            connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
+        if (isCodeCorrect(id)) {
 
-            if (isCodeCorrect(id)) {
-
-                Report report = new Report();
-                report.setStatus(HttpServletResponse.SC_OK);
-                report.setMessage("Success");
-                String responseStr = gson.toJson(report);
-                writer = resp.getWriter();
-                writer.write(responseStr);
-            } else {
-                Report report = new Report();
-                report.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
-                report.setMessage("</br>Sorry that code is invalid</br> Please try again or send another");
-                String responseStr = gson.toJson(report);
-                writer = resp.getWriter();
-                writer.write(responseStr);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "Error confirming code", e);
-        } finally {
-            try {
-                closeConnection();
-            } catch (SQLException throwables) {
-                Log.e(TAG, "An error occurred while closing connection", throwables);
-            }
+            Report report = new Report();
+            report.setStatus(HttpServletResponse.SC_OK);
+            report.setMessage("Success");
+            String responseStr = gson.toJson(report);
+            writer = resp.getWriter();
+            writer.write(responseStr);
+        } else {
+            Report report = new Report();
+            report.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+            report.setMessage("</br>Sorry that code is invalid</br> Please try again or send another");
+            String responseStr = gson.toJson(report);
+            writer = resp.getWriter();
+            writer.write(responseStr);
         }
     }
 
-    private boolean isCodeCorrect(Identification id) throws SQLException {
+    private boolean isCodeCorrect(Identification id) {
         CodeDao dao = new CodeDao();
-        Code item = dao.get(id.getUser().getUserId(), connection);
+        Code item = dao.get(id.getUser().getUserId());
 
         if (item.getCode().equals(id.getCode())) {
-            dao.emailConfirmed(item.getCode(), connection);
+            dao.emailConfirmed(item.getCode());
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void closeConnection() throws SQLException {
-        if (!connection.isClosed())
-            connection.close();
-        connection = null;
-        jdbcConnection.disconnect();
-        jdbcConnection = null;
     }
 }

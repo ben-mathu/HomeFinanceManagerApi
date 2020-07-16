@@ -58,7 +58,7 @@
                         </div>
                         
                         <%-- Household name --%>
-                        <span id="householdFields" style="margin-top: 3px; font-size: 13px; color: #FEC800">You would be able to create a house once you have registered. It is okay to leave this fields blank</span>
+                        <span id="householdFields" style="margin-top: 3px; font-size: 13px; color: #FEC800">You would be able to create a house once you have registered.</br>It is okay to leave this fields blank</span>
                         <div class="input-container">
                             <div>
                             	<input class="input-style" id="householdName" type="text" name="household" placeholder="Household Name">

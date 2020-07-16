@@ -41,17 +41,9 @@ public class IncomeApi extends BaseServlet {
 
     private IncomeDao incomeDao = new IncomeDao();
     private AccountStatusDao accountStatusDao = new AccountStatusDao();
-    private Connection connection;
-    private Properties prop;
-    private JdbcConnection jdbcConnection;
 
     @Override
     protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        ConfigureDb db = new ConfigureDb();
-        this.prop = db.getProperties();
-        this.jdbcConnection = new JdbcConnection();
-
-
         String userId = httpServletRequest.getParameter(USERNAME);
         String incomeDesc = httpServletRequest.getParameter(ACCOUNT_TYPE);
         String amount = httpServletRequest.getParameter(AMOUNT);
@@ -73,32 +65,21 @@ public class IncomeApi extends BaseServlet {
         income.setCreatedAt(today);
         income.setAmount(Double.parseDouble(amount));
 
-        try {
-            connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
-            incomeDao.save(income, connection);
+        incomeDao.save(income);
 
-            IncomeDto incomeDto = new IncomeDto();
-            incomeDto.setIncome(income);
+        IncomeDto incomeDto = new IncomeDto();
+        incomeDto.setIncome(income);
 
-            String response = gson.toJson(incomeDto);
+        String response = gson.toJson(incomeDto);
 
-            httpServletResponse.setContentType(APPLICATION_JSON);
-            writer = httpServletResponse.getWriter();
-            writer.write(response);
+        httpServletResponse.setContentType(APPLICATION_JSON);
+        writer = httpServletResponse.getWriter();
+        writer.write(response);
 
-            updateIncomeStatus(userId);
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error adding income: ", throwables);
-        } finally {
-            try {
-                closeConnection();
-            } catch (SQLException throwables) {
-                Log.e(TAG, "An error occurred while closing connection", throwables);
-            }
-        }
+        updateIncomeStatus(userId);
     }
 
-    private void updateIncomeStatus(String userId) throws SQLException {
+    private void updateIncomeStatus(String userId) {
         AccountStatus accountStatus = new AccountStatus();
 
         Date date = new Date();
@@ -113,17 +94,8 @@ public class IncomeApi extends BaseServlet {
         accountStatus.setIncomeStatus(statusStr);
         accountStatus.setUserId(userId);
 
-        if (accountStatusDao.updateIncomeStatus(accountStatus, connection)) {
+        if (accountStatusDao.updateIncomeStatus(accountStatus)) {
             Log.d(TAG, "Update table " + ACCOUNT_STATUS_TB_NAME);
         }
-    }
-
-    @Override
-    public void closeConnection() throws SQLException {
-        if (!connection.isClosed())
-            connection.close();
-        connection = null;
-        jdbcConnection.disconnect();
-        jdbcConnection = null;
     }
 }

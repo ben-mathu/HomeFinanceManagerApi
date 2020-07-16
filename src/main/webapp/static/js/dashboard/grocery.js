@@ -16,6 +16,15 @@ var groceryListObj = {};
 var grocerySelected;
 var isGroceryUpdate = false;
 
+let grocery = {
+    grocery_id: "",
+    grocery_name: "",
+    grocery_description: "",
+    grocery_price: "",
+    remaining_quantity: "",
+    required_quantity: ""
+}
+
 function configureGrocery() {
     groceryListTBody = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
 
@@ -26,7 +35,7 @@ function configureGrocery() {
 
     btnAddGrocery = document.getElementById("addItem");
     btnAddGrocery.onclick = function() {
-        sendRequestGrocery();
+        addGrocery();
     }
 
     // initialize groceryModal variables
@@ -51,93 +60,72 @@ function configureGrocery() {
  * 
  * @param {Callback} modalDetails Callback when window first loads
  */
-function openGroceryModal(callback) {
-    groceryModal.style.display = "block";
-    groceryDesc.value = "";
-    groceryName.value = "";
-    groceryPrice.value = "";
-    groceryRequired.value = "";
-    groceryRemaining.value = "";
+// function openGroceryModal() {
+//     groceryModal.style.display = "block";
+//     groceryDesc.value = "";
+//     groceryName.value = "";
+//     groceryPrice.value = "";
+//     groceryRequired.value = "";
+//     groceryRemaining.value = "";
 
-    btnAddGrocery.onclick = function() {
-        updateGrocery(callback);
-    }
-}
-
-function updateGrocery(callback) {
-    var request = getXmlHttpRequest();
-
-    request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
-                var json = request.responseText;
-                setGrocery(JSON.parse(json));
-
-                delete incomplete[callback.key];
-
-                let len = Object.keys(incomplete).length;
-
-                if (len > 1) {
-                    callback.onNext(callback);
-                } else if(len == 1) {
-                    callback.onDone(callback);
-                } else {
-                    callback.onComplete();
-                }
-            } else {
-                showError();
-            }
-        }
-    }
-
-    var data = serializeData();
-
-    request.open("PUT", ctx + "/dashboard/groceries-controller?" + data, true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send();
-}
+//     btnAddGrocery.onclick = function() {
+//         addGrocery();
+//     }
+// }
 
 function showError() {
-    var error = document.getElementById("grocery-groceryModal-error");
+    var error = document.getElementById("envelopeModalError");
     error.innerHTML = "An Error occured please try again.";
     error.hidden = false;
 }
 
-function setGrocery(grocery) {
-    groceryListObj[grocery.grocery_id] = grocery;
+function addGrocery() {
+    var name = groceryName.value;
+    var desc = groceryDesc.value;
+    var price = groceryPrice.value;
+    var required = groceryRequired.value;
+    var remaining = groceryRemaining.value;
 
-
-    var item = groceryListObj[grocery.grocery_id];
-    // get index of new/old entry
-    var index = getGroceryItemIndex(item.grocery_id);
+    grocery = new Object();
+    grocery.grocery_name = name;
+    grocery.grocery_description = desc;
+    grocery.grocery_price = price;
+    grocery.remaining_quantity = remaining;
+    grocery.required_quantity = required;
+    
+    var index = Object.keys(groceryListObj).length;
+    groceryListObj[index] = grocery;
 
     // get number of rows
     var row;
+    row = groceryListTBody.insertRow(index);
+    var nameCell = row.insertCell(0);
+    var priceCell = row.insertCell(1);
+    var descCell = row.insertCell(2);
+    var quantityCell = row.insertCell(3);
+    var requiredCell = row.insertCell(4);
+    var cancel = row.insertCell(5);
 
-    if (isGroceryUpdate) {
-        row = groceryListTBody.rows[index];
-        var cells = row.cells;
-        cells[0].innerHTML = item.grocery_name;
-        cells[1].innerHTML = item.grocery_price;
-        cells[2].innerHTML = item.remaining_quantity;
-        cells[3].innerHTML = item.required_quantity;
-        isGroceryUpdate = false;
-    } else {
-        row = groceryListTBody.insertRow(index);
-        var name = row.insertCell(0);
-        var price = row.insertCell(1);
-        var quantity = row.insertCell(2);
-        var required = row.insertCell(3);
+    nameCell.innerHTML = name;
+    priceCell.innerHTML = price;
+    descCell.innerHTML = desc;
+    quantityCell.innerHTML = remaining;
+    requiredCell.innerHTML = required;
+    cancel.innerHTML = "x";
 
-        name.innerHTML = item.grocery_name;
-        price.innerHTML = item.grocery_price;
-        quantity.innerHTML = item.remaining_quantity;
-        required.innerHTML = item.required_quantity;
-    }
+    onRowLoaded(price);
+
+    let obj = groceryListObj[index];
 
     row.onclick = (function() {
         return function() {
             onItemClick(obj.grocery_id);
+        }
+    })();
+
+    cancel.onclick = (function () {
+        return function () {
+            onItemRemoved(obj.grocery_id);
         }
     })();
 
@@ -152,68 +140,22 @@ function setGrocery(grocery) {
 }
 
 /**
- * sends a request throught the controller to add an item to grocery
+ * update the entry in grocery list
+ * @param {integer} index position of the edited item in list
  */
-function sendRequestGrocery() {
-    var request = getXmlHttpRequest();
+function updateGrocery(index) {
+    // updates a row when user edit an item in the list
+    row = groceryListTBody.rows[index];
+    var cells = row.cells;
 
-    request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
-                var json = request.responseText;
-                setGrocery(JSON.parse(json));
-            } else {
-                showError();
-            }
-        }
-    }
-
-    var data = serializeData();
-
-    request.open("PUT", ctx + "/dashboard/groceries-controller?" + data, true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send();
-}
-
-function serializeData() {
-    var userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
-    var token = "token=" + escape(window.localStorage.getItem("token"));
-    var username = "username=" + escape(window.localStorage.getItem("username"));
-
-    // serialize grocery items details
-    var id = grocerySelected == null ? "" : grocerySelected.grocery_id;
-    var name = groceryName.value;
-    var desc = groceryDesc.value;
-    var price = groceryPrice.value;
-    var required = groceryRequired.value;
-    var remaining = groceryRemaining.value;
-
-    if (name == "" || desc == "" || price == "" || required == "" || remaining == "") {
-
-        var error = document.getElementById("grocery-groceryModal-error");
-        error.innerHTML = "All fields are required!";
-        error.hidden = false;
-        return;
-    }
-
-    id = "grocery_id=" + escape(id);
-    remaining = "remaining_quantity=" + escape(remaining);
-    required = "required_quantity=" + escape(required);
-    price = "grocery_price=" + escape(price);
-    desc = "grocery_description=" + escape(desc);
-    name = "grocery_name=" + escape(name);
-
-    var data = userId + "&";
-    data += token + "&";
-    data += username + "&";
-    data += name + "&";
-    data += desc + "&";
-    data += price + "&";
-    data += required + "&";
-    data += remaining + "&";
-    data += id;
-
-    return data;
+    var previousAmount = cells[1].innerHTML;
+    cells[0].innerHTML = name;
+    cells[1].innerHTML = price;
+    cells[2].innerHTML = desc;
+    cells[3].innerHTML = remaining;
+    cells[4].innerHTML = required;
+    
+    updateTotalAmount(previousAmount, price);
 }
 
 function getGroceryItemIndex(sample) {
@@ -252,4 +194,13 @@ function onItemClick(row) {
     groceryRemaining.value = remaining;
 
     isGroceryUpdate = true;
+}
+
+/**
+ * remove item on grocery list
+ * 
+ * @param {string} groceryId id of the item being removed
+ */
+function onItemRemoved(groceryId) {
+    
 }

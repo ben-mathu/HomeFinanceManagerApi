@@ -18,5 +18,7 @@
         <script src="<%= request.getContextPath() %>/${income}"></script>
         <script src="<%= request.getContextPath() %>/${grocery}"></script>
         <script src="<%= request.getContextPath() %>/${household}"></script>
+        <script src="<%= request.getContextPath() %>/${envelopes}"></script>
+        <script src="<%= request.getContextPath() %>/${expenses}"></script>
     </head>
     <body onLoad="JavaScript:loadWindow();">

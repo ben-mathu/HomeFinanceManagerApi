@@ -13,9 +13,9 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
  */
 @Table(tableName = GROCERIES_TB_NAME,
         constraint = {@Constraint(
-                columnName = HOUSEHOLD_ID,
-                tableName = HOUSEHOLD_TB_NAME,
-                name = FK_GROCERY_REF_HOUSEHOLD_ID
+                name = FK_ENVELOPE_ID_GROCERY,
+                columnName = ENVELOPE_ID,
+                tableName = ENVELOPE_TB_NAME
         )}
 )
 public class Grocery {
@@ -28,7 +28,7 @@ public class Grocery {
     private String name = "";
 
     @SerializedName(GROCERY_DESCRIPTION)
-    @Column(columnName = GROCERY_DESCRIPTION)
+    @Column(columnName = GROCERY_DESCRIPTION, characterLength = 255)
     private String description = "";
 
     @SerializedName(GROCERY_PRICE)
@@ -43,9 +43,9 @@ public class Grocery {
     @Column(columnName = REMAINING_QUANTITY)
     private int remaining;
 
-    @SerializedName(HOUSEHOLD_ID)
-    @Column(columnName = HOUSEHOLD_ID)
-    private String householdId;
+    @SerializedName(ENVELOPE_ID)
+    @Column(columnName = ENVELOPE_ID)
+    private String envelopeId = "";
 
     public String getDescription() {
         return description;
@@ -95,11 +95,11 @@ public class Grocery {
         this.remaining = remaining;
     }
 
-    public String getHouseholdId() {
-        return householdId;
+    public String getEnvelopeId() {
+        return envelopeId;
     }
 
-    public void setHouseholdId(String householdId) {
-        this.householdId = householdId;
+    public void setEnvelopeId(String envelopeId) {
+        this.envelopeId = envelopeId;
     }
 }

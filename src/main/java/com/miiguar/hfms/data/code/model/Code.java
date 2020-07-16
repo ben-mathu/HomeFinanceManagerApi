@@ -11,7 +11,13 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-@Table(tableName = CODE_TB_NAME, constraint = {@Constraint(name = FK_TB_CODE_USER_ID, tableName = USERS_TB_NAME, columnName = USER_ID)})
+@Table(tableName = CODE_TB_NAME,
+        constraint = {@Constraint(
+                name = FK_TB_CODE_USER_ID,
+                tableName = USERS_TB_NAME,
+                columnName = USER_ID
+        )
+})
 public class Code {
     @SerializedName(CODE)
     @PrimaryKey(columnName = CODE)

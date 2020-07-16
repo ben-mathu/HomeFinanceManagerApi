@@ -35,10 +35,7 @@ import static com.miiguar.hfms.data.utils.URL.GENERATE_CODE;
 public class GenerateConfirmationCode extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    private ConfigureDb db;
-    private Properties prop;
-    private JdbcConnection jdbcConnection;
-    private Connection connection;
+    private CodeDao dao = new CodeDao();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -48,15 +45,8 @@ public class GenerateConfirmationCode extends BaseServlet {
 
         String code = generateCode();
 
-        ConfigureDb db = new ConfigureDb();
-        this.prop = db.getProperties();
-        this.jdbcConnection = new JdbcConnection();
-
-        try {
-            connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
-
-            saveCode(code, user.getUser(), connection);
-            sendCodeToEmail(user.getUser(), code);
+        if (saveCode(code, user.getUser()) > 0) {
+            dao.sendCodeToEmail(user.getUser(), code);
 
             Report report = new Report();
             report.setMessage("Success");
@@ -64,30 +54,15 @@ public class GenerateConfirmationCode extends BaseServlet {
             String responseStr = gson.toJson(report);
             writer = resp.getWriter();
             writer.write(responseStr);
-        } catch (SQLException | MessagingException e) {
+        } else {
             Report report = new Report();
             report.setMessage("Error occurred please send the code again.");
             report.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             String responseStr = gson.toJson(report);
             writer = resp.getWriter();
             writer.write(responseStr);
-            Log.e(TAG, "Error storing confirmation code.", e);
-        } finally {
-            try {
-                closeConnection();
-            } catch (SQLException throwables) {
-                Log.e(TAG, "An error occurred while closing connection", throwables);
-            }
+            Log.d(TAG, "Error storing confirmation code.");
         }
-    }
-
-    @Override
-    public void closeConnection() throws SQLException {
-        if (!connection.isClosed())
-            connection.close();
-        connection = null;
-        jdbcConnection.disconnect();
-        jdbcConnection = null;
     }
 
     public String generateCode() {
@@ -95,24 +70,12 @@ public class GenerateConfirmationCode extends BaseServlet {
         return rand.nextString();
     }
 
-    public void sendCodeToEmail(User user, String code) throws MessagingException {
-        EmailSession session = new EmailSession();
-        session.sendEmail(
-                user.getEmail(),
-                "Email Confirmation Code",
-                "<div style=\"text-align: center;\">" +
-                        "<h5>User this code to confirm your email</h5>" +
-                        "<h2>" + code + "</h2>" +
-                        "</div>"
-        );
-    }
-
-    public void saveCode(String code, User user, Connection connection) throws SQLException {
-        CodeDao dao = new CodeDao();
+    public int saveCode(String code, User user) {
         Code item = new Code();
         item.setCode(code);
-        int affectedRows = dao.saveCode(item, user.getUserId(), connection);
+        int affectedRows = dao.saveCode(item, user.getUserId());
 
         Log.d(TAG, "Affected Rows:" + affectedRows);
+        return affectedRows;
     }
 }

@@ -9,6 +9,8 @@
     pageContext.setAttribute("income", "static/js/dashboard/income.js");
     pageContext.setAttribute("grocery", "static/js/dashboard/grocery.js");
     pageContext.setAttribute("household", "static/js/dashboard/household.js");
+    pageContext.setAttribute("envelopes", "static/js/dashboard/envelopes.js");
+    pageContext.setAttribute("expenses", "static/js/dashboard/expenses.js");
 %>
 <%@ include file = "../page_setting_top.jsp" %>
     <%@ include file = "../header.jsp" %>
@@ -17,7 +19,9 @@
         <%@ include file = "main_content.jsp" %>
         <%@ include file = "settings.jsp" %>
     </div>
+    <%@ include file = "modal_add_envelope.jsp" %>
     <%@ include file = "modal_add_grocery.jsp" %>
     <%@ include file = "modal_add_schedule.jsp" %>
     <%@ include file = "modal_add_income.jsp" %>
+    <%@ include file = "modal_add_expenses.jsp" %>
 <%@ include file = "../page_setting_bottom.jsp" %>

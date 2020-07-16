@@ -6,12 +6,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
@@ -30,16 +31,7 @@ public class Application {
     private static Logger logger;
     private Properties properties;
 
-    private static Connection connection;
-    private static JdbcConnection jdbcConnection;
-
-    public static Connection getConnection(String property) throws SQLException {
-        if (connection == null) {
-            jdbcConnection = new JdbcConnection();
-            connection = jdbcConnection.getConnection(property);
-        }
-        return connection;
-    }
+    private static JdbcConnection jdbcConnection = new JdbcConnection();
 
     public Properties getProperties() {
         return properties;
@@ -50,10 +42,6 @@ public class Application {
     }
 
     public static Logger getLogger() {
-        if (logger == null) {
-            main(null);
-        }
-
         return logger;
     }
 
@@ -72,25 +60,15 @@ public class Application {
         main.setProperties(configureDb.getProperties());
         Properties properties = main.getProperties();
 
+        File file = main.getFileFromResources("db.properties");
         try {
-            File file = main.getFileFromResources("db.properties");
             printFile(file);
-
-            // create schema if it does not exist
-            main.addDb(properties, getConnection(""), main);
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             Log.e(TAG, "Error: ", e);
-        } finally {
-            try {
-                if (!connection.isClosed())
-                    connection.close();
-                connection = null;
-                jdbcConnection.disconnect();
-                jdbcConnection = null;
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
         }
+
+        // create schema if it does not exist
+        main.addDb(properties, main);
     }
 
     public Set<Class<?>> getAnnotatedClasses() {
@@ -101,33 +79,72 @@ public class Application {
     /**
      * Creates a DB for the user's household.
      * @param prop holds list of predefined strings that define my db
-     * @param connection JDBC connection
-     * @throws SQLException thrown when an sqlexception is triggered.
      */
-    private void addDb(Properties prop, Connection connection, Application main) throws SQLException {
+    private void addDb(Properties prop, Application main) {
+        String createUsers = "CREATE USER " + prop.getProperty("db.username") + " SUPERUSER ENCRYPTED PASSWORD '" + prop.getProperty("db.password") + "'";
+        Connection conn = null;
+        PreparedStatement preparedStatement= null;
         try {
+            conn = jdbcConnection.getDataSource("").getConnection();
+            preparedStatement = conn.prepareStatement(createUsers);
+
             // create user
-            PreparedStatement createUser = connection.prepareStatement(
-                    "CREATE USER " + prop.getProperty("db.username") + " SUPERUSER ENCRYPTED PASSWORD '" + prop.getProperty("db.password") + "'"
-            );
-            Log.d(TAG, "\n" + createUser.toString() + "\n");
-            createUser.execute();
+            Log.d(TAG, "\n" + preparedStatement.toString() + "\n");
+            preparedStatement.execute();
+
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
         } catch (SQLException e) {
             Log.e(TAG, "Username already exists", e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
         }
+
+        String createdb = "CREATE DATABASE " + prop.getProperty("db.main_db") + " OWNER " + prop.get("db.username") + " CONNECTION LIMIT=200";
 
         try {
+            conn = jdbcConnection.getDataSource("").getConnection();
+            preparedStatement = conn.prepareStatement(createdb);
+
             // create db
-            PreparedStatement createDbSmt = connection.prepareStatement(
-                    "CREATE DATABASE " + prop.getProperty("db.main_db") + " OWNER " + prop.get("db.username")
-            );
-            Log.d(TAG, "\n" + createDbSmt.toString() + "\n");
-            createDbSmt.execute();
+            Log.d(TAG, "\n" + preparedStatement.toString() + "\n");
+            preparedStatement.execute();
+
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
         } catch (SQLException e) {
             Log.e(TAG, "Database already exists", e);
-        }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
 
-        connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
+        }
 
         // create db
         StringBuilder str = new StringBuilder();
@@ -142,7 +159,7 @@ public class Application {
             if (clazz.isAnnotationPresent(Table.class)) {
                 Table table = (Table) clazz.getAnnotation(Table.class);
 
-                str.append(" CREATE TABLE IF NOT EXISTS ").append(table.tableName()).append("(");
+                str.append("CREATE TABLE IF NOT EXISTS ").append(table.tableName()).append("(");
                 // get list fields of this class
                 Field[] fields = clazz.getDeclaredFields();
 
@@ -175,10 +192,38 @@ public class Application {
                     tablesWithConstraint.add(table);
                 }
             }
-            PreparedStatement createSchema = connection.prepareStatement(str.toString());
-            Log.d(TAG, "\n" + createSchema.toString() + "\n");
-            createSchema.execute();
-            str = new StringBuilder();
+
+            try {
+                conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+                preparedStatement = conn.prepareStatement(str.toString());
+
+                Log.d(TAG, "\n" + preparedStatement.toString() + "\n");
+                preparedStatement.execute();
+                str = new StringBuilder();
+
+                preparedStatement.close();
+                preparedStatement = null;
+                conn.close();
+                conn = null;
+            } catch (SQLException throwables) {
+                Log.e(TAG, "Error create tables: ", throwables);
+            } finally {
+                if (conn != null) {
+                    try {
+                        conn.close();
+                        if (conn.isClosed()) Log.d(TAG, "Connection closed");
+                        conn = null;
+                    } catch (SQLException throwables) { /* Intentionally blank. */ }
+                }
+
+                if (preparedStatement != null) {
+                    try {
+                        preparedStatement.close();
+                        if (preparedStatement.isClosed()) Log.d(TAG, "PreparedStatement closed.");
+                        preparedStatement = null;
+                    } catch (SQLException throwables) { /* Intentionally blank. */ }
+                }
+            }
         }
 
         for (Table table : tablesWithConstraint) {
@@ -190,9 +235,28 @@ public class Application {
                 str.append(" ADD CONSTRAINT ").append(constraint.name())
                         .append(" FOREIGN KEY (").append(columnName).append(") REFERENCES ")
                         .append(constraint.tableName()).append("(").append(columnName).append(")");
-                PreparedStatement alter = connection.prepareStatement(str.toString());
-                Log.d(TAG, "\n" + alter.toString() + "\n");
-                alter.execute();
+                try {
+                    conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+                    preparedStatement = conn.prepareStatement(str.toString());
+
+                    Log.d(TAG, "\n" + preparedStatement.toString() + "\n");
+                    preparedStatement.execute();
+
+                    preparedStatement.close();
+                    preparedStatement = null;
+                    conn.close();
+                    conn = null;
+                } catch (SQLException throwables) {
+                    Log.e(TAG, "Error creating constraints", throwables);
+                } finally {
+                    if (conn != null) {
+                        try { conn.close(); conn = null; } catch (SQLException throwables) { /* Intentionally blank. */ }
+                    }
+
+                    if (preparedStatement != null) {
+                        try { preparedStatement.close(); preparedStatement = null; } catch (SQLException throwables) { /* Intentionally blank. */ }
+                    }
+                }
             }
         }
     }

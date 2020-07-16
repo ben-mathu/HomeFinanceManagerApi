@@ -73,6 +73,9 @@ public class DbEnvironment {
     public static final String PRIV_KEY_GROCERIES = "priv_key_groceries";
     // household_id references the household table (household_id)
     public static final String FK_GROCERY_REF_HOUSEHOLD_ID = "fk_tb_grocery_user_id_ref_users";
+    public static final String FK_ENVELOPE_ID_GROCERY = "fk_tb_grocery_envelope_id_ref_envelope";
+
+
 
     /**
      * Income table
@@ -92,9 +95,38 @@ public class DbEnvironment {
     public static final String ACCOUNT_STATUS = "account_status";
     // Reference user_id from users table
     public static final String INCOME_STATUS = "income_status";
-    public static final String GROCERY_STATUS = "grocery_status";
-    public static final String EXPENSES_STATUS = "expenses_status";
+    public static final String ENVELOPE_STATUS = "envelope_status";
     public static final String HOUSEHOLD_STATUS = "household_status";
     public static final String COMPLETE_AT = "completed_at";
     public static final String FK_TB_USERID_REF_USERS = "fk_user_id_references_users_user_id";
+
+    /**
+     * Envelope Table
+     */
+    public static final String ENVELOPE_TB_NAME = "envelopes";
+    public static final String ENVELOPE_ID = "envelope_id";
+    public static final String ENVELOPE_NAME = "envelope_name";
+    public static final String CATEGORY = "category";
+    public static final String TOTAL_AMOUNT = "amount";
+    // created at {type: string date}
+    public static final String SCHEDULED_FOR = "scheduled_for";
+    public static final String SCHEDULED_TYPE = "scheduled_type";
+    // groceryId ref groceries
+    public static final String FK_ENVELOPE_GROCERY_ID = "fk_envelope_grocery_id_groceries";
+
+    /**
+     * Expenses table
+     */
+    public static final String EXPENSES_TB_NAME = "expenses";
+    public static final String EXPENSE_ID = "expense_id";
+    public static final String EXPENSE_NAME = "expense_name";
+    public static final String EXPENSE_DESCRIPTION = "expense_description";
+    // amount {type: double}
+    // householdId  references households household_id
+    // envelope id ref envelopes envelope id
+    public static final String PAYEE_NAME = "payee_name";
+    public static final String BUSINESS_NUMBER = "business_number";
+    public static final String PHONE_NUMBER = "phone_number";
+    public static final String FK_HOUSEHOLD_ID_REF_HOUSEHOLDS = "fk_household_id_ref_households_household_id";
+    public static final String FK_ENVELOPE_ID_EXPENSES = "fk_envelope_id_ref_envelope";
 }

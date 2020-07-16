@@ -15,37 +15,24 @@
         </div>
         <div class="expenses-section" >
             <div class="grocery-subsection rounded-corner shadow-1pt" >
-                <div class="grocery-list" >
-                    <div id="empty" hidden>
-                        Your grocery list is empty.
+                <div class="envelope-list" >
+                    <%-- Create a table of scheduled envelopes name and scheduled date. --%>
+                    <div class="empty"  hidden>
+                        you can have all envelopes listed here
                     </div>
-                    <table id="groceryItems">
+
+                    <table id="envelopeItems">
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Price</th>
-                                <th>Remaining</th>
-                                <th>Required</th>
+                                <th>Date</th>
+                                <th>Intervals</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
-                    <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
-                </div>
-                <div class="grocery-schedule" >
-                    <div id="emptySchedule" hidden>
-                        Your grocery list is empty.
-                    </div>
-                    <table id="scheduleItems">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Time</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    <input id="btnOpenScheduleModal" class="btn2" type="button" value="+ Add Schedule">
+
+                    <input id="btnOpenEnvelopeModal" class="btn2" type="button" value="+ Add Schedule">
                 </div>
             </div>
             
@@ -60,6 +47,6 @@
     </div>
     
     <div class="expenses rounded-corner shadow-1pt" >
-        <h4>Expenses</h4>
+        <h4>Transactions</h4>
     </div>
 </div>

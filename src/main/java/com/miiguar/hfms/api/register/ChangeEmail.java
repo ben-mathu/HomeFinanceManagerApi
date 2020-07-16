@@ -3,6 +3,7 @@ package com.miiguar.hfms.api.register;
 import com.miiguar.hfms.api.base.BaseServlet;
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
+import com.miiguar.hfms.data.user.UserDao;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.BufferRequestReader;
@@ -30,9 +31,7 @@ import static com.miiguar.hfms.data.utils.URL.CHANGE_EMAIL;
 public class ChangeEmail extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    private Properties prop;
-    private JdbcConnection jdbcConnection;
-    private Connection connection;
+    private UserDao userDao = new UserDao();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,46 +42,25 @@ public class ChangeEmail extends BaseServlet {
 
         Report report = new Report();
 
-        ConfigureDb db = new ConfigureDb();
-        this.prop = db.getProperties();
-        this.jdbcConnection = new JdbcConnection();
-
-        try {
-            connection = jdbcConnection.getConnection(prop.getProperty("db.main_db"));
-
-            changeEmail(user);
+        if (changeEmail(user) > 0) {
             report.setMessage("Success");
             report.setStatus(HttpServletResponse.SC_OK);
             String responseStr = gson.toJson(report);
             writer = resp.getWriter();
             writer.write(responseStr);
-        } catch (SQLException throwables) {
+        } else {
 
             report.setMessage("Error changing email");
             report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             String responseStr = gson.toJson(report);
             writer = resp.getWriter();
             writer.write(responseStr);
-            Log.e(TAG, "Error changing email", throwables);
-        } finally {
-            try {
-                closeConnection();
-            } catch (SQLException throwables) {
-                Log.e(TAG, "An error occurred while closing connection", throwables);
-            }
+            Log.d(TAG, "Error changing email");
         }
     }
 
-    private void changeEmail(User user) throws SQLException {
-
-    }
-
-    @Override
-    public void closeConnection() throws SQLException {
-        if (!connection.isClosed())
-            connection.close();
-        connection = null;
-        jdbcConnection.disconnect();
-        jdbcConnection = null;
+    private int changeEmail(User user) {
+        int affectedRows = userDao.updateEmail(user);
+        return 0;
     }
 }

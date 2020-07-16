@@ -21,10 +21,12 @@ var isOptionsMenuOpen = false;
 var optionsMenuItems;
 var optionsMenu;
 
-var groceryModal;
 var scheduleModal;
 var incomeModal;
 var householdModal;
+var envelopeModal;
+var groceryModal;
+var expensesModal;
 
 /**
  * Required settings in account
@@ -63,7 +65,8 @@ const incomeFields = {
 }
 
 const requestHeader = {
-    CONTENT_TYPE: 'Content-Type'
+    CONTENT_TYPE: 'Content-Type',
+    AUTHORIZATION: 'Authorization'
 }
 
 const mediaType = {
@@ -82,12 +85,40 @@ const requestMethod = {
 const accountStatusField = {
     HOUSEHOLD: 'household_status',
     EXPENSES: 'expenses_status',
-    GROCERY: 'grocery_status',
+    ENVELOPE: 'grocery_status',
     INCOME: 'income_status',
     ACCOUNT: 'account_status'
 }
 
+/**
+ * Serializeable names for expense JSON Object
+ */
+const expenseFields = {
+    EXPENSE_ID: "expense_id",
+    EXPENSE_NAME: "expense_name",
+    EXPENSE_DESCRIPTION: "expense_description",
+    AMOUNT: "amount",
+    PAYEE_NAME: "payee_name",
+    BUSINESS_NUMBER: "business_number",
+    PHONE_NUMBER: "phone_number"
+}
+
+/**
+ * Serializeable fields for envelope JSON object
+ */
+const envelopeFields = {
+    ENVELOP_ID: "envelope_id",
+    ENVELOPE_NAME: "envelope_name",
+    CATEGORY: "category",
+    TOTAL_AMOUNT: "amount",
+    LIABILITIES: "liabilities",
+    SCHEDULE: "scheduled_for",
+    SCHEDULED_TYPE: "scheduled_type"
+}
+
 function loadWindow() {
+    // TODO: 
+    
     // use this when the page is reloaded to obtain the recent visited page
     loadHistoryLocation();
 
@@ -152,6 +183,8 @@ function loadWindow() {
     scheduleModal = document.getElementById("scheduleModal");
     incomeModal = document.getElementById("incomeModal");
     householdModal = document.getElementById("householdModal");
+    envelopeModal = document.getElementById("envelopeModal");
+    expensesModal = document.getElementById("expensesModal");
 
     window.onclick = function(event) {
         if (event.target == groceryModal) {
@@ -160,6 +193,10 @@ function loadWindow() {
             scheduleModal.style.display = "none";
         } else if (event.target == incomeModal) {
             incomeModal.style.display = "none";
+        } else if (event.target == envelopeModal) {
+            envelopeModal.style.display = "none";
+        } else if (event.target == expensesModal) {
+            expensesModal.style.display = "none";
         }
     }
 
@@ -168,15 +205,17 @@ function loadWindow() {
     // get members when window loads
     getMembers();
     
-    // get grocery list
-    getGroceries();
+    // // get grocery list
+    // getEnvelopes();
 
     // configuration when window loads
     configureSettings();
-    configureSchedule();
+    // configureSchedule();
     configureIncomeElements();
     configureGrocery();
     configureHousehold();
+    configureEnvelope();
+    configureExpenses();
 }
 
 /**
@@ -207,7 +246,7 @@ function getUserDetails() {
                 // create a list of not complete settings
                 var status = {};
                 status[accountStatusField.INCOME] = accountStatus.income_status;
-                status[accountStatusField.GROCERY] = accountStatus.grocery_status;
+                status[accountStatusField.ENVELOPE] = accountStatus.envelope_status;
                 status[accountStatusField.HOUSEHOLD] = accountStatus.household_status;
 
                 openNotCompleteModals(status);
@@ -250,16 +289,16 @@ function openNotCompleteModals(statusMap) {
                 if (now > new Date(dateStr)) {
                     if (key == accountStatusField.INCOME) {
                         incomplete[key] = incomeModal;
-                    } else if (key == accountStatusField.GROCERY) {
-                        incomplete[key] = groceryModal;
+                    } else if (key == accountStatusField.ENVELOPE) {
+                        incomplete[key] = envelopeModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         incomplete[key] = householdModal;
                     }
                 } else if (now < new Date(dateStr)) {
                     if (key == accountStatusField.INCOME) {
                         scheduled[key] = incomeModal;
-                    } else if (key == accountStatusField.GROCERY) {
-                        scheduled[key] = groceryModal;
+                    } else if (key == accountStatusField.ENVELOPE) {
+                        scheduled[key] = envelopeModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         scheduled[key] = householdModal;
                     }
@@ -268,8 +307,8 @@ function openNotCompleteModals(statusMap) {
         } else {
             if (key == accountStatusField.INCOME) {
                 incomplete[key] = incomeModal;
-            } else if (key == accountStatusField.GROCERY) {
-                incomplete[key] = groceryModal;
+            } else if (key == accountStatusField.ENVELOPE) {
+                incomplete[key] = envelopeModal;
             } else if (key == accountStatusField.HOUSEHOLD) {
                 incomplete[key] = householdModal;
             }
@@ -311,21 +350,11 @@ function openIncompleteModals(modalKeys) {
     });
 }
 
-function send(callback) {
-    if (callback.key == accountStatusField.INCOME) {
-        updateIncome(callback);
-    } else if (callback.key == accountStatusField.GROCERY) {
-        sendRequestGrocery();
-    } else if (callback.key == accountStatusField.HOUSEHOLD) {
-        updateHousehold(callback);
-    }
-}
-
 window.openModal = function(modal) {
     if (modal.key == accountStatusField.INCOME) {
         openIncomeModal(modal);
-    } else if (modal.key == accountStatusField.GROCERY) {
-        openGroceryModal(modal);
+    } else if (modal.key == accountStatusField.ENVELOPE) {
+        openEvelopeModal(modal);
     } else if (modal.key == accountStatusField.HOUSEHOLD) {
         openHouseholdModal(modal);
     }
@@ -373,7 +402,7 @@ function getLength(s) {
     return [...s].length;
 }
 
-function getGroceries() {
+function getEnvelopes() {
     var userId = window.localStorage.getItem("user_id");
     var token = window.localStorage.getItem("token");
     var username = window.localStorage.getItem("username");
@@ -429,7 +458,7 @@ function getGroceries() {
     token = "token=" + escape(token);
     var data = userId + "&" + username + "&" + token;
 
-    request.open("GET", ctx + "/dashboard/groceries-controller?" + data, true);
+    request.open("GET", ctx + "/dashboard/envelopes-controller?" + data, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send();
 }
