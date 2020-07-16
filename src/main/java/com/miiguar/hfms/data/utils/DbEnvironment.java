@@ -80,8 +80,8 @@ public class DbEnvironment {
     /**
      * Income table
      */
-    public static final String INCOME_TB_NAME = "incomes";
-    public static final String INCOME_ID = "income_id";
+    public static final String ASSET_TB_NAME = "assets";
+    public static final String ASSET_ID = "asset_id";
     public static final String ACCOUNT_TYPE = "account_type";
     public static final String AMOUNT = "amount";
     public static final String CREATED_AT = "created_at";
@@ -113,6 +113,7 @@ public class DbEnvironment {
     public static final String SCHEDULED_TYPE = "scheduled_type";
     // groceryId ref groceries
     public static final String FK_ENVELOPE_GROCERY_ID = "fk_envelope_grocery_id_groceries";
+    public static final String FK_ENVELOPE_HOUSEHOLD = "fk_envelope_ref_households_household_id";
 
     /**
      * Expenses table

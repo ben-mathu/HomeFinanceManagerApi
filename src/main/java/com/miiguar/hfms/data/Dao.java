@@ -1,10 +1,5 @@
 package com.miiguar.hfms.data;
 
-import com.miiguar.hfms.data.grocery.model.Grocery;
-import com.miiguar.hfms.data.income.model.Income;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

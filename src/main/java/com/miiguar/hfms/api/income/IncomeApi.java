@@ -1,11 +1,9 @@
 package com.miiguar.hfms.api.income;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.config.ConfigureDb;
-import com.miiguar.hfms.data.income.IncomeDao;
-import com.miiguar.hfms.data.income.IncomeDto;
-import com.miiguar.hfms.data.income.model.Income;
-import com.miiguar.hfms.data.jdbc.JdbcConnection;
+import com.miiguar.hfms.data.assets.AssetsDao;
+import com.miiguar.hfms.data.assets.AssetDto;
+import com.miiguar.hfms.data.assets.model.Assets;
 import com.miiguar.hfms.data.status.AccountStatus;
 import com.miiguar.hfms.data.status.AccountStatusDao;
 import com.miiguar.hfms.data.status.Status;
@@ -19,11 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.API;
@@ -39,7 +34,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class IncomeApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    private IncomeDao incomeDao = new IncomeDao();
+    private AssetsDao incomeDao = new AssetsDao();
     private AccountStatusDao accountStatusDao = new AccountStatusDao();
 
     @Override
@@ -58,7 +53,7 @@ public class IncomeApi extends BaseServlet {
 
         String incomeId = randomString.nextString();
 
-        Income income = new Income();
+        Assets income = new Assets();
         income.setUserId(userId);
         income.setIncomeId(incomeId);
         income.setAccountType(incomeDesc);
@@ -67,7 +62,7 @@ public class IncomeApi extends BaseServlet {
 
         incomeDao.save(income);
 
-        IncomeDto incomeDto = new IncomeDto();
+        AssetDto incomeDto = new AssetDto();
         incomeDto.setIncome(income);
 
         String response = gson.toJson(incomeDto);

@@ -1,13 +1,12 @@
-package com.miiguar.hfms.api.envelopes;
+package com.miiguar.hfms.api.containers;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.data.envelope.EnvelopeDao;
-import com.miiguar.hfms.data.envelope.EnvelopeDto;
-import com.miiguar.hfms.data.envelope.model.Envelope;
+import com.miiguar.hfms.data.container.ContainersDao;
+import com.miiguar.hfms.data.container.ContainerDto;
+import com.miiguar.hfms.data.container.ContainersDto;
+import com.miiguar.hfms.data.container.model.Container;
 import com.miiguar.hfms.data.expense.ExpenseDao;
-import com.miiguar.hfms.data.expense.ExpenseDto;
 import com.miiguar.hfms.data.expense.model.Expense;
-import com.miiguar.hfms.data.grocery.GroceriesDto;
 import com.miiguar.hfms.data.grocery.model.Grocery;
 import com.miiguar.hfms.data.grocery.GroceryDao;
 import com.miiguar.hfms.data.household.HouseholdDao;
@@ -43,7 +42,7 @@ import static com.miiguar.hfms.utils.Constants.EnvelopeType.GROCERY_CATEGORY;
  * @author bernard
  */
 @WebServlet(API + ENVELOPES)
-public class EnvelopesApi extends BaseServlet {
+public class ContainersApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     AccountStatusDao accountStatusDao = new AccountStatusDao();
@@ -51,7 +50,7 @@ public class EnvelopesApi extends BaseServlet {
     UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
     GroceryDao groceryDao = new GroceryDao();
     ExpenseDao expenseDao = new ExpenseDao();
-    EnvelopeDao envelopeDao = new EnvelopeDao();
+    ContainersDao envelopeDao = new ContainersDao();
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -71,8 +70,8 @@ public class EnvelopesApi extends BaseServlet {
         Date date = new Date();
         String now = new SimpleDateFormat(DATE_FORMAT).format(date);
 
-        EnvelopeDto dto = gson.fromJson(requestStr, EnvelopeDto.class);
-        Envelope envelope = dto.getEnvelope();
+        ContainerDto dto = gson.fromJson(requestStr, ContainerDto.class);
+        Container envelope = dto.getEnvelope();
 
         String envelopeId = randomString.nextString();
         envelope.setEnvelopeId(envelopeId);
@@ -152,19 +151,19 @@ public class EnvelopesApi extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
-        EnvelopesDto envelopesDto = new EnvelopesDto();
-        ArrayList<EnvelopeDto> envelopeDtoList = new ArrayList<>();
+        ContainersDto envelopesDto = new ContainersDto();
+        ArrayList<ContainerDto> envelopeDtoList = new ArrayList<>();
 
         // get household
         UserHouseholdRel userHouseholdRel = userHouseholdDao.get(userId);
         String householdId = userHouseholdRel.getHouseId();
 
         // get envelopes
-        List<Envelope> envelopes = envelopeDao.getAll(householdId);
+        List<Container> envelopes = envelopeDao.getAll(householdId);
 
         // loop through each envelope to get grocery or expense related
-        for (Envelope envelope : envelopes) {
-            EnvelopeDto envelopeDto = new EnvelopeDto();
+        for (Container envelope : envelopes) {
+            ContainerDto envelopeDto = new ContainerDto();
             envelopeDto.setEnvelope(envelope);
 
             String envelopeId = envelope.getEnvelopeId();

@@ -1,13 +1,10 @@
 package com.miiguar.hfms.view.dashboard;
 
-import com.miiguar.hfms.api.envelopes.EnvelopesDto;
-import com.miiguar.hfms.data.envelope.EnvelopeDto;
-import com.miiguar.hfms.data.envelope.model.Envelope;
-import com.miiguar.hfms.data.expense.ExpenseDto;
+import com.miiguar.hfms.data.container.ContainersDto;
+import com.miiguar.hfms.data.container.ContainerDto;
+import com.miiguar.hfms.data.container.model.Container;
 import com.miiguar.hfms.data.expense.model.Expense;
 import com.miiguar.hfms.data.grocery.GroceriesDto;
-import com.miiguar.hfms.data.grocery.model.Grocery;
-import com.miiguar.hfms.data.grocery.GroceryDto;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
@@ -29,8 +26,8 @@ import static com.miiguar.hfms.utils.Constants.EnvelopeType.GROCERY_CATEGORY;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/envelopes-controller/*")
-public class EnvelopeServletController extends BaseServlet {
+@WebServlet("/dashboard/envelopes-controller/*") // TODO: Change the urlPattern to match name
+public class ContainerServletController extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -46,11 +43,11 @@ public class EnvelopeServletController extends BaseServlet {
         BufferedReader streamReader = conn.getReader(GET_ENVELOPE + requestParam, token, "GET");
 
         String line = "";
-        EnvelopesDto envelopesDto = null;
+        ContainersDto envelopesDto = null;
         String response = "";
         while((line = streamReader.readLine()) != null) {
             response = line;
-            envelopesDto = gson.fromJson(line, EnvelopesDto.class);
+            envelopesDto = gson.fromJson(line, ContainersDto.class);
         }
 
         Report report = envelopesDto.getReport();
@@ -66,9 +63,9 @@ public class EnvelopeServletController extends BaseServlet {
         String token = req.getParameter(TOKEN);
         String category = req.getParameter(CATEGORY);
 
-        EnvelopeDto envelopeDto = new EnvelopeDto();
+        ContainerDto envelopeDto = new ContainerDto();
 
-        Envelope envelope = new Envelope();
+        Container envelope = new Container();
         envelope.setCategory(category);
         envelope.setName(req.getParameter(ENVELOPE_NAME));
         envelope.setScheduledFor(req.getParameter(SCHEDULED_FOR));
@@ -95,13 +92,13 @@ public class EnvelopeServletController extends BaseServlet {
 
         envelopeDto.setUser(user);
 
-        InitUrlConnection<EnvelopeDto> conn = new InitUrlConnection<>();
+        InitUrlConnection<ContainerDto> conn = new InitUrlConnection<>();
         BufferedReader streamReader = conn.getReader(envelopeDto, ADD_ENVELOPE, token, "PUT");
 
         String line = "";
-        EnvelopeDto response = null;
+        ContainerDto response = null;
         while((line = streamReader.readLine()) != null) {
-            response = gson.fromJson(line, EnvelopeDto.class);
+            response = gson.fromJson(line, ContainerDto.class);
         }
 
         if (response != null) {

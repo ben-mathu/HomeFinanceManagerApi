@@ -1,22 +1,22 @@
-package com.miiguar.hfms.data.income;
+package com.miiguar.hfms.data.assets;
 
 import com.google.gson.annotations.SerializedName;
-import com.miiguar.hfms.data.income.model.Income;
+import com.miiguar.hfms.data.assets.model.Assets;
 
 import static com.miiguar.hfms.utils.Constants.INCOME;
 
 /**
  * @author bernard
  */
-public class IncomeDto {
+public class AssetDto {
     @SerializedName(INCOME)
-    private Income income;
+    private Assets income;
 
-    public Income getIncome() {
+    public Assets getIncome() {
         return income;
     }
 
-    public void setIncome(Income income) {
+    public void setIncome(Assets income) {
         this.income = income;
     }
 }

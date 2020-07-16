@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.envelope.model;
+package com.miiguar.hfms.data.container.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
@@ -12,9 +12,14 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
  * @author bernard
  */
 @Table(
-        tableName = ENVELOPE_TB_NAME
+        tableName = ENVELOPE_TB_NAME,
+        constraint = {@Constraint(
+                name = FK_ENVELOPE_HOUSEHOLD,
+                columnName = HOUSEHOLD_ID,
+                tableName = HOUSEHOLD_TB_NAME
+        )}
 )
-public class Envelope {
+public class Container {
     @PrimaryKey(columnName = ENVELOPE_ID)
     @SerializedName(ENVELOPE_ID)
     private String envelopeId = "";

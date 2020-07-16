@@ -1,8 +1,8 @@
-package com.miiguar.hfms.data.income;
+package com.miiguar.hfms.data.container;
 
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.Dao;
-import com.miiguar.hfms.data.income.model.Income;
+import com.miiguar.hfms.data.container.model.Container;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.utils.Log;
 
@@ -17,54 +17,43 @@ import java.util.Properties;
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 
 /**
- * Member methods to create and update the income table
  * @author bernard
  */
-public class IncomeDao implements Dao<Income> {
-    public static final String TAG = IncomeDao.class.getSimpleName();
+public class ContainersDao implements Dao<Container> {
+    public static final String TAG = ContainersDao.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public IncomeDao() {
+    public ContainersDao() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
-//    @Override
-//    public int createTable(Connection connection) {
-//        PreparedStatement create = connection.prepareStatement(
-//                "CREATE TABLE " + INCOME_TB_NAME + "(" +
-//                        INCOME_ID + " VARCHAR(12)," +
-//                        INCOME_DESCRIPTION + " TEXT NOT NULL," +
-//                        AMOUNT + " NUMERIC(8,2) NOT NULL," +
-//                        USER_ID + " VARCHAR(12) UNIQUE," +
-//                        CREATED_AT + " TIMESTAMP NOT NULL," +
-//                        " CONSTRAINT " + PRIV_KEY_INCOME + " PRIMARY KEY (" + INCOME_ID + ")"
-//        );
-//        return 0;
-//    }
-
     @Override
-    public int save(Income item) {
-        String query = "INSERT INTO " + INCOME_TB_NAME + "(" +
-                INCOME_ID + "," + AMOUNT + "," + ACCOUNT_TYPE + "," +
-                USER_ID + "," + CREATED_AT + ")" +
-                " VALUES (?,?,?,?,?)";
+    public int save(Container item) {
+        String query = "INSERT INTO " + ENVELOPE_TB_NAME + "(" +
+                ENVELOPE_ID + "," + ENVELOPE_NAME + "," + CATEGORY + "," +
+                TOTAL_AMOUNT + "," + CREATED_AT + "," + SCHEDULED_FOR + "," +
+                SCHEDULED_TYPE + ")" +
+                " VALUES (?,?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, item.getIncomeId());
-            preparedStatement.setDouble(2, item.getAmount());
-            preparedStatement.setString(3, item.getAccountType());
-            preparedStatement.setString(4, item.getUserId());
+            preparedStatement.setString(1, item.getEnvelopeId());
+            preparedStatement.setString(2, item.getName());
+            preparedStatement.setString(3, item.getCategory());
+            preparedStatement.setDouble(4, item.getTotalAmount());
             preparedStatement.setString(5, item.getCreatedAt());
+            preparedStatement.setString(6, item.getScheduledFor());
+            preparedStatement.setString(7, item.getScheduleType());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -72,7 +61,7 @@ public class IncomeDao implements Dao<Income> {
             conn.close();
             conn = null;
         } catch (SQLException throwables) {
-            Log.e(TAG, "Error adding income: ", throwables);
+            Log.e(TAG, "Error processing envelope update", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -90,48 +79,56 @@ public class IncomeDao implements Dao<Income> {
     }
 
     @Override
-    public int update(Income item) {
+    public int update(Container item) {
         return 0;
     }
 
     @Override
-    public int delete(Income item) {
+    public int delete(Container item) {
         return 0;
     }
 
     @Override
-    public Income get(String id) {
-        String query = "SELECT * FROM " + INCOME_TB_NAME +
-                " WHERE " + USER_ID + "=?";
-        Income income = new Income();
+    public Container get(String id) {
+        return null;
+    }
 
+    @Override
+    public List<Container> getAll() {
+        return null;
+    }
+
+    @Override
+    public List<Container> getAll(String id) {
+        String query = "SELECT * FROM " + ENVELOPE_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
+        ArrayList<Container> envelopes = new ArrayList<>();
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
             preparedStatement.setString(1, id);
+
             resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()) {
-                income.setAmount(resultSet.getDouble(AMOUNT));
-                income.setCreatedAt(resultSet.getString(CREATED_AT));
-                income.setAccountType(resultSet.getString(ACCOUNT_TYPE));
-                income.setIncomeId(resultSet.getString(INCOME_ID));
-                income.setUserId(resultSet.getString(USER_ID));
+            while (resultSet.next()) {
+                Container envelope = new Container();
+                envelope.setEnvelopeId(resultSet.getString(ENVELOPE_ID));
+                envelope.setName(resultSet.getString(ENVELOPE_NAME));
+                envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
+                envelope.setCategory(resultSet.getString(CATEGORY));
+                envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));
+                envelope.setScheduleType(resultSet.getString(SCHEDULED_TYPE));
+                envelope.setHouseholdId(resultSet.getString(HOUSEHOLD_ID));
+                envelope.setCreatedAt(resultSet.getString(CREATED_AT));
+                envelopes.add(envelope);
             }
-
-            resultSet.close();
-            resultSet = null;
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
         } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing income query", throwables);
+            Log.e(TAG, "Error processing envelope query", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -151,21 +148,11 @@ public class IncomeDao implements Dao<Income> {
                     resultSet = null;
                 } catch (Exception e) { /* Intentionally blank */ }
         }
-        return income;
+        return envelopes;
     }
 
     @Override
-    public List<Income> getAll() {
-        return null;
-    }
-
-    @Override
-    public List<Income> getAll(String id) {
-        return null;
-    }
-
-    @Override
-    public int saveAll(ArrayList<Income> items) {
+    public int saveAll(ArrayList<Container> items) {
         return 0;
     }
 }

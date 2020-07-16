@@ -1,7 +1,7 @@
-package com.miiguar.hfms.api.envelopes;
+package com.miiguar.hfms.data.container;
 
 import com.google.gson.annotations.SerializedName;
-import com.miiguar.hfms.data.envelope.EnvelopeDto;
+import com.miiguar.hfms.data.container.ContainerDto;
 import com.miiguar.hfms.data.status.Report;
 
 import java.util.ArrayList;
@@ -11,17 +11,17 @@ import static com.miiguar.hfms.utils.Constants.ENVELOPE_ELEMENTS;
 /**
  * @author bernard
  */
-public class EnvelopesDto {
+public class ContainersDto {
     @SerializedName(ENVELOPE_ELEMENTS)
-    private ArrayList<EnvelopeDto> envelopeDto;
+    private ArrayList<ContainerDto> envelopeDto;
     @SerializedName("report")
     private Report report;
 
-    public ArrayList<EnvelopeDto> getEnvelopeDto() {
+    public ArrayList<ContainerDto> getEnvelopeDto() {
         return envelopeDto;
     }
 
-    public void setEnvelopeDto(ArrayList<EnvelopeDto> envelopeDto) {
+    public void setEnvelopeDto(ArrayList<ContainerDto> envelopeDto) {
         this.envelopeDto = envelopeDto;
     }
 

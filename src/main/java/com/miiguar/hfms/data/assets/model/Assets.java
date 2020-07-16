@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.income.model;
+package com.miiguar.hfms.data.assets.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
@@ -11,14 +11,14 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-@Table(tableName = INCOME_TB_NAME,
+@Table(tableName = ASSET_TB_NAME,
         constraint = {
         @Constraint(tableName = USERS_TB_NAME, name = FOREIGN_KEY_USER_USER_ID, columnName = USER_ID)
     }
 )
-public class Income {
-    @SerializedName(INCOME_ID)
-    @PrimaryKey(columnName = INCOME_ID)
+public class Assets {
+    @SerializedName(ASSET_ID)
+    @PrimaryKey(columnName = ASSET_ID)
     private String incomeId = "";
 
     @SerializedName(AMOUNT)
