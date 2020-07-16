@@ -31,6 +31,7 @@ import static com.miiguar.hfms.data.utils.URL.CONFIRM;
 @WebServlet(API + CONFIRM)
 public class Confirm extends BaseServlet {
     private static final long serialVersionUID = 1L;
+    public static final String TAG = Confirm.class.getSimpleName();
 
     private ConfigureDb db;
     private Properties prop;
