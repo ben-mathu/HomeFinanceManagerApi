@@ -13,9 +13,9 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 @Table(
         tableName = EXPENSES_TB_NAME,
         constraint = {@Constraint(
-                name = FK_ENVELOPE_ID_EXPENSES,
-                columnName = ENVELOPE_ID,
-                tableName = ENVELOPE_TB_NAME
+                name = FK_EXPENSES_CONTAINER_ID,
+                columnName = CONTAINER_ID,
+                tableName = CONTAINER_TB_NAME
         )}
 )
 public class Expense {
@@ -35,8 +35,8 @@ public class Expense {
     @Column(columnName = AMOUNT)
     private double amount = 0;
 
-    @SerializedName(ENVELOPE_ID)
-    @Column(columnName = ENVELOPE_ID)
+    @SerializedName(CONTAINER_ID)
+    @Column(columnName = CONTAINER_ID)
     private String envelopeId = "";
 
     @SerializedName(PAYEE_NAME)

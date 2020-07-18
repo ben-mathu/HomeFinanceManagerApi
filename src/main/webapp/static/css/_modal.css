@@ -12,6 +12,7 @@
 }
 
 .modal-content {
+    color: #3F3A4B;
     width: fit-content;
     height: 380px;
     padding: 30px;
@@ -62,4 +63,8 @@
 }
 .radio-style {
     margin-left: 10px;
+}
+
+.font-color {
+    color: #3F3A4B;
 }

@@ -40,7 +40,7 @@ public class GroceryDao implements Dao<Grocery> {
                 GROCERY_PRICE + "," +
                 REQUIRED_QUANTITY + "," +
                 REMAINING_QUANTITY + "," +
-                ENVELOPE_ID + ")" +
+                CONTAINER_ID + ")" +
                 "VALUES (?,?,?,?,?,?,?)" +
                 " ON CONFLICT (" + GROCERY_ID + ")" +
                 " DO UPDATE" +
@@ -49,7 +49,7 @@ public class GroceryDao implements Dao<Grocery> {
                 GROCERY_PRICE + "=?," +
                 REQUIRED_QUANTITY + "=?," +
                 REMAINING_QUANTITY + "=?," +
-                ENVELOPE_ID + "=?" +
+                CONTAINER_ID + "=?" +
                 " WHERE " + GROCERIES_TB_NAME + "." + GROCERY_ID + "=?";
         int affectedRows = 0;
 
@@ -127,7 +127,7 @@ public class GroceryDao implements Dao<Grocery> {
                 REQUIRED_QUANTITY + "," +
                 REMAINING_QUANTITY + "," +
                 HOUSEHOLD_ID + "," +
-                ENVELOPE_ID + ")" +
+                CONTAINER_ID + ")" +
                 "VALUES (?,?,?,?,?,?,?,?)";
         int affectedRows = 0;
 
@@ -240,7 +240,7 @@ public class GroceryDao implements Dao<Grocery> {
     @Override
     public List<Grocery> getAll(String id) {
         String query = "SELECT * FROM " + GROCERIES_TB_NAME +
-                " WHERE " + ENVELOPE_ID + "=?";
+                " WHERE " + CONTAINER_ID + "=?";
         ArrayList<Grocery> groceries = new ArrayList<>();
 
         Connection conn = null;

@@ -5,6 +5,13 @@ let incomeModalTitle;
 let btnAddIncome;
 let btnCancelIncomeModal;
 
+let incomeTypeSelector;
+
+const incomeTypeFields = {
+    MOB_MONEY: 'Mobile Money',
+    BANK_ACC: 'Bank Account'
+}
+
 function configureIncomeElements() {
 
     incomeSpan = document.getElementById("income");
@@ -24,6 +31,9 @@ function configureIncomeElements() {
     btnAddIncome.onclick = function() {
         addIncome();
     }
+
+    // declare income type selector
+    incomeTypeSelector = document.getElementById("incomeType");
 }
 
 function openIncomeModal(modalDetails) {
@@ -69,10 +79,13 @@ function updateIncome(callback) {
     var token = userFields.TOKEN + "=" + escape(window.localStorage.getItem(userFields.TOKEN));
     var userId = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID));
 
-    var incomeDescription = incomeFields.ACCOUNT_TYPE + "=" + escape(document.getElementById("incomeDescription").value);
-    var value = incomeFields.AMOUNT + "=" + escape(document.getElementById("incomeValue").value);
 
-    var data = userId + "&" + incomeDescription + "&" + value + "&" + token;
+    let incomeType = incomeTypeSelector.options[incomeTypeSelector.selectedIndex].value;
+    incomeType = incomeFields.ACCOUNT_TYPE + "=" + escape(incomeType);
+    var incomeDesc = incomeFields.INCOME_DESC + "=" + escape(document.getElementById("incomeDescription").value);
+    var incomeValue = incomeFields.AMOUNT + "=" + escape(document.getElementById("incomeValue").value);
+
+    var data = userId + "&" + incomeType + "&" + incomeDesc + "&" + incomeValue + "&" + token;
 
     request.open("POST", ctx + "/dashboard/user-controller/add-income", true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);

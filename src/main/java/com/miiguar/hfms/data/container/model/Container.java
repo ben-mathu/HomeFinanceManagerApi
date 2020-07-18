@@ -12,20 +12,20 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
  * @author bernard
  */
 @Table(
-        tableName = ENVELOPE_TB_NAME,
+        tableName = CONTAINER_TB_NAME,
         constraint = {@Constraint(
-                name = FK_ENVELOPE_HOUSEHOLD,
+                name = FK_CONTAINER_HOUSEHOLD_ID,
                 columnName = HOUSEHOLD_ID,
                 tableName = HOUSEHOLD_TB_NAME
         )}
 )
 public class Container {
-    @PrimaryKey(columnName = ENVELOPE_ID)
-    @SerializedName(ENVELOPE_ID)
+    @PrimaryKey(columnName = CONTAINER_ID)
+    @SerializedName(CONTAINER_ID)
     private String envelopeId = "";
 
-    @SerializedName(ENVELOPE_NAME)
-    @Column(columnName = ENVELOPE_NAME, characterLength = 45, unique = true)
+    @SerializedName(CONTAINER_NAME)
+    @Column(columnName = CONTAINER_NAME, characterLength = 45, unique = true)
     private String name = "";
 
     @SerializedName(CATEGORY)

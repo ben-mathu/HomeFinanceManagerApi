@@ -9,12 +9,10 @@
                     <input id="envelopeName" class="input-style" type="text" name="name" placeholder="Envelope Name">
                 </div>
                 <div >
-                    <div >
-                        <select id="categorySelector" class="select-style">
-                            <option value="Groceries">Groceries</option>
-                            <option value="Expenses">Expenses</option>
-                        </select>
-                    </div>
+                    <select id="categorySelector" class="select-style">
+                        <option value="Groceries">Groceries</option>
+                        <option value="Expenses">Expenses</option>
+                    </select>
                 </div>
                 <div >
                     <h5>Total Amount: <span style="font-size: 26px">Ksh. </span><span id="totalAmount" style="font-size: 26px">0</span></h5>

@@ -1,5 +1,7 @@
 package com.miiguar.hfms.view.dashboard;
 
+import com.miiguar.hfms.data.income.IncomeDto;
+import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -51,15 +53,23 @@ public class UserServletController extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
-        String incomeDesc = req.getParameter(ACCOUNT_TYPE);
+        String incomeDesc = req.getParameter(INCOME_DESC);
+        String incomeType = req.getParameter(ACCOUNT_TYPE);
         String amount = req.getParameter(AMOUNT);
 
         String token = req.getParameter(TOKEN);
 
-        String requestParam = "?" + USERNAME + "=" + userId + "&" + AMOUNT + "=" + amount + "&" + ACCOUNT_TYPE + "=" + incomeDesc;
+        String requestParam = "?" + USER_ID + "=" + userId;
+        IncomeDto incomeDto = new IncomeDto();
+        Income income = new Income();
+        income.setAmount(Double.parseDouble(amount));
+        income.setUserId(userId);
+        income.setAccountType(incomeType);
+        income.setIncomeDesc(incomeDesc);
+        incomeDto.setIncome(income);
 
-        InitUrlConnection<User> conn = new InitUrlConnection<>();
-        BufferedReader streamReader = conn.getReader(ADD_USER_INCOME + requestParam, token, "POST");
+        InitUrlConnection<IncomeDto> conn = new InitUrlConnection<>();
+        BufferedReader streamReader = conn.getReader(incomeDto, ADD_USER_INCOME + requestParam, token, "POST");
 
         String line = "";
         String response = "";

@@ -12,7 +12,7 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
  */
 @Table(tableName = ACCOUNT_STATUS_TB_NAME,
         constraint = {@Constraint(
-                name = FK_TB_USERID_REF_USERS,
+                name = FK_ACCOUNT_STATUS_USER_ID,
                 columnName = USER_ID,
                 tableName = USERS_TB_NAME
         )}

@@ -3,7 +3,6 @@ package com.miiguar.hfms.data.expense;
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.Dao;
 import com.miiguar.hfms.data.expense.model.Expense;
-import com.miiguar.hfms.data.grocery.GroceryDao;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.utils.Log;
 
@@ -36,7 +35,7 @@ public class ExpenseDao implements Dao<Expense> {
     public int save(Expense item) {
         String query = "INSERT INTO " + EXPENSES_TB_NAME + "(" +
                 EXPENSE_ID + "," + EXPENSE_NAME + "," + EXPENSE_DESCRIPTION + "," +
-                AMOUNT + "," + HOUSEHOLD_ID + "," + ENVELOPE_ID + "," +
+                AMOUNT + "," + HOUSEHOLD_ID + "," + CONTAINER_ID + "," +
                 PAYEE_NAME + "," + BUSINESS_NUMBER + "," + PHONE_NUMBER + ")" +
                 " VALUES (?,?,?,?,?,?,?,?,?)";
 
@@ -94,7 +93,7 @@ public class ExpenseDao implements Dao<Expense> {
     @Override
     public Expense get(String id) {
         String query = "SELECT * FROM " + EXPENSES_TB_NAME +
-                " WHERE " + ENVELOPE_ID + "=?";
+                " WHERE " + CONTAINER_ID + "=?";
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -116,7 +115,7 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
                 expense.setPhoneNumber(resultSet.getString(PHONE_NUMBER));
-                expense.setEnvelopeId(resultSet.getString(ENVELOPE_ID));
+                expense.setEnvelopeId(resultSet.getString(CONTAINER_ID));
             }
 
             conn.close();
@@ -158,7 +157,7 @@ public class ExpenseDao implements Dao<Expense> {
     public List<Expense> getAll(String id) {
         ArrayList<Expense> expenses = new ArrayList<>();
         String query = "SELECT * FROM " + EXPENSES_TB_NAME +
-                " WHERE " + ENVELOPE_ID + "=?";
+                " WHERE " + CONTAINER_ID + "=?";
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -180,7 +179,7 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
                 expense.setPhoneNumber(resultSet.getString(PHONE_NUMBER));
-                expense.setEnvelopeId(resultSet.getString(ENVELOPE_ID));
+                expense.setEnvelopeId(resultSet.getString(CONTAINER_ID));
                 expenses.add(expense);
             }
 

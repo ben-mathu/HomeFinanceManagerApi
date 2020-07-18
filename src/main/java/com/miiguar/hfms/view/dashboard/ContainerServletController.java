@@ -67,7 +67,7 @@ public class ContainerServletController extends BaseServlet {
 
         Container envelope = new Container();
         envelope.setCategory(category);
-        envelope.setName(req.getParameter(ENVELOPE_NAME));
+        envelope.setName(req.getParameter(CONTAINER_NAME));
         envelope.setScheduledFor(req.getParameter(SCHEDULED_FOR));
         envelope.setTotalAmount(Double.parseDouble(req.getParameter(TOTAL_AMOUNT)));
         envelope.setScheduleType(req.getParameter(SCHEDULED_TYPE));

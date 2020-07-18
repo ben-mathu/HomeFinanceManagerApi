@@ -1,8 +1,8 @@
-package com.miiguar.hfms.data.assets;
+package com.miiguar.hfms.data.income;
 
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.Dao;
-import com.miiguar.hfms.data.assets.model.Assets;
+import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.utils.Log;
 
@@ -20,14 +20,14 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
  * Member methods to create and update the income table
  * @author bernard
  */
-public class AssetsDao implements Dao<Assets> {
-    public static final String TAG = AssetsDao.class.getSimpleName();
+public class IncomeDao implements Dao<Income> {
+    public static final String TAG = IncomeDao.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public AssetsDao() {
+    public IncomeDao() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
@@ -47,11 +47,11 @@ public class AssetsDao implements Dao<Assets> {
 //    }
 
     @Override
-    public int save(Assets item) {
-        String query = "INSERT INTO " + ASSET_TB_NAME + "(" +
-                ASSET_ID + "," + AMOUNT + "," + ACCOUNT_TYPE + "," +
+    public int save(Income item) {
+        String query = "INSERT INTO " + INCOME_TB_NAME + "(" +
+                INCOME_ID + "," + AMOUNT + "," + ACCOUNT_TYPE + "," + INCOME_DESC + "," +
                 USER_ID + "," + CREATED_AT + ")" +
-                " VALUES (?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -63,8 +63,9 @@ public class AssetsDao implements Dao<Assets> {
             preparedStatement.setString(1, item.getIncomeId());
             preparedStatement.setDouble(2, item.getAmount());
             preparedStatement.setString(3, item.getAccountType());
-            preparedStatement.setString(4, item.getUserId());
-            preparedStatement.setString(5, item.getCreatedAt());
+            preparedStatement.setString(4, item.getIncomeDesc());
+            preparedStatement.setString(5, item.getUserId());
+            preparedStatement.setString(6, item.getCreatedAt());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -90,20 +91,20 @@ public class AssetsDao implements Dao<Assets> {
     }
 
     @Override
-    public int update(Assets item) {
+    public int update(Income item) {
         return 0;
     }
 
     @Override
-    public int delete(Assets item) {
+    public int delete(Income item) {
         return 0;
     }
 
     @Override
-    public Assets get(String id) {
-        String query = "SELECT * FROM " + ASSET_TB_NAME +
+    public Income get(String id) {
+        String query = "SELECT * FROM " + INCOME_TB_NAME +
                 " WHERE " + USER_ID + "=?";
-        Assets income = new Assets();
+        Income income = new Income();
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -120,8 +121,9 @@ public class AssetsDao implements Dao<Assets> {
                 income.setAmount(resultSet.getDouble(AMOUNT));
                 income.setCreatedAt(resultSet.getString(CREATED_AT));
                 income.setAccountType(resultSet.getString(ACCOUNT_TYPE));
-                income.setIncomeId(resultSet.getString(ASSET_ID));
+                income.setIncomeId(resultSet.getString(INCOME_ID));
                 income.setUserId(resultSet.getString(USER_ID));
+                income.setIncomeDesc(resultSet.getString(INCOME_DESC));
             }
 
             resultSet.close();
@@ -155,17 +157,17 @@ public class AssetsDao implements Dao<Assets> {
     }
 
     @Override
-    public List<Assets> getAll() {
+    public List<Income> getAll() {
         return null;
     }
 
     @Override
-    public List<Assets> getAll(String id) {
+    public List<Income> getAll(String id) {
         return null;
     }
 
     @Override
-    public int saveAll(ArrayList<Assets> items) {
+    public int saveAll(ArrayList<Income> items) {
         return 0;
     }
 }

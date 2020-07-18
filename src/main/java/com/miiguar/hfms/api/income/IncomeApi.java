@@ -1,12 +1,13 @@
 package com.miiguar.hfms.api.income;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.data.assets.AssetsDao;
-import com.miiguar.hfms.data.assets.AssetDto;
-import com.miiguar.hfms.data.assets.model.Assets;
+import com.miiguar.hfms.data.income.IncomeDao;
+import com.miiguar.hfms.data.income.IncomeDto;
+import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.status.AccountStatus;
 import com.miiguar.hfms.data.status.AccountStatusDao;
 import com.miiguar.hfms.data.status.Status;
+import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
 
@@ -34,14 +35,16 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class IncomeApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    private AssetsDao incomeDao = new AssetsDao();
+    private IncomeDao incomeDao = new IncomeDao();
     private AccountStatusDao accountStatusDao = new AccountStatusDao();
 
     @Override
     protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        String userId = httpServletRequest.getParameter(USERNAME);
-        String incomeDesc = httpServletRequest.getParameter(ACCOUNT_TYPE);
-        String amount = httpServletRequest.getParameter(AMOUNT);
+        String userId = httpServletRequest.getParameter(USER_ID);
+        String requestStr = BufferRequestReader.bufferRequest(httpServletRequest);
+
+        IncomeDto incomeDto = gson.fromJson(requestStr, IncomeDto.class);
+        Income income = incomeDto.getIncome();
 
         Date date = new Date();
         SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
@@ -53,16 +56,11 @@ public class IncomeApi extends BaseServlet {
 
         String incomeId = randomString.nextString();
 
-        Assets income = new Assets();
-        income.setUserId(userId);
         income.setIncomeId(incomeId);
-        income.setAccountType(incomeDesc);
         income.setCreatedAt(today);
-        income.setAmount(Double.parseDouble(amount));
 
         incomeDao.save(income);
 
-        AssetDto incomeDto = new AssetDto();
         incomeDto.setIncome(income);
 
         String response = gson.toJson(incomeDto);

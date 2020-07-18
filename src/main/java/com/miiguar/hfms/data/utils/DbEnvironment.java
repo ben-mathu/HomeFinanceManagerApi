@@ -29,8 +29,8 @@ public class DbEnvironment {
     public static final String USER_HOUSEHOLD_TB_NAME = "user_households";
     // user_id reference
     // household_id reference
-    public static final String FK_USERS_HOUSEHOLD_HOUSEHOLD_ID = "fk_users_household_id_ref_households";
-    public static final String FK_USERS_HOUSEHOLD_USER_ID = "fk_users_household_id_ref_users";
+    public static final String FK_USERS_HOUSEHOLD_HOUSEHOLD_ID = "fk_users_households_household_id_ref_households";
+    public static final String FK_USERS_HOUSEHOLD_USER_ID = "fk_users_households_user_id_ref_users";
 
     /**
      * Code table
@@ -39,8 +39,8 @@ public class DbEnvironment {
     public static final String CODE = "code";
     public static final String EMAIL_CONFIRMED = "is_email_confirmed";
     public static final String PRIV_KEY_CODE = "pk_code";
-    public static final String FK_TB_CODE_USER_ID = "fk_user_id_code_ref_users";
     // user_id to identify the user
+    public static final String FK_CODE_USER_ID = "fk_code_user_id_ref_users";
 
     /**
      * Group table
@@ -58,7 +58,7 @@ public class DbEnvironment {
     // group_id referenced from group table
     // user_id referenced from user table
     public static final String PRIV_KEY_MEMBERS = "pk_members_members_id";
-    public static final String FK_TB_MEMBERS_GROUP_ID = "fk_members_group_id_ref_groups";
+    public static final String FK_MEMBERS_GROUP_ID = "fk_members_group_id_ref_groups";
 
     /**
      * Grocery table
@@ -71,22 +71,23 @@ public class DbEnvironment {
     public static final String REQUIRED_QUANTITY = "required_quantity";
     public static final String REMAINING_QUANTITY = "remaining_quantity";
     public static final String PRIV_KEY_GROCERIES = "priv_key_groceries";
-    // household_id references the household table (household_id)
-    public static final String FK_GROCERY_REF_HOUSEHOLD_ID = "fk_tb_grocery_user_id_ref_users";
-    public static final String FK_ENVELOPE_ID_GROCERY = "fk_tb_grocery_envelope_id_ref_envelope";
+    // container_id references the containers table (household_id)
+    public static final String FK_GROCERIES_REF_HOUSEHOLD_ID = "fk_groceries_user_id_ref_users";
+    public static final String FK_GROCERIES_CONTAINER_ID = "fk_groceries_container_id_ref_containers";
 
 
 
     /**
      * Income table
      */
-    public static final String ASSET_TB_NAME = "assets";
-    public static final String ASSET_ID = "asset_id";
+    public static final String INCOME_TB_NAME = "income";
+    public static final String INCOME_ID = "asset_id";
     public static final String ACCOUNT_TYPE = "account_type";
+    public static final String INCOME_DESC = "income_description";
     public static final String AMOUNT = "amount";
     public static final String CREATED_AT = "created_at";
     // user_id references the user table (user_id)
-    public static final String FOREIGN_KEY_USER_USER_ID = "foreign_key_user_user_id";
+    public static final String FK_INCOME_USER_ID = "fk_income_user_id_ref_users";
 
     /**
      * Account Status
@@ -98,22 +99,22 @@ public class DbEnvironment {
     public static final String ENVELOPE_STATUS = "envelope_status";
     public static final String HOUSEHOLD_STATUS = "household_status";
     public static final String COMPLETE_AT = "completed_at";
-    public static final String FK_TB_USERID_REF_USERS = "fk_user_id_references_users_user_id";
+    public static final String FK_ACCOUNT_STATUS_USER_ID = "fk_account_status_user_id_ref_users";
 
     /**
      * Envelope Table
      */
-    public static final String ENVELOPE_TB_NAME = "envelopes";
-    public static final String ENVELOPE_ID = "envelope_id";
-    public static final String ENVELOPE_NAME = "envelope_name";
+    public static final String CONTAINER_TB_NAME = "containers";
+    public static final String CONTAINER_ID = "container_id";
+    public static final String CONTAINER_NAME = "container_name";
     public static final String CATEGORY = "category";
     public static final String TOTAL_AMOUNT = "amount";
     // created at {type: string date}
     public static final String SCHEDULED_FOR = "scheduled_for";
     public static final String SCHEDULED_TYPE = "scheduled_type";
-    // groceryId ref groceries
-    public static final String FK_ENVELOPE_GROCERY_ID = "fk_envelope_grocery_id_groceries";
-    public static final String FK_ENVELOPE_HOUSEHOLD = "fk_envelope_ref_households_household_id";
+    // household_id ref household
+    public static final String FK_CONTAINERS_GROCERY_ID = "fk_container_grocery_id_groceries";
+    public static final String FK_CONTAINER_HOUSEHOLD_ID = "fk_container_household_id_ref_households";
 
     /**
      * Expenses table
@@ -129,5 +130,5 @@ public class DbEnvironment {
     public static final String BUSINESS_NUMBER = "business_number";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String FK_HOUSEHOLD_ID_REF_HOUSEHOLDS = "fk_household_id_ref_households_household_id";
-    public static final String FK_ENVELOPE_ID_EXPENSES = "fk_envelope_id_ref_envelope";
+    public static final String FK_EXPENSES_CONTAINER_ID = "fk_expenses_container_id_ref_containers";
 }

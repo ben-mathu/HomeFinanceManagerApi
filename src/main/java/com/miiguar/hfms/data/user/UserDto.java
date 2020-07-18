@@ -2,7 +2,7 @@ package com.miiguar.hfms.data.user;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.data.household.model.Household;
-import com.miiguar.hfms.data.assets.model.Assets;
+import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.status.AccountStatus;
 import com.miiguar.hfms.data.user.model.User;
 
@@ -18,7 +18,7 @@ public class UserDto {
     @SerializedName(USER)
     private User user;
     @SerializedName(INCOME)
-    private Assets income;
+    private Income income;
     @SerializedName(HOUSEHOLD_TB_NAME)
     private ArrayList<Household> households;
     @SerializedName(ACCOUNT_STATUS_UPDATE)
@@ -32,11 +32,11 @@ public class UserDto {
         this.user = user;
     }
 
-    public void setIncome(Assets income) {
+    public void setIncome(Income income) {
         this.income = income;
     }
 
-    public Assets getIncome() {
+    public Income getIncome() {
         return income;
     }
 

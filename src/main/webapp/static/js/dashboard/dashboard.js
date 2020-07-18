@@ -60,6 +60,7 @@ const userFields = {
 const incomeFields = {
     INCOME_ID: 'income_id',
     ACCOUNT_TYPE: 'account_type',
+    INCOME_DESC: 'income_description',
     AMOUNT: 'amount',
     CREATED_AT: 'created_at',
 }

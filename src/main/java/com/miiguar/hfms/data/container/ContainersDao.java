@@ -33,8 +33,8 @@ public class ContainersDao implements Dao<Container> {
     }
     @Override
     public int save(Container item) {
-        String query = "INSERT INTO " + ENVELOPE_TB_NAME + "(" +
-                ENVELOPE_ID + "," + ENVELOPE_NAME + "," + CATEGORY + "," +
+        String query = "INSERT INTO " + CONTAINER_TB_NAME + "(" +
+                CONTAINER_ID + "," + CONTAINER_NAME + "," + CATEGORY + "," +
                 TOTAL_AMOUNT + "," + CREATED_AT + "," + SCHEDULED_FOR + "," +
                 SCHEDULED_TYPE + ")" +
                 " VALUES (?,?,?,?,?,?,?)";
@@ -100,7 +100,7 @@ public class ContainersDao implements Dao<Container> {
 
     @Override
     public List<Container> getAll(String id) {
-        String query = "SELECT * FROM " + ENVELOPE_TB_NAME +
+        String query = "SELECT * FROM " + CONTAINER_TB_NAME +
                 " WHERE " + HOUSEHOLD_ID + "=?";
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -117,8 +117,8 @@ public class ContainersDao implements Dao<Container> {
 
             while (resultSet.next()) {
                 Container envelope = new Container();
-                envelope.setEnvelopeId(resultSet.getString(ENVELOPE_ID));
-                envelope.setName(resultSet.getString(ENVELOPE_NAME));
+                envelope.setEnvelopeId(resultSet.getString(CONTAINER_ID));
+                envelope.setName(resultSet.getString(CONTAINER_NAME));
                 envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
                 envelope.setCategory(resultSet.getString(CATEGORY));
                 envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));

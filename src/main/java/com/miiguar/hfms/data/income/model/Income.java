@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.assets.model;
+package com.miiguar.hfms.data.income.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
@@ -11,14 +11,16 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-@Table(tableName = ASSET_TB_NAME,
-        constraint = {
-        @Constraint(tableName = USERS_TB_NAME, name = FOREIGN_KEY_USER_USER_ID, columnName = USER_ID)
-    }
+@Table(tableName = INCOME_TB_NAME,
+        constraint = {@Constraint(
+                tableName = USERS_TB_NAME,
+                name = FK_INCOME_USER_ID,
+                columnName = USER_ID
+        )}
 )
-public class Assets {
-    @SerializedName(ASSET_ID)
-    @PrimaryKey(columnName = ASSET_ID)
+public class Income {
+    @SerializedName(INCOME_ID)
+    @PrimaryKey(columnName = INCOME_ID)
     private String incomeId = "";
 
     @SerializedName(AMOUNT)
@@ -28,6 +30,10 @@ public class Assets {
     @SerializedName(ACCOUNT_TYPE)
     @Column(columnName = ACCOUNT_TYPE)
     private String accountType = "";
+
+    @SerializedName(INCOME_DESC)
+    @Column(columnName = INCOME_DESC, characterLength = 255)
+    private String incomeDesc = "";
 
     @SerializedName(USER_ID)
     @Column(columnName = USER_ID)
@@ -75,5 +81,13 @@ public class Assets {
 
     public void setIncomeId(String incomeId) {
         this.incomeId = incomeId;
+    }
+
+    public String getIncomeDesc() {
+        return incomeDesc;
+    }
+
+    public void setIncomeDesc(String incomeDesc) {
+        this.incomeDesc = incomeDesc;
     }
 }
