@@ -1,8 +1,8 @@
-package com.miiguar.hfms.data.container;
+package com.miiguar.hfms.data.jar;
 
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.Dao;
-import com.miiguar.hfms.data.container.model.Container;
+import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.utils.Log;
 
@@ -19,25 +19,25 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class ContainersDao implements Dao<Container> {
-    public static final String TAG = ContainersDao.class.getSimpleName();
+public class MoneyJarsDao implements Dao<MoneyJar> {
+    public static final String TAG = MoneyJarsDao.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public ContainersDao() {
+    public MoneyJarsDao() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
     @Override
-    public int save(Container item) {
-        String query = "INSERT INTO " + CONTAINER_TB_NAME + "(" +
-                CONTAINER_ID + "," + CONTAINER_NAME + "," + CATEGORY + "," +
+    public int save(MoneyJar item) {
+        String query = "INSERT INTO " + MONEY_JAR_TB_NAME + "(" +
+                MONEY_JAR_ID + "," + MONEY_JAR_NAME + "," + CATEGORY + "," +
                 TOTAL_AMOUNT + "," + CREATED_AT + "," + SCHEDULED_FOR + "," +
-                SCHEDULED_TYPE + ")" +
-                " VALUES (?,?,?,?,?,?,?)";
+                SCHEDULED_TYPE + "," + HOUSEHOLD_ID + ")" +
+                " VALUES (?,?,?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -47,13 +47,14 @@ public class ContainersDao implements Dao<Container> {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, item.getEnvelopeId());
+            preparedStatement.setString(1, item.getMoneyJarId());
             preparedStatement.setString(2, item.getName());
             preparedStatement.setString(3, item.getCategory());
             preparedStatement.setDouble(4, item.getTotalAmount());
             preparedStatement.setString(5, item.getCreatedAt());
             preparedStatement.setString(6, item.getScheduledFor());
             preparedStatement.setString(7, item.getScheduleType());
+            preparedStatement.setString(8, item.getHouseholdId());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -79,34 +80,34 @@ public class ContainersDao implements Dao<Container> {
     }
 
     @Override
-    public int update(Container item) {
+    public int update(MoneyJar item) {
         return 0;
     }
 
     @Override
-    public int delete(Container item) {
+    public int delete(MoneyJar item) {
         return 0;
     }
 
     @Override
-    public Container get(String id) {
+    public MoneyJar get(String id) {
         return null;
     }
 
     @Override
-    public List<Container> getAll() {
+    public List<MoneyJar> getAll() {
         return null;
     }
 
     @Override
-    public List<Container> getAll(String id) {
-        String query = "SELECT * FROM " + CONTAINER_TB_NAME +
+    public List<MoneyJar> getAll(String id) {
+        String query = "SELECT * FROM " + MONEY_JAR_TB_NAME +
                 " WHERE " + HOUSEHOLD_ID + "=?";
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        ArrayList<Container> envelopes = new ArrayList<>();
+        ArrayList<MoneyJar> envelopes = new ArrayList<>();
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
@@ -116,9 +117,9 @@ public class ContainersDao implements Dao<Container> {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Container envelope = new Container();
-                envelope.setEnvelopeId(resultSet.getString(CONTAINER_ID));
-                envelope.setName(resultSet.getString(CONTAINER_NAME));
+                MoneyJar envelope = new MoneyJar();
+                envelope.setMoneyJarId(resultSet.getString(MONEY_JAR_ID));
+                envelope.setName(resultSet.getString(MONEY_JAR_NAME));
                 envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
                 envelope.setCategory(resultSet.getString(CATEGORY));
                 envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));
@@ -152,7 +153,7 @@ public class ContainersDao implements Dao<Container> {
     }
 
     @Override
-    public int saveAll(ArrayList<Container> items) {
+    public int saveAll(ArrayList<MoneyJar> items) {
         return 0;
     }
 }

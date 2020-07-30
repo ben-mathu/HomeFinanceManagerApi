@@ -3,7 +3,7 @@ let householdName;
 let householdId;
 let infoHouseholdFields;
 
-function loadWindow() {
+window.onload = function() {
     
     let checkboxholder = document.getElementById("checkboxItem");
     let checkbox = document.getElementById("checkbox");

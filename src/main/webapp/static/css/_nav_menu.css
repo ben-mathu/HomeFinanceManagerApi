@@ -1,3 +1,23 @@
+.nav-container {
+    width: 40px;
+    height: 100%;
+    position: fixed;
+    border-top-right-radius: 5px;
+    background-color: rgb(40, 36, 48);
+}
+
+.nav-icon-container {
+    width: fit-content;
+    height: fit-content;
+    padding: 5px;
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+}
+
 .status-section {
     margin: 10px 10px 10px 30px;
 }
@@ -34,42 +54,21 @@
 }
 
 .nav-avatar-container {
-    left: 10px;
+    width: 20px;
+    height: 20px;
+    margin: 6px;
+    border: 2px;
+    border-style: solid;
+    border-radius: 50%;
+    border-color: #FEC800;
+    background-color: white;
 }
 
-.avatar-container {
-    width: fit-content;
-    position: relative;
-}
-
-.avatar-container img{
-    width: 100%;
-    height: auto;
-}
-
-.avatar-container .status-indicator {
+.nav-avatar-container .status-indicator {
     position: absolute;
     bottom: 0%;
     right: 0%;
     transform: translate(0%, 0%);
-}
-
-.animate-nav-close {
-    -webkit-animation-name: closeNav;
-    -moz-animation-name: closeNav;
-    -ms-animation-name: closeNav;
-    -o-animation-name: closeNav;
-    animation-name: closeNav;
-    -webkit-animation-fill-mode: forwards;
-    -moz-animation-fill-mode: forwards;
-    -ms-animation-fill-mode: forwards;
-    -o-animation-fill-mode: forwards;
-    animation-fill-mode: forwards;
-    -webkit-animation-duration: 0.5s;
-    -moz-animation-duration: 0.5s;
-    -ms-animation-duration: 0.5s;
-    -o-animation-duration: 0.5s;
-    animation-duration: 0.5s;
 }
 
 .animate-nav-open {
@@ -90,14 +89,6 @@
     animation-duration: 0.5s;
 }
 
-.nav-container {
-    width: 50px;
-    height: 100%;
-    position: fixed;
-    margin-top: -65px;
-    background-color: rgb(40, 36, 48);
-}
-
 @keyframes openNav {
     from {
         width: 50px;
@@ -108,19 +99,32 @@
     }
 }
 
+.animate-nav-close {
+    -webkit-animation-name: closeNav;
+    -moz-animation-name: closeNav;
+    -ms-animation-name: closeNav;
+    -o-animation-name: closeNav;
+    animation-name: closeNav;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.5s;
+    -moz-animation-duration: 0.5s;
+    -ms-animation-duration: 0.5s;
+    -o-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+}
+
 @keyframes closeNav {
     from {
         width: 20%;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
     }
     to {
-        width: 50px;
+        width: 40px;
     }
-}
-
-.nav-icon {
-    width: 20px;
-    height: 20px;
 }
 
 .back-btn-translation-close {
@@ -193,10 +197,4 @@
         transform: rotate(180deg);
         margin-left: 75%;
     }
-}
-
-.nav-icon-container {
-    width: fit-content;
-    height: fit-content;
-    margin: 15px;
 }

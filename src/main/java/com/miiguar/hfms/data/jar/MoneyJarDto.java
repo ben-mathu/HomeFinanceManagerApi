@@ -1,7 +1,8 @@
-package com.miiguar.hfms.data.container;
+package com.miiguar.hfms.data.jar;
 
 import com.google.gson.annotations.SerializedName;
-import com.miiguar.hfms.data.container.model.Container;
+import com.miiguar.hfms.data.expense.ExpenseDto;
+import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.expense.model.Expense;
 import com.miiguar.hfms.data.grocery.model.Grocery;
 import com.miiguar.hfms.data.user.model.User;
@@ -14,22 +15,22 @@ import static com.miiguar.hfms.utils.Constants.*;
 /**
  * @author bernard
  */
-public class ContainerDto {
-    @SerializedName(ENVELOPE)
-    private Container envelope;
+public class MoneyJarDto {
+    @SerializedName(JAR)
+    private MoneyJar jar;
     @SerializedName(GROCERIES_TB_NAME)
     private List<Grocery> groceries;
     @SerializedName(EXPENSE)
-    private Expense expense;
+    private ExpenseDto expenseDto;
     @SerializedName(USER)
     private User user;
 
-    public void setEnvelope(Container envelope) {
-        this.envelope = envelope;
+    public void setJar(MoneyJar jar) {
+        this.jar = jar;
     }
 
-    public Container getEnvelope() {
-        return envelope;
+    public MoneyJar getJar() {
+        return jar;
     }
 
     public void setUser(User user) {
@@ -48,11 +49,11 @@ public class ContainerDto {
         this.groceries = groceries;
     }
 
-    public Expense getExpense() {
-        return expense;
+    public ExpenseDto getExpenseDto() {
+        return expenseDto;
     }
 
-    public void setExpense(Expense expense) {
-        this.expense = expense;
+    public void setExpenseDto(ExpenseDto expenseDto) {
+        this.expenseDto = expenseDto;
     }
 }

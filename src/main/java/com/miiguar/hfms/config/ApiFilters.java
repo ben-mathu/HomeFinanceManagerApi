@@ -38,9 +38,9 @@ public class ApiFilters implements Filter {
         // verify authorization token
         JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
 
-        StringBuffer url = req.getRequestURL();
+        String uri = req.getRequestURI();
         
-        Log.d(TAG, url.toString());
+        Log.d(TAG, uri);
 
         String endPoint = req.getRequestURI();
         if (!endPoint.endsWith("/login-user") && !endPoint.endsWith("/registration")) {
@@ -59,7 +59,13 @@ public class ApiFilters implements Filter {
                 ConfigureApp app = new ConfigureApp();
                 Properties prop = app.getProperties();
                 String subject = prop.getProperty(SUBJECT, "");
-                String token = normalizeToken(req);
+                String token = null;
+                try {
+                    token = normalizeToken(req);
+                } catch (IllegalAccessException e) {
+                    Log.e(TAG, "Error normalizing token.", e);
+                }
+
                 if (jwtTokenUtil.verifyToken(ISSUER, subject, token)) {
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {
@@ -79,10 +85,14 @@ public class ApiFilters implements Filter {
         }
     }
 
-    private String normalizeToken(HttpServletRequest req) {
+    private String normalizeToken(HttpServletRequest req) throws IllegalAccessException {
         String token = req.getHeader("Authorization");
         if (token.startsWith("Bearer ")) {
-            token = token.replace("Bearer ", "");
+            token = token.split(" ")[1];
+        } else if(token.isEmpty()) {
+            throw new IllegalArgumentException("Token is null");
+        } else {
+            throw new IllegalAccessException("Token structure invalid.");
         }
 
         return token.trim();

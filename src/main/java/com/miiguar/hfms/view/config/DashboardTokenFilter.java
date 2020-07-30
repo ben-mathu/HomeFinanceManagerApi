@@ -66,10 +66,12 @@ public class DashboardTokenFilter implements Filter {
     private String getTokenFromCookie(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
 
-        for (Cookie cookie :
-                cookies) {
-            if (TOKEN.equals(cookie.getName()))
-                return cookie.getValue();
+        if (cookies != null) {
+            for (Cookie cookie :
+                    cookies) {
+                if (TOKEN.equals(cookie.getName()))
+                    return cookie.getValue();
+            }
         }
         return "";
     }

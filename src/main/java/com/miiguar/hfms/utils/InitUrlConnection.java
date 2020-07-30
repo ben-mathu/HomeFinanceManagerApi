@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static javax.ws.rs.core.HttpHeaders.*;
 import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -68,7 +68,7 @@ public class InitUrlConnection<T> {
         // Set up connections
         final URL url = new URL(baseUrl + endPoint);
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestProperty(AUTHORIZATION, token);
+        conn.setRequestProperty(AUTHORIZATION, "Bearer " + token);
         conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
@@ -104,7 +104,7 @@ public class InitUrlConnection<T> {
         // Set up connections
         final URL url = new URL(baseUrl + endPoint);
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestProperty(AUTHORIZATION, token);
+        conn.setRequestProperty(AUTHORIZATION, "Bearer " + token);
         conn.setRequestProperty(CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
@@ -119,5 +119,33 @@ public class InitUrlConnection<T> {
     public void close() throws IOException {
         outputStreamWriter.close();
         streamReader.close();
+    }
+
+    public BufferedReader getReader(String generateToken, String method) throws IOException {
+        ConfigureApp conf = new ConfigureApp();
+        Properties prop  = conf.getProperties();
+
+        String baseUrl = prop.getProperty("daraja.baseUrl");
+        String grantType = prop.getProperty("daraja.grantType");
+        String host = prop.getProperty("daraja.host");
+        String key = prop.getProperty("daraja.consumerKey");
+        String secret = prop.getProperty("daraja.consumerSecret");
+
+        String cipher = Base64EncoderDecoder.encode(key + ":" + secret);
+
+        // Set up connections
+        final URL url = new URL(baseUrl + generateToken + "?grant_type=" + grantType);
+        final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestProperty(HOST, host);
+        conn.setRequestProperty(AUTHORIZATION, "Basic " + cipher);
+        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        conn.setRequestMethod(method);
+        conn.setDoOutput(true);
+
+        // Set up the output line/response stream
+        streamReader = new BufferedReader(
+                new InputStreamReader(conn.getInputStream())
+        );
+        return streamReader;
     }
 }

@@ -74,7 +74,7 @@ function configureGrocery() {
 // }
 
 function showError() {
-    var error = document.getElementById("envelopeModalError");
+    var error = document.getElementById("jarModalError");
     error.innerHTML = "An Error occured please try again.";
     error.hidden = false;
 }
@@ -145,7 +145,7 @@ function addGrocery() {
  */
 function updateGrocery(index) {
     // updates a row when user edit an item in the list
-    row = groceryListTBody.rows[index];
+    let row = groceryListTBody.rows[index];
     var cells = row.cells;
 
     var previousAmount = cells[1].innerHTML;

@@ -18,10 +18,10 @@ public class URL {
     public static final String GET_CONFIRMATION_CODE = "/registration/confirm-user/get-confirmation-code";
 
     // Groceries HTTP Methods
-    public static final String ENVELOPES = "/envelopes/*";
-    public static final String ADD_ENVELOPE = "/envelopes/add-envelope";
-    public static final String GET_ENVELOPE = "/envelopes/get-envelope";
-    public static final String GET_ALL_ENVELOPES = "/envelopes/get-all_envelopes";
+    public static final String MONEY_JARS = "/jars/*";
+    public static final String ADD_MONEY_JAR = "/jars/add-money-jar";
+    public static final String GET_MONEY_JAR = "/jars/get-money-jar";
+    public static final String GET_ALL_MONEY_JARS = "/jars/get-all-jars";
 
     public static final String USER_DETAILS = "/users/*";
     public static final String GET_USER_DETAILS = "/users/user";
@@ -29,4 +29,7 @@ public class URL {
     // Income
     public static final String INCOME_ENDPOINT = "/income/*";
     public static final String ADD_USER_INCOME = "/income/add-income";
+
+    // Daraja
+    public static final String GENERATE_TOKEN = "oauth/v1/generate";
 }

@@ -2,6 +2,7 @@ package com.miiguar.hfms.view.dashboard;
 
 import com.miiguar.hfms.data.income.IncomeDto;
 import com.miiguar.hfms.data.income.model.Income;
+import com.miiguar.hfms.data.user.UserDto;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -29,10 +30,10 @@ public class UserServletController extends BaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doGet(req, resp);
 
-        String username = req.getParameter(USERNAME);
+        String userId = req.getParameter(USER_ID);
         String token = req.getParameter(TOKEN);
 
-        String requestParam = "?" + USERNAME + "=" + username;
+        String requestParam = "?" + USER_ID + "=" + userId;
 
         InitUrlConnection<User> conn = new InitUrlConnection<>();
         BufferedReader streamReader = conn.getReader(GET_USER_DETAILS + requestParam, token, "GET");

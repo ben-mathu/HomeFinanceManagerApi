@@ -128,11 +128,10 @@ function showIncome(income) {
     if (income != null) {
         if (income.amount > 0) {
             incomeSpan.hidden = false;
-            var text = incomeSpan.innerHTML + user.income;
+            var text = incomeSpan.innerHTML + income.amount;
             incomeSpan.innerHTML = text;
             
             btnOpenIncomeModal.hidden = true;
-            incomeSpan.value = income.amount;
         }
     }
 }

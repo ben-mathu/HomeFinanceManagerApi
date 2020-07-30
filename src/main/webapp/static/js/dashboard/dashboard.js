@@ -1,11 +1,23 @@
 let user;
 let income;
 let householdArr;
+let userHouseholdArr;
 let accountStatus;
+let householdMembers;
 
 const Status = {
     COMPLETE: 'Complete',
     PARTIAL: 'Partial'
+}
+
+function setAlarm(jarItem) {
+    window.setTimeout(() => {
+        showNotification();
+    }, new Date(jarItem.scheduled_for).getTime() - new Date().getTime());
+}
+
+function showNotification() {
+    
 }
 
 var timeInterval = setInterval(function() {myTimer()}, 1000);
@@ -24,7 +36,7 @@ var optionsMenu;
 var scheduleModal;
 var incomeModal;
 var householdModal;
-var envelopeModal;
+var jarModal;
 var groceryModal;
 var expensesModal;
 
@@ -105,11 +117,11 @@ const expenseFields = {
 }
 
 /**
- * Serializeable fields for envelope JSON object
+ * Serializeable fields for Money Jar JSON object
  */
-const envelopeFields = {
-    ENVELOP_ID: "envelope_id",
-    ENVELOPE_NAME: "envelope_name",
+const jarFields = {
+    JAR_ID: "jar_id",
+    JAR_LABEL: "jar_label",
     CATEGORY: "category",
     TOTAL_AMOUNT: "amount",
     LIABILITIES: "liabilities",
@@ -117,8 +129,7 @@ const envelopeFields = {
     SCHEDULED_TYPE: "scheduled_type"
 }
 
-function loadWindow() {
-    // TODO: 
+window.onload = function() {
     
     // use this when the page is reloaded to obtain the recent visited page
     loadHistoryLocation();
@@ -184,7 +195,7 @@ function loadWindow() {
     scheduleModal = document.getElementById("scheduleModal");
     incomeModal = document.getElementById("incomeModal");
     householdModal = document.getElementById("householdModal");
-    envelopeModal = document.getElementById("envelopeModal");
+    jarModal = document.getElementById("jarModal");
     expensesModal = document.getElementById("expensesModal");
 
     window.onclick = function(event) {
@@ -194,17 +205,14 @@ function loadWindow() {
             scheduleModal.style.display = "none";
         } else if (event.target == incomeModal) {
             incomeModal.style.display = "none";
-        } else if (event.target == envelopeModal) {
-            envelopeModal.style.display = "none";
+        } else if (event.target == jarModal) {
+            jarModal.style.display = "none";
         } else if (event.target == expensesModal) {
             expensesModal.style.display = "none";
         }
     }
 
     getUserDetails();
-    
-    // get members when window loads
-    getMembers();
     
     // // get grocery list
     // getEnvelopes();
@@ -215,8 +223,9 @@ function loadWindow() {
     configureIncomeElements();
     configureGrocery();
     configureHousehold();
-    configureEnvelope();
+    configureMoneyJar();
     configureExpenses();
+    configureMembers();
 }
 
 /**
@@ -242,7 +251,13 @@ function getUserDetails() {
                 income = obj.income;
                 
                 householdArr = obj.households;
+                userHouseholdArr = obj.relations;
                 accountStatus = obj.account_status_update;
+                setHouseholdId();
+
+                // show members
+                householdMembers = obj.members;
+                setMembers();
 
                 // create a list of not complete settings
                 var status = {};
@@ -260,9 +275,9 @@ function getUserDetails() {
         }
     }
 
-    var username = userFields.USERNAME + "=" + escape(window.localStorage.getItem(userFields.USERNAME));
+    var userId = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID));
     var token = userFields.TOKEN + "=" + escape(window.localStorage.getItem("token"));
-    var data = username + "&" + token;
+    var data = userId + "&" + token;
 
     request.open("GET", ctx + "/dashboard/user-controller?" + data, true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
@@ -291,7 +306,7 @@ function openNotCompleteModals(statusMap) {
                     if (key == accountStatusField.INCOME) {
                         incomplete[key] = incomeModal;
                     } else if (key == accountStatusField.ENVELOPE) {
-                        incomplete[key] = envelopeModal;
+                        incomplete[key] = jarModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         incomplete[key] = householdModal;
                     }
@@ -299,7 +314,7 @@ function openNotCompleteModals(statusMap) {
                     if (key == accountStatusField.INCOME) {
                         scheduled[key] = incomeModal;
                     } else if (key == accountStatusField.ENVELOPE) {
-                        scheduled[key] = envelopeModal;
+                        scheduled[key] = jarModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         scheduled[key] = householdModal;
                     }
@@ -309,7 +324,7 @@ function openNotCompleteModals(statusMap) {
             if (key == accountStatusField.INCOME) {
                 incomplete[key] = incomeModal;
             } else if (key == accountStatusField.ENVELOPE) {
-                incomplete[key] = envelopeModal;
+                incomplete[key] = jarModal;
             } else if (key == accountStatusField.HOUSEHOLD) {
                 incomplete[key] = householdModal;
             }
@@ -355,7 +370,7 @@ window.openModal = function(modal) {
     if (modal.key == accountStatusField.INCOME) {
         openIncomeModal(modal);
     } else if (modal.key == accountStatusField.ENVELOPE) {
-        openEvelopeModal(modal);
+        openJarModal(modal);
     } else if (modal.key == accountStatusField.HOUSEHOLD) {
         openHouseholdModal(modal);
     }
@@ -711,20 +726,6 @@ function getCookieVal(offSet) {
 
 function updateBreadcrumbs() {
     var history = "";
-}
-
-function getMembers() {
-    var request = getXmlHttpRequest();
-
-    request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status != 200) {
-                
-            } else {
-
-            }
-        }
-    }
 }
 
 function openOrCloseNav() {

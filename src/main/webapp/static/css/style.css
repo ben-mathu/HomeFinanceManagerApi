@@ -11,6 +11,7 @@
 @import url("_account.css");
 @import url("_modal.css");
 @import url("_envelope.css");
+@import url("_main.css");
 
 .footer {
     font-size: 12px;
@@ -261,9 +262,8 @@ a.link {
 }
 
 .container {
-    margin-top: 65px;
+    margin-top: 50px;
     margin-bottom: 60px;
-    margin-left: 60px;
 }
 
 .rounded-corner {
@@ -279,8 +279,8 @@ a.link {
 }
 
 .align-right {
-    margin-left: auto;
-    margin-right: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .text-center {
@@ -292,7 +292,6 @@ a.link {
 }
 
 html {
-    height: 100%;
     color: white;
 }
 
@@ -331,6 +330,11 @@ tb {
     font-size: 14px;
     width: fit-content;
     right: 0;
+}
+
+td {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 /* width */

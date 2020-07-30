@@ -1,5 +1,6 @@
 package com.miiguar.hfms.data.tablerelationships;
 
+import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
 import com.miiguar.hfms.init.Constraint;
 import com.miiguar.hfms.init.Table;
@@ -21,11 +22,17 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.HOUSEHOLD_TB_NAME;
                 tableName = USERS_TB_NAME
         )})
 public class UserHouseholdRel {
+    @SerializedName(USER_ID)
     @Column(columnName = USER_ID)
     private String userId = "";
 
+    @SerializedName(HOUSEHOLD_ID)
     @Column(columnName = HOUSEHOLD_ID)
     private String houseId = "";
+
+    @SerializedName(IS_OWNER)
+    @Column(columnName = IS_OWNER)
+    private boolean isOwner = false;
 
     public String getUserId() {
         return userId;
@@ -41,5 +48,13 @@ public class UserHouseholdRel {
 
     public void setHouseId(String houseId) {
         this.houseId = houseId;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 }

@@ -7,6 +7,7 @@
     
         <title>${title}</title>
 
+        <script src="<%= request.getContextPath() %>/${piechart}"></script>
         <script src="<%= request.getContextPath() %>/${script}"></script>
         <script src="<%= request.getContextPath() %>/${registration}"></script>
         <script src="<%= request.getContextPath() %>/${coder}"></script>
@@ -18,7 +19,8 @@
         <script src="<%= request.getContextPath() %>/${income}"></script>
         <script src="<%= request.getContextPath() %>/${grocery}"></script>
         <script src="<%= request.getContextPath() %>/${household}"></script>
-        <script src="<%= request.getContextPath() %>/${envelopes}"></script>
+        <script src="<%= request.getContextPath() %>/${jars}"></script>
         <script src="<%= request.getContextPath() %>/${expenses}"></script>
+        <script src="<%= request.getContextPath() %>/${members}"></script>
     </head>
-    <body onLoad="JavaScript:loadWindow();">
+    <body>

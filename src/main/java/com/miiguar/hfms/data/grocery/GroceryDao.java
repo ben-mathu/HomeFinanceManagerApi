@@ -40,7 +40,7 @@ public class GroceryDao implements Dao<Grocery> {
                 GROCERY_PRICE + "," +
                 REQUIRED_QUANTITY + "," +
                 REMAINING_QUANTITY + "," +
-                CONTAINER_ID + ")" +
+                MONEY_JAR_ID + ")" +
                 "VALUES (?,?,?,?,?,?,?)" +
                 " ON CONFLICT (" + GROCERY_ID + ")" +
                 " DO UPDATE" +
@@ -49,7 +49,7 @@ public class GroceryDao implements Dao<Grocery> {
                 GROCERY_PRICE + "=?," +
                 REQUIRED_QUANTITY + "=?," +
                 REMAINING_QUANTITY + "=?," +
-                CONTAINER_ID + "=?" +
+                MONEY_JAR_ID + "=?" +
                 " WHERE " + GROCERIES_TB_NAME + "." + GROCERY_ID + "=?";
         int affectedRows = 0;
 
@@ -65,13 +65,13 @@ public class GroceryDao implements Dao<Grocery> {
             insert.setDouble(4, grocery.getPrice());
             insert.setInt(5, grocery.getRequired());
             insert.setInt(6, grocery.getRemaining());
-            insert.setString(7, grocery.getEnvelopeId());
+            insert.setString(7, grocery.getJarId());
             insert.setString(8, grocery.getName());
             insert.setString(9, grocery.getDescription());
             insert.setDouble(10, grocery.getPrice());
             insert.setInt(11, grocery.getRequired());
             insert.setInt(12, grocery.getRemaining());
-            insert.setString(14, grocery.getEnvelopeId());
+            insert.setString(14, grocery.getJarId());
             insert.setString(13, groceryId);
             affectedRows = insert.executeUpdate();
 
@@ -126,9 +126,8 @@ public class GroceryDao implements Dao<Grocery> {
                 GROCERY_PRICE + "," +
                 REQUIRED_QUANTITY + "," +
                 REMAINING_QUANTITY + "," +
-                HOUSEHOLD_ID + "," +
-                CONTAINER_ID + ")" +
-                "VALUES (?,?,?,?,?,?,?,?)";
+                MONEY_JAR_ID + ")" +
+                "VALUES (?,?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -143,7 +142,7 @@ public class GroceryDao implements Dao<Grocery> {
             insert.setDouble(4, item.getPrice());
             insert.setInt(5, item.getRequired());
             insert.setInt(6, item.getRemaining());
-            insert.setString(8, item.getEnvelopeId());
+            insert.setString(7, item.getJarId());
             affectedRows = insert.executeUpdate();
 
             insert.close();
@@ -240,7 +239,7 @@ public class GroceryDao implements Dao<Grocery> {
     @Override
     public List<Grocery> getAll(String id) {
         String query = "SELECT * FROM " + GROCERIES_TB_NAME +
-                " WHERE " + CONTAINER_ID + "=?";
+                " WHERE " + MONEY_JAR_ID + "=?";
         ArrayList<Grocery> groceries = new ArrayList<>();
 
         Connection conn = null;
@@ -260,7 +259,7 @@ public class GroceryDao implements Dao<Grocery> {
                 grocery.setPrice(result.getDouble(GROCERY_PRICE));
                 grocery.setRequired(result.getInt(REQUIRED_QUANTITY));
                 grocery.setRemaining(result.getInt(REMAINING_QUANTITY));
-                grocery.setEnvelopeId(id);
+                grocery.setJarId(id);
                 groceries.add(grocery);
             }
 

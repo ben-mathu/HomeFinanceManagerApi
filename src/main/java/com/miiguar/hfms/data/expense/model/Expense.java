@@ -3,6 +3,7 @@ package com.miiguar.hfms.data.expense.model;
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
 import com.miiguar.hfms.init.Constraint;
+import com.miiguar.hfms.init.PrimaryKey;
 import com.miiguar.hfms.init.Table;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
@@ -13,34 +14,34 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 @Table(
         tableName = EXPENSES_TB_NAME,
         constraint = {@Constraint(
-                name = FK_EXPENSES_CONTAINER_ID,
-                columnName = CONTAINER_ID,
-                tableName = CONTAINER_TB_NAME
+                name = FK_EXPENSES_JAR_ID,
+                columnName = MONEY_JAR_ID,
+                tableName = MONEY_JAR_TB_NAME
         )}
 )
 public class Expense {
     @SerializedName(EXPENSE_ID)
-    @Column(columnName = EXPENSE_ID)
+    @PrimaryKey(columnName = EXPENSE_ID)
     private String expenseId = "";
 
     @SerializedName(EXPENSE_NAME)
-    @Column(columnName = EXPENSE_NAME)
+    @Column(columnName = EXPENSE_NAME, characterLength = 45, unique = true)
     private String name = "";
 
     @SerializedName(EXPENSE_DESCRIPTION)
-    @Column(columnName = EXPENSE_DESCRIPTION)
+    @Column(columnName = EXPENSE_DESCRIPTION, characterLength = 255)
     private String description = "";
 
     @SerializedName(AMOUNT)
     @Column(columnName = AMOUNT)
     private double amount = 0;
 
-    @SerializedName(CONTAINER_ID)
-    @Column(columnName = CONTAINER_ID)
-    private String envelopeId = "";
+    @SerializedName(MONEY_JAR_ID)
+    @Column(columnName = MONEY_JAR_ID)
+    private String jarId = "";
 
     @SerializedName(PAYEE_NAME)
-    @Column(columnName = PAYEE_NAME)
+    @Column(columnName = PAYEE_NAME, characterLength = 45)
     private String payee = "";
 
     @SerializedName(BUSINESS_NUMBER)
@@ -83,12 +84,12 @@ public class Expense {
         this.description = description;
     }
 
-    public String getEnvelopeId() {
-        return envelopeId;
+    public String getJarId() {
+        return jarId;
     }
 
-    public void setEnvelopeId(String envelopeId) {
-        this.envelopeId = envelopeId;
+    public void setJarId(String jarId) {
+        this.jarId = jarId;
     }
 
     public String getPayee() {

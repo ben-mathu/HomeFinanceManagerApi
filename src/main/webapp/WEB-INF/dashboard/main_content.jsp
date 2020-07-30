@@ -1,52 +1,47 @@
-<div id="mainContent" class="content-container" >
+<div id="mainContent" class="content-container">
     <input type="hidden" id="contextPath" name="context_path" value="<%= request.getContextPath() %>">
-    <div class="chart-chat-section" >
-        <div class="chart-container rounded-corner shadow-1pt" >
+    <div class="chart-chat-section section-style" >
+        <div class="chart-container rounded-corner shadow-1pt subsection-background" >
             <h4>Chart</h4>
         </div>
-        <div class="chat-container rounded-corner shadow-1pt" >
+        <div class="chat-container rounded-corner shadow-1pt subsection-background" >
             <h4>Chat</h4>
+            <p>Show general chat</p>
         </div>
     </div>
     
-    <div class="grocery-members-container" >
-        <div class="members rounded-corner shadow-1pt" >
-            <h4>Members</h4>
+    <div class="grocery-members-container section-style" >
+        <div id="memberList" class="members rounded-corner shadow-1pt subsection-background" >
+            <%@ include file = "../template/member.jsp" %>
         </div>
+        
         <div class="expenses-section" >
-            <div class="grocery-subsection rounded-corner shadow-1pt" >
-                <div class="envelope-list" >
-                    <%-- Create a table of scheduled envelopes name and scheduled date. --%>
+            <div class="grocery-subsection rounded-corner shadow-1pt subsection-background" >
+                <div class="jar-list-container" >
+                    <%-- Create a table of scheduled money jar labels and scheduled date. --%>
                     <div class="empty"  hidden>
-                        you can have all envelopes listed here
+                        you can have all money jars listed here
                     </div>
 
-                    <table id="envelopeItems">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Date</th>
-                                <th>Intervals</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div id="jarList" class="jar-list">
+                        <%@ include file = "../template/jar.jsp" %>
+                    </div>
 
-                    <input id="btnOpenEnvelopeModal" class="btn2" type="button" value="+ Add Schedule">
+                    <input id="btnOpenJarModal" class="btn2" type="button" value="+ Add Schedule">
+                </div>
+                <div class="jars-pie-chart" >
+                    <canvas id="jarsCanvas"></canvas>
+                    <legend for="jarsCanvas"></legend>
                 </div>
             </div>
-            
-            <div class="transaction rounded-corner shadow-1pt" >
+
+            <div class="transaction rounded-corner shadow-1pt subsection-background" >
                 <h4>Regular Expenditure</h4>
             </div>
         </div>
     </div>
     
-    <div class="income rounded-corner shadow-1pt" >
-        <h4>Savings</h4>
-    </div>
-    
-    <div class="expenses rounded-corner shadow-1pt" >
+    <div class="expenses rounded-corner shadow-1pt subsection-background" >
         <h4>Transactions</h4>
     </div>
 </div>

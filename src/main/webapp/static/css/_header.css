@@ -1,18 +1,68 @@
-.time-container {
+.header-container {
+    top: 0;
     width: 100%;
-    margin-bottom: -20px;
+    position: fixed;
+    height: 40px;
+    background-color: rgb(40, 36, 48);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+}
+
+.header-icon-container {
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+    margin-top: 0px;
+}
+
+.header-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    overflow: hidden;
+}
+
+.breadcrumb-container {
+    width: 25%;
+    height: inherit;
+}
+
+.time-container {
+    width: 25%;
+    height: inherit;
+    position: absolute;
+    right: 0px;
+}
+
+.time-now {
+    position: relative;
+    top: 10px;
+}
+
+.align-inline {
+    display: inline-block;
+}
+
+.user-section {
+    right: 0px;
+    position: absolute;
+}
+
+.avatar-container {
+    bottom: 5px;
+    position: relative;
+}
+
+.avatar-container:hover {
+    cursor: pointer;
 }
 
 .avatar-username {
-    margin-left: 5px;
-    margin-top: 15px;
+    padding-left: 5px;
 }
 
-img.avatar {
-    width: 30px;
-    height: 30px;
-    margin-top: 10px;
-    margin-bottom: 0;
+.avatar-image {
+    width: 20px;
+    height: 20px;
     border: 3px;
     border-style: solid;
     border-radius: 50px;
@@ -20,47 +70,44 @@ img.avatar {
     background-color: white;
 }
 
-.avatar-container {
-    width: fit-content;
-    height: fit-content;
-    display: flex;
+.avatar {
+    width: 20px;
+    height: 20px;
 }
 
-.avatar-container:hover {
-    cursor: pointer;
+.notification-container {
+    position: relative;
+    top: 5px;
 }
 
-.header-container {
-    width: 100%;
-    height: fit-content;
-    position: fixed;
-    margin-top: -65px;
-    display: flex;
-    background-color: rgb(40, 36, 48);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+.notification-item-icon {
+    width: 25px;
+    height: 25px;
+    margin: 5px;
 }
 
 .menu-options {
     display: none;
-    border-radius: 5px;
+    padding: 10px;
     position: fixed;
+    margin-top: 10px;
     color: #3F3A4B;
-    transition: 0.4s;
+    border-radius: 5px;
+    border-radius: 5px;
     background-color: white;
 }
 
 .option-menu-item {
-    width: 0;
-    height: 0;
     display: none;
-    padding:10px;
 }
 
 .option-menu-item:hover {
+    width: inherit;
     cursor: pointer;
     background-color: rgb(199, 199, 199);
 }
 
+/*
 .close-options {
     -webkit-animation-name: closeOptionMenu;
     -moz-animation-name: closeOptionMenu;
@@ -118,3 +165,7 @@ img.avatar {
         height: fit-content;
     }
 }
+
+.income {
+    margin: 10px;
+} */

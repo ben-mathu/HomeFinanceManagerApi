@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.container.model;
+package com.miiguar.hfms.data.jar.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
@@ -12,20 +12,20 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
  * @author bernard
  */
 @Table(
-        tableName = CONTAINER_TB_NAME,
+        tableName = MONEY_JAR_TB_NAME,
         constraint = {@Constraint(
-                name = FK_CONTAINER_HOUSEHOLD_ID,
+                name = FK_MONEY_JAR_HOUSEHOLD_ID,
                 columnName = HOUSEHOLD_ID,
                 tableName = HOUSEHOLD_TB_NAME
         )}
 )
-public class Container {
-    @PrimaryKey(columnName = CONTAINER_ID)
-    @SerializedName(CONTAINER_ID)
-    private String envelopeId = "";
+public class MoneyJar {
+    @PrimaryKey(columnName = MONEY_JAR_ID)
+    @SerializedName(MONEY_JAR_ID)
+    private String moneyJarId = "";
 
-    @SerializedName(CONTAINER_NAME)
-    @Column(columnName = CONTAINER_NAME, characterLength = 45, unique = true)
+    @SerializedName(MONEY_JAR_NAME)
+    @Column(columnName = MONEY_JAR_NAME, characterLength = 45, unique = true)
     private String name = "";
 
     @SerializedName(CATEGORY)
@@ -52,12 +52,12 @@ public class Container {
     @Column(columnName = HOUSEHOLD_ID)
     private String householdId;
 
-    public String getEnvelopeId() {
-        return envelopeId;
+    public String getMoneyJarId() {
+        return moneyJarId;
     }
 
-    public void setEnvelopeId(String envelopeId) {
-        this.envelopeId = envelopeId;
+    public void setMoneyJarId(String moneyJarId) {
+        this.moneyJarId = moneyJarId;
     }
 
     public String getName() {

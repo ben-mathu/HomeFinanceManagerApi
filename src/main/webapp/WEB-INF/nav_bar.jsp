@@ -1,14 +1,14 @@
-<div id="navigationDrawer" class="nav-container" >
+<div id="navigationDrawer" class="nav-container">
     <div id="navIcon" class="nav-icon-container" >
         <img id="navBarIcon" class="nav-icon" src="${pageContext.request.contextPath}/static/images/nav_menu_bar.png" alt="nav-icon" onclick="openOrCloseNav()">
     </div>
     <div id="details" class="user-details-container" >
-        <div class="avatar-container nav-avatar-container" >
+        <div class="nav-avatar-container" >
             <span id="statusIndicatorAvatar" class="status-indicator"></span>
             <img id="avatar" class="nav-avatar avatar" src="${pageContext.request.contextPath}/static/images/person_no_avatar.png" alt="img">
         </div>
-        <div class="status-section" >
-            <div class="user-name" >
+        <div class="status-section">
+            <div class="user-name">
                 <span class="name" id="userName" hidden>Matt LeBlanc</span>
             </div>
             <div class="status">

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.data.household.model.Household;
 import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.status.AccountStatus;
+import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
 import com.miiguar.hfms.data.user.model.User;
 
 import java.util.ArrayList;
@@ -23,6 +24,10 @@ public class UserDto {
     private ArrayList<Household> households;
     @SerializedName(ACCOUNT_STATUS_UPDATE)
     private AccountStatus accountStatus = null;
+    @SerializedName(RELATION)
+    private ArrayList<UserHouseholdRel> userHouseholdRels;
+    @SerializedName(HOUSEHOLD_MEMBERS)
+    private ArrayList<User> members;
 
     public User getUser() {
         return user;
@@ -54,5 +59,21 @@ public class UserDto {
 
     public AccountStatus getAccountStatus() {
         return accountStatus;
+    }
+
+    public ArrayList<UserHouseholdRel> getUserHouseholdRels() {
+        return userHouseholdRels;
+    }
+
+    public void setUserHouseholdRels(ArrayList<UserHouseholdRel> userHouseholdRels) {
+        this.userHouseholdRels = userHouseholdRels;
+    }
+
+    public void setMembers(ArrayList<User> members) {
+        this.members = members;
+    }
+
+    public ArrayList<User> getMembers() {
+        return members;
     }
 }

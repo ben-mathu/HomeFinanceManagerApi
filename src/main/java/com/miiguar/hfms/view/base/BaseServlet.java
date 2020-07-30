@@ -40,22 +40,22 @@ public abstract class BaseServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Log.d(TAG, req.getPathInfo());
+        Log.d(TAG, req.getRequestURI());
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Log.d(TAG, req.getPathInfo());
+        Log.d(TAG, req.getRequestURI());
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Log.d(TAG, req.getPathInfo());
+        Log.d(TAG, req.getRequestURI());
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Log.d(TAG, req.getPathInfo());
+        Log.d(TAG, req.getRequestURI());
     }
 
     protected String getTokenFromCookie(HttpServletRequest req) {

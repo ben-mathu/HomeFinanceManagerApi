@@ -128,6 +128,7 @@ public class Register extends BaseServlet {
 
                 userHouseholdRel.setUserId(user.getUserId());
                 userHouseholdRel.setHouseId(houseId);
+                userHouseholdRel.setOwner(true);
 
                 addUserToHousehold(userHouseholdRel);
 

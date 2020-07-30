@@ -1,6 +1,6 @@
 <div id="expensesModal" class="modal">
     <div class="modal-content" >
-        <h4 class="modal-title">Add Item to Grocery</h4>
+        <h4 class="modal-title">Add Expense Details</h4>
         <p id="expense-modal-error" class="error-text"></p>
         <form>
             <div>
@@ -10,14 +10,18 @@
                 <input id="expenseDesc" class="input-style" type="text" name="expense_description" placeholder="Description" />
             </div>
             <div>
-                <input id="expenseAmount" class="input-style" type="text" name="expense_amount" placeholder="Amount" />
+                <input id="expenseAmount" class="input-style" type="number" name="expense_amount" placeholder="300" />
             </div>
             <div>
                 <input id="payeeName" class="input-style" type="text" name="payee-name" placeholder="Payee Name" />
             </div>
             <div class="radio-container">
-                <input id="business" class="radio-style" type="radio" name="payee_entity" value="Business" />
-                <label for="#business">Business</label>
+                <input id="personal" class="radio-style" type="radio" name="payee_entity" value="Personal" />
+                <label for="#personal">Personal Expense</label>
+            </div>
+            <div class="radio-container" >
+                <input id="householdExpense" class="radio-style" type="radio" name="payee_entity" value="Household Expense" />
+                <label for="#householdExpense">Household Expense</label>
             </div>
             <div class="radio-container" >
                 <input id="employee" class="radio-style" type="radio" name="payee_entity" value="Employee" />

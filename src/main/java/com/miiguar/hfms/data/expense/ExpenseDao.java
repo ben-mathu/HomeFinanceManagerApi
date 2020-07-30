@@ -35,26 +35,26 @@ public class ExpenseDao implements Dao<Expense> {
     public int save(Expense item) {
         String query = "INSERT INTO " + EXPENSES_TB_NAME + "(" +
                 EXPENSE_ID + "," + EXPENSE_NAME + "," + EXPENSE_DESCRIPTION + "," +
-                AMOUNT + "," + HOUSEHOLD_ID + "," + CONTAINER_ID + "," +
+                AMOUNT + "," + MONEY_JAR_ID + "," +
                 PAYEE_NAME + "," + BUSINESS_NUMBER + "," + PHONE_NUMBER + ")" +
-                " VALUES (?,?,?,?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?,?,?)";
 
         int affectedRows = 0;
         Connection conn = null;
         PreparedStatement insert = null;
 
         try {
-            conn = jdbcConnection.getDataSource("db.main_db").getConnection();
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             insert = conn.prepareStatement(query);
 
             insert.setString(1, item.getExpenseId());
             insert.setString(2, item.getName());
             insert.setString(3, item.getDescription());
             insert.setDouble(4, item.getAmount());
-            insert.setString(6, item.getEnvelopeId());
-            insert.setString(7, item.getPayee());
-            insert.setString(8, item.getBusinessNumber());
-            insert.setString(9, item.getPhoneNumber());
+            insert.setString(5, item.getJarId());
+            insert.setString(6, item.getPayee());
+            insert.setString(7, item.getBusinessNumber());
+            insert.setString(8, item.getPhoneNumber());
 
             affectedRows = insert.executeUpdate();
 
@@ -77,7 +77,7 @@ public class ExpenseDao implements Dao<Expense> {
                     insert = null;
                 } catch (Exception e) { /* Intentionally blank */ }
         }
-        return 0;
+        return affectedRows;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ExpenseDao implements Dao<Expense> {
     @Override
     public Expense get(String id) {
         String query = "SELECT * FROM " + EXPENSES_TB_NAME +
-                " WHERE " + CONTAINER_ID + "=?";
+                " WHERE " + MONEY_JAR_ID + "=?";
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -115,7 +115,7 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
                 expense.setPhoneNumber(resultSet.getString(PHONE_NUMBER));
-                expense.setEnvelopeId(resultSet.getString(CONTAINER_ID));
+                expense.setJarId(resultSet.getString(MONEY_JAR_ID));
             }
 
             conn.close();
@@ -157,7 +157,7 @@ public class ExpenseDao implements Dao<Expense> {
     public List<Expense> getAll(String id) {
         ArrayList<Expense> expenses = new ArrayList<>();
         String query = "SELECT * FROM " + EXPENSES_TB_NAME +
-                " WHERE " + CONTAINER_ID + "=?";
+                " WHERE " + MONEY_JAR_ID + "=?";
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -179,7 +179,7 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
                 expense.setPhoneNumber(resultSet.getString(PHONE_NUMBER));
-                expense.setEnvelopeId(resultSet.getString(CONTAINER_ID));
+                expense.setJarId(resultSet.getString(MONEY_JAR_ID));
                 expenses.add(expense);
             }
 

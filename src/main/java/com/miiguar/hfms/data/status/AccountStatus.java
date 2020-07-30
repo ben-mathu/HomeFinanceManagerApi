@@ -30,9 +30,9 @@ public class AccountStatus {
     @Column(columnName = INCOME_STATUS, notNull = false, characterLength = 255)
     private String incomeStatus = "";
 
-    @SerializedName(ENVELOPE_STATUS)
-    @Column(columnName = ENVELOPE_STATUS, notNull = false, characterLength = 255)
-    private String envelopeStatus = "";
+    @SerializedName(JAR_STATUS)
+    @Column(columnName = JAR_STATUS, notNull = false, characterLength = 255)
+    private String jarStatus = "";
 
     @SerializedName(HOUSEHOLD_STATUS)
     @Column(columnName = HOUSEHOLD_STATUS, notNull = false, characterLength = 255)
@@ -58,12 +58,12 @@ public class AccountStatus {
         this.incomeStatus = incomeStatus;
     }
 
-    public String getEnvelopeStatus() {
-        return envelopeStatus;
+    public String getJarStatus() {
+        return jarStatus;
     }
 
-    public void setEnvelopeStatus(String envelopeStatus) {
-        this.envelopeStatus = envelopeStatus;
+    public void setJarStatus(String jarStatus) {
+        this.jarStatus = jarStatus;
     }
 
     public String getReminder() {

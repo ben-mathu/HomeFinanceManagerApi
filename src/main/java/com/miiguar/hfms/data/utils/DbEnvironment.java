@@ -31,6 +31,7 @@ public class DbEnvironment {
     // household_id reference
     public static final String FK_USERS_HOUSEHOLD_HOUSEHOLD_ID = "fk_users_households_household_id_ref_households";
     public static final String FK_USERS_HOUSEHOLD_USER_ID = "fk_users_households_user_id_ref_users";
+    public static final String IS_OWNER = "is_owner";
 
     /**
      * Code table
@@ -71,9 +72,9 @@ public class DbEnvironment {
     public static final String REQUIRED_QUANTITY = "required_quantity";
     public static final String REMAINING_QUANTITY = "remaining_quantity";
     public static final String PRIV_KEY_GROCERIES = "priv_key_groceries";
-    // container_id references the containers table (household_id)
+    // jar_id references the jars table (household_id)
     public static final String FK_GROCERIES_REF_HOUSEHOLD_ID = "fk_groceries_user_id_ref_users";
-    public static final String FK_GROCERIES_CONTAINER_ID = "fk_groceries_container_id_ref_containers";
+    public static final String FK_GROCERIES_JAR_ID = "fk_groceries_jar_id_ref_jars";
 
 
 
@@ -96,7 +97,7 @@ public class DbEnvironment {
     public static final String ACCOUNT_STATUS = "account_status";
     // Reference user_id from users table
     public static final String INCOME_STATUS = "income_status";
-    public static final String ENVELOPE_STATUS = "envelope_status";
+    public static final String JAR_STATUS = "envelope_status";
     public static final String HOUSEHOLD_STATUS = "household_status";
     public static final String COMPLETE_AT = "completed_at";
     public static final String FK_ACCOUNT_STATUS_USER_ID = "fk_account_status_user_id_ref_users";
@@ -104,17 +105,17 @@ public class DbEnvironment {
     /**
      * Envelope Table
      */
-    public static final String CONTAINER_TB_NAME = "containers";
-    public static final String CONTAINER_ID = "container_id";
-    public static final String CONTAINER_NAME = "container_name";
+    public static final String MONEY_JAR_TB_NAME = "money_jars";
+    public static final String MONEY_JAR_ID = "jar_id";
+    public static final String MONEY_JAR_NAME = "jar_label";
     public static final String CATEGORY = "category";
     public static final String TOTAL_AMOUNT = "amount";
     // created at {type: string date}
     public static final String SCHEDULED_FOR = "scheduled_for";
     public static final String SCHEDULED_TYPE = "scheduled_type";
     // household_id ref household
-    public static final String FK_CONTAINERS_GROCERY_ID = "fk_container_grocery_id_groceries";
-    public static final String FK_CONTAINER_HOUSEHOLD_ID = "fk_container_household_id_ref_households";
+    public static final String FK_JARS_GROCERY_ID = "fk_jar_grocery_id_groceries";
+    public static final String FK_MONEY_JAR_HOUSEHOLD_ID = "fk_money_jar_household_id_ref_households";
 
     /**
      * Expenses table
@@ -127,8 +128,9 @@ public class DbEnvironment {
     // householdId  references households household_id
     // envelope id ref envelopes envelope id
     public static final String PAYEE_NAME = "payee_name";
+    public static final String EXPENSE_TYPE = "type";
     public static final String BUSINESS_NUMBER = "business_number";
     public static final String PHONE_NUMBER = "phone_number";
     public static final String FK_HOUSEHOLD_ID_REF_HOUSEHOLDS = "fk_household_id_ref_households_household_id";
-    public static final String FK_EXPENSES_CONTAINER_ID = "fk_expenses_container_id_ref_containers";
+    public static final String FK_EXPENSES_JAR_ID = "fk_expenses_jar_id_ref_jars";
 }

@@ -7,6 +7,7 @@ import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.utils.DbEnvironment;
 import com.miiguar.hfms.utils.Log;
 
+import javax.naming.PartialResultException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -207,7 +208,60 @@ public class UserDao implements Dao<User> {
 
     @Override
     public User get(String id) {
-        return null;
+        String query = "SELECT * FROM " + USERS_TB_NAME +
+                " WHERE " + USER_ID + "=?";
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        User user = new User();
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                user.setUserId(resultSet.getString(USER_ID));
+                user.setUsername(resultSet.getString(USERNAME));
+                user.setEmail(resultSet.getString(EMAIL));
+                user.setPassword("");
+                user.setAdmin(resultSet.getBoolean(IS_ADMIN));
+                user.setOnline(resultSet.getBoolean(IS_ONLINE));
+            }
+
+            resultSet.close();
+            resultSet = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing users query", throwables);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
+
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */}
+            }
+        }
+        return user;
     }
 
     @Override

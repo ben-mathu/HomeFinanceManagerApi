@@ -1,9 +1,9 @@
 package com.miiguar.hfms.view.dashboard;
 
-import com.miiguar.hfms.data.container.ContainersDto;
-import com.miiguar.hfms.data.container.ContainerDto;
-import com.miiguar.hfms.data.container.model.Container;
-import com.miiguar.hfms.data.expense.model.Expense;
+import com.miiguar.hfms.data.expense.ExpenseDto;
+import com.miiguar.hfms.data.jar.MoneyJarsDto;
+import com.miiguar.hfms.data.jar.MoneyJarDto;
+import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.grocery.GroceriesDto;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
@@ -18,16 +18,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
-import static com.miiguar.hfms.data.utils.URL.ADD_ENVELOPE;
-import static com.miiguar.hfms.data.utils.URL.GET_ENVELOPE;
+import static com.miiguar.hfms.data.utils.URL.ADD_MONEY_JAR;
+import static com.miiguar.hfms.data.utils.URL.GET_MONEY_JAR;
 import static com.miiguar.hfms.utils.Constants.*;
-import static com.miiguar.hfms.utils.Constants.EnvelopeType.GROCERY_CATEGORY;
+import static com.miiguar.hfms.utils.Constants.JarType.GROCERY_CATEGORY;
 
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/envelopes-controller/*") // TODO: Change the urlPattern to match name
-public class ContainerServletController extends BaseServlet {
+@WebServlet("/dashboard/jars-controller/*")
+public class MoneyJarServletController extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -40,17 +40,17 @@ public class ContainerServletController extends BaseServlet {
         String token = req.getParameter(TOKEN);
 
         InitUrlConnection<User> conn = new InitUrlConnection<>();
-        BufferedReader streamReader = conn.getReader(GET_ENVELOPE + requestParam, token, "GET");
+        BufferedReader streamReader = conn.getReader(GET_MONEY_JAR + requestParam, token, "GET");
 
         String line = "";
-        ContainersDto envelopesDto = null;
+        MoneyJarsDto jarsDto = null;
         String response = "";
         while((line = streamReader.readLine()) != null) {
             response = line;
-            envelopesDto = gson.fromJson(line, ContainersDto.class);
+            jarsDto = gson.fromJson(line, MoneyJarsDto.class);
         }
 
-        Report report = envelopesDto.getReport();
+        Report report = jarsDto.getReport();
         resp.setStatus(report.getStatus());
         writer = resp.getWriter();
         writer.write(response);
@@ -63,42 +63,43 @@ public class ContainerServletController extends BaseServlet {
         String token = req.getParameter(TOKEN);
         String category = req.getParameter(CATEGORY);
 
-        ContainerDto envelopeDto = new ContainerDto();
+        MoneyJarDto jarDto = new MoneyJarDto();
 
-        Container envelope = new Container();
-        envelope.setCategory(category);
-        envelope.setName(req.getParameter(CONTAINER_NAME));
-        envelope.setScheduledFor(req.getParameter(SCHEDULED_FOR));
-        envelope.setTotalAmount(Double.parseDouble(req.getParameter(TOTAL_AMOUNT)));
-        envelope.setScheduleType(req.getParameter(SCHEDULED_TYPE));
+        MoneyJar jar = new MoneyJar();
+        jar.setCategory(category);
+        jar.setName(req.getParameter(MONEY_JAR_NAME));
+        jar.setScheduledFor(req.getParameter(SCHEDULED_FOR));
+        String amount = req.getParameter(TOTAL_AMOUNT);
+        jar.setTotalAmount(Double.parseDouble(amount));
+        jar.setScheduleType(req.getParameter(SCHEDULED_TYPE));
 
-        envelopeDto.setEnvelope(envelope);
+        jarDto.setJar(jar);
 
         User user = new User();
         user.setUsername(req.getParameter(USERNAME));
         user.setUserId(req.getParameter(USER_ID));
 
         GroceriesDto groceriesDto = null;
-        Expense expense = null;
+        ExpenseDto expenseDto = null;
         if (category.equals(GROCERY_CATEGORY)) {
             String groceries = req.getParameter(LIABILITIES);
             groceriesDto = gson.fromJson(groceries, GroceriesDto.class);
-            envelopeDto.setGroceries(groceriesDto.getGroceries());
+            jarDto.setGroceries(groceriesDto.getGroceries());
         } else {
             String expenses = req.getParameter(LIABILITIES);
-            expense = gson.fromJson(expenses, Expense.class);
-            envelopeDto.setExpense(expense);
+            expenseDto = gson.fromJson(expenses, ExpenseDto.class);
+            jarDto.setExpenseDto(expenseDto);
         }
 
-        envelopeDto.setUser(user);
+        jarDto.setUser(user);
 
-        InitUrlConnection<ContainerDto> conn = new InitUrlConnection<>();
-        BufferedReader streamReader = conn.getReader(envelopeDto, ADD_ENVELOPE, token, "PUT");
+        InitUrlConnection<MoneyJarDto> conn = new InitUrlConnection<>();
+        BufferedReader streamReader = conn.getReader(jarDto, ADD_MONEY_JAR, token, "PUT");
 
         String line = "";
-        ContainerDto response = null;
+        MoneyJarDto response = null;
         while((line = streamReader.readLine()) != null) {
-            response = gson.fromJson(line, ContainerDto.class);
+            response = gson.fromJson(line, MoneyJarDto.class);
         }
 
         if (response != null) {
@@ -114,6 +115,7 @@ public class ContainerServletController extends BaseServlet {
 
             String respStr = gson.toJson(report);
 
+            resp.setStatus(report.getStatus());
             writer = resp.getWriter();
             writer.write(respStr);
         }

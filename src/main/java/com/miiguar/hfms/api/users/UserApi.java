@@ -45,15 +45,25 @@ public class UserApi extends BaseServlet {
         // get income
         // get household
 
-        String username = req.getParameter(USERNAME);
-        User user = userDao.getUserDetails(username);
+        String userId = req.getParameter(USER_ID);
+        User user = userDao.get(userId);
         Income income = incomeDao.get(user.getUserId());
         List<UserHouseholdRel> list = userHouseholdDao.getAll(user.getUserId());
 
         ArrayList<Household> households = new ArrayList<>();
+        ArrayList<User> members = new ArrayList<>();
         for (UserHouseholdRel userHouseholdRel: list) {
             Household household = getHousehold(userHouseholdRel);
             households.add(household);
+        }
+
+        List<UserHouseholdRel> rels = userHouseholdDao.getAll();
+
+        for (UserHouseholdRel rel : rels) {
+            if (!userId.equals(rel.getUserId())) {
+                User member = getUser(rel.getUserId());
+                members.add(member);
+            }
         }
 
         // get account status
@@ -64,11 +74,17 @@ public class UserApi extends BaseServlet {
         dto.setIncome(income);
         dto.setHouseholds(households);
         dto.setAccountStatus(accountStatus);
+        dto.setUserHouseholdRels((ArrayList<UserHouseholdRel>) list);
+        dto.setMembers(members);
 
         String response = gson.toJson(dto);
 
         writer = resp.getWriter();
         writer.write(response);
+    }
+
+    private User getUser(String userId) {
+        return userDao.get(userId);
     }
 
     private Household getHousehold(UserHouseholdRel item) {

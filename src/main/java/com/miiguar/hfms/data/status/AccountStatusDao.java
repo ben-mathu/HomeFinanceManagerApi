@@ -101,7 +101,7 @@ public class AccountStatusDao implements Dao<AccountStatus> {
             while (resultSet.next()) {
                 accountStatus.setUserId(id);
                 accountStatus.setIncomeStatus(resultSet.getString(INCOME_STATUS));
-                accountStatus.setEnvelopeStatus(resultSet.getString(ENVELOPE_STATUS));
+                accountStatus.setJarStatus(resultSet.getString(JAR_STATUS));
                 accountStatus.setAccountStatus(resultSet.getString(ACCOUNT_STATUS));
                 accountStatus.setHouseholdStatus(resultSet.getString(HOUSEHOLD_STATUS));
                 accountStatus.setReminder(resultSet.getString(COMPLETE_AT));
@@ -152,9 +152,9 @@ public class AccountStatusDao implements Dao<AccountStatus> {
         return 0;
     }
 
-    public boolean updateEnvelopeStatus(AccountStatus accountStatus) {
+    public boolean updateJarStatus(AccountStatus accountStatus) {
         String query = "UPDATE " + ACCOUNT_STATUS_TB_NAME +
-                " SET " + ENVELOPE_STATUS + "=?" +
+                " SET " + JAR_STATUS + "=?" +
                 " WHERE " + USER_ID + "=?";
         int affectedRows = 0;
 
@@ -164,7 +164,7 @@ public class AccountStatusDao implements Dao<AccountStatus> {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, accountStatus.getEnvelopeStatus());
+            preparedStatement.setString(1, accountStatus.getJarStatus());
             preparedStatement.setString(2, accountStatus.getUserId());
             affectedRows = preparedStatement.executeUpdate();
             Log.d(TAG, "Affected Rows: " + affectedRows);

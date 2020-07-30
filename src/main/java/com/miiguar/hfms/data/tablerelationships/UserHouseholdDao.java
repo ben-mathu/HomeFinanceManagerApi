@@ -34,8 +34,8 @@ public class UserHouseholdDao implements Dao<UserHouseholdRel> {
     @Override
     public int save(UserHouseholdRel item) {
         String query = "INSERT INTO " + USER_HOUSEHOLD_TB_NAME + "(" +
-                USER_ID + "," + HOUSEHOLD_ID + ")" +
-                " VALUES (?,?)";
+                USER_ID + "," + HOUSEHOLD_ID + "," + IS_OWNER + ")" +
+                " VALUES (?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -46,6 +46,7 @@ public class UserHouseholdDao implements Dao<UserHouseholdRel> {
 
             preparedStatement.setString(1, item.getUserId());
             preparedStatement.setString(2, item.getHouseId());
+            preparedStatement.setBoolean(3, item.isOwner());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -99,6 +100,7 @@ public class UserHouseholdDao implements Dao<UserHouseholdRel> {
                 userHouseholdRel = new UserHouseholdRel();
                 userHouseholdRel.setHouseId(resultSet.getString(HOUSEHOLD_ID));
                 userHouseholdRel.setUserId(resultSet.getString(USER_ID));
+                userHouseholdRel.setOwner(resultSet.getBoolean(IS_OWNER));
             }
 
             resultSet.close();
@@ -148,6 +150,7 @@ public class UserHouseholdDao implements Dao<UserHouseholdRel> {
                 UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
                 userHouseholdRel.setHouseId(resultSet.getString(HOUSEHOLD_ID));
                 userHouseholdRel.setUserId(resultSet.getString(USER_ID));
+                userHouseholdRel.setOwner(resultSet.getBoolean(IS_OWNER));
                 list.add(userHouseholdRel);
             }
 
@@ -201,6 +204,7 @@ public class UserHouseholdDao implements Dao<UserHouseholdRel> {
                 UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
                 userHouseholdRel.setHouseId(resultSet.getString(HOUSEHOLD_ID));
                 userHouseholdRel.setUserId(resultSet.getString(USER_ID));
+                userHouseholdRel.setOwner(resultSet.getBoolean(IS_OWNER));
                 list.add(userHouseholdRel);
             }
 

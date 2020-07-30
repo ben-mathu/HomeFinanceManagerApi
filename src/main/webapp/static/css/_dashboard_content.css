@@ -1,6 +1,78 @@
-.transaction {
+.content-container {
+    margin-left: 50px;
+    padding-right: 10px;
+}
+
+.section-style {
+    width: 100%;
     height: auto;
+    display: inline-flex;
+    margin-bottom: 10px;
+}
+
+.subsection-background {
+    padding: 10px;
     background-color: rgba(40, 36, 48, 0.322);
+}
+
+.chart-chat-section {
+    
+}
+
+.chart-container {
+    width: 75%;
+    margin-right: 5px;
+}
+
+.chat-container {
+    width: 25%;
+    margin-left: 5px;
+}
+
+.grocery-members-container {
+    width: 100%;
+}
+
+.members {
+    width: 25%;
+    margin-right: 5px;
+}
+
+.expenses-section {
+    width: 75%;
+    margin-left: 5px;
+}
+
+.jar-item {
+    margin-bottom: 10px;
+}
+
+.scheduled-interval {
+    margin-right: 10px;
+}
+
+.scheduled-date {
+    color: #FEC800;
+    right: 0;
+    margin-right: 0;
+}
+
+.scheduled-interval, .scheduled-date {
+    font-size: 14px;
+    font-style: italic;
+}
+
+.grocery-subsection {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.grocery-list {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    overflow-x: auto;
 }
 
 .grocery-schedule {
@@ -14,56 +86,6 @@
     border-width: 1px;
 }
 
-.grocery-list {
-    width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
-    overflow-x: auto;
-}
-
-.grocery-subsection {
-    height: auto;
-    display: flex;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    background-color: rgb(40, 36, 48, 0.322);
-}
-
-.expenses-section {
-    width: 625px;
-    height: auto;
-}
-
-.members {
-    width: 625px;
-    height: auto;
-    margin-right: 25px;
-    background-color: rgb(40, 36, 48, 0.322);
-}
-
-.grocery-members-container {
-    width: fit-content;
-    height: fit-content;
-    margin-top: 10px;
-    display: flex;
-}
-
-.chat-container {
-    width: 400px;
-    height: 300px;
-    background-color: rgb(40, 36, 48, 0.322);
-}
-
-.chart-container {
-    width: 850px;
-    height: 300px;
-    margin-right: 25px;
-    background-color: rgb(40, 36, 48, 0.322);
-}
-
-.chart-chat-section {
-    width: fit-content;
-    height: fit-content;
+.jars-pie-chart {
     display: flex;
 }

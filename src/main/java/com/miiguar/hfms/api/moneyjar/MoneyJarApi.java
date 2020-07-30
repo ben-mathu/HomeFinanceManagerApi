@@ -1,10 +1,11 @@
-package com.miiguar.hfms.api.containers;
+package com.miiguar.hfms.api.moneyjar;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.data.container.ContainersDao;
-import com.miiguar.hfms.data.container.ContainerDto;
-import com.miiguar.hfms.data.container.ContainersDto;
-import com.miiguar.hfms.data.container.model.Container;
+import com.miiguar.hfms.data.expense.ExpenseDto;
+import com.miiguar.hfms.data.jar.MoneyJarsDao;
+import com.miiguar.hfms.data.jar.MoneyJarDto;
+import com.miiguar.hfms.data.jar.MoneyJarsDto;
+import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.expense.ExpenseDao;
 import com.miiguar.hfms.data.expense.model.Expense;
 import com.miiguar.hfms.data.grocery.model.Grocery;
@@ -36,13 +37,13 @@ import java.util.List;
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.*;
 import static com.miiguar.hfms.utils.Constants.*;
-import static com.miiguar.hfms.utils.Constants.EnvelopeType.GROCERY_CATEGORY;
+import static com.miiguar.hfms.utils.Constants.JarType.GROCERY_CATEGORY;
 
 /**
  * @author bernard
  */
-@WebServlet(API + ENVELOPES)
-public class ContainersApi extends BaseServlet {
+@WebServlet(API + MONEY_JARS)
+public class MoneyJarApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     AccountStatusDao accountStatusDao = new AccountStatusDao();
@@ -50,7 +51,7 @@ public class ContainersApi extends BaseServlet {
     UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
     GroceryDao groceryDao = new GroceryDao();
     ExpenseDao expenseDao = new ExpenseDao();
-    ContainersDao envelopeDao = new ContainersDao();
+    MoneyJarsDao jarDao = new MoneyJarsDao();
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -70,42 +71,44 @@ public class ContainersApi extends BaseServlet {
         Date date = new Date();
         String now = new SimpleDateFormat(DATE_FORMAT).format(date);
 
-        ContainerDto dto = gson.fromJson(requestStr, ContainerDto.class);
-        Container envelope = dto.getEnvelope();
-
-        String envelopeId = randomString.nextString();
-        envelope.setEnvelopeId(envelopeId);
-        envelope.setCreatedAt(now);
-        envAffectedRows = envelopeDao.save(envelope);
-        dto.setEnvelope(envelope);
+        MoneyJarDto dto = gson.fromJson(requestStr, MoneyJarDto.class);
+        MoneyJar jar = dto.getJar();
 
         // get household
         User user = dto.getUser();
         UserHouseholdRel householdRel = userHouseholdDao.get(user.getUserId());
 
+        String jarId = randomString.nextString();
+        jar.setMoneyJarId(jarId);
+        jar.setCreatedAt(now);
+        jar.setHouseholdId(householdRel.getHouseId());
+        envAffectedRows = jarDao.save(jar);
+        dto.setJar(jar);
+
+
         List<Grocery> groceries = dto.getGroceries();
-        Expense expense = dto.getExpense();
-        if (GROCERY_CATEGORY.equals(dto.getEnvelope().getCategory())) {
+        ExpenseDto expenseDto = dto.getExpenseDto();
+        if (GROCERY_CATEGORY.equals(dto.getJar().getCategory())) {
             String groceryId = "";
 
             for (Grocery grocery : groceries) {
                 groceryId = grocery.getGroceryId().isEmpty() ? randomString.nextString() : grocery.getGroceryId();
                 grocery.setGroceryId(groceryId);
-                grocery.setEnvelopeId(envelopeId);
+                grocery.setJarId(jarId);
                 groAffectedRows += groceryDao.save(grocery);
             }
             dto.setGroceries(groceries);
         } else {
-
+            Expense expense = expenseDto.getExpense();
             String expenseId = expense.getExpenseId().isEmpty() ? randomString.nextString() : expense.getExpenseId();
             expense.setExpenseId(expenseId);
-            expense.setEnvelopeId(envelopeId);
+            expense.setJarId(jarId);
             expAffectedRows = expenseDao.save(expense);
-            dto.setExpense(expense);
+            dto.setExpenseDto(expenseDto);
         }
 
         String uri = req.getRequestURI();
-        if (uri.endsWith(ADD_ENVELOPE)) {
+        if (uri.endsWith(ADD_MONEY_JAR)) {
             if (envAffectedRows > 0 && (expAffectedRows > 0 || groAffectedRows > 0)) {
                 String responseStr = gson.toJson(dto);
 
@@ -141,52 +144,54 @@ public class ContainersApi extends BaseServlet {
         status.date = today;
 
         String statusStr = gson.toJson(status);
-        accountStatus.setEnvelopeStatus(statusStr);
+        accountStatus.setJarStatus(statusStr);
         accountStatus.setUserId(userId);
 
-        if (accountStatusDao.updateEnvelopeStatus(accountStatus))
+        if (accountStatusDao.updateJarStatus(accountStatus))
             Log.d(TAG, "Update table " + ACCOUNT_STATUS_TB_NAME);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
-        ContainersDto envelopesDto = new ContainersDto();
-        ArrayList<ContainerDto> envelopeDtoList = new ArrayList<>();
+        MoneyJarsDto jarsDto = new MoneyJarsDto();
+        ArrayList<MoneyJarDto> jarDtoList = new ArrayList<>();
 
         // get household
         UserHouseholdRel userHouseholdRel = userHouseholdDao.get(userId);
         String householdId = userHouseholdRel.getHouseId();
 
-        // get envelopes
-        List<Container> envelopes = envelopeDao.getAll(householdId);
+        // get jars
+        List<MoneyJar> jars = jarDao.getAll(householdId);
 
-        // loop through each envelope to get grocery or expense related
-        for (Container envelope : envelopes) {
-            ContainerDto envelopeDto = new ContainerDto();
-            envelopeDto.setEnvelope(envelope);
+        // loop through each jar to get grocery or expense related
+        for (MoneyJar jar : jars) {
+            MoneyJarDto jarDto = new MoneyJarDto();
+            jarDto.setJar(jar);
 
-            String envelopeId = envelope.getEnvelopeId();
-            if (GROCERY_CATEGORY.equals(envelope.getCategory())) {
-                List<Grocery> groceries = groceryDao.getAll(envelopeId);
-                envelopeDto.setGroceries(groceries);
+            String jarId = jar.getMoneyJarId();
+            if (GROCERY_CATEGORY.equals(jar.getCategory())) {
+                List<Grocery> groceries = groceryDao.getAll(jarId);
+                jarDto.setGroceries(groceries);
             } else {
-                Expense expenses = expenseDao.get(envelopeId);
-                envelopeDto.setExpense(expenses);
+                Expense expenses = expenseDao.get(jarId);
+                ExpenseDto expenseDto = new ExpenseDto();
+                expenseDto.setExpense(expenses);
+                jarDto.setExpenseDto(expenseDto);
             }
-            envelopeDtoList.add(envelopeDto);
+            jarDtoList.add(jarDto);
         }
 
-        envelopesDto.setEnvelopeDto(envelopeDtoList);
+        jarsDto.setJarDto(jarDtoList);
 
         String response = "";
-        if (envelopesDto.getEnvelopeDto().isEmpty()) {
+        if (jarsDto.getJarDto().isEmpty()) {
             Report report = new Report();
             report.setStatus(HttpServletResponse.SC_NOT_FOUND);
             report.setMessage("The items requested were not found");
-            envelopesDto.setReport(report);
+            jarsDto.setReport(report);
 
-            response = gson.toJson(envelopesDto);
+            response = gson.toJson(jarsDto);
 
             writer = resp.getWriter();
             writer.write(response);
@@ -194,9 +199,9 @@ public class ContainersApi extends BaseServlet {
             Report report = new Report();
             report.setStatus(HttpServletResponse.SC_OK);
             report.setMessage("Success");
-            envelopesDto.setReport(report);
+            jarsDto.setReport(report);
 
-            response = gson.toJson(envelopesDto);
+            response = gson.toJson(jarsDto);
             writer = resp.getWriter();
             writer.write(response);
         }
