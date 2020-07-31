@@ -5,6 +5,8 @@
                 <progress class="progress-bar" max="100"></progress>
             </div>
 
+            <%@ include file = "dashboard/dialogs/payment_due_dialog.jsp" %>
+
             <div class="footer text-muted text-center">
                 <p>
                     <code>twitter:</code> <a class="link" href="https://twitter.com/beniemathu">@beniemathu</a>&ensp;&ensp;&ensp;

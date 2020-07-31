@@ -161,6 +161,8 @@ function getAllMoneyJars() {
 
                 let values = Object.values(jars.getJarList());
                 drawPieChart(values);
+
+                activateTimer();
             } else {
                 console.log("Server could not find what you are looking for.")
             }
@@ -173,6 +175,29 @@ function getAllMoneyJars() {
     request.open("GET", ctx + "/dashboard/jars-controller?" + data, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send();
+}
+
+function activateTimer() {
+    let ids = Object.keys(jars.getJarList());
+    ids.forEach(key => {
+        let jar = jars.getJar(key);
+        (function(dayScheduled) {
+            if (new Date(dayScheduled).getTime() <= new Date().getTime()) {
+                showNotificationDialog(jar);
+                return;
+            }
+
+            window.setTimeout(arguments.callee, 1000, dayScheduled);
+        })(jar.scheduled_for);
+    });
+}
+
+function showNotificationDialog(jar) {
+    let nameTitle = jar.jar_label;
+    let descriptionBody = jar.description;
+
+    let paymentDueDialog = document.getElementById("paymentDueDialog");
+    paymentDueDialog.hidden = false;
 }
 
 function drawPieChart(jars) {
