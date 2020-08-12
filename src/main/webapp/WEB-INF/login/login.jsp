@@ -40,7 +40,7 @@
                     </form>
                     <a class="link register-link" href="registration">Create an account.</a>
                 </div>
-                <div class="login-using-socials">
+                <%-- <div class="login-using-socials">
                     <div class="image-size">
                         <img src="static/images/facebook.png" alt="Facebook">
                     </div>
@@ -52,7 +52,7 @@
                     <div class="image-size">
                         <img src="static/images/google.png" alt="Google">
                     </div>
-                </div>
+                </div> --%>
             </div>
         </div>
     </div>

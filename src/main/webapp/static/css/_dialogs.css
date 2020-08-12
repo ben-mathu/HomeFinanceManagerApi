@@ -1,15 +1,20 @@
-.dialog-content {
-    right: 0;
-    display: none;
-    padding: 10px;
-    bottom: 0;
-    position: fixed;
-    color: #3F3A4B;
+.dialog {
     width: fit-content;
     height: fit-content;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: none;
     margin-left: auto;
     margin-right: 30px;
     margin-bottom: 30px;
+}
+
+.dialog-content {
+    padding: 10px;
+    color: #3F3A4B;
+    width: fit-content;
+    height: fit-content;
     overflow-y: scroll;
     border-radius: 5px;
     background-color: rgb(255, 255, 255);

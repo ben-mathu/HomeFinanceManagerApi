@@ -1,5 +1,5 @@
-<div id="paymentDueDialog" class="payment-due-container dialog-content">
-    <div id="paymentDetailsContainer" >
+<div id="paymentDueDialog" class="dialog">
+    <div id="paymentDialogContainer" class="payment-due-container" >
         <%@ include file = "../../template/payments.jsp" %>
     </div>
     <%-- <input id="moneyJarId" type="text" name="money_jar_id" placeholder="Jar ID" hidden>

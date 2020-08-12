@@ -1,5 +1,5 @@
 <template id="paymentTemplate">
-    <div>
+    <div id="paymentDetailsContainer" class="dialog-content">
         <input id="moneyJarId" type="text" name="money_jar_id" placeholder="Jar ID" hidden>
         <h3>Payment for:<span id="nameTitle"></span></h3>
         <div class="payment-body" >

@@ -5,8 +5,9 @@
             <h4>Chart</h4>
         </div>
         <div class="chat-container rounded-corner shadow-1pt subsection-background" >
-            <h4>Notification history (Last 10 notifications)</h4>
-            <p>Show financial notifications</p>
+            <div id="notificationContainer" class="notifications" >
+                <%@ include file = "../template/notification.jsp" %>
+            </div>
         </div>
     </div>
     

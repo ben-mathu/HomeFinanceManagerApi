@@ -87,7 +87,7 @@
                     </form>
                     <a class="link register-link" href="login">Already have an account?</a>
                 </div>
-                <div class="login-using-socials">
+                <%-- <div class="login-using-socials">
                     <a href="https://facebook.com"><div class="image-size">
                         <img src="${pageContext.request.contextPath}/static/images/facebook.png" alt="Facebook">
                     </div></a>
@@ -99,7 +99,7 @@
                     <a href="https://google.com"><div class="image-size">
                         <img src="${pageContext.request.contextPath}/static/images/google.png" alt="Google">
                     </div></a>
-                </div>
+                </div> --%>
             </div>
         </div>
     </div>

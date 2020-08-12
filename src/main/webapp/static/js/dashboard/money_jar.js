@@ -17,7 +17,9 @@ let dayOfWeek;
 
 let jars = {
     moneyJarList: {},
-    moneyJarListListener: function(val) {},
+    moneyJarListListener: function(val) {
+        
+    },
     setJar: function(id, val) {
         this.moneyJarList[id] = val;
         this.moneyJarListListener(val);
@@ -25,7 +27,7 @@ let jars = {
     getJar: function(val) {
         return this.moneyJarList[val];
     },
-    getJarList() {
+    getJarList: function() {
         return this.moneyJarList;
     },
     registerListener: function(listener) {
