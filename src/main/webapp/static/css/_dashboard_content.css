@@ -87,5 +87,6 @@
 }
 
 .jars-pie-chart {
-    display: flex;
+    width: 600px;
+    display: inline-flex;
 }

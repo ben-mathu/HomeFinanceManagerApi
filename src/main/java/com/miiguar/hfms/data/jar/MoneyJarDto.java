@@ -2,8 +2,8 @@ package com.miiguar.hfms.data.jar;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.data.expense.ExpenseDto;
-import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.expense.model.Expense;
+import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.grocery.model.Grocery;
 import com.miiguar.hfms.data.user.model.User;
 
@@ -21,7 +21,7 @@ public class MoneyJarDto {
     @SerializedName(GROCERIES_TB_NAME)
     private List<Grocery> groceries;
     @SerializedName(EXPENSE)
-    private ExpenseDto expenseDto;
+    private Expense expense;
     @SerializedName(USER)
     private User user;
 
@@ -49,11 +49,11 @@ public class MoneyJarDto {
         this.groceries = groceries;
     }
 
-    public ExpenseDto getExpenseDto() {
-        return expenseDto;
+    public Expense getExpense() {
+        return expense;
     }
 
-    public void setExpenseDto(ExpenseDto expenseDto) {
-        this.expenseDto = expenseDto;
+    public void setExpense(Expense expense) {
+        this.expense = expense;
     }
 }

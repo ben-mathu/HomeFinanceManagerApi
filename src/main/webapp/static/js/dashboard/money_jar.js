@@ -8,6 +8,11 @@ let daySelector;
 let timePicker;
 let datePicker;
 
+let expenseSection;
+let grocerySection;
+let groceryListSection;
+let expenseItemsSection;
+
 let dayOfWeek;
 
 let jars = {
@@ -59,7 +64,20 @@ let selectedMoneyJarType;
 let jarsCanvas;
 let jarsLegends;
 
+let jarLabel;
+let amountElem;
+let time;
+let date;
+
+let moneyJarIdModal;
+
 function configureMoneyJar() {
+    // Initialize HTML elements
+    moneyJarIdModal = document.getElementById("moneyJarIdModal");
+    jarLabel = document.getElementById("jarLabel");
+    amountElem = document.getElementById("totalAmount");
+    time = document.getElementById("scheduledHour");
+    date = document.getElementById("scheduledDate");
     
     btnOpenJarModal = document.getElementById("btnOpenJarModal");
     btnOpenJarModal.onclick = function() {
@@ -78,19 +96,21 @@ function configureMoneyJar() {
     }
 
     // Grocery section
-    let grocerySection = document.getElementById("groceries");
+    grocerySection = document.getElementById("groceries");
+    groceryListSection = document.getElementById("groceryContainer");
     // Jar sections
-    let jarSection = document.getElementById("expense");
+    expenseSection = document.getElementById("expense");
+    expenseItemsSection = document.getElementById("expenseContainer");
 
     categorySelector = document.getElementById("categorySelector");
     categorySelector.addEventListener("change", function () {
         selectedMoneyJarType = categorySelector.options[categorySelector.selectedIndex].value;
         if (selectedMoneyJarType == categoryOption.GROCERIES) {
             grocerySection.hidden = false;
-            jarSection.hidden = true;
+            expenseSection.hidden = true;
         } else if (selectedMoneyJarType == categoryOption.EXPENSES) {
             grocerySection.hidden = true;
-            jarSection.hidden = false;
+            expenseSection.hidden = false;
         }
     });
 
@@ -154,7 +174,7 @@ function getAllMoneyJars() {
                     let moneyJarDto = jarDtoList[i];
                     let jar = moneyJarDto.jar;
 
-                    jars.setJar(jar.jar_id, jar);
+                    jars.setJar(jar.jar_id, moneyJarDto);
                 }
 
                 setJars("");
@@ -180,31 +200,35 @@ function getAllMoneyJars() {
 function activateTimer() {
     let ids = Object.keys(jars.getJarList());
     ids.forEach(key => {
-        let jar = jars.getJar(key);
-        (function(dayScheduled) {
-            if (new Date(dayScheduled).getTime() <= new Date().getTime()) {
-                showNotificationDialog(jar);
+        let jarDto = jars.getJar(key);
+        let jar = jarDto.jar;
+        let label = jar.jar_label;
+        (function(key, dayScheduled) {
+            let today = new Date();
+            let timeScheduled = new Date(dayScheduled);
+            if (timeScheduled.getTime() <= today.getTime()) {
+                showNotificationDialog(key, jarDto);
                 return;
             }
 
             window.setTimeout(arguments.callee, 1000, dayScheduled);
-        })(jar.scheduled_for);
+        })(key, jar.scheduled_for);
     });
 }
 
-function showNotificationDialog(jar) {
-    let nameTitle = jar.jar_label;
-    let descriptionBody = jar.description;
+function drawPieChart(jarElements) {
+    let jarMap = {};
+    let count = 0;
+    jarElements.forEach(jarElement => {
+        jarMap[count] = jarElement.jar;
+        count++;
+    });
 
-    let paymentDueDialog = document.getElementById("paymentDueDialog");
-    paymentDueDialog.hidden = false;
-}
-
-function drawPieChart(jars) {
+    let jarItems = Object.values(jarMap);
     let colors = ["#F3004D", "#4E4D4A", "#333333", "#74B100", "#353432", "#85C760", "#008FB4", "#F8FFE1", "#294875", "#AA002E"]
     let properties = {
         canvas: jarsCanvas,
-        jars: jars,
+        jars: jarItems,
         colors: colors
     }
 
@@ -217,6 +241,83 @@ function openJarModal(callback) {
 
     btnSubmitJar.onclick = function() {
         updateJar(callback);
+    }
+}
+
+function openJarModalForEdit(jarId) {
+
+    moneyJarIdModal.value = jarId;
+    
+    jarModal.style.display = "block";
+
+    let jarDto = jars.getJar(jarId);
+    let jar = jarDto.jar;
+    // Set inputs to be changed
+    jarLabel.value = jar.jar_label;
+    amountElem.innerHTML = jar.amount;
+    let dateArr = jar.scheduled_for.split(" ");
+    date.value = dateArr[0];
+    time.value = dateArr[1];
+
+    amountElem.innerHTML = jar.amount;
+
+    if (jar.category == "Groceries") {
+        categorySelector.options[0].selected = true;
+        let groceries = jar.liabilities;
+
+        groceryListSection.innerHTML = "";
+        groceryListSection.appendChild(setGroceries(groceries));
+
+        expenseSection.hidden = true;
+        grocerySection.hidden = false;
+    } else {
+        categorySelector.options[1].selected = true;
+
+        expenseItemsSection.innerHTML = "";
+        expenseItemsSection.appendChild(setExpense(jarId));
+
+        expenseSection.hidden = false;
+        grocerySection.hidden = true;
+    }
+
+    if (jar.scheduled_type == "scheduled") {
+        scheduleSelector.options[0].selected = true;
+    } else if (jar.scheduled_type == "Daily") {
+        scheduleSelector.options[1].selected = true;
+    } else if (jar.scheduled_type == "Weekly") {
+        scheduleSelector.options[2].selected = true;
+        setDay(jar.scheduled_for);
+    } else if (jar.scheduled_type == "Monthly") {
+        scheduleSelector.options[3].selected = true;
+    }
+
+    btnSubmitJar.onclick = function() {
+        updateMoneyJar(jarId);
+    }
+}
+
+/**
+ * select the day of the week for that schedule.
+ * 
+ * @param {string} day weekday: Monday, Tuesday, Wednesday, etc
+ */
+function setDay(day) {
+    if (day == "Monday") {
+        daySelector.options[0].selected = true;
+    } else if (day == "Tuesday") {
+        daySelector.options[1].selected = true;
+    } else if (day == "Wednesday") {
+        daySelector.options[2].selected = true;
+    } else if (day == "Thursday") {
+        daySelector.options[3].selected = true;
+    } else if (day == "Friday") {
+        daySelector.options[4].selected = true;
+    } else if (day == "Saturday") {
+        daySelector.options[5].selected = true;
+    } else if (day == "Sunday") {
+        daySelector.options[0].selected = true;
+    } else {
+        daySelector.options[0].selected = true;
     }
 }
 
@@ -283,6 +384,35 @@ function updateJar(callback) {
 }
 
 /**
+ * Update remote element when user choose to update/edit jar elements
+ * 
+ * @param {String} jarId key value of an element in moneyJarList
+ */
+function updateMoneyJar(jarId) {
+
+    // Update remote record
+    let request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+            if (request.status == 200) {
+                let json = request.responseText;
+                let moneyJarDto = JSON.parse(json);
+                addJarToList(moneyJarDto);
+            } else {
+                showError();
+            }
+        }
+    }
+
+    let data = serializeData();
+
+    request.open("PUT", ctx + "/dashboard/jars-controller?" + data, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
+    request.send();
+}
+
+/**
  * Add the item added by the user to aa global list variable
  * @param {Jars[moneyJar
  *Dto contains a list of jars with elements
@@ -315,12 +445,14 @@ function setJars(jarId) {
     if (jarId == "") {
 
         keys.forEach(key =>  {
-            let jar = jars.getJar(key);
+            let jarDto = jars.getJar(key);
+            let jar = jarDto.jar;
             updateJarTable(jar);
         });
     } else {
         
-        let jar = jars.getJar(jarId);
+        let jarDto = jars.getJar(jarId);
+        let jar = jarDto.jar;
         updateJarTable(jar);
     }
     // update the table with new item
@@ -350,14 +482,9 @@ function updateJarTable(jar) {
  * Get input data from the user and serialize
  */
 function serializeData() {
+    // set user id details
     var userId = escape(window.localStorage.getItem("user_id"));
     var token = escape(window.localStorage.getItem("token"));
-
-    // get elements in
-    let jarLabel = document.getElementById("jarLabel");
-    let amount = document.getElementById("totalAmount");
-    let time = document.getElementById("scheduledHour");
-    let date = document.getElementById("scheduledDate");
     let liabilitiesObj = {};
 
     var jarModalError = document.getElementById("jarModalError");
@@ -367,17 +494,17 @@ function serializeData() {
     }
     
     // get list depending on category
+    if (selectedMoneyJarType == null) {
+        selectedMoneyJarType = categorySelector.options[categorySelector.selectedIndex].value;
+    }
+    
     let items;
     if (selectedMoneyJarType == categoryOption.EXPENSES) {
         liabilitiesObj.expense = expense;
         items = JSON.stringify(liabilitiesObj);
-    } else {
+    } else if (selectedMoneyJarType == categoryOption.GROCERIES) {
         groceryDto.groceries = Object.values(groceryListObj);
         items = JSON.stringify(groceryDto);
-    }
-
-    if (selectedMoneyJarType == null) {
-        selectedMoneyJarType = categorySelector.options[categorySelector.selectedIndex].value;
     }
 
     if (items == "" && selectedMoneyJarType == categoryOption.GROCERIES) {
@@ -387,9 +514,10 @@ function serializeData() {
 
     let data = userFields.TOKEN + "=" + token + "&";
     data += userFields.USER_ID + "=" + userId + "&";
+    data += jarFields.JAR_ID + "=" + escape(moneyJarIdModal.value) + "&";
     data += jarFields.JAR_LABEL + "=" + escape(jarLabel.value) + "&";
     data += jarFields.CATEGORY + "=" + escape(selectedMoneyJarType) + "&";
-    data += jarFields.TOTAL_AMOUNT + "=" + escape(amount.innerHTML) + "&";
+    data += jarFields.TOTAL_AMOUNT + "=" + escape(amountElem.innerHTML) + "&";
     
     // get date
     let dateTime;
@@ -420,25 +548,26 @@ function serializeData() {
 }
 
 /**
- * Update moneyJar
- *Dto's total amount
+ * Update moneyJar Dto's total amount - used when adding an item or expense.
  * @param {double} amount total amount of comodity
  */
 function onRowLoaded(amount) {
-    var totalAmount = document.getElementById("totalAmount");
-
-    var currentTotal = totalAmount.innerHTML;
+    var currentTotal = amountElem.innerHTML;
     currentTotal = parseInt(amount) + parseInt(currentTotal);
 
-    totalAmount.innerHTML = currentTotal;
+    amountElem.innerHTML = currentTotal;
 }
 
+/**
+ * Subtracts the previous amount from the total amount then add the new amount to the subtracted total.
+ * 
+ * @param {string} previous amount of comodity before item change
+ * @param {string} newPrice amount of comodity after item changed
+ */
 function updateTotalAmount(previous, newPrice) {
-    var totalAmount = document.getElementById("totalAmount");
-
-    var currentTotal = totalAmount.innerHTML;
+    var currentTotal = amountElem.innerHTML;
     currentTotal = parseInt(currentTotal) - parseInt(previous);
     currentTotal += parseInt(newPrice);
 
-    totalAmount.innerHTML = currentTotal;
+    amountElem.innerHTML = currentTotal;
 }

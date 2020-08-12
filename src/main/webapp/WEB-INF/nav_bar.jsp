@@ -9,11 +9,11 @@
         </div>
         <div class="status-section">
             <div class="user-name">
-                <span class="name" id="userName" hidden>Matt LeBlanc</span>
+                <span class="name" id="userName" style="color: #3F3A4B;" hidden>Matt LeBlanc</span>
             </div>
             <div class="status">
                 <span id="statusIndicator" class="status-indicator" hidden></span>
-                <span class="status-text" id="status" hidden>Online</span>
+                <span class="status-text" id="status" style="color: #3F3A4B;" hidden>Online</span>
             </div>
         </div>
     </div>

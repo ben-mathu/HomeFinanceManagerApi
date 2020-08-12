@@ -1,7 +1,6 @@
 package com.miiguar.hfms.api.moneyjar;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.data.expense.ExpenseDto;
 import com.miiguar.hfms.data.jar.MoneyJarsDao;
 import com.miiguar.hfms.data.jar.MoneyJarDto;
 import com.miiguar.hfms.data.jar.MoneyJarsDto;
@@ -46,33 +45,107 @@ import static com.miiguar.hfms.utils.Constants.JarType.GROCERY_CATEGORY;
 public class MoneyJarApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    AccountStatusDao accountStatusDao = new AccountStatusDao();
-    HouseholdDao householdDao = new HouseholdDao();
-    UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
-    GroceryDao groceryDao = new GroceryDao();
-    ExpenseDao expenseDao = new ExpenseDao();
-    MoneyJarsDao jarDao = new MoneyJarsDao();
+    private final AccountStatusDao accountStatusDao;
+    private final HouseholdDao householdDao;
+    private final UserHouseholdDao userHouseholdDao;
+    private final GroceryDao groceryDao;
+    private final ExpenseDao expenseDao;
+    private final MoneyJarsDao jarDao;
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private final GenerateRandomString randomString;
 
-        String requestStr = BufferRequestReader.bufferRequest(req);
+    private final String now;
 
-        int envAffectedRows;
-        int expAffectedRows = 0;
-        int groAffectedRows = 0;
+    public MoneyJarApi() {
+        accountStatusDao = new AccountStatusDao();
+        householdDao = new HouseholdDao();
+        userHouseholdDao = new UserHouseholdDao();
+        groceryDao = new GroceryDao();
+        expenseDao = new ExpenseDao();
+        jarDao = new MoneyJarsDao();
 
-        GenerateRandomString randomString = new GenerateRandomString(
+        randomString = new GenerateRandomString(
                 12,
                 new SecureRandom(),
                 GenerateRandomString.getAlphaNumeric()
         );
 
         Date date = new Date();
-        String now = new SimpleDateFormat(DATE_FORMAT).format(date);
+        now = new SimpleDateFormat(DATE_FORMAT).format(date);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String requestStr = BufferRequestReader.bufferRequest(req);
 
         MoneyJarDto dto = gson.fromJson(requestStr, MoneyJarDto.class);
         MoneyJar jar = dto.getJar();
+
+        if (!jar.getMoneyJarId().isEmpty())
+            updateDatabase(dto, req, resp);
+        else
+            save(dto, req, resp);
+    }
+
+    public void updateDatabase(MoneyJarDto dto, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        MoneyJar jar = dto.getJar();
+
+        int envAffectedRows;
+        int expAffectedRows = 0;
+        int groAffectedRows = 0;
+
+        // get household
+        User user = dto.getUser();
+        UserHouseholdRel householdRel = userHouseholdDao.get(user.getUserId());
+
+        jar.setHouseholdId(householdRel.getHouseId());
+        envAffectedRows = jarDao.update(jar);
+        dto.setJar(jar);
+
+
+        List<Grocery> groceries = dto.getGroceries();
+        if (GROCERY_CATEGORY.equals(dto.getJar().getCategory())) {
+
+            for (Grocery grocery : groceries) {
+                grocery.setJarId(jar.getMoneyJarId());
+                groAffectedRows += groceryDao.save(grocery, grocery.getGroceryId());
+            }
+            dto.setGroceries(groceries);
+        } else {
+            Expense expense = dto.getExpense();
+            expense.setJarId(jar.getMoneyJarId());
+            expAffectedRows = expenseDao.update(expense);
+            dto.setExpense(expense);
+        }
+
+        String uri = req.getRequestURI();
+        if (uri.endsWith(ADD_MONEY_JAR)) {
+            if (envAffectedRows > 0 && (expAffectedRows > 0 || groAffectedRows > 0)) {
+                String responseStr = gson.toJson(dto);
+
+                writer = resp.getWriter();
+                writer.write(responseStr);
+
+                updateEnvStatus(user.getUserId());
+            } else {
+                Report report = new Report();
+                report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                report.setMessage("The item was not added.");
+
+                String responseStr = gson.toJson(report);
+                writer = resp.getWriter();
+                writer.write(responseStr);
+            }
+        }
+    }
+
+    public void save(MoneyJarDto dto, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        MoneyJar jar = dto.getJar();
+
+        int envAffectedRows;
+        int expAffectedRows = 0;
+        int groAffectedRows = 0;
 
         // get household
         User user = dto.getUser();
@@ -85,11 +158,9 @@ public class MoneyJarApi extends BaseServlet {
         envAffectedRows = jarDao.save(jar);
         dto.setJar(jar);
 
-
         List<Grocery> groceries = dto.getGroceries();
-        ExpenseDto expenseDto = dto.getExpenseDto();
         if (GROCERY_CATEGORY.equals(dto.getJar().getCategory())) {
-            String groceryId = "";
+            String groceryId;
 
             for (Grocery grocery : groceries) {
                 groceryId = grocery.getGroceryId().isEmpty() ? randomString.nextString() : grocery.getGroceryId();
@@ -99,12 +170,12 @@ public class MoneyJarApi extends BaseServlet {
             }
             dto.setGroceries(groceries);
         } else {
-            Expense expense = expenseDto.getExpense();
-            String expenseId = expense.getExpenseId().isEmpty() ? randomString.nextString() : expense.getExpenseId();
+            Expense expense = dto.getExpense();
+            String expenseId = randomString.nextString();
             expense.setExpenseId(expenseId);
             expense.setJarId(jarId);
             expAffectedRows = expenseDao.save(expense);
-            dto.setExpenseDto(expenseDto);
+            dto.setExpense(expense);
         }
 
         String uri = req.getRequestURI();
@@ -175,35 +246,27 @@ public class MoneyJarApi extends BaseServlet {
                 jarDto.setGroceries(groceries);
             } else {
                 Expense expenses = expenseDao.get(jarId);
-                ExpenseDto expenseDto = new ExpenseDto();
-                expenseDto.setExpense(expenses);
-                jarDto.setExpenseDto(expenseDto);
+                jarDto.setExpense(expenses);
             }
             jarDtoList.add(jarDto);
         }
 
         jarsDto.setJarDto(jarDtoList);
 
-        String response = "";
+        String response;
+        Report report = new Report();
         if (jarsDto.getJarDto().isEmpty()) {
-            Report report = new Report();
             report.setStatus(HttpServletResponse.SC_NOT_FOUND);
             report.setMessage("The items requested were not found");
-            jarsDto.setReport(report);
 
-            response = gson.toJson(jarsDto);
-
-            writer = resp.getWriter();
-            writer.write(response);
         } else {
-            Report report = new Report();
             report.setStatus(HttpServletResponse.SC_OK);
             report.setMessage("Success");
-            jarsDto.setReport(report);
 
-            response = gson.toJson(jarsDto);
-            writer = resp.getWriter();
-            writer.write(response);
         }
+        jarsDto.setReport(report);
+        response = gson.toJson(jarsDto);
+        writer = resp.getWriter();
+        writer.write(response);
     }
 }

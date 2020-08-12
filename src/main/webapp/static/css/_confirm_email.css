@@ -2,14 +2,6 @@
     margin-left: 30px;
 }
 
-.progress-container {
-    width: fit-content;
-    align-content: flex-end;
-    background-color: rgb(42, 39, 49);
-    border-radius: 5px;
-    padding: 3%;
-}
-
 .code-func-parameters {
     display: inline;
 }

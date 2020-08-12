@@ -97,7 +97,7 @@ public class DbEnvironment {
     public static final String ACCOUNT_STATUS = "account_status";
     // Reference user_id from users table
     public static final String INCOME_STATUS = "income_status";
-    public static final String JAR_STATUS = "envelope_status";
+    public static final String JAR_STATUS = "jar_status";
     public static final String HOUSEHOLD_STATUS = "household_status";
     public static final String COMPLETE_AT = "completed_at";
     public static final String FK_ACCOUNT_STATUS_USER_ID = "fk_account_status_user_id_ref_users";
@@ -130,7 +130,7 @@ public class DbEnvironment {
     public static final String PAYEE_NAME = "payee_name";
     public static final String EXPENSE_TYPE = "type";
     public static final String BUSINESS_NUMBER = "business_number";
-    public static final String PHONE_NUMBER = "phone_number";
+    public static final String ACCOUNT_NUMBER = "account_number";
     public static final String FK_HOUSEHOLD_ID_REF_HOUSEHOLDS = "fk_household_id_ref_households_household_id";
     public static final String FK_EXPENSES_JAR_ID = "fk_expenses_jar_id_ref_jars";
 }

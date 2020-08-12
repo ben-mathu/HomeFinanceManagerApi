@@ -81,7 +81,54 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
 
     @Override
     public int update(MoneyJar item) {
-        return 0;
+        String query = "UPDATE " + MONEY_JAR_TB_NAME +
+                " SET " + MONEY_JAR_NAME + "=?," +
+                CATEGORY + "=?," +
+                TOTAL_AMOUNT + "=?," +
+                CREATED_AT + "=?," +
+                SCHEDULED_FOR + "=?," +
+                SCHEDULED_TYPE + "=?," +
+                HOUSEHOLD_ID + "=?" +
+                " WHERE " + MONEY_JAR_ID + "=?";
+        int affectedRows = 0;
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, item.getName());
+            preparedStatement.setString(2, item.getCategory());
+            preparedStatement.setDouble(3, item.getTotalAmount());
+            preparedStatement.setString(4, item.getCreatedAt());
+            preparedStatement.setString(5, item.getScheduledFor());
+            preparedStatement.setString(6, item.getScheduleType());
+            preparedStatement.setString(7, item.getHouseholdId());
+            preparedStatement.setString(8, item.getMoneyJarId());
+            affectedRows = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing envelope update", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return affectedRows;
     }
 
     @Override

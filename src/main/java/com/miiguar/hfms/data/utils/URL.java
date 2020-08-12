@@ -22,6 +22,7 @@ public class URL {
     public static final String ADD_MONEY_JAR = "/jars/add-money-jar";
     public static final String GET_MONEY_JAR = "/jars/get-money-jar";
     public static final String GET_ALL_MONEY_JARS = "/jars/get-all-jars";
+    public static final String UPDATE_MONEY_JAR = "/jars/update-money-jar";
 
     public static final String USER_DETAILS = "/users/*";
     public static final String GET_USER_DETAILS = "/users/user";
@@ -32,4 +33,5 @@ public class URL {
 
     // Daraja
     public static final String GENERATE_TOKEN = "oauth/v1/generate";
+    public static final String MPESA_URL = "/mpesa/confirm-url";
 }

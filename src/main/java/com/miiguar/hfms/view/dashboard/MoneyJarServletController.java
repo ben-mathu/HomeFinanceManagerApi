@@ -1,6 +1,7 @@
 package com.miiguar.hfms.view.dashboard;
 
 import com.miiguar.hfms.data.expense.ExpenseDto;
+import com.miiguar.hfms.data.expense.model.Expense;
 import com.miiguar.hfms.data.jar.MoneyJarsDto;
 import com.miiguar.hfms.data.jar.MoneyJarDto;
 import com.miiguar.hfms.data.jar.model.MoneyJar;
@@ -18,9 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
-import static com.miiguar.hfms.data.utils.URL.ADD_MONEY_JAR;
-import static com.miiguar.hfms.data.utils.URL.GET_MONEY_JAR;
+import static com.miiguar.hfms.data.utils.URL.*;
 import static com.miiguar.hfms.utils.Constants.*;
+import static com.miiguar.hfms.utils.Constants.JarType.EXPENSE_CATEGORY;
 import static com.miiguar.hfms.utils.Constants.JarType.GROCERY_CATEGORY;
 
 /**
@@ -34,7 +35,7 @@ public class MoneyJarServletController extends BaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doGet(req, resp);
 
-        String requestParam = "";
+        String requestParam;
         requestParam = "?" + USER_ID + "=" + req.getParameter(USER_ID);
 
         String token = req.getParameter(TOKEN);
@@ -42,7 +43,7 @@ public class MoneyJarServletController extends BaseServlet {
         InitUrlConnection<User> conn = new InitUrlConnection<>();
         BufferedReader streamReader = conn.getReader(GET_MONEY_JAR + requestParam, token, "GET");
 
-        String line = "";
+        String line;
         MoneyJarsDto jarsDto = null;
         String response = "";
         while((line = streamReader.readLine()) != null) {
@@ -50,6 +51,7 @@ public class MoneyJarServletController extends BaseServlet {
             jarsDto = gson.fromJson(line, MoneyJarsDto.class);
         }
 
+        assert jarsDto != null;
         Report report = jarsDto.getReport();
         resp.setStatus(report.getStatus());
         writer = resp.getWriter();
@@ -66,6 +68,7 @@ public class MoneyJarServletController extends BaseServlet {
         MoneyJarDto jarDto = new MoneyJarDto();
 
         MoneyJar jar = new MoneyJar();
+        jar.setMoneyJarId(req.getParameter(MONEY_JAR_ID));
         jar.setCategory(category);
         jar.setName(req.getParameter(MONEY_JAR_NAME));
         jar.setScheduledFor(req.getParameter(SCHEDULED_FOR));
@@ -79,24 +82,33 @@ public class MoneyJarServletController extends BaseServlet {
         user.setUsername(req.getParameter(USERNAME));
         user.setUserId(req.getParameter(USER_ID));
 
-        GroceriesDto groceriesDto = null;
-        ExpenseDto expenseDto = null;
+        GroceriesDto groceriesDto;
+        Expense expense = null;
         if (category.equals(GROCERY_CATEGORY)) {
             String groceries = req.getParameter(LIABILITIES);
             groceriesDto = gson.fromJson(groceries, GroceriesDto.class);
             jarDto.setGroceries(groceriesDto.getGroceries());
         } else {
             String expenses = req.getParameter(LIABILITIES);
-            expenseDto = gson.fromJson(expenses, ExpenseDto.class);
-            jarDto.setExpenseDto(expenseDto);
+            ExpenseDto expenseDto = gson.fromJson(expenses, ExpenseDto.class);
+            jarDto.setExpense(expenseDto.getExpense());
         }
 
         jarDto.setUser(user);
 
         InitUrlConnection<MoneyJarDto> conn = new InitUrlConnection<>();
-        BufferedReader streamReader = conn.getReader(jarDto, ADD_MONEY_JAR, token, "PUT");
+        BufferedReader streamReader;
+        if (jar.getMoneyJarId().isEmpty()) {
+            if (EXPENSE_CATEGORY.equals(jarDto.getJar().getCategory()))
+                jarDto.getExpense().setJarId(jarDto.getJar().getMoneyJarId());
+            if (GROCERY_CATEGORY.equals(jarDto.getJar().getCategory()))
+                jarDto.getExpense().setJarId(jarDto.getJar().getMoneyJarId());
+            streamReader = conn.getReader(jarDto, ADD_MONEY_JAR, token, "PUT");
+        } else {
+            streamReader = conn.getReader(jarDto, UPDATE_MONEY_JAR, token, "PUT");
+        }
 
-        String line = "";
+        String line;
         MoneyJarDto response = null;
         while((line = streamReader.readLine()) != null) {
             response = gson.fromJson(line, MoneyJarDto.class);

@@ -5,8 +5,8 @@
             <h4>Chart</h4>
         </div>
         <div class="chat-container rounded-corner shadow-1pt subsection-background" >
-            <h4>Chat</h4>
-            <p>Show general chat</p>
+            <h4>Notification history (Last 10 notifications)</h4>
+            <p>Show financial notifications</p>
         </div>
     </div>
     

@@ -1,5 +1,6 @@
 <div id="expensesModal" class="modal">
     <div class="modal-content" >
+        <input id="expenseId" type="text" name="expense_id" placeholder="Expense Id">
         <h4 class="modal-title">Add Expense Details</h4>
         <p id="expense-modal-error" class="error-text"></p>
         <form>
@@ -20,7 +21,7 @@
                 <label for="#personal">Personal Expense</label>
             </div>
             <div class="radio-container" >
-                <input id="householdExpense" class="radio-style" type="radio" name="payee_entity" value="Household Expense" />
+                <input id="householdExpense" class="radio-style" type="radio" name="payee_entity" value="Household" />
                 <label for="#householdExpense">Household Expense</label>
             </div>
             <div class="radio-container" >
@@ -28,10 +29,10 @@
                 <label for="#employee">Employee</label>
             </div>
             <div id="businessNumber">
-                <input id="payeeBusinessNumber" class="input-style" type="text" name="payeeBusinessNumber" placeholder="Business Number" />
+                <input id="payeeBusinessNumber" class="input-style" type="text" name="business_number" placeholder="Business Number" />
             </div>
-            <div id="phone" hidden>
-                <input id="payeePhone" class="input-style" type="text" name="payeePhone" placeholder="Payee Phone Number" />
+            <div id="account">
+                <input id="payerAccountNumber" class="input-style" type="text" name="account_number" placeholder="Payer Account Number" />
             </div>
             <div>
                 <input id="addExpense" class="btn2" type="button" value="Submit" />

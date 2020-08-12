@@ -1,11 +1,9 @@
         
         <div class="footer-container" >
-            <div id="progress" class="progress-container align-right" hidden>
+            <div id="progress" class="progress-container" hidden>
                 <p id="message">Loading...</p>
                 <progress class="progress-bar" max="100"></progress>
             </div>
-
-            <%@ include file = "dashboard/dialogs/payment_due_dialog.jsp" %>
 
             <div class="footer text-muted text-center">
                 <p>

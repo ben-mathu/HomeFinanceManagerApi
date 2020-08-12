@@ -15,10 +15,13 @@
     color: #3F3A4B;
     width: fit-content;
     height: 380px;
-    padding: 30px;
+    padding: 10px;
     margin: auto;
     display: block;
     overflow-y: scroll;
+    overflow-x: hidden;
+    border: 1px solid;
+    border-color: #FEC800;
     border-radius: 5px;
     background-color: rgb(255, 255, 255);
 }
@@ -67,4 +70,12 @@
 
 .font-color {
     color: #3F3A4B;
+}
+
+.expense-details-container {
+    font-style: bold;
+}
+
+.normal-font {
+    font-style: normal;
 }

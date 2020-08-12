@@ -38,9 +38,9 @@ class PieChart {
             this.jars.forEach(jar => {
                 let amount = jar.amount;
                 let sliceAngle = (amount/totalAmount) * 2 * Math.PI;
-                let pieRadius = Math.min(this.canvas.width/3.5, this.canvas.height/3.5);
-                let labelX = this.canvas.width/2 + pieRadius/0.875 * Math.cos(startAngle + sliceAngle/2);
-                let labelY = this.canvas.height/2 + pieRadius/0.875 * Math.sin(startAngle + sliceAngle/2);
+                let pieRadius = Math.min(this.canvas.width/3, this.canvas.height/3);
+                let labelX = this.canvas.width/2 + pieRadius/1.25 * Math.cos(startAngle + sliceAngle/2);
+                let labelY = this.canvas.height/2 + pieRadius/1.25 * Math.sin(startAngle + sliceAngle/2);
 
                 let labelText = Math.round(100 * amount/totalAmount) + "%";
 

@@ -36,7 +36,7 @@ public class ExpenseDao implements Dao<Expense> {
         String query = "INSERT INTO " + EXPENSES_TB_NAME + "(" +
                 EXPENSE_ID + "," + EXPENSE_NAME + "," + EXPENSE_DESCRIPTION + "," +
                 AMOUNT + "," + MONEY_JAR_ID + "," +
-                PAYEE_NAME + "," + BUSINESS_NUMBER + "," + PHONE_NUMBER + ")" +
+                PAYEE_NAME + "," + BUSINESS_NUMBER + "," + ACCOUNT_NUMBER + ")" +
                 " VALUES (?,?,?,?,?,?,?,?)";
 
         int affectedRows = 0;
@@ -54,7 +54,7 @@ public class ExpenseDao implements Dao<Expense> {
             insert.setString(5, item.getJarId());
             insert.setString(6, item.getPayee());
             insert.setString(7, item.getBusinessNumber());
-            insert.setString(8, item.getPhoneNumber());
+            insert.setString(8, item.getAccountNumber());
 
             affectedRows = insert.executeUpdate();
 
@@ -82,7 +82,55 @@ public class ExpenseDao implements Dao<Expense> {
 
     @Override
     public int update(Expense item) {
-        return 0;
+        String query = "UPDATE " + EXPENSES_TB_NAME +
+                " SET " + EXPENSE_NAME + "=?," +
+                EXPENSE_DESCRIPTION + "=?," +
+                AMOUNT + "=?," +
+                MONEY_JAR_ID + "=?," +
+                PAYEE_NAME + "=?," +
+                BUSINESS_NUMBER + "=?," +
+                ACCOUNT_NUMBER + "=?" +
+                " WHERE " + EXPENSE_ID + "=?";
+
+        int affectedRows = 0;
+        Connection conn = null;
+        PreparedStatement insert = null;
+
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            insert = conn.prepareStatement(query);
+
+            insert.setString(1, item.getName());
+            insert.setString(2, item.getDescription());
+            insert.setDouble(3, item.getAmount());
+            insert.setString(4, item.getJarId());
+            insert.setString(5, item.getPayee());
+            insert.setString(6, item.getBusinessNumber());
+            insert.setString(7, item.getAccountNumber());
+            insert.setString(8, item.getExpenseId());
+
+            affectedRows = insert.executeUpdate();
+
+            insert.close();
+            insert = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing adding expense", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (insert != null)
+                try {
+                    insert.close();
+                    insert = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return affectedRows;
     }
 
     @Override
@@ -114,7 +162,7 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setDescription(resultSet.getString(EXPENSE_DESCRIPTION));
                 expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
-                expense.setPhoneNumber(resultSet.getString(PHONE_NUMBER));
+                expense.setAccountNumber(resultSet.getString(ACCOUNT_NUMBER));
                 expense.setJarId(resultSet.getString(MONEY_JAR_ID));
             }
 
@@ -178,7 +226,7 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setDescription(resultSet.getString(EXPENSE_DESCRIPTION));
                 expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
-                expense.setPhoneNumber(resultSet.getString(PHONE_NUMBER));
+                expense.setAccountNumber(resultSet.getString(ACCOUNT_NUMBER));
                 expense.setJarId(resultSet.getString(MONEY_JAR_ID));
                 expenses.add(expense);
             }

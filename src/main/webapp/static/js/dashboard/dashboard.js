@@ -10,16 +10,6 @@ const Status = {
     PARTIAL: 'Partial'
 }
 
-function setAlarm(jarItem) {
-    window.setTimeout(() => {
-        showNotification();
-    }, new Date(jarItem.scheduled_for).getTime() - new Date().getTime());
-}
-
-function showNotification() {
-    
-}
-
 var timeInterval = setInterval(function() {myTimer()}, 1000);
 var navClickOpen = false;
 var ctx;
@@ -46,6 +36,17 @@ var expensesModal;
 var incomplete = {};
 var complete = {};
 var scheduled = {};
+
+let expense = {
+    expense_id: "",
+    expense_name: "",
+    expense_description: "",
+    amount: "",
+    payee_name: "",
+    type: "",
+    business_number: "",
+    account_number: ""
+}
 
 /**
  * Enumerations to represent folders in settings page
@@ -98,7 +99,7 @@ const requestMethod = {
 const accountStatusField = {
     HOUSEHOLD: 'household_status',
     EXPENSES: 'expenses_status',
-    ENVELOPE: 'grocery_status',
+    MONEY_JAR: 'jar_status',
     INCOME: 'income_status',
     ACCOUNT: 'account_status'
 }
@@ -113,7 +114,7 @@ const expenseFields = {
     AMOUNT: "amount",
     PAYEE_NAME: "payee_name",
     BUSINESS_NUMBER: "business_number",
-    PHONE_NUMBER: "phone_number"
+    ACCOUNT_NUMBER: "account_number"
 }
 
 /**
@@ -213,9 +214,6 @@ window.onload = function() {
     }
 
     getUserDetails();
-    
-    // // get grocery list
-    // getEnvelopes();
 
     // configuration when window loads
     configureSettings();
@@ -226,6 +224,7 @@ window.onload = function() {
     configureMoneyJar();
     configureExpenses();
     configureMembers();
+    configurePayments();
 }
 
 /**
@@ -262,7 +261,7 @@ function getUserDetails() {
                 // create a list of not complete settings
                 var status = {};
                 status[accountStatusField.INCOME] = accountStatus.income_status;
-                status[accountStatusField.ENVELOPE] = accountStatus.envelope_status;
+                status[accountStatusField.MONEY_JAR] = accountStatus.jar_status;
                 status[accountStatusField.HOUSEHOLD] = accountStatus.household_status;
 
                 openNotCompleteModals(status);
@@ -305,7 +304,7 @@ function openNotCompleteModals(statusMap) {
                 if (now > new Date(dateStr)) {
                     if (key == accountStatusField.INCOME) {
                         incomplete[key] = incomeModal;
-                    } else if (key == accountStatusField.ENVELOPE) {
+                    } else if (key == accountStatusField.MONEY_JAR) {
                         incomplete[key] = jarModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         incomplete[key] = householdModal;
@@ -313,7 +312,7 @@ function openNotCompleteModals(statusMap) {
                 } else if (now < new Date(dateStr)) {
                     if (key == accountStatusField.INCOME) {
                         scheduled[key] = incomeModal;
-                    } else if (key == accountStatusField.ENVELOPE) {
+                    } else if (key == accountStatusField.MONEY_JAR) {
                         scheduled[key] = jarModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         scheduled[key] = householdModal;
@@ -323,7 +322,7 @@ function openNotCompleteModals(statusMap) {
         } else {
             if (key == accountStatusField.INCOME) {
                 incomplete[key] = incomeModal;
-            } else if (key == accountStatusField.ENVELOPE) {
+            } else if (key == accountStatusField.MONEY_JAR) {
                 incomplete[key] = jarModal;
             } else if (key == accountStatusField.HOUSEHOLD) {
                 incomplete[key] = householdModal;
@@ -369,7 +368,7 @@ function openIncompleteModals(modalKeys) {
 window.openModal = function(modal) {
     if (modal.key == accountStatusField.INCOME) {
         openIncomeModal(modal);
-    } else if (modal.key == accountStatusField.ENVELOPE) {
+    } else if (modal.key == accountStatusField.MONEY_JAR) {
         openJarModal(modal);
     } else if (modal.key == accountStatusField.HOUSEHOLD) {
         openHouseholdModal(modal);
@@ -416,67 +415,6 @@ function myTimer() {
  */
 function getLength(s) {
     return [...s].length;
-}
-
-function getEnvelopes() {
-    var userId = window.localStorage.getItem("user_id");
-    var token = window.localStorage.getItem("token");
-    var username = window.localStorage.getItem("username");
-
-    var request = getXmlHttpRequest();
-
-    request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
-                var json = request.responseText;
-                var obj = JSON.parse(json);
-                var items = obj.groceries;
-
-                var body = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
-                for (let i = 0; i < items.length; i++) {
-                    // get number of rows
-                    var row = body.insertRow(i);
-                    if (i%2 == 0 || i == 0) {
-                        row.style.backgroundColor = "#534c63d2";
-                    }
-                    row.style.cursor = "pointer";
-
-                    row.onclick = (function() {
-                        var currentIndex = i;
-                        return function() {
-                            onItemClick(items[currentIndex].grocery_id);
-                        }
-                    })();
-                    
-                    var name = row.insertCell(0);
-                    var price = row.insertCell(1);
-                    var quantity = row.insertCell(2);
-                    var required = row.insertCell(3);
-                    
-                    name.innerHTML = items[i].grocery_name;
-                    price.innerHTML = items[i].grocery_price;
-                    quantity.innerHTML = items[i].remaining_quantity;
-                    required.innerHTML = items[i].required_quantity;
-
-                    groceryListObj[items[i].grocery_id] = items[i];
-                }
-            } else {
-                var error = document.getElementById("grocery-groceryModal-error");
-                error.innerHTML = "An Error occured please try again.";
-                error.hidden = false;
-                console.log("Error status: " + request.status);
-            }
-        }
-    }
-
-    userId = "user_id=" + escape(userId);
-    username = "username=" + escape(username);
-    token = "token=" + escape(token);
-    var data = userId + "&" + username + "&" + token;
-
-    request.open("GET", ctx + "/dashboard/envelopes-controller?" + data, true);
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    request.send();
 }
 
 function openOptionsMenu() {

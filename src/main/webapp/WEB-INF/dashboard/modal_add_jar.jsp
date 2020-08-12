@@ -1,5 +1,6 @@
 <div id="jarModal" class="modal">
     <div class="modal-content elements-modal-inline" >
+        <input id="moneyJarIdModal" type="text" name="jar-id" placeholder="Money Jar ID" hidden>
         <div class="jar-elements" >
             <h4 class="modal-title">Add a Money Jar</h4>
             <p id="jarModalError" class="error-text"></p>
@@ -54,28 +55,17 @@
                     <div id="empty" hidden>
                         Your grocery list is empty.
                     </div>
-                    <table id="groceryItems">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Description</th>
-                                <th>Remaining</th>
-                                <th>Required</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div id="groceryContainer" >
+                        <%@ include file = "../template/groceries.jsp" %>
+                    </div>
                     <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
                 </div>
                 <div id="expense" class="grocery-list" hidden>
-                    Name: <span id="expName"></span><br>
-                    Description: <span id="expDesc"></span><br>
-                    Amount: <span id="expAmount"></span><br>
-                    Payee: <span id="expPayeeName"></span><br>
-                    Business: <span id="expBusinessNumber"></span><br>
-                    Phone: <span id="payeePhoneNum"></span><br>
+                    <div id="expenseContainer" >
+                        <%@ include file = "../template/expense.jsp" %>
+                    </div>
                     <input id="btnOpenExpenseModal" class="btn2" type="button" value="Add Expense Details">
+                    <input id="btnEditExpenseModal" class="btn2" type="button" value="Edit Expense Details" hidden>
                 </div>
             </div>
         </div>

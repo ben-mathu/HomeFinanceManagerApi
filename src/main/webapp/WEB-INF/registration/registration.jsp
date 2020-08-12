@@ -22,7 +22,7 @@
             		<span id="result" class="resp">${error.usernameError}</span>
             	</div>
                 <div>
-                    <form class="form-container" method="POST">
+                    <form class="form-container" method="POST" onsubmit="return false;">
                         <input type="hidden" id="contextPath" name="path" value="${pageContext.request.contextPath}">
 
                         <%-- Enter email --%>
@@ -81,10 +81,10 @@
                             </div>
                             <span id="householdIdError" class="resp">${householdIdError.householdIdError}</span>
                         </div>
+                        <div class="submit-area">
+                            <button class="btn2 submit" onclick="registerUser()" id="submit">Submit</button>
+                        </div>
                     </form>
-                    <div class="submit-area">
-                        <button class="btn2 submit" onclick="registerUser()" id="submit">Submit</button>
-                    </div>
                     <a class="link register-link" href="login">Already have an account?</a>
                 </div>
                 <div class="login-using-socials">

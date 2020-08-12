@@ -20,7 +20,7 @@
             		<span id="result" class="resp">${error.usernameError}</span>
             	</div>
                 <div>
-                    <form method="POST">
+                    <form method="POST" onsubmit="return false;">
                         <input type="hidden" id="contextPath" name="contextPath" value="${pageContext.request.contextPath}">
                         <div class="input-container">
                             <div>
@@ -34,10 +34,10 @@
                             </div>
                             <span id="passwordError" class="resp">${passwordError.passwordError}</span>
                         </div>
+                        <div class="submit-area">
+                            <button class="btn2 submit" onclick="loginUser()" id="submit">Login</button>
+                        </div>
                     </form>
-                    <div class="submit-area">
-                        <button class="btn2 submit" onclick="loginUser()" id="submit">Login</button>
-                    </div>
                     <a class="link register-link" href="registration">Create an account.</a>
                 </div>
                 <div class="login-using-socials">

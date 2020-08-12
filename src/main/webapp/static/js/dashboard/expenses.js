@@ -3,26 +3,40 @@ let rdHouseHold;
 let rdEmployee;
 
 let businessNumber;
-let payeeNumber;
+let payeeAccountNumber;
 
 let btnOpenExpenseModal;
+let btnEditExpenseModal;
 let btnCloseExpenseModal;
 let btnSaveExpense;
 
-let expense = {
-    expense_id: "",
-    expense_name: "",
-    expense_description: "",
-    amount: "",
-    payee_name: "",
-    type: "",
-    business_number: "",
-    phone_number: ""
+/**
+ * Expenses Input Fields
+ */
+let expenseName;
+let expenseDesc;
+let expenseAmount;
+let payeeName;
+let expenseId;
+
+/**
+ * Expense Types
+ */
+const expenseTypes = {
+    PERSONAL: "Personal",
+    HOUSEHOLD: "Household",
+    EMPLOYEE: "Employee"
 }
 
 function configureExpenses() {
+    expenseId = document.getElementById("expenseId");
+    expenseName = document.getElementById("expenseName");
+    expenseDesc = document.getElementById("expenseDesc");
+    expenseAmount = document.getElementById("expenseAmount");
+    payeeName = document.getElementById("payeeName");
+    
     businessNumber = document.getElementById("payeeBusinessNumber");
-    payeeNumber = document.getElementById("payeePhone");
+    payeeAccountNumber = document.getElementById("payerAccountNumber");
 
     // checked checked radio button
     rdPersonal = document.getElementById("personal");
@@ -31,26 +45,37 @@ function configureExpenses() {
     rdPersonal.checked = true;
 
     let businessNumberContainer = document.getElementById("businessNumber");
-    let phoneNumberContainer = document.getElementById("phone");
+    let accountNumberContainer = document.getElementsByName("account_number");
 
     rdPersonal.onchange = function() {
-        phoneNumberContainer.hidden = true;
-        businessNumberContainer.hidden = false;
+        if (rdPersonal.checked) {
+            accountNumberContainer[0].placeholder = "Account Number";
+            businessNumberContainer.hidden = false;
+        }
     }
 
     rdHouseHold.onchange = function() {
-        phoneNumberContainer.hidden = true;
-        businessNumberContainer.hidden = false;
+        if (rdHouseHold.checked) {
+            accountNumberContainer[0].placeholder = "Account Number";
+            businessNumberContainer.hidden = false;
+        }
     }
 
     rdEmployee.onchange = function() {
-        phoneNumberContainer.hidden = false;
-        businessNumberContainer.hidden = true;
+        if (rdEmployee.checked) {
+            accountNumberContainer[0].placeholder = "Phone Number";
+            businessNumberContainer.hidden = true;
+        }
     }
 
     btnOpenExpenseModal = document.getElementById("btnOpenExpenseModal");
     btnOpenExpenseModal.onclick = function() {
         openExpenseModal();
+    }
+
+    btnEditExpenseModal = document.getElementById("btnEditExpenseModal");
+    btnEditExpenseModal.onclick = function () {
+        openExpenseModalForEdit(moneyJarIdModal.value);
     }
 
     // Initialize and define click event to close expense modal
@@ -67,11 +92,17 @@ function configureExpenses() {
 }
 
 function addExpense() {
-    // get items
-    expense.expense_name = document.getElementById("expenseName").value;
-    expense.expense_description = document.getElementById("expenseDesc").value;
-    expense.amount = document.getElementById("expenseAmount").value;
-    expense.payee_name = document.getElementById("payeeName").value;
+
+    expense = {
+        expense_id: "",
+        expense_name: expenseName.value,
+        expense_description: expenseDesc.value,
+        amount: expenseAmount.value,
+        payee_name: payeeName.value,
+        type: "",
+        business_number: "",
+        account_number: ""
+    }
     
     if (rdPersonal.checked) {
         expense.type = rdPersonal.value;
@@ -79,32 +110,49 @@ function addExpense() {
     } else if (rdHouseHold.checked) {
         expense.type = rdHouseHold.value;
         expense.business_number = document.getElementById("payeeBusinessNumber").value;
+        expense.account_number = document.getElementById("payerAccountNumber").value;
     } else if (rdEmployee.checked) {
         expense.type = rdEmployee.value;
-        expense.phone_number = document.getElementById("payeePhone").value;
+        expense.account_number = document.getElementById("payerAccountNumber").value;
     }
-    // set expense
-    setExpense();
-}
-
-function setExpense() {
-    closeExpenseModal();
-
-    let name = document.getElementById("expName");
-    name.innerHTML = expense.expense_name;
-    let desc = document.getElementById("expDesc");
-    desc.innerHTML = expense.expense_description;
-    let amount = document.getElementById("expAmount");
-    amount.innerHTML = expense.amount;
-    let payeeName = document.getElementById("expPayeeName");
-    payeeName.innerHTML = expense.payee_name;
-    let busiNumber = document.getElementById("expBusinessNumber");
-    busiNumber.innerHTML = expense.business_number;
-    let phone = document.getElementById("payeePhoneNum");
-    phone.innerHTML = expense.phone_number;
 
     // set total amount
     onRowLoaded(expense.amount);
+
+    // set expense
+    expenseItemsSection.innerHTML = "";
+    expenseItemsSection.appendChild(setExpense(""));
+}
+
+function setExpense(jarId) {
+    closeExpenseModal();
+    let jarDto = jars.getJar(jarId);
+    let jar = jarDto.jar;
+    
+    jarDto.expense = expense;
+
+    let expenseTemplate = document.getElementById("expenseTemplate");
+
+    let name = expenseTemplate.content.querySelector("#expName");
+    name.innerHTML = expense.expense_name;
+    let desc = expenseTemplate.content.querySelector("#expDesc");
+    desc.innerHTML = expense.expense_description;
+    let amount = expenseTemplate.content.querySelector("#expAmount");
+    amount.innerHTML = expense.amount;
+    let expPayeeName = expenseTemplate.content.querySelector("#expPayeeName");
+    expPayeeName.innerHTML = expense.payee_name;
+    let busiNumber = expenseTemplate.content.querySelector("#expBusinessNumber");
+    busiNumber.innerHTML = expense.business_number;
+    let account = expenseTemplate.content.querySelector("#accountNumber");
+    account.innerHTML = expense.account_number;
+
+    let expenseTemplateClone = document.importNode(expenseTemplate.content, true);
+
+    btnOpenExpenseModal.hidden = true;
+    btnEditExpenseModal.hidden = false;
+
+    return expenseTemplateClone;
+
 }
 
 /**
@@ -119,4 +167,71 @@ function closeExpenseModal() {
  */
 function openExpenseModal() {
     expensesModal.style.display = "block";
+}
+
+/**
+ * 
+ * @param {String} jarId key represents an element in moneyJarList
+ */
+function openExpenseModalForEdit(jarId) {
+    expensesModal.style.display = "block";
+
+    let jarDto = jars.getJar(jarId);
+
+    let expense = jarDto.expense;
+
+    expenseId.value = expense.expense_id;
+    expenseName.value = expense.expense_name;
+    expenseDesc.value = expense.expense_description;
+    expenseAmount.value = expense.amount;
+    payeeName.value = expense.payee_name;
+    businessNumber.value = expense.business_number;
+    payeeAccountNumber.value = expense.account_number;
+
+    if (expense.type == null) {
+        rdHouseHold.checked = true;
+    } else if (expense.type == expenseTypes.HOUSEHOLD) {
+        rdHouseHold.checked = true;
+    } else if (expense.type == expenseTypes.PERSONAL) {
+        rdPersonal.checked = true;
+    } else if (expense.type == expenseTypes.EMPLOYEE) {
+        rdEmployee.checked = true;
+    }
+
+    btnSaveExpense.onclick = function () {
+        updateExpense()
+    }
+}
+
+function updateExpense() {
+    let prevAmount = expenseAmount.value;
+    expense = {
+        expense_id: expenseId.value,
+        expense_name: expenseName.value,
+        expense_description: expenseDesc.value,
+        amount: expenseAmount.value,
+        payee_name: payeeName.value,
+        type: "",
+        business_number: "",
+        account_number: ""
+    }
+    
+    if (rdPersonal.checked) {
+        expense.type = rdPersonal.value;
+        expense.business_number = document.getElementById("payeeBusinessNumber").value;
+    } else if (rdHouseHold.checked) {
+        expense.type = rdHouseHold.value;
+        expense.business_number = document.getElementById("payeeBusinessNumber").value;
+        expense.account_number = document.getElementById("payerAccountNumber").value;
+    } else if (rdEmployee.checked) {
+        expense.type = rdEmployee.value;
+        expense.account_number = document.getElementById("payerAccountNumber").value;
+    }
+
+    // set total amount
+    updateTotalAmount(prevAmount, expense.amount);
+
+    // set expense
+    expenseItemsSection.innerHTML = "";
+    expenseItemsSection.appendChild(setExpense(moneyJarIdModal.value));
 }

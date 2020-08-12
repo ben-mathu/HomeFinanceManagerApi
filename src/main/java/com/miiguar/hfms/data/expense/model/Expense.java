@@ -48,9 +48,9 @@ public class Expense {
     @Column(columnName = BUSINESS_NUMBER, notNull = false)
     private String businessNumber = "";
 
-    @SerializedName(PHONE_NUMBER)
-    @Column(columnName = PHONE_NUMBER, notNull = false)
-    private String phoneNumber = "";
+    @SerializedName(ACCOUNT_NUMBER)
+    @Column(columnName = ACCOUNT_NUMBER, notNull = false)
+    private String accountNumber = "";
 
     public String getExpenseId() {
         return expenseId;
@@ -100,12 +100,12 @@ public class Expense {
         this.payee = payee;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getBusinessNumber() {
