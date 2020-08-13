@@ -66,16 +66,15 @@ function showNotificationDialog(jarId, jarDto) {
 
     if (jar.category == "Expenses") {
         let expenseItems = jarDto.expense;
-        expense = {
-            expense_id: expenseItems.expense_id,        
-            expense_name: expenseItems.expense_name,
-            expense_description: expenseItems.expense_description,
-            amount: expenseItems.amount,
-            payee_name: expenseItems.payee_name,
-            type: expenseItems.type,
-            business_number: expenseItems.business_number,
-            account_number: expenseItems.account_number
-        }
+
+        expense.expense_id = expenseItems.expense_id;
+        expense.expense_name = expenseItems.expense_name;
+        expense.expense_description = expenseItems.expense_description;
+        expense.amount = expenseItems.amount;
+        expense.payee_name = expenseItems.payee_name;
+        expense.type = expenseItems.type
+        expense.business_number = expenseItems.business_number;
+        expense.account_number = expenseItems.account_number;
 
         templateClone.querySelector("#paymentExpense").id += count;
         paymentExpenseSection = templateClone.querySelector("#paymentExpense" + count);
@@ -134,7 +133,7 @@ function showNotificationDialog(jarId, jarDto) {
         paymentDialog.style.display = "none";
 
         addNotification(jarId);
-    }, 5000);
+    }, 10000);
 
     let paymentDetails = document.getElementById("paymentDialogContainer");
     paymentDetails.appendChild(templateClone);
@@ -224,15 +223,18 @@ function serializePaymentData(jarId) {
     let jar = jarElement.jar;
     
     let data = "";
+
+    let token = window.localStorage.getItem(userFields.TOKEN)
+    data += userFields.TOKEN + "=" + token + "&";
     
     if (jar.category == categoryOption.EXPENSE) {
-        expense = jar.expense;
-        data += paybillFields.SHORT_CODE + "=" + expense.business_number;
-        data += paybillFields.AMOUNT + "=" + jar.amount;
-        data += paybillFields.PARTY_A + "=" + expense.account_number;
-        data += paybillFields.PARTY_B + "=" + expense.business_number;
-        data += paybillFields.PHONE_NUMBER + "=" + expense.account_number;
-        data += paybillFields.ACCOUNT_REF + "=account"
+        let expenseItem = jar.expense;
+        data += paybillFields.SHORT_CODE + "=" + expenseItem.business_number + "&";
+        data += paybillFields.AMOUNT + "=" + jar.amount + "&";
+        data += paybillFields.PARTY_A + "=" + expenseItem.account_number + "&";
+        data += paybillFields.PARTY_B + "=" + expenseItem.business_number + "&";
+        data += paybillFields.PHONE_NUMBER + "=" + expenseItem.account_number + "&";
+        data += paybillFields.ACCOUNT_REF + "=account" + "&";
         data += paybillFields.TRANSACTION_DESC + "=First transaction from code";
     }
     return data;

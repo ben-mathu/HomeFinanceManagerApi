@@ -31,7 +31,16 @@ public class URL {
     public static final String INCOME_ENDPOINT = "/income/*";
     public static final String ADD_USER_INCOME = "/income/add-income";
 
+    // Transactions
+    public static final String TRANSACTIONS = "/transactions/*";
+    public static final String SEND_TRANSACTION = "/transactions/send-transaction";
+
     // Daraja
+    // Request url
     public static final String GENERATE_TOKEN = "oauth/v1/generate";
+    public static final String LNMO = "mpesa/stkpush/v1/processrequest";
+
+    // Callback URLs
     public static final String MPESA_URL = "/mpesa/confirm-url";
+    public static final String LNMO_CALLBACK_URL = "/mpesa/lnmo-url";
 }

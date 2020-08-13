@@ -11,8 +11,7 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 
-import static com.miiguar.hfms.data.utils.URL.API;
-import static com.miiguar.hfms.data.utils.URL.MPESA_URL;
+import static com.miiguar.hfms.data.utils.URL.*;
 
 /**
  * @author bernard
@@ -27,7 +26,7 @@ public class MpesaResponseListener {
 
             server = HttpServer.create(new InetSocketAddress(port), 0);
 
-            server.createContext(API + MPESA_URL, new ConfirmHandler());
+            server.createContext(API + LNMO_CALLBACK_URL, new ConfirmHandler());
             server.setExecutor(null);
 
             // start the server

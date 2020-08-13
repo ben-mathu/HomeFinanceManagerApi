@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.daraja;
+package com.miiguar.hfms.data.daraja.models;
 
 import com.google.gson.annotations.SerializedName;
 

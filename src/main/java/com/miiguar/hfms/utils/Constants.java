@@ -48,6 +48,22 @@ public class Constants {
     // Daraja
     public static final String ACCESS_TOKEN = "access_token";
     public static final String EXPIRES_IN = "expires_in";
+    public static final String PAY_BILL = "CustomerPayBillOnline";
+    public static final String DARAJA_DATE_FORMAT = "yyyyMMddHHmmss";
+
+    public static class LnmoRequestFields {
+        public static final String SHORT_CODE = "BusinessShortCode";
+        public static final String PASSWORD = "Password";
+        public static final String TIMESTAMP = "Timestamp";
+        public static final String TRANSACTION_TYPE = "TransactionType";
+        public static final String AMOUNT = "Amount";
+        public static final String PARTY_A = "PartyA";
+        public static final String PARTY_B = "PartyB";
+        public static final String PHONE_NUMBER = "PhoneNumber";
+        public static final String CALLBACK_URL = "CallBackURL";
+        public static final String ACCOUNT_REF = "AccountReference";
+        public static final String TRANSACTION_DESC = "TransactionDesc";
+    }
 
     public static class ScheduleType {
         public static final String SCHEDULED = "Scheduled";

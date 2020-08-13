@@ -5,10 +5,7 @@ import com.google.gson.Gson;
 import com.miiguar.hfms.config.ConfigureApp;
 
 import javax.ws.rs.core.MediaType;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -121,7 +118,7 @@ public class InitUrlConnection<T> {
         streamReader.close();
     }
 
-    public BufferedReader getReader(String generateToken, String method) throws IOException {
+    public BufferedReader getReaderForDarajaApi(String generateToken, String method) throws IOException {
         ConfigureApp conf = new ConfigureApp();
         Properties prop  = conf.getProperties();
 
@@ -141,6 +138,35 @@ public class InitUrlConnection<T> {
         conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
+
+        // Set up the output line/response stream
+        streamReader = new BufferedReader(
+                new InputStreamReader(conn.getInputStream())
+        );
+        return streamReader;
+    }
+
+    public BufferedReader getReaderForDarajaApi(T item, String endPoint, String generateToken, String method) throws IOException {
+        ConfigureApp conf = new ConfigureApp();
+        Properties prop  = conf.getProperties();
+
+        String baseUrl = prop.getProperty("daraja.baseUrl");
+        String host = prop.getProperty("daraja.host");
+
+        // Set up connections
+        final URL url = new URL(baseUrl + endPoint);
+        final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestProperty(HOST, host);
+        conn.setRequestProperty(AUTHORIZATION, "Bearer " + generateToken);
+        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        conn.setRequestMethod(method);
+        conn.setDoOutput(true);
+
+        try (OutputStream writer = conn.getOutputStream()) {
+            Gson gson = new Gson();
+            String requestBody = gson.toJson(item);
+            writer.write(requestBody.getBytes());
+        }
 
         // Set up the output line/response stream
         streamReader = new BufferedReader(

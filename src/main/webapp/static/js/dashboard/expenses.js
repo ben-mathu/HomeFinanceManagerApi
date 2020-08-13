@@ -93,16 +93,10 @@ function configureExpenses() {
 
 function addExpense() {
 
-    expense = {
-        expense_id: "",
-        expense_name: expenseName.value,
-        expense_description: expenseDesc.value,
-        amount: expenseAmount.value,
-        payee_name: payeeName.value,
-        type: "",
-        business_number: "",
-        account_number: ""
-    }
+    expense.expense_name = expenseName.value;
+    expense.expense_description = expenseDesc.value;
+    expense.amount = expenseAmount.value;
+    expense.payee_name = payeeName.value;
     
     if (rdPersonal.checked) {
         expense.type = rdPersonal.value;
@@ -127,7 +121,6 @@ function addExpense() {
 function setExpense(jarId) {
     closeExpenseModal();
     let jarDto = jars.getJar(jarId);
-    let jar = jarDto.jar;
     
     jarDto.expense = expense;
 
@@ -205,16 +198,12 @@ function openExpenseModalForEdit(jarId) {
 
 function updateExpense() {
     let prevAmount = expenseAmount.value;
-    expense = {
-        expense_id: expenseId.value,
-        expense_name: expenseName.value,
-        expense_description: expenseDesc.value,
-        amount: expenseAmount.value,
-        payee_name: payeeName.value,
-        type: "",
-        business_number: "",
-        account_number: ""
-    }
+
+    expense.expense_id = expenseId.value;
+    expense.expense_name = expenseName.value;
+    expense.expense_description = expenseDesc.value;
+    expense.amount = expenseAmount.value;
+    expense.payee_name = payeeName.value;
     
     if (rdPersonal.checked) {
         expense.type = rdPersonal.value;

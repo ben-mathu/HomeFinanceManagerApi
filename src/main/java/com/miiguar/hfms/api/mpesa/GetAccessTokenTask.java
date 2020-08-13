@@ -1,15 +1,16 @@
-package com.miiguar.hfms.utils;
+package com.miiguar.hfms.api.mpesa;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.config.ConfigureApp;
-import com.miiguar.hfms.data.daraja.AccessToken;
+import com.miiguar.hfms.data.daraja.models.AccessToken;
+import com.miiguar.hfms.utils.InitUrlConnection;
+import com.miiguar.hfms.utils.IntervalChangeListener;
+import com.miiguar.hfms.utils.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
 import java.net.http.HttpConnectTimeoutException;
-import java.net.http.HttpTimeoutException;
 import java.util.Properties;
 
 import static com.miiguar.hfms.data.utils.URL.GENERATE_TOKEN;
@@ -67,7 +68,7 @@ public class GetAccessTokenTask implements Runnable {
     public AccessToken getMpesaApiAccessToken() throws IOException {
 
         InitUrlConnection<Void> initUrlConnection = new InitUrlConnection<>();
-        BufferedReader streamReader = initUrlConnection.getReader(GENERATE_TOKEN, "GET");
+        BufferedReader streamReader = initUrlConnection.getReaderForDarajaApi(GENERATE_TOKEN, "GET");
 
         String line;
         StringBuilder stringBuilder = new StringBuilder();
