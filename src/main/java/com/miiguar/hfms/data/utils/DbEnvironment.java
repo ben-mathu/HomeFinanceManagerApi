@@ -133,4 +133,18 @@ public class DbEnvironment {
     public static final String ACCOUNT_NUMBER = "account_number";
     public static final String FK_HOUSEHOLD_ID_REF_HOUSEHOLDS = "fk_household_id_ref_households_household_id";
     public static final String FK_EXPENSES_JAR_ID = "fk_expenses_jar_id_ref_jars";
+
+    /**
+     * Transactions
+     */
+    public static final String TRANSACTION_TB_NAME = "transactions";
+    public static final String MERCHANT_REQUEST_ID = "merchant_request_id";
+    public static final String CHECKOUT_REQ_ID = "checkout_request_id";
+    public static final String RESPONSE_CODE = "response_code";
+    public static final String RESPONSE_DESCRIPTION = "response__description";
+    public static final String CUSTOMER_MESSAGE = "customer_message";
+    public static final String RESULT_CODE = "result_code";
+    public static final String RESULT_DESC = "result_description";
+    public static final String CALLBACK_METADATA = "callback_metadata";
+    public static final String TRANSACTION_STATUS = "transaction_status";
 }

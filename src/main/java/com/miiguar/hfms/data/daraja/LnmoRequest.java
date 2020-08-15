@@ -1,7 +1,12 @@
-package com.miiguar.hfms.data.daraja.models;
+package com.miiguar.hfms.data.daraja;
 
 import com.google.gson.annotations.SerializedName;
+import com.miiguar.hfms.config.ConfigureApp;
 
+import java.util.Properties;
+
+import static com.miiguar.hfms.data.utils.URL.API;
+import static com.miiguar.hfms.data.utils.URL.BASE_URL;
 import static com.miiguar.hfms.utils.Constants.LnmoRequestFields.*;
 
 /**
@@ -100,7 +105,9 @@ public class LnmoRequest {
     }
 
     public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
+        ConfigureApp app = new ConfigureApp();
+        Properties properties = app.getProperties();
+        this.callbackUrl = BASE_URL + API + callbackUrl;
     }
 
     public String getAccountRef() {

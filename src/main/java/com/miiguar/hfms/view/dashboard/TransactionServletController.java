@@ -1,7 +1,6 @@
 package com.miiguar.hfms.view.dashboard;
 
-import com.miiguar.hfms.config.ConfigureApp;
-import com.miiguar.hfms.data.daraja.models.LnmoRequest;
+import com.miiguar.hfms.data.daraja.LnmoRequest;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -12,12 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Properties;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.USER_ID;
-import static com.miiguar.hfms.data.utils.URL.LNMO;
 import static com.miiguar.hfms.data.utils.URL.SEND_TRANSACTION;
-import static com.miiguar.hfms.utils.Constants.ACCESS_TOKEN;
 import static com.miiguar.hfms.utils.Constants.LnmoRequestFields.*;
 import static com.miiguar.hfms.utils.Constants.TOKEN;
 

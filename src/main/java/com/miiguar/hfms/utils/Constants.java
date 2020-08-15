@@ -63,6 +63,21 @@ public class Constants {
         public static final String CALLBACK_URL = "CallBackURL";
         public static final String ACCOUNT_REF = "AccountReference";
         public static final String TRANSACTION_DESC = "TransactionDesc";
+        public static final String REQUEST_ID = "requestId";
+        public static final String ERROR_CODE = "errorCode";
+        public static final String ERROR_MESSAGE = "errorMessage";
+    }
+
+    public static class LnmoResponseFields {
+        public static final String MERCHANT_REQUEST_ID = "MerchantRequestID";
+        public static final String CHECKOUT_REQ_ID = "CheckoutRequestID";
+        public static final String RESPONSE_CODE = "ResponseCode";
+        public static final String RESPONSE_DESCRIPTION = "ResponseDescription";
+        public static final String CUSTOMER_MESSAGE = "CustomerMessage";
+        public static final String RESULT_CODE = "ResultCode";
+        public static final String RESULT_DESC = "ResultDesc";
+        public static final String CALLBACK_METADATA = "CallbackMetadata";
+        public static final String ITEM = "Item";
     }
 
     public static class ScheduleType {
