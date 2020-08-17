@@ -1,5 +1,5 @@
 <div id="paymentDueDialog" class="dialog">
     <div id="paymentDialogContainer" class="payment-due-container" >
-        <%@ include file = "../../template/payments.jsp" %>
+        <span id="messageReport"></span>
     </div>
 </div>

@@ -202,7 +202,8 @@ function makePayments(jarId) {
     request.onreadystatechange = function() {
         if (request.readyState == 4) {
             if (request.status == 200) {
-                showSuccessNotification();
+                let responseData = request.responseText
+                showSuccessNotification(responseData, jarId);
             }
         }
     }
@@ -214,7 +215,26 @@ function makePayments(jarId) {
     request.send(data);
 }
 
-function showSuccessNotification() {
+function showSuccessNotification(data, notificationId) {
+    let report = JSON.parse(data);
+
+    let request = getXmlHttpRequest();
+
+    request.onload = function() {
+        if (request.status == 200) {
+            updateNoitification(notificationId);
+        }
+    }
+
+    request.open("POST", ctx + "/mpesa/lnmo-url/" + report.subject);
+}
+
+/**
+ * Updates the notification depending on the response got for payment
+ * 
+ * @param {string} notificationId identify notification of payement request
+ */
+function updateNoitification(notificationId) {
     
 }
 

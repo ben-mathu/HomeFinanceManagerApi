@@ -29,5 +29,6 @@
 
         <%-- Dialogs --%>
         <%@ include file = "dialogs/payment_due_dialog.jsp" %>
+        <%@ include file = "dialogs/message_dialog.jsp" %>
     </div>
 <%@ include file = "../page_setting_bottom.jsp" %>
