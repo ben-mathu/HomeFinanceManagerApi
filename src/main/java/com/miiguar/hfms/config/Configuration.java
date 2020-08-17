@@ -1,8 +1,6 @@
 package com.miiguar.hfms.config;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 import com.miiguar.hfms.init.Application;
@@ -20,5 +18,14 @@ public class Configuration {
             Log.e(TAG, "Configuration file: ", e);
         }
         return properties;
+    }
+
+    public void saveProperties(Properties properties, String fileName) {
+        try(FileWriter writer = new FileWriter(Application.getFile(fileName));
+            BufferedWriter br = new BufferedWriter(writer)) {
+            properties.store(br, "Saved token");
+        } catch (IOException e) {
+            Log.e(TAG, "Configuration file: ", e);
+        }
     }
 }

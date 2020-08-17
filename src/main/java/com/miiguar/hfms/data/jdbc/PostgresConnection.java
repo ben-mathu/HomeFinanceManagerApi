@@ -1,11 +1,12 @@
 package com.miiguar.hfms.data.jdbc;
 
-import java.sql.Connection;
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import java.sql.SQLException;
 
 /**
  * @author bernard
  */
 public interface PostgresConnection {
-    Connection getConnection(String databaseName, String username, String password) throws SQLException;
+    DataSource getDataSource(String property) throws SQLException;
 }

@@ -20,7 +20,8 @@
             		<span id="result" class="resp">${error.usernameError}</span>
             	</div>
                 <div>
-                    <form method="POST">
+                    <form method="POST" onsubmit="return false;">
+                        <input type="hidden" id="contextPath" name="contextPath" value="${pageContext.request.contextPath}">
                         <div class="input-container">
                             <div>
                             	<input class="input-style" id="username" type="text" name="username" placeholder="Username" value="${username}">
@@ -33,13 +34,13 @@
                             </div>
                             <span id="passwordError" class="resp">${passwordError.passwordError}</span>
                         </div>
+                        <div class="submit-area">
+                            <button class="btn2 submit" onclick="loginUser()" id="submit">Login</button>
+                        </div>
                     </form>
-                    <div class="submit-area">
-                        <button class="btn2 submit" onclick="loginUser()" id="submit">Login</button>
-                    </div>
                     <a class="link register-link" href="registration">Create an account.</a>
                 </div>
-                <div class="login-using-socials">
+                <%-- <div class="login-using-socials">
                     <div class="image-size">
                         <img src="static/images/facebook.png" alt="Facebook">
                     </div>
@@ -51,7 +52,7 @@
                     <div class="image-size">
                         <img src="static/images/google.png" alt="Google">
                     </div>
-                </div>
+                </div> --%>
             </div>
         </div>
     </div>

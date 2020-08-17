@@ -1,16 +1,47 @@
 <div class="header-container" >
-    <div class="nav-icon-container" >
-        <img class="nav-icon" src="${pageContext.request.contextPath}/static/images/<%= icon %>" alt="nav-icon">
+    <div class="header-icon-container align-inline" >
+        <img class="header-icon" src="<%= request.getContextPath() %>/static/images/logo.png" alt="nav-icon">
     </div>
-    <div class="time-container text-center" >
-        <h4 id="timeNow"></h4>
+    <div class="breadcrumb-container align-inline" >
+        <span id="breadcrumb" class="breadcrumb"></span>
     </div>
-    <div class="avatar-container align-right" >
-        <div class="avatar-image" >
-            <img id="avatar" class="avatar" src="${pageContext.request.contextPath}/static/images/person_no_avatar.png" alt="img">
+    <%-- show time now --%>
+    <div class="time-container align-inline" >
+        <span class="time-now" id="timeNow"></span>
+    </div>
+    <div class="user-section align-inline">
+        <div id="avatarContainer" class="avatar-container align-inline" >
+            <div class="avatar-image align-inline" >
+                <img id="avatar" class="avatar" src="<%= request.getContextPath() %>/static/images/person_no_avatar.png" alt="img">
+            </div>
+            <div class="avatar-username align-inline" >
+                <span class="username-element" id="username"><%= session.getAttribute("username") == null ? "Your username" : session.getAttribute("username") %></span>
+            </div>
         </div>
-        <div class="avatar-username" >
-            <p><%= session.getAttribute("username") == null ? "img" : session.getAttribute("username") %></p>
+
+        <%-- notification area --%>
+        <div class="notification-container align-inline" >
+            <div class="notification align-inline" >
+                <img class="notification-item-icon" src="<%= request.getContextPath() %>/static/images/ic_notification.png" alt="Notifications">
+            </div>
+            <%-- <div class="notification align-inline" >
+                <img class="notification-item-icon" src="<%= request.getContextPath() %>/static/images/ic_notification.png" alt="Notifications">
+            </div> --%>
+        </div>
+
+        <div id="optionsMenu" class="menu-options">
+            <div class="income-menu" >
+                <span id="income" class="income" hidden>Income: </span>
+                <input id="openIncomeModal" type="button" value="Add Income">
+            </div>
+            <div class="horizontal-separator"></div>
+            <div id="settings-item" class="option-menu-item" >
+                <input type="hidden" id="settings-option" name="settings" value="Settings">
+                Settings
+            </div>
+            <div id="option-logout" class="option-menu-item" >
+                Logout
+            </div>
         </div>
     </div>
 </div>

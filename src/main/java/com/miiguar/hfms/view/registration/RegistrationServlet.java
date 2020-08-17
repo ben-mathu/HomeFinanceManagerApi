@@ -9,15 +9,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.miiguar.hfms.data.models.user.UserRequest;
-import com.miiguar.hfms.data.models.user.UserResponse;
-import com.miiguar.hfms.data.models.user.model.User;
+import com.miiguar.hfms.data.household.model.Household;
+import com.miiguar.hfms.data.user.UserRequest;
+import com.miiguar.hfms.data.user.UserResponse;
+import com.miiguar.hfms.data.user.model.User;
+import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.Patterns;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.hfms.view.base.BaseServlet;
 import com.miiguar.hfms.view.result.ErrorResults;
 
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
 import static com.miiguar.hfms.utils.Constants.*;
 
@@ -43,11 +46,17 @@ public class RegistrationServlet extends BaseServlet {
 	public void includeRequest(final HttpServletRequest request, final HttpServletResponse response)
 			throws IOException {
 		boolean isParamsValid = true;
-		PrintWriter writer = null;
 		
 		final String email = request.getParameter(EMAIL).trim();
 		final String username = request.getParameter(USERNAME).trim();
 		final String password = request.getParameter(PASSWORD);
+		final String householdName = request.getParameter(HOUSEHOLD_NAME);
+		final String houseDesc = request.getParameter(HOUSEHOLD_DESCRIPTION);
+		final boolean joinHousehold = Boolean.parseBoolean(request.getParameter("joinHousehold"));
+		String houseHoldId = "";
+		if (joinHousehold) {
+			houseHoldId = request.getParameter(HOUSEHOLD_ID);
+		}
 
 		final ErrorResults results = new ErrorResults();
 		if (email.isEmpty() || request.getParameter(EMAIL) == null) {
@@ -62,6 +71,11 @@ public class RegistrationServlet extends BaseServlet {
 
 		if (password.isEmpty() || request.getParameter(PASSWORD) == null) {
 			results.setPasswordError("Password is required!");
+			isParamsValid = false;
+		}
+
+		if ((houseHoldId.isEmpty() || request.getParameter(HOUSEHOLD_ID) == null) && joinHousehold) {
+			results.setHouseholdIdError("");
 			isParamsValid = false;
 		}
 
@@ -96,15 +110,31 @@ public class RegistrationServlet extends BaseServlet {
 				
 			} else {
 
-				final User user = new User();
+				User user = new User();
 				user.setAdmin(true);
 				user.setEmail(request.getParameter(EMAIL));
 				user.setUsername(request.getParameter(USERNAME));
 				user.setPassword(request.getParameter(PASSWORD));
-				final UserRequest params = new UserRequest(user);
+				Household household = new Household();
+				if (joinHousehold) {
+					household.setId(houseHoldId);
+				} else {
+					household.setName(householdName);
+					household.setDescription(houseDesc);
+				}
+
+				final UserRequest params = new UserRequest();
+				params.setHousehold(household);
+				params.setUser(user);
 
 				InitUrlConnection<UserRequest> connection = new InitUrlConnection<>();
-				BufferedReader streamReader = connection.getReader(params, REGISTRATION);
+
+				BufferedReader streamReader;
+				if (joinHousehold) {
+					streamReader = connection.getReader(params, REGISTRATION + "?joinHousehold=true", "POST");
+				} else {
+					streamReader = connection.getReader(params, REGISTRATION + "?joinHousehold=false", "POST");
+				}
 
 				String line = "";
 				UserResponse item = null;
@@ -124,20 +154,38 @@ public class RegistrationServlet extends BaseServlet {
 						request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
 						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
 						request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
+						request.getSession().setAttribute(TOKEN, item.getReport().getToken());
+						request.getSession().setAttribute(HOUSEHOLD_NAME, item.getHousehold().getName());
 						request.getSession().setAttribute("isAlreadySent", false);
 
 						// save the session
 						Cookie cookie = new Cookie(TOKEN, item.getReport().getToken());
+						cookie.setMaxAge(60*60*24);
 						response.addCookie(cookie);
 
-						Cookie subjectCookie = new Cookie(SUBJECT, item.getReport().getSubject());
-						response.addCookie(subjectCookie);
+						Cookie userIdCookie = new Cookie(USER_ID, item.getUser().getUserId());
+						userIdCookie.setMaxAge(60*60*24);
+						response.addCookie(userIdCookie);
+
+						Cookie householdNameCookie = new Cookie(HOUSEHOLD_NAME, item.getHousehold().getName());
+						userIdCookie.setMaxAge(60*60*24);
+						response.addCookie(householdNameCookie);
 
 						request.getSession().setAttribute("isAlreadySent", false);
 
+						Report report = item.getReport();
+						user = item.getUser();
+						household  = item.getHousehold();
+						UserResponse obj = new UserResponse();
+						obj.setReport(report);
+						obj.setUser(user);
+						obj.setHousehold(household);
+
+						String responseStr = gson.toJson(obj);
+
 						writer = response.getWriter();
-						String redirect = request.getContextPath() + "/registration/confirm-user";
-						writer.write(redirect);
+						writer.write(responseStr);
 					}
 				}
 

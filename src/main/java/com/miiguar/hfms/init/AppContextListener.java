@@ -29,7 +29,7 @@ public class AppContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         Application.main(null);
 
-        Log.i(TAG, "This server started the server.\n" + event.getServletContext().getServerInfo());
+        Log.i(TAG, "The server started. Path: " + event.getServletContext().getContextPath());
     }
 
     @Override

@@ -1,7 +1,6 @@
 <% 
 	String pageTitle = "Confirm Registration";
     String scripts = "static/js/ajax.js";
-    String icon = "logo.png";
 
 	pageContext.setAttribute("title", pageTitle);
     pageContext.setAttribute("script", scripts);
@@ -21,10 +20,11 @@
                 </p>
             </div>
         </div>
-        <form class="confirm-code-container" method="POST">
+        <form id="form" class="confirm-code-container" method="POST">
             <input type="hidden" id="username" name="username" value="<%= session.getAttribute("username")%>">
             <input type="hidden" id="password" name="password" value="<%= session.getAttribute("password")%>">
             <input type="hidden" id="contextPath" name="path" value="${pageContext.request.contextPath}">
+            <input type="hidden" id="token" name="token" value="<%= session.getAttribute("token") %>">
             <div class="input-container">
                 <div>
                     <input class="input-style" id="email" type="text" name="email" placeholder="Email: example@domainname.com"  value="<%= session.getAttribute("email") %>" hidden/>

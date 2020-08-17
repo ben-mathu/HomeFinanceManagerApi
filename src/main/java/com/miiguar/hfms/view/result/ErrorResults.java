@@ -14,8 +14,8 @@ public class ErrorResults {
     private String passwordError = "";
     @SerializedName("code_error")
     private String codeError;
-
-    public ErrorResults() {}
+    @SerializedName("household_id_error")
+    private String householdIdError;
 
     public String getUsernameError() {
         return usernameError;
@@ -47,5 +47,13 @@ public class ErrorResults {
 
     public String getCodeError() {
         return codeError;
+    }
+
+    public String getHouseholdIdError() {
+        return householdIdError;
+    }
+
+    public void setHouseholdIdError(String householdIdError) {
+        this.householdIdError = householdIdError;
     }
 }

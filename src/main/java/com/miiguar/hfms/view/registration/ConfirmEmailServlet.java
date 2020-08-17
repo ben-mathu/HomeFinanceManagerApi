@@ -1,7 +1,8 @@
 package com.miiguar.hfms.view.registration;
 
-import com.miiguar.hfms.data.models.user.Identification;
-import com.miiguar.hfms.data.models.user.model.User;
+import com.google.gson.annotations.SerializedName;
+import com.miiguar.hfms.data.user.Identification;
+import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -9,11 +10,11 @@ import com.miiguar.hfms.view.result.ErrorResults;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
+import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.*;
 import static com.miiguar.hfms.utils.Constants.*;
 
@@ -33,9 +34,7 @@ public class ConfirmEmailServlet extends BaseServlet {
         String password = req.getParameter(PASSWORD);
         String email = req.getParameter(EMAIL);
 
-        int userId = 0;
-        if (req.getSession().getAttribute(USER_ID) != null)
-            userId = (int) req.getSession().getAttribute(USER_ID);
+        String userId = req.getParameter(USER_ID);
 
         final ErrorResults results = new ErrorResults();
         if (code.length() != 6) {
@@ -51,11 +50,11 @@ public class ConfirmEmailServlet extends BaseServlet {
             id.setCode(code);
             id.setUser(user);
 
-            String token = getTokenFromCookie(req);
+            String token = req.getParameter(TOKEN);
             if (token == null) token = "";
 
             InitUrlConnection<Identification> urlConnection = new InitUrlConnection<>();
-            BufferedReader streamReader = urlConnection.getReader(id, CONFIRM, token);
+            BufferedReader streamReader = urlConnection.getReader(id, CONFIRM, token, "POST");
 
             String line = "";
             Report item = null;
@@ -75,12 +74,40 @@ public class ConfirmEmailServlet extends BaseServlet {
                     req.getSession().setAttribute(EMAIL, user.getEmail());
                     req.getSession().setAttribute(USER_ID, user.getUserId());
 
+//                    resp.sendRedirect("Dashboard");
                     writer = resp.getWriter();
-                    String redirect = req.getContextPath() + "/dashboard";
-                    writer.write(redirect);
+                    String redirect = "/dashboard";
+                    TokenResponse tokenResponse = new TokenResponse();
+                    tokenResponse.setRedirect(redirect);
+                    tokenResponse.setToken(token);
+                    String jsonStr = gson.toJson(tokenResponse);
+                    writer.write(jsonStr);
                 }
             }
             urlConnection.close();
+        }
+    }
+
+    public class TokenResponse {
+        @SerializedName("token")
+        private String token = "";
+        @SerializedName("redirect")
+        private String redirect = "";
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getRedirect() {
+            return redirect;
+        }
+
+        public void setRedirect(String redirect) {
+            this.redirect = redirect;
         }
     }
 }

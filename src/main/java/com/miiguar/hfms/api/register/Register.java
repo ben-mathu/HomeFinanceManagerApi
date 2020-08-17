@@ -2,11 +2,19 @@ package com.miiguar.hfms.api.register;
 
 import com.miiguar.hfms.api.base.BaseServlet;
 import com.miiguar.hfms.config.ConfigureApp;
-import com.miiguar.hfms.data.models.user.UserRequest;
-import com.miiguar.hfms.data.models.user.UserResponse;
-import com.miiguar.hfms.data.models.user.model.User;
+import com.miiguar.hfms.data.household.HouseholdDao;
+import com.miiguar.hfms.data.household.model.Household;
+import com.miiguar.hfms.data.status.AccountStatus;
+import com.miiguar.hfms.data.status.AccountStatusDao;
+import com.miiguar.hfms.data.status.Status;
+import com.miiguar.hfms.data.tablerelationships.UserHouseholdDao;
+import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
+import com.miiguar.hfms.data.user.UserDao;
+import com.miiguar.hfms.data.user.UserRequest;
+import com.miiguar.hfms.data.user.UserResponse;
+import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
-import com.miiguar.hfms.utils.BufferRequest;
+import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
@@ -17,20 +25,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.security.SecureRandom;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static com.miiguar.hfms.data.utils.DbEnvironment.*;
+import static com.miiguar.hfms.data.utils.DbEnvironment.ACCOUNT_STATUS_TB_NAME;
 import static com.miiguar.hfms.data.utils.URL.API;
 import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
-import static com.miiguar.hfms.utils.Constants.ISSUER;
-import static com.miiguar.hfms.utils.Constants.SUBJECT;
+import static com.miiguar.hfms.utils.Constants.*;
+import static com.miiguar.hfms.utils.Constants.COMPLETE;
 
 /**
  * @author bernard
@@ -39,111 +48,192 @@ import static com.miiguar.hfms.utils.Constants.SUBJECT;
 public class Register extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
+    // Dao
+    private UserDao userDao = new UserDao();
+    private HouseholdDao householdDao = new HouseholdDao();
+    private UserHouseholdDao userHouseDao = new UserHouseholdDao();
+    private AccountStatusDao accountStatusDao = new AccountStatusDao();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-        String jsonRequest = BufferRequest.bufferRequest(req);
 
-        ConfigureApp configureApp = new ConfigureApp();
-        Properties prop = configureApp.getProperties();
+        String jsonRequest = BufferRequestReader.bufferRequest(req);
 
         UserRequest userRequest = gson.fromJson(jsonRequest, UserRequest.class);
         User user = userRequest.getUser();
+        Household household = userRequest.getHousehold();
+
+        boolean isJoinHouseHold = Boolean.parseBoolean(req.getParameter("joinHousehold"));
 
         Report report = null;
-        try {
-            if (isUserDbCreated(user.getUsername())) {
-                report = new Report();
-                report.setMessage("username already in use");
-                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-                UserResponse response = new UserResponse();
-                response.setReport(report);
-                String jsonResp = gson.toJson(response);
-
-                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                writer = resp.getWriter();
-                writer.write(jsonResp);
-            } else {
-
-                // create a db
-                createDb(user.getUsername(), user.getPassword());
-
-                addUser(user);
-                user = getUser();
-
-                // generate a token
-                JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
-                Calendar calendar = Calendar.getInstance();
-                Date date = new Date(calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(2));
-
-                String subject = prop.getProperty(SUBJECT, "");
-                String token = jwtTokenUtil.generateToken(ISSUER, subject, date);
-
-                report = new Report();
-                report.setMessage("Success");
-                report.setStatus(HttpServletResponse.SC_OK);
-                report.setToken(token);
-
-                UserResponse response = new UserResponse();
-                response.setReport(report);
-                response.setUser(user);
-                String jsonResp = gson.toJson(response);
-
-                writer = resp.getWriter();
-                writer.print(jsonResp);
-            }
-        } catch (SQLException e) {
-            Log.e(TAG, "Error creating user", e);
-
+        if (isJoinHouseHold && !isHouseholdExists(household)) {
+            UserResponse response = new UserResponse();
             report = new Report();
+            report.setMessage("Household does not exist");
+            report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 
-            String msg = "";
-            if (e.getMessage().contains(user.getUsername())) {
-                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                msg = "User exists, please try another username";
-            } else {
-                String email = prop.getProperty("admin.email");
-                msg = "An error has occurred, please contact the developer: " + email;
-            }
+            response.setReport(report);
 
-            report.setMessage(msg);
+            String jsonResp = gson.toJson(response);
+            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            writer = resp.getWriter();
+            writer.write(jsonResp);
+            return;
+        }
+
+        if (isUserExists(user.getUsername())) {
+            report = new Report();
+            report.setMessage("username already in use");
+            report.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
             UserResponse response = new UserResponse();
             response.setReport(report);
             String jsonResp = gson.toJson(response);
 
-            PrintWriter out = resp.getWriter();
-            out.write(jsonResp);
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            writer = resp.getWriter();
+            writer.write(jsonResp);
+        } else {
+
+            // create a db
+//                createDb(user.getUsername());
+
+            GenerateRandomString randomString = new GenerateRandomString(
+                    12,
+                    new SecureRandom(), GenerateRandomString.getAlphaNumeric()
+            );
+            String userId = randomString.nextString();
+            addUser(user, household, userId);
+            user.setUserId(userId);
+
+            AccountStatus accountStatus = new AccountStatus();
+            accountStatus.setUserId(user.getUserId());
+            int affectedRows = accountStatusDao.save(accountStatus);
+
+            Log.d(TAG, "Affected Rows: " + affectedRows);
+
+            UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
+            if (isJoinHouseHold) {
+                userHouseholdRel.setHouseId(household.getId());
+                userHouseholdRel.setUserId(user.getUserId());
+
+                addUserToHousehold(userHouseholdRel);
+
+                updateHouseholdStatus(user.getUserId());
+            } else if (!household.getName().isEmpty()) {
+                String houseId = randomString.nextString();
+                household.setId(houseId);
+                householdDao.save(household);
+
+                userHouseholdRel.setUserId(user.getUserId());
+                userHouseholdRel.setHouseId(houseId);
+                userHouseholdRel.setOwner(true);
+
+                addUserToHousehold(userHouseholdRel);
+
+                updateHouseholdStatus(user.getUserId());
+            }
+
+            // generate a token
+            JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
+            Calendar calendar = Calendar.getInstance();
+            Date date = new Date(calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(2));
+
+            ConfigureApp configureApp = new ConfigureApp();
+            Properties properties = configureApp.getProperties();
+            String subject = properties.getProperty(SUBJECT, "");
+            String token = jwtTokenUtil.generateToken(ISSUER, subject, date);
+
+            report = new Report();
+            report.setMessage("Success");
+            report.setStatus(HttpServletResponse.SC_OK);
+            report.setToken(token);
+
+            UserResponse response = new UserResponse();
+            response.setReport(report);
+            response.setUser(user);
+            response.setHousehold(household);
+            String jsonResp = gson.toJson(response);
+
+            writer = resp.getWriter();
+            writer.write(jsonResp);
         }
+//        } catch (SQLException e) {
+//            Log.e(TAG, "Error creating user", e);
+//
+//            report = new Report();
+//
+//            String msg = "";
+//            if (e.getMessage().contains(user.getUsername())) {
+//                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//
+//                msg = "User exists, please try another username";
+//            } else {
+//
+//                ConfigureApp configureApp = new ConfigureApp();
+//                Properties properties = configureApp.getProperties();
+//                String email = properties.getProperty("admin.email");
+//                msg = "An error has occurred, please contact the developer: " + email;
+//            }
+//
+//            report.setMessage(msg);
+//            UserResponse response = new UserResponse();
+//            response.setReport(report);
+//            String jsonResp = gson.toJson(response);
+//
+//            PrintWriter out = resp.getWriter();
+//            out.write(jsonResp);
+//        }
     }
 
-    private void addUser(User user) throws SQLException {
-        PreparedStatement insertSmt = connection.prepareStatement(
-                "INSERT INTO " + USERS_TB_NAME + " (" +
-                        COL_USERNAME + "," + COL_EMAIL + "," + COL_PASSWORD + "," + COL_IS_ADMIN + ") " +
-                        "VALUES ('" +
-                        user.getUsername() + "','" +
-                        user.getEmail() + "','" +
-                        user.getPassword() + "'," +
-                        user.isAdmin() + ")"
-        );
-        insertSmt.executeUpdate();
+    private void updateHouseholdStatus(String userId) {
+        AccountStatus accountStatus = new AccountStatus();
+
+        Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat(DATE_FORMAT);
+        String today = sf.format(date);
+
+        Status status = new Status();
+        status.status = COMPLETE;
+        status.date = today;
+
+        String statusStr = gson.toJson(status);
+        accountStatus.setHouseholdStatus(statusStr);
+        accountStatus.setUserId(userId);
+
+        if (accountStatusDao.updateHouseholdStatus(accountStatus))
+            Log.d(TAG, "Update table " + ACCOUNT_STATUS_TB_NAME);
     }
 
-    private User getUser() throws SQLException {
+    private void addUserToHousehold(UserHouseholdRel rel) {
+        int affectedRows = userHouseDao.save(rel);
+        Log.d(TAG, "Affected Rows: " + affectedRows);
+    }
 
-        User user = new User();
-        PreparedStatement getUserSmt = connection.prepareStatement(
-                "SELECT * FROM " + USERS_TB_NAME
-        );
-        ResultSet result = getUserSmt.executeQuery();
-        while (result.next()) {
-            user.setUserId(result.getInt(COL_USER_ID));
-            user.setUsername(result.getString(COL_USERNAME));
-            user.setEmail(result.getString(COL_EMAIL));
-            user.setPassword(result.getString(COL_PASSWORD));
-            user.setAdmin(result.getBoolean(COL_IS_ADMIN));
+    private boolean isHouseholdExists(Household household) {
+        Household house = householdDao.getHousehold(household.getId());
+        if (house != null) {
+            return true;
         }
-        return user;
+        return false;
+    }
+
+    private boolean isUserExists(String username) {
+        List<User> list = userDao.getAll();
+        for (User user : list) {
+            if (user.getUsername().equals(username))
+                return true;
+        }
+        return false;
+    }
+
+    private void addUser(User user, Household household, String userId) {
+        int rowsAffected = userDao.insert(user, userId);
+        Log.d(TAG, "Rows Affected:" + rowsAffected);
+    }
+
+    private User getUser(String username, Connection connection) throws SQLException {
+        return userDao.getUserDetails(username);
     }
 }

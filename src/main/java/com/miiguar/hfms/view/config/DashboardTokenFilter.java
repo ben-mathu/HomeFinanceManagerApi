@@ -37,34 +37,40 @@ public class DashboardTokenFilter implements Filter {
 
         JwtTokenUtil tokenUtil = new JwtTokenUtil();
 
-        String token = getTokenFromCookie(req);
+        String token = req.getParameter(TOKEN);
+        if (token == null)
+            token = getTokenFromCookie(req);
+
         String endpoint = req.getRequestURI();
         Log.d(TAG, endpoint);
 
-        if (!token.isEmpty()) {
-            token = normalizeToken(token);
-            ConfigureApp app = new ConfigureApp();
-            Properties prop = app.getProperties();
-            String subject = prop.getProperty(SUBJECT, "");
+        if (token != null)
+            if (!token.isEmpty()) {
+                token = normalizeToken(token);
+                ConfigureApp app = new ConfigureApp();
+                Properties prop = app.getProperties();
+                String subject = prop.getProperty(SUBJECT, "");
 
-            if (tokenUtil.verifyToken(ISSUER, subject, token)) {
-                filterChain.doFilter(servletRequest, servletResponse);
+                if (tokenUtil.verifyToken(ISSUER, subject, token)) {
+                    Cookie cookie = new Cookie(TOKEN, token);
+                    resp.addCookie(cookie);
+                    filterChain.doFilter(servletRequest, servletResponse);
+                } else {
+                    resp.sendRedirect("login");
+                }
             } else {
                 resp.sendRedirect("login");
             }
-        } else {
-            resp.sendRedirect("login");
-        }
     }
 
     private String getTokenFromCookie(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
 
         if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (TOKEN.equals(cookie.getName())) {
+            for (Cookie cookie :
+                    cookies) {
+                if (TOKEN.equals(cookie.getName()))
                     return cookie.getValue();
-                }
             }
         }
         return "";

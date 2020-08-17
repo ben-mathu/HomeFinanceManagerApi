@@ -1,0 +1,171 @@
+.header-container {
+    top: 0;
+    width: 100%;
+    position: fixed;
+    height: 40px;
+    background-color: rgb(40, 36, 48);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.493);
+}
+
+.header-icon-container {
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+    margin-top: 0px;
+}
+
+.header-icon {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    overflow: hidden;
+}
+
+.breadcrumb-container {
+    width: 25%;
+    height: inherit;
+}
+
+.time-container {
+    width: 25%;
+    height: inherit;
+    position: absolute;
+    right: 0px;
+}
+
+.time-now {
+    position: relative;
+    top: 10px;
+}
+
+.align-inline {
+    display: inline-block;
+}
+
+.user-section {
+    right: 0px;
+    position: absolute;
+}
+
+.avatar-container {
+    bottom: 5px;
+    position: relative;
+}
+
+.avatar-container:hover {
+    cursor: pointer;
+}
+
+.avatar-username {
+    padding-left: 5px;
+}
+
+.avatar-image {
+    width: 20px;
+    height: 20px;
+    border: 3px;
+    border-style: solid;
+    border-radius: 50px;
+    border-color: #FEC800;
+    background-color: white;
+}
+
+.avatar {
+    width: 20px;
+    height: 20px;
+}
+
+.notification-container {
+    position: relative;
+    top: 5px;
+}
+
+.notification-item-icon {
+    width: 25px;
+    height: 25px;
+    margin: 5px;
+}
+
+.menu-options {
+    display: none;
+    padding: 10px;
+    position: fixed;
+    margin-top: 10px;
+    color: #3F3A4B;
+    border-radius: 5px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.option-menu-item {
+    display: none;
+}
+
+.option-menu-item:hover {
+    width: inherit;
+    cursor: pointer;
+    background-color: rgb(199, 199, 199);
+}
+
+/*
+.close-options {
+    -webkit-animation-name: closeOptionMenu;
+    -moz-animation-name: closeOptionMenu;
+    -ms-animation-name: closeOptionMenu;
+    -o-animation-name: closeOptionMenu;
+    animation-name: closeOptionMenu;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.4s;
+    -moz-animation-duration: 0.4s;
+    -ms-animation-duration: 0.4s;
+    -o-animation-duration: 0.4s;
+    animation-duration: 0.4s;
+}
+
+@keyframes closeOptionMenu {
+    from {
+        width: fit-content;
+        height: fit-content;
+    }
+    to {
+        width: 0;
+        height: 0;
+    }
+}
+
+.open-options {
+    -webkit-animation-name: openOptionMenu;
+    -moz-animation-name: openOptionMenu;
+    -ms-animation-name: openOptionMenu;
+    -o-animation-name: openOptionMenu;
+    animation-name: openOptionMenu;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -ms-animation-fill-mode: forwards;
+    -o-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 0.4s;
+    -moz-animation-duration: 0.4s;
+    -ms-animation-duration: 0.4s;
+    -o-animation-duration: 0.4s;
+    animation-duration: 0.4s;
+}
+
+@keyframes openOptionMenu {
+    from {
+        width: 0;
+        height: 0;
+    }
+    to {
+        width: fit-content;
+        height: fit-content;
+    }
+}
+
+.income {
+    margin: 10px;
+} */
