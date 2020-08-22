@@ -1,6 +1,6 @@
 <div id="expensesModal" class="modal">
     <div class="modal-content" >
-        <input id="expenseId" type="text" name="expense_id" placeholder="Expense Id">
+        <input id="expenseId" type="text" name="expense_id" placeholder="Expense Id" hidden>
         <h4 class="modal-title">Add Expense Details</h4>
         <p id="expense-modal-error" class="error-text"></p>
         <form>

@@ -1,6 +1,6 @@
 <template id="paymentTemplate">
     <div id="paymentDetailsContainer" class="dialog-content">
-        <input id="moneyJarId" type="text" name="money_jar_id" placeholder="Jar ID" hidden>
+        <input id="moneyJarId" type="text" name="money-jar-id" placeholder="Jar ID" value="">
         <strong>Payment for:<span id="nameTitle"></span></strong>
         <div class="payment-body" >
             <span class="dialog-subtitle">Expenditure Type:&nbsp;<span id="paymentCategorySpan"></span>&nbsp;<span style="font-size:21px">KSH. <span id="paymentAmount"></span></span>&nbsp;<span id="expandButton" class="expand-button" >Expand</span></span>

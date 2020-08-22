@@ -14,6 +14,7 @@
     pageContext.setAttribute("expenses", "static/js/dashboard/expenses.js");
     pageContext.setAttribute("members", "static/js/dashboard/members.js");
     pageContext.setAttribute("payments", "static/js/dashboard/payments.js");
+    pageContext.setAttribute("budgets", "static/js/dashboard/budgets.js");
 %>
 <%@ include file = "../page_setting_top.jsp" %>
     <div class="container">
@@ -26,6 +27,7 @@
         <%@ include file = "modal_add_schedule.jsp" %>
         <%@ include file = "modal_add_income.jsp" %>
         <%@ include file = "modal_add_expenses.jsp" %>
+        <%@ include file = "modal_add_budget.jsp" %>
 
         <%-- Dialogs --%>
         <%@ include file = "dialogs/payment_due_dialog.jsp" %>

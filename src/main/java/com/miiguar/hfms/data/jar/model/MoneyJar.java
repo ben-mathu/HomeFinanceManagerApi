@@ -52,6 +52,10 @@ public class MoneyJar {
     @Column(columnName = HOUSEHOLD_ID)
     private String householdId;
 
+    @SerializedName(JAR_STATUS)
+    @Column(columnName = JAR_STATUS)
+    private boolean jarStatus;
+
     public String getMoneyJarId() {
         return moneyJarId;
     }
@@ -114,5 +118,13 @@ public class MoneyJar {
 
     public void setHouseholdId(String householdId) {
         this.householdId = householdId;
+    }
+
+    public boolean isJarStatus() {
+        return jarStatus;
+    }
+
+    public void setJarStatus(boolean jarStatus) {
+        this.jarStatus = jarStatus;
     }
 }

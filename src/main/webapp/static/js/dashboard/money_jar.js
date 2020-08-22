@@ -59,6 +59,7 @@ const scheduleType = {
  * Money Jar Fields
  */
 let selectedMoneyJarType;
+let emptyExpenseList;
 
 /**
  * Pie Chart components
@@ -75,6 +76,7 @@ let moneyJarIdModal;
 
 function configureMoneyJar() {
     // Initialize HTML elements
+    emptyExpenseList = document.getElementById("emptyExpenseList");
     moneyJarIdModal = document.getElementById("moneyJarIdModal");
     jarLabel = document.getElementById("jarLabel");
     amountElem = document.getElementById("totalAmount");
@@ -167,9 +169,14 @@ function getAllMoneyJars() {
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
+
                 let json = request.responseText;
                 let jarsDto = JSON.parse(json);
                 let jarDtoList = jarsDto.jar_elements;
+
+                if (jarDtoList.length > 0) {
+                    emptyExpenseList.hidden = true;
+                }
 
                 // update the global list; list is empty
                 for (let i = 0; i < jarDtoList.length; i++) {
@@ -185,6 +192,8 @@ function getAllMoneyJars() {
                 drawPieChart(values);
 
                 activateTimer();
+            } else if (request.status == 404) {
+                emptyExpenseList.hidden = false;
             } else {
                 console.log("Server could not find what you are looking for.")
             }
@@ -263,7 +272,7 @@ function openJarModalForEdit(jarId) {
 
     amountElem.innerHTML = jar.amount;
 
-    if (jar.category == "Groceries") {
+    if (jar.category == categoryOption.GROCERIES) {
         categorySelector.options[0].selected = true;
         let groceries = jar.liabilities;
 
@@ -335,6 +344,8 @@ function sendJarRequest() {
                 var json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
                 addJarToList(moneyJarDto);
+
+                jarModal.style.display = "none";
             } else {
                 showError();
             }
@@ -401,6 +412,8 @@ function updateMoneyJar(jarId) {
                 let json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
                 addJarToList(moneyJarDto);
+
+                jarModal.style.display = "none";
             } else {
                 showError();
             }
@@ -465,19 +478,41 @@ function setJars(jarId) {
  * @param {Jar} jar contains all items of the jar
  * @param {Integer} index represents the row to update
  */
+let jarCount = 0;
 function updateJarTable(jar) {
+    let clone = jarTemplate.content.cloneNode(true);
 
-    let label = jarTemplate.content.querySelector(".jar-label");
+    clone.querySelector("#jarId").id += jarCount;
+    let idTemplate = clone.querySelector("#jarId" + jarCount);
+    idTemplate.value = jar.jar_id;
+    
+    clone.querySelector("#jarLabel").id += jarCount;
+    let label = clone.querySelector("#jarLabel" + jarCount);
     label.textContent = jar.jar_label;
-    let interval = jarTemplate.content.querySelector(".scheduled-interval");
+
+    clone.querySelector("#scheduleInterval").id += jarCount;
+    let interval = clone.querySelector("#scheduleInterval" + jarCount);
     interval.textContent = jar.scheduled_type;
-    let date = jarTemplate.content.querySelector(".scheduled-date");
-    date.textContent = jar.scheduled_for;
-    let amount = jarTemplate.content.querySelector(".jar-amount");
+
+    clone.querySelector("#scheduleDate").id += jarCount;
+    let jarDate = clone.querySelector("#scheduleDate" + jarCount);
+    jarDate.textContent = jar.scheduled_for;
+
+    clone.querySelector("#jarAmount").id += jarCount;
+    let amount = clone.querySelector("#jarAmount" + jarCount);
     amount.textContent = jar.amount;
 
-    let clone = document.importNode(jarTemplate.content, true);
+    clone.querySelector("#jarItem").id += jarCount;
+    let jarBudgetItem = clone.querySelector("#jarItem" + jarCount);
+    jarBudgetItem.addEventListener("click", function(event) {
+        let idIndex = event.target.id[event.target.id.length - 1];
+        let jarId = document.getElementById("jarId" + idIndex);
+        openJarModalForEdit(jarId.value);
+    });
+
     jarList.appendChild(clone);
+
+    jarCount++;
 }
 
 /**
@@ -502,7 +537,7 @@ function serializeData() {
     
     let items;
     if (selectedMoneyJarType == categoryOption.EXPENSES) {
-        liabilitiesObj.expense = expense;
+        liabilitiesObj.expense = expenseGlobal;
         items = JSON.stringify(liabilitiesObj);
     } else if (selectedMoneyJarType == categoryOption.GROCERIES) {
         groceryDto.groceries = Object.values(groceryListObj);

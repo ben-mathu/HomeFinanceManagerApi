@@ -23,5 +23,6 @@
         <script src="<%= request.getContextPath() %>/${expenses}"></script>
         <script src="<%= request.getContextPath() %>/${members}"></script>
         <script src="<%= request.getContextPath() %>/${payments}"></script>
+        <script src="<%= request.getContextPath() %>/${budgets}"></script>
     </head>
     <body>

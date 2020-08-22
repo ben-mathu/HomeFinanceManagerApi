@@ -45,6 +45,7 @@
 
 .jar-item {
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .scheduled-interval {
@@ -88,5 +89,9 @@
 
 .jars-pie-chart {
     width: 600px;
-    display: inline-flex;
+    display: flex;
+}
+
+.budget-btn-container {
+    display: block;
 }

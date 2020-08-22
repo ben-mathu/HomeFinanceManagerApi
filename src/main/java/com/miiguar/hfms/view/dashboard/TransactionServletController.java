@@ -3,6 +3,7 @@ package com.miiguar.hfms.view.dashboard;
 import com.miiguar.hfms.data.daraja.LnmoRequest;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.utils.InitUrlConnection;
+import com.miiguar.hfms.utils.Log;
 import com.miiguar.hfms.view.base.BaseServlet;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import static com.miiguar.hfms.data.utils.DbEnvironment.MONEY_JAR_ID;
 import static com.miiguar.hfms.data.utils.DbEnvironment.USER_ID;
 import static com.miiguar.hfms.data.utils.URL.SEND_TRANSACTION;
 import static com.miiguar.hfms.utils.Constants.LnmoRequestFields.*;
@@ -20,9 +22,11 @@ import static com.miiguar.hfms.utils.Constants.TOKEN;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/transactions/send-payment")
+@WebServlet("/dashboard/transactions/*")
 public class TransactionServletController extends BaseServlet {
     private static final long serialVersionUID = 1L;
+
+    public static final String TAG = TransactionServletController.class.getSimpleName();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,6 +42,7 @@ public class TransactionServletController extends BaseServlet {
         String phoneNumber = req.getParameter(PHONE_NUMBER);
         String accountRef = req.getParameter(ACCOUNT_REF);
         String transactionDesc = req.getParameter(TRANSACTION_DESC);
+        String jarId = req.getParameter(MONEY_JAR_ID);
 
         LnmoRequest request = new LnmoRequest();
         request.setBusinessShortCode(shortCode);
@@ -47,6 +52,10 @@ public class TransactionServletController extends BaseServlet {
         request.setPhoneNumber(phoneNumber);
         request.setAccountRef(accountRef);
         request.setTransactionDesc(transactionDesc);
+        request.setJarId(jarId);
+        request.setUserId(userId);
+
+        Log.d(TAG, "Request body" + request.toString());
 
         InitUrlConnection<LnmoRequest> connection = new InitUrlConnection<>();
         BufferedReader streamReader = connection.getReader(
@@ -58,6 +67,8 @@ public class TransactionServletController extends BaseServlet {
         while ((line = streamReader.readLine()) != null) {
             builder.append(line);
         }
+
+        Log.d(TAG, "Response body" + builder.toString());
 
         Report report = gson.fromJson(builder.toString(), Report.class);
         if (200 == report.getStatus()) {

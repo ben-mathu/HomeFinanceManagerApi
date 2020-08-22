@@ -1,5 +1,6 @@
 let user;
 let income;
+let budget;
 let householdArr;
 let userHouseholdArr;
 let accountStatus;
@@ -29,6 +30,7 @@ var householdModal;
 var jarModal;
 var groceryModal;
 var expensesModal;
+let budgetModal;
 
 /**
  * Required settings in account
@@ -36,17 +38,6 @@ var expensesModal;
 var incomplete = {};
 var complete = {};
 var scheduled = {};
-
-let expense = {
-    expense_id: "",
-    expense_name: "",
-    expense_description: "",
-    amount: "",
-    payee_name: "",
-    type: "",
-    business_number: "",
-    account_number: ""
-}
 
 /**
  * Enumerations to represent folders in settings page
@@ -101,7 +92,8 @@ const accountStatusField = {
     EXPENSES: 'expenses_status',
     MONEY_JAR: 'jar_status',
     INCOME: 'income_status',
-    ACCOUNT: 'account_status'
+    ACCOUNT: 'account_status',
+    BUDGET: 'budget_status'
 }
 
 /**
@@ -198,6 +190,7 @@ window.onload = function() {
     householdModal = document.getElementById("householdModal");
     jarModal = document.getElementById("jarModal");
     expensesModal = document.getElementById("expensesModal");
+    budgetModal = document.getElementById("budgetModal");
 
     window.onclick = function(event) {
         if (event.target == groceryModal) {
@@ -210,6 +203,8 @@ window.onload = function() {
             jarModal.style.display = "none";
         } else if (event.target == expensesModal) {
             expensesModal.style.display = "none";
+        } else if (event.target == budgetModal) {
+            budgetModal.style.display = "none";
         }
     }
 
@@ -225,6 +220,7 @@ window.onload = function() {
     configureExpenses();
     configureMembers();
     configurePayments();
+    configureBudget();
 }
 
 /**
@@ -248,6 +244,7 @@ function getUserDetails() {
                 var obj = JSON.parse(request.responseText);
                 user = obj.user;
                 income = obj.income;
+                budget = obj.budget;
                 
                 householdArr = obj.households;
                 userHouseholdArr = obj.relations;
@@ -270,6 +267,8 @@ function getUserDetails() {
                 usernameEle.innerHTML = user.username;
 
                 showIncome(income);
+
+                showBudgetAmount(budget);
             }
         }
     }
@@ -300,12 +299,15 @@ function openNotCompleteModals(statusMap) {
             var dateStr = obj.date;
     
             var now = new Date();
+            // check that status is not complete or date set
             if (dateStr != "" && status != Status.COMPLETE) {
                 if (now > new Date(dateStr)) {
                     if (key == accountStatusField.INCOME) {
                         incomplete[key] = incomeModal;
                     } else if (key == accountStatusField.MONEY_JAR) {
                         incomplete[key] = jarModal;
+                    } else if(key == accountStatusField.BUDGET){
+                        incomplete[key] = budgetModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         incomplete[key] = householdModal;
                     }
@@ -314,6 +316,8 @@ function openNotCompleteModals(statusMap) {
                         scheduled[key] = incomeModal;
                     } else if (key == accountStatusField.MONEY_JAR) {
                         scheduled[key] = jarModal;
+                    }  else if(key == accountStatusField.BUDGET){
+                        incomplete[key] = budgetModal;
                     } else if (key == accountStatusField.HOUSEHOLD) {
                         scheduled[key] = householdModal;
                     }
@@ -324,7 +328,9 @@ function openNotCompleteModals(statusMap) {
                 incomplete[key] = incomeModal;
             } else if (key == accountStatusField.MONEY_JAR) {
                 incomplete[key] = jarModal;
-            } else if (key == accountStatusField.HOUSEHOLD) {
+            } else if(key == accountStatusField.BUDGET){
+                incomplete[key] = budgetModal;
+            } else  if (key == accountStatusField.HOUSEHOLD) {
                 incomplete[key] = householdModal;
             }
         }

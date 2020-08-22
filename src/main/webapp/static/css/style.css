@@ -364,8 +364,6 @@ td {
 }
 
 .notification-status {
-    right: 30px;
-    position: absolute;
     font-size: small;
     font-style: italic;
     color: #AA002E;

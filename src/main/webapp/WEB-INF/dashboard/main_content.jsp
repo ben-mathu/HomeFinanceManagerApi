@@ -20,8 +20,8 @@
             <div class="grocery-subsection rounded-corner shadow-1pt subsection-background" >
                 <div class="jar-list-container" >
                     <%-- Create a table of scheduled money jar labels and scheduled date. --%>
-                    <div class="empty"  hidden>
-                        you can have all money jars listed here
+                    <div id="emptyExpenseList" class="empty"  hidden>
+                        Your expenses will be listed here
                     </div>
 
                     <div id="jarList" class="jar-list">

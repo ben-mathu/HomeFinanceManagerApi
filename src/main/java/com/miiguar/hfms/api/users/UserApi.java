@@ -1,6 +1,8 @@
 package com.miiguar.hfms.api.users;
 
 import com.miiguar.hfms.api.base.BaseServlet;
+import com.miiguar.hfms.data.budget.BudgetDao;
+import com.miiguar.hfms.data.budget.model.Budget;
 import com.miiguar.hfms.data.household.HouseholdDao;
 import com.miiguar.hfms.data.household.model.Household;
 import com.miiguar.hfms.data.income.IncomeDao;
@@ -37,6 +39,7 @@ public class UserApi extends BaseServlet {
     private UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
     private AccountStatusDao accountStatusDao = new AccountStatusDao();
     private UserDao userDao = new UserDao();
+    private BudgetDao budgetDao = new BudgetDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -57,6 +60,12 @@ public class UserApi extends BaseServlet {
             households.add(household);
         }
 
+        ArrayList<Budget> budgets = new ArrayList<>();
+        for (UserHouseholdRel userHouseholdRel : list) {
+            Budget budget = getBudget(userHouseholdRel);
+            budgets.add(budget);
+        }
+
         List<UserHouseholdRel> rels = userHouseholdDao.getAll();
 
         for (UserHouseholdRel rel : rels) {
@@ -72,6 +81,7 @@ public class UserApi extends BaseServlet {
         UserDto dto = new UserDto();
         dto.setUser(user);
         dto.setIncome(income);
+        dto.setBudgets(budgets);
         dto.setHouseholds(households);
         dto.setAccountStatus(accountStatus);
         dto.setUserHouseholdRels((ArrayList<UserHouseholdRel>) list);
@@ -81,6 +91,10 @@ public class UserApi extends BaseServlet {
 
         writer = resp.getWriter();
         writer.write(response);
+    }
+
+    private Budget getBudget(UserHouseholdRel userHouseholdRel) {
+        return budgetDao.getBudgetByHouseholdId(userHouseholdRel.getHouseId());
     }
 
     private User getUser(String userId) {

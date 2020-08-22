@@ -28,6 +28,21 @@ const paybillFields = {
     TRANSACTION_DESC: "TransactionDesc"
 }
 
+const topUpFields = {
+    SHORT_CODE: "BusinessShortCode",
+    AMOUNT: "Amount",
+    PARTY_A: "PartyA",
+    PARTY_B: "PartyB",
+    PHONE_NUMBER: "PhoneNumber",
+    ACCOUNT_REF: "AccountReference",
+    TRANSACTION_DESC: "TransactionDesc"
+}
+
+/**
+ * make payments array functions
+ */
+let makePaymentsArrays = {};
+
 /**
  * Configure payment elements and global variables
  */
@@ -67,18 +82,9 @@ function showNotificationDialog(jarId, jarDto) {
     if (jar.category == "Expenses") {
         let expenseItems = jarDto.expense;
 
-        expense.expense_id = expenseItems.expense_id;
-        expense.expense_name = expenseItems.expense_name;
-        expense.expense_description = expenseItems.expense_description;
-        expense.amount = expenseItems.amount;
-        expense.payee_name = expenseItems.payee_name;
-        expense.type = expenseItems.type
-        expense.business_number = expenseItems.business_number;
-        expense.account_number = expenseItems.account_number;
-
         templateClone.querySelector("#paymentExpense").id += count;
         paymentExpenseSection = templateClone.querySelector("#paymentExpense" + count);
-        paymentExpenseSection.appendChild(setExpense(jarId));
+        paymentExpenseSection.appendChild(setExpense(jarId, expenseItems));
         liabilitySection.appendChild(paymentExpenseSection);
     } else {
         let groceries = jarDto.groceries;
@@ -110,9 +116,11 @@ function showNotificationDialog(jarId, jarDto) {
 
     templateClone.querySelector("#btnPay").id += count;
     btnPay = templateClone.querySelector("#btnPay" + count);
-    btnPay.onclick = function() {
-        makePayments(moneyJarId.value);
-    }
+    btnPay.addEventListener("click", function(event) {
+        let elementIndex = event.target.id[event.target.id.length - 1];
+        let mJarId = document.getElementById("moneyJarId" + elementIndex);
+        makePayments(mJarId.value);
+    }, false);
 
     templateClone.querySelector("#expandButton").id += count;
     btnExpandLiabilities = templateClone.querySelector("#expandButton" + count);
@@ -125,7 +133,7 @@ function showNotificationDialog(jarId, jarDto) {
             isExpanded = true;
         }
     }
-
+    
     templateClone.querySelector("#paymentDetailsContainer").id += count;
     let paymentDialog = templateClone.querySelector("#paymentDetailsContainer" + count);
 
@@ -196,7 +204,6 @@ function addNotification(jarId) {
  * @param {String} jarId represents a money jar element in the moneyJarList field
  */
 function makePayments(jarId) {
-
     let request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {
@@ -235,7 +242,11 @@ function showSuccessNotification(data, notificationId) {
  * @param {string} notificationId identify notification of payement request
  */
 function updateNoitification(notificationId) {
-    
+    let paymentStatus = paymentTemplate.querySelector("#paymentStatus");
+    paymentStatus.innerHTML = "paid";
+    paymentStatus.style.color = "white";
+
+    let notification = notifications.getNotification(notificationId);
 }
 
 function serializePaymentData(jarId) {
@@ -246,16 +257,23 @@ function serializePaymentData(jarId) {
 
     let token = window.localStorage.getItem(userFields.TOKEN)
     data += userFields.TOKEN + "=" + token + "&";
+
+    let isSameCategory = isSameCategoryFun(jar.category);
     
-    if (jar.category == categoryOption.EXPENSE) {
-        let expenseItem = jar.expense;
-        data += paybillFields.SHORT_CODE + "=" + expenseItem.business_number + "&";
-        data += paybillFields.AMOUNT + "=" + jar.amount + "&";
-        data += paybillFields.PARTY_A + "=" + expenseItem.account_number + "&";
-        data += paybillFields.PARTY_B + "=" + expenseItem.business_number + "&";
-        data += paybillFields.PHONE_NUMBER + "=" + expenseItem.account_number + "&";
-        data += paybillFields.ACCOUNT_REF + "=account" + "&";
-        data += paybillFields.TRANSACTION_DESC + "=First transaction from code";
+    if (isSameCategory) {
+        let expenseItem = jarElement.expense;
+        data += paybillFields.SHORT_CODE + "=" + escape(expenseItem.business_number) + "&";
+        data += paybillFields.AMOUNT + "=" + escape(jar.amount) + "&";
+        data += paybillFields.PARTY_A + "=" + escape(expenseItem.account_number) + "&";
+        data += paybillFields.PARTY_B + "=" + escape(expenseItem.business_number) + "&";
+        data += paybillFields.PHONE_NUMBER + "=" + escape(expenseItem.account_number) + "&";
+        data += paybillFields.ACCOUNT_REF + "=" + escape("account") + "&";
+        data += paybillFields.TRANSACTION_DESC + "=" + escape("First transaction from code") + "&";
+        data += jarFields.JAR_ID + "=" + escape(jarId);
     }
     return data;
+}
+
+function isSameCategoryFun(category) {
+    return category == categoryOption.EXPENSES;
 }

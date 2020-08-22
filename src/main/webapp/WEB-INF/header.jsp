@@ -33,6 +33,8 @@
             <div class="income-menu" >
                 <span id="income" class="income" hidden>Income: </span>
                 <input id="openIncomeModal" type="button" value="Add Income">
+                <span id="walletAmount" class="wallet" hidden>Wallet:</span>
+                <input id="btnAddWallet" type="button" name="top-up" value="Top Up Wallet">
             </div>
             <div class="horizontal-separator"></div>
             <div id="settings-item" class="option-menu-item" >

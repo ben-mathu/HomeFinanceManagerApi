@@ -99,6 +99,7 @@ public class DbEnvironment {
     public static final String INCOME_STATUS = "income_status";
     public static final String JAR_STATUS = "jar_status";
     public static final String HOUSEHOLD_STATUS = "household_status";
+    public static final String BUDGET_STATUS = "budget_status";
     public static final String COMPLETE_AT = "completed_at";
     public static final String FK_ACCOUNT_STATUS_USER_ID = "fk_account_status_user_id_ref_users";
 
@@ -147,4 +148,15 @@ public class DbEnvironment {
     public static final String RESULT_DESC = "result_description";
     public static final String CALLBACK_METADATA = "callback_metadata";
     public static final String TRANSACTION_STATUS = "transaction_status";
+
+    /**
+     * Budget
+     */
+    public static final String BUDGET_TB_NAME = "budgets";
+    public static final String BUDGET_ID = "budget_id";
+    public static final String BUDGET_AMOUNT = "budget_amount";
+    public static final String BUDGET_DESC = "budget_description";
+    // household id, budget saved for a household not individual
+    // created at field.
+    public static final String FK_BUDGETS_HOUSEHOLD_ID = "fk_budgets_household_id_ref_households";
 }

@@ -5,7 +5,7 @@ let rdEmployee;
 let businessNumber;
 let payeeAccountNumber;
 
-let btnOpenExpenseModal;
+// let btnOpenExpenseModal;
 let btnEditExpenseModal;
 let btnCloseExpenseModal;
 let btnSaveExpense;
@@ -18,6 +18,7 @@ let expenseDesc;
 let expenseAmount;
 let payeeName;
 let expenseId;
+let expenseTemplate;
 
 /**
  * Expense Types
@@ -28,7 +29,20 @@ const expenseTypes = {
     EMPLOYEE: "Employee"
 }
 
+let expenseGlobal = {
+    expense_id: "",
+    expense_name: "",
+    expense_description: "",
+    amount: "",
+    payee_name: "",
+    type: "",
+    business_number: "",
+    account_number: ""
+}
+
 function configureExpenses() {
+    expenseTemplate = document.getElementById("expenseTemplate");
+    
     expenseId = document.getElementById("expenseId");
     expenseName = document.getElementById("expenseName");
     expenseDesc = document.getElementById("expenseDesc");
@@ -68,10 +82,10 @@ function configureExpenses() {
         }
     }
 
-    btnOpenExpenseModal = document.getElementById("btnOpenExpenseModal");
-    btnOpenExpenseModal.onclick = function() {
-        openExpenseModal();
-    }
+    // btnOpenExpenseModal = document.getElementById("btnOpenExpenseModal");
+    // btnOpenExpenseModal.onclick = function() {
+    //     openExpenseModal();
+    // }
 
     btnEditExpenseModal = document.getElementById("btnEditExpenseModal");
     btnEditExpenseModal.onclick = function () {
@@ -92,60 +106,58 @@ function configureExpenses() {
 }
 
 function addExpense() {
-
-    expense.expense_name = expenseName.value;
-    expense.expense_description = expenseDesc.value;
-    expense.amount = expenseAmount.value;
-    expense.payee_name = payeeName.value;
+    expenseGlobal.expense_name = expenseName.value;
+    expenseGlobal.expense_description = expenseDesc.value;
+    expenseGlobal.amount = expenseAmount.value;
+    expenseGlobal.payee_name = payeeName.value;
     
     if (rdPersonal.checked) {
-        expense.type = rdPersonal.value;
-        expense.business_number = document.getElementById("payeeBusinessNumber").value;
+        expenseGlobal.type = rdPersonal.value;
+        expenseGlobal.business_number = document.getElementById("payeeBusinessNumber").value;
     } else if (rdHouseHold.checked) {
-        expense.type = rdHouseHold.value;
-        expense.business_number = document.getElementById("payeeBusinessNumber").value;
-        expense.account_number = document.getElementById("payerAccountNumber").value;
+        expenseGlobal.type = rdHouseHold.value;
+        expenseGlobal.business_number = document.getElementById("payeeBusinessNumber").value;
+        expenseGlobal.account_number = document.getElementById("payerAccountNumber").value;
     } else if (rdEmployee.checked) {
-        expense.type = rdEmployee.value;
-        expense.account_number = document.getElementById("payerAccountNumber").value;
+        expenseGlobal.type = rdEmployee.value;
+        expenseGlobal.account_number = document.getElementById("payerAccountNumber").value;
     }
 
     // set total amount
-    onRowLoaded(expense.amount);
+    onRowLoaded(expenseGlobal.amount);
 
     // set expense
     expenseItemsSection.innerHTML = "";
-    expenseItemsSection.appendChild(setExpense(""));
+    expenseItemsSection.appendChild(setExpense("", expenseGlobal));
 }
 
-function setExpense(jarId) {
+function setExpense(jarId, expense) {
     closeExpenseModal();
-    let jarDto = jars.getJar(jarId);
     
-    jarDto.expense = expense;
+    if (jarId != "") {
+        let jarDto = jars.getJar(jarId);
+        expense = jarDto.expense;
+    }
 
-    let expenseTemplate = document.getElementById("expenseTemplate");
+    let expenseTemplateClone = expenseTemplate.content.cloneNode(true);
 
-    let name = expenseTemplate.content.querySelector("#expName");
+    let name = expenseTemplateClone.querySelector("#expName");
     name.innerHTML = expense.expense_name;
-    let desc = expenseTemplate.content.querySelector("#expDesc");
+    let desc = expenseTemplateClone.querySelector("#expDesc");
     desc.innerHTML = expense.expense_description;
-    let amount = expenseTemplate.content.querySelector("#expAmount");
+    let amount = expenseTemplateClone.querySelector("#expAmount");
     amount.innerHTML = expense.amount;
-    let expPayeeName = expenseTemplate.content.querySelector("#expPayeeName");
+    let expPayeeName = expenseTemplateClone.querySelector("#expPayeeName");
     expPayeeName.innerHTML = expense.payee_name;
-    let busiNumber = expenseTemplate.content.querySelector("#expBusinessNumber");
+    let busiNumber = expenseTemplateClone.querySelector("#expBusinessNumber");
     busiNumber.innerHTML = expense.business_number;
-    let account = expenseTemplate.content.querySelector("#accountNumber");
+    let account = expenseTemplateClone.querySelector("#accountNumber");
     account.innerHTML = expense.account_number;
 
-    let expenseTemplateClone = document.importNode(expenseTemplate.content, true);
-
-    btnOpenExpenseModal.hidden = true;
-    btnEditExpenseModal.hidden = false;
+    // btnOpenExpenseModal.hidden = true;
+    // btnEditExpenseModal.hidden = false;
 
     return expenseTemplateClone;
-
 }
 
 /**
@@ -169,9 +181,11 @@ function openExpenseModal() {
 function openExpenseModalForEdit(jarId) {
     expensesModal.style.display = "block";
 
-    let jarDto = jars.getJar(jarId);
-
-    let expense = jarDto.expense;
+    let expense;
+    if (jarId != "") {
+        let jarDto = jars.getJar(jarId);
+        expense = jarDto.expense;
+    }
 
     expenseId.value = expense.expense_id;
     expenseName.value = expense.expense_name;
@@ -199,28 +213,28 @@ function openExpenseModalForEdit(jarId) {
 function updateExpense() {
     let prevAmount = expenseAmount.value;
 
-    expense.expense_id = expenseId.value;
-    expense.expense_name = expenseName.value;
-    expense.expense_description = expenseDesc.value;
-    expense.amount = expenseAmount.value;
-    expense.payee_name = payeeName.value;
+    expenseGlobal.expense_id = expenseId.value;
+    expenseGlobal.expense_name = expenseName.value;
+    expenseGlobal.expense_description = expenseDesc.value;
+    expenseGlobal.amount = expenseAmount.value;
+    expenseGlobal.payee_name = payeeName.value;
     
     if (rdPersonal.checked) {
-        expense.type = rdPersonal.value;
-        expense.business_number = document.getElementById("payeeBusinessNumber").value;
+        expenseGlobal.type = rdPersonal.value;
+        expenseGlobal.business_number = document.getElementById("payeeBusinessNumber").value;
     } else if (rdHouseHold.checked) {
-        expense.type = rdHouseHold.value;
-        expense.business_number = document.getElementById("payeeBusinessNumber").value;
-        expense.account_number = document.getElementById("payerAccountNumber").value;
+        expenseGlobal.type = rdHouseHold.value;
+        expenseGlobal.business_number = document.getElementById("payeeBusinessNumber").value;
+        expenseGlobal.account_number = document.getElementById("payerAccountNumber").value;
     } else if (rdEmployee.checked) {
-        expense.type = rdEmployee.value;
-        expense.account_number = document.getElementById("payerAccountNumber").value;
+        expenseGlobal.type = rdEmployee.value;
+        expenseGlobal.account_number = document.getElementById("payerAccountNumber").value;
     }
 
     // set total amount
-    updateTotalAmount(prevAmount, expense.amount);
+    updateTotalAmount(prevAmount, expenseGlobal.amount);
 
     // set expense
     expenseItemsSection.innerHTML = "";
-    expenseItemsSection.appendChild(setExpense(moneyJarIdModal.value));
+    expenseItemsSection.appendChild(setExpense(moneyJarIdModal.value, expenseGlobal));
 }
