@@ -9,14 +9,6 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Name</td>
-                    <td><span id="expName" class="normal-font"></span></td>
-                </tr>
-                <tr>
-                    <td>Description</td>
-                    <td><span id="expDesc" class="normal-font"></span></td>
-                </tr>
-                <tr>
                     <td>Amount</td>
                     <td><span id="expAmount" class="normal-font"></span></td>
                 </tr>

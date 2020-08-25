@@ -2,7 +2,6 @@ package com.miiguar.hfms.view.dashboard;
 
 import com.miiguar.hfms.data.income.IncomeDto;
 import com.miiguar.hfms.data.income.model.Income;
-import com.miiguar.hfms.data.user.UserDto;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -38,7 +37,7 @@ public class UserServletController extends BaseServlet {
         InitUrlConnection<User> conn = new InitUrlConnection<>();
         BufferedReader streamReader = conn.getReader(GET_USER_DETAILS + requestParam, token, "GET");
 
-        String line = "";
+        String line;
         String response = "";
         while((line = streamReader.readLine()) != null) {
             response = line;
@@ -54,7 +53,6 @@ public class UserServletController extends BaseServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
-        String incomeDesc = req.getParameter(INCOME_DESC);
         String incomeType = req.getParameter(ACCOUNT_TYPE);
         String amount = req.getParameter(AMOUNT);
 
@@ -66,7 +64,6 @@ public class UserServletController extends BaseServlet {
         income.setAmount(Double.parseDouble(amount));
         income.setUserId(userId);
         income.setAccountType(incomeType);
-        income.setIncomeDesc(incomeDesc);
         incomeDto.setIncome(income);
 
         InitUrlConnection<IncomeDto> conn = new InitUrlConnection<>();

@@ -29,12 +29,12 @@ function configureGrocery() {
     var btnCloseGroceryModal = document.getElementById("cancelGroceryModal");
     btnCloseGroceryModal.onclick = function() {
         groceryModal.style.display = "none";
-    }
+    };
 
     btnAddGrocery = document.getElementById("addItem");
     btnAddGrocery.onclick = function() {
         addGrocery();
-    }
+    };
 
     // initialize groceryModal variables
     groceryName = document.getElementById("groceryName");
@@ -51,10 +51,14 @@ function configureGrocery() {
         groceryPrice.value = "";
         groceryRequired.value = "";
         groceryRemaining.value = "";
-    }
+    };
 }
 
 function setGroceries(groceries) {
+    
+    if (groceries === undefined) {
+        return;
+    }
 
     let groceryTemplate = document.getElementById("groceryTemplate");
 
@@ -63,7 +67,7 @@ function setGroceries(groceries) {
     for (let i = 0; i < groceries.length; i++) {
         // get number of rows
         var row = body.insertRow(i);
-        if (i%2 == 0 || i == 0) {
+        if (i%2 === 0 || i === 0) {
             row.style.backgroundColor = "#534c63d2";
         }
         row.style.cursor = "pointer";
@@ -72,7 +76,7 @@ function setGroceries(groceries) {
             var currentIndex = i;
             return function() {
                 onItemClick(groceries[currentIndex].grocery_id);
-            }
+            };
         })();
         
         var name = row.insertCell(0);
@@ -109,12 +113,18 @@ function setGroceries(groceries) {
 //     }
 // }
 
+/**
+ * shows error for grocery modal
+ */
 function showError() {
     var error = document.getElementById("jarModalError");
     error.innerHTML = "An Error occured please try again.";
     error.hidden = false;
 }
 
+/**
+ * adds grocery values to grocery modal
+ */
 function addGrocery() {
 
     let groceriesList = document.getElementById("groceryContainer");
@@ -161,16 +171,16 @@ function addGrocery() {
     row.onclick = (function() {
         return function() {
             onItemClick(obj.grocery_id);
-        }
+        };
     })();
 
     cancel.onclick = (function () {
         return function () {
             onItemRemoved(obj.grocery_id);
-        }
+        };
     })();
 
-    if (index%2 == 0) {
+    if (index%2 === 0) {
         row.style.backgroundColor = "#534c63d2";
     }
     row.style.cursor = "pointer";
@@ -217,7 +227,7 @@ function getGroceryItemIndex(sample) {
     var keys = Object.keys(groceryListObj);
     for (let i = 0; i < keys.length; i++) {
         var key = keys[i];
-        if (sample == key) {
+        if (sample === key) {
             break;
         } else {
             count++;

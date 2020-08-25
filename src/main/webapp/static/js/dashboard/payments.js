@@ -26,7 +26,7 @@ const paybillFields = {
     PHONE_NUMBER: "PhoneNumber",
     ACCOUNT_REF: "AccountReference",
     TRANSACTION_DESC: "TransactionDesc"
-}
+};
 
 const topUpFields = {
     SHORT_CODE: "BusinessShortCode",
@@ -36,7 +36,7 @@ const topUpFields = {
     PHONE_NUMBER: "PhoneNumber",
     ACCOUNT_REF: "AccountReference",
     TRANSACTION_DESC: "TransactionDesc"
-}
+};
 
 /**
  * make payments array functions
@@ -79,7 +79,7 @@ function showNotificationDialog(jarId, jarDto) {
     templateClone.querySelector("#liabilitySection").id += count;
     liabilitySection = templateClone.querySelector("#liabilitySection" + count);
 
-    if (jar.category == "Expenses") {
+    if (jar.category === categoryOption.SINGLE) {
         let expenseItems = jarDto.expense;
 
         templateClone.querySelector("#paymentExpense").id += count;
@@ -95,7 +95,7 @@ function showNotificationDialog(jarId, jarDto) {
         liabilitySection.appendChild(paymentGorcerySection);
     }
 
-    let nameTitle = jar.jar_label;
+    let nameTitle = jar.expense_type;
     templateClone.querySelector("#nameTitle").id += count;
     let nameTitleSpan = templateClone.querySelector("#nameTitle" + count);
     nameTitleSpan.innerHTML = nameTitle;
@@ -112,7 +112,7 @@ function showNotificationDialog(jarId, jarDto) {
     btnEditDetails = templateClone.querySelector("#btnEditDetails" + count);
     btnEditDetails.onclick = function () {
         openJarModalForEdit(moneyJarId.value);
-    }
+    };
 
     templateClone.querySelector("#btnPay").id += count;
     btnPay = templateClone.querySelector("#btnPay" + count);
@@ -124,7 +124,9 @@ function showNotificationDialog(jarId, jarDto) {
 
     templateClone.querySelector("#expandButton").id += count;
     btnExpandLiabilities = templateClone.querySelector("#expandButton" + count);
-    btnExpandLiabilities.onclick = function () {
+    btnExpandLiabilities.onclick = function (event) {
+        let elementIndex = event.target.id[event.target.id.length - 1];
+        
         if (isExpanded) {
             liabilitySection.hidden = true;
             isExpanded = false;
@@ -132,7 +134,7 @@ function showNotificationDialog(jarId, jarDto) {
             liabilitySection.hidden = false;
             isExpanded = true;
         }
-    }
+    };
     
     templateClone.querySelector("#paymentDetailsContainer").id += count;
     let paymentDialog = templateClone.querySelector("#paymentDetailsContainer" + count);
@@ -141,7 +143,7 @@ function showNotificationDialog(jarId, jarDto) {
         paymentDialog.style.display = "none";
 
         addNotification(jarId);
-    }, 10000);
+    }, 20000);
 
     let paymentDetails = document.getElementById("paymentDialogContainer");
     paymentDetails.appendChild(templateClone);
@@ -168,7 +170,7 @@ let notifications = {
     registerLister: function(listener) {
         this.notificationAddListener = listener;
     }
-}
+};
 
 /**
  * add to a list of notifications
@@ -188,7 +190,7 @@ function addNotification(jarId) {
 
     templateClone.querySelector("#notificationTitle").id += notificationCount;
     let notificationTitle = templateClone.querySelector("#notificationTitle" + notificationCount);
-    notificationTitle.innerHTML = jar.jar_label;
+    notificationTitle.innerHTML = jar.expense_type;
 
     templateClone.querySelector("#notificationMessage").id += notificationCount;
     let notificationMessage = templateClone.querySelector("#notificationMessage" + notificationCount);
@@ -207,13 +209,13 @@ function makePayments(jarId) {
     let request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
-                let responseData = request.responseText
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                let responseData = request.responseText;
                 showSuccessNotification(responseData, jarId);
             }
         }
-    }
+    };
 
     let data = serializePaymentData(jarId);
 
@@ -228,10 +230,10 @@ function showSuccessNotification(data, notificationId) {
     let request = getXmlHttpRequest();
 
     request.onload = function() {
-        if (request.status == 200) {
+        if (request.status === 200) {
             updateNoitification(notificationId);
         }
-    }
+    };
 
     request.open("POST", ctx + "/mpesa/lnmo-url/" + report.subject);
 }
@@ -255,7 +257,7 @@ function serializePaymentData(jarId) {
     
     let data = "";
 
-    let token = window.localStorage.getItem(userFields.TOKEN)
+    let token = window.localStorage.getItem(userFields.TOKEN);
     data += userFields.TOKEN + "=" + token + "&";
 
     let isSameCategory = isSameCategoryFun(jar.category);
@@ -275,5 +277,5 @@ function serializePaymentData(jarId) {
 }
 
 function isSameCategoryFun(category) {
-    return category == categoryOption.EXPENSES;
+    return category === categoryOption.EXPENSES;
 }

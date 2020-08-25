@@ -24,8 +24,8 @@ public class MoneyJar {
     @SerializedName(MONEY_JAR_ID)
     private String moneyJarId = "";
 
-    @SerializedName(MONEY_JAR_NAME)
-    @Column(columnName = MONEY_JAR_NAME, characterLength = 45, unique = true)
+    @SerializedName(MONEY_EXPENSE_TYPE)
+    @Column(columnName = MONEY_EXPENSE_TYPE, characterLength = 45)
     private String name = "";
 
     @SerializedName(CATEGORY)

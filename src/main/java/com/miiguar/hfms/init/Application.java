@@ -98,7 +98,7 @@ public class Application implements IntervalChangeListener {
             conn.close();
             conn = null;
         } catch (SQLException e) {
-            Log.e(TAG, "Username already exists", e);
+            Log.d(TAG, "Username already exists: " + prop.getProperty("db.username"));
         } finally {
             if (conn != null) {
                 try {
@@ -130,7 +130,7 @@ public class Application implements IntervalChangeListener {
             conn.close();
             conn = null;
         } catch (SQLException e) {
-            Log.e(TAG, "Database already exists", e);
+            Log.d(TAG, "Database already exists. DbName:" + prop.getProperty("db.main_db"));
         } finally {
             if (conn != null) {
                 try {
@@ -249,7 +249,7 @@ public class Application implements IntervalChangeListener {
                     conn.close();
                     conn = null;
                 } catch (SQLException throwable) {
-                    Log.e(TAG, "Error creating constraints", throwable);
+                    Log.d(TAG, "Error creating constraints: " + str.toString());
                 } finally {
                     if (conn != null) {
                         try { conn.close(); conn = null; } catch (SQLException throwable) { /* Intentionally blank. */ }

@@ -51,11 +51,12 @@ public class HouseholdDao implements Dao<Household> {
                 household = new Household();
                 household.setId(resultSet.getString(HOUSEHOLD_ID));
                 household.setName(resultSet.getString(HOUSEHOLD_NAME));
-                household.setDescription(resultSet.getString(HOUSEHOLD_DESCRIPTION));
             }
 
             preparedStatement.close();
             preparedStatement = null;
+            resultSet.close();
+            resultSet = null;
             conn.close();
             conn = null;
         } catch (SQLException throwables) {
@@ -79,8 +80,8 @@ public class HouseholdDao implements Dao<Household> {
     @Override
     public int save(Household item) {
         String query = "INSERT INTO " + HOUSEHOLD_TB_NAME + "(" +
-                HOUSEHOLD_ID + "," + HOUSEHOLD_NAME + "," + HOUSEHOLD_DESCRIPTION + ")" +
-                " VALUES (?,?,?)";
+                HOUSEHOLD_ID + "," + HOUSEHOLD_NAME + ")" +
+                " VALUES (?,?)";
 
         int affectedRows = 0;
 
@@ -92,7 +93,6 @@ public class HouseholdDao implements Dao<Household> {
 
             preparedStatement.setString(1, item.getId());
             preparedStatement.setString(2, item.getName());
-            preparedStatement.setString(3, item.getDescription());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -144,7 +144,6 @@ public class HouseholdDao implements Dao<Household> {
 
             while (resultSet.next()) {
                 household.setId(id);
-                household.setDescription(resultSet.getString(HOUSEHOLD_DESCRIPTION));
                 household.setName(resultSet.getString(HOUSEHOLD_NAME));
             }
 

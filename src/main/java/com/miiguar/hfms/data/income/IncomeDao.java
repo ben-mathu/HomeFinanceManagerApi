@@ -32,26 +32,13 @@ public class IncomeDao implements Dao<Income> {
         db = new ConfigureDb();
         prop = db.getProperties();
     }
-//    @Override
-//    public int createTable(Connection connection) {
-//        PreparedStatement create = connection.prepareStatement(
-//                "CREATE TABLE " + INCOME_TB_NAME + "(" +
-//                        INCOME_ID + " VARCHAR(12)," +
-//                        INCOME_DESCRIPTION + " TEXT NOT NULL," +
-//                        AMOUNT + " NUMERIC(8,2) NOT NULL," +
-//                        USER_ID + " VARCHAR(12) UNIQUE," +
-//                        CREATED_AT + " TIMESTAMP NOT NULL," +
-//                        " CONSTRAINT " + PRIV_KEY_INCOME + " PRIMARY KEY (" + INCOME_ID + ")"
-//        );
-//        return 0;
-//    }
 
     @Override
     public int save(Income item) {
         String query = "INSERT INTO " + INCOME_TB_NAME + "(" +
-                INCOME_ID + "," + AMOUNT + "," + ACCOUNT_TYPE + "," + INCOME_DESC + "," +
+                INCOME_ID + "," + AMOUNT + "," + ACCOUNT_TYPE + "," +
                 USER_ID + "," + CREATED_AT + ")" +
-                " VALUES (?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -63,9 +50,8 @@ public class IncomeDao implements Dao<Income> {
             preparedStatement.setString(1, item.getIncomeId());
             preparedStatement.setDouble(2, item.getAmount());
             preparedStatement.setString(3, item.getAccountType());
-            preparedStatement.setString(4, item.getIncomeDesc());
-            preparedStatement.setString(5, item.getUserId());
-            preparedStatement.setString(6, item.getCreatedAt());
+            preparedStatement.setString(4, item.getUserId());
+            preparedStatement.setString(5, item.getCreatedAt());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -123,7 +109,6 @@ public class IncomeDao implements Dao<Income> {
                 income.setAccountType(resultSet.getString(ACCOUNT_TYPE));
                 income.setIncomeId(resultSet.getString(INCOME_ID));
                 income.setUserId(resultSet.getString(USER_ID));
-                income.setIncomeDesc(resultSet.getString(INCOME_DESC));
             }
 
             resultSet.close();

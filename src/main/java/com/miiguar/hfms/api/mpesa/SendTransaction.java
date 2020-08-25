@@ -65,7 +65,6 @@ public class SendTransaction extends BaseServlet {
 
         UserHouseholdRel rel = userHouseholdDao.get(request.getUserId());
 
-
         SimpleDateFormat sf = new SimpleDateFormat(DARAJA_DATE_FORMAT);
         Date now = new Date();
         String timestamp = sf.format(now);
@@ -132,7 +131,7 @@ public class SendTransaction extends BaseServlet {
 
             jar.setJarStatus(true);
             moneyJarsDao.update(jar);
-            sendNotification(affected, httpServletResponse, response, randomString);
+            sendNotification(affected, httpServletResponse, response, randomString, budgetAffected);
         } else {
             LnmoErrorResponse error = gson.fromJson(builder.toString(), LnmoErrorResponse.class);
             Log.d(TAG, "Error/" + error.getErrorMessage() + ": " + error.getErrorMessage());
@@ -151,8 +150,8 @@ public class SendTransaction extends BaseServlet {
         writer.write(gson.toJson(report));
     }
 
-    private void sendNotification(int affected, HttpServletResponse httpServletResponse, LnmoResponse response, String randomString) throws IOException {
-        if (affected > 0) {
+    private void sendNotification(int affected, HttpServletResponse httpServletResponse, LnmoResponse response, String randomString, int budgetAffected) throws IOException {
+        if (affected > 0 && budgetAffected > 0) {
             Report report = new Report();
             report.setMessage(response.getCustomerMessage());
             report.setStatus(HttpServletResponse.SC_ACCEPTED);

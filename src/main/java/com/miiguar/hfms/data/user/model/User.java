@@ -26,6 +26,10 @@ public class User {
     @SerializedName(USERNAME)
     @Column(columnName = USERNAME, characterLength = 25, unique = true)
     private String username = "";
+    
+    @SerializedName(MOB_NUMBER)
+    @Column(columnName = MOB_NUMBER, characterLength = 25, unique = true, notNull = false)
+    private String mobNum = "";
 
     @SerializedName(PASSWORD)
     @Column(columnName = PASSWORD, characterLength = 255)
@@ -61,6 +65,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+    
+    public void setMobNum(String mobNum) {
+        this.mobNum = mobNum;
+    }
+
+    public String getMobNum() {
+        return mobNum;
     }
 
     public String getPassword() {

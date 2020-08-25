@@ -29,173 +29,171 @@ import static com.miiguar.hfms.utils.Constants.*;
  */
 @WebServlet(urlPatterns = "/registration/register-user", asyncSupported = true)
 public class RegistrationServlet extends BaseServlet {
-	private static final long serialVersionUID = 1L;
-	private static final String TAG = RegistrationServlet.class.getSimpleName();
+    private static final long serialVersionUID = 1L;
+    private static final String TAG = RegistrationServlet.class.getSimpleName();
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	@Override
-	protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
-			throws ServletException, IOException {
-		Log.d(TAG, "Request Received.");
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     */
+    @Override
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException {
+        Log.d(TAG, "Request Received.");
 
-		includeRequest(request, response);
-	}
+        includeRequest(request, response);
+    }
 
-	public void includeRequest(final HttpServletRequest request, final HttpServletResponse response)
-			throws IOException {
-		boolean isParamsValid = true;
-		
-		final String email = request.getParameter(EMAIL).trim();
-		final String username = request.getParameter(USERNAME).trim();
-		final String password = request.getParameter(PASSWORD);
-		final String householdName = request.getParameter(HOUSEHOLD_NAME);
-		final String houseDesc = request.getParameter(HOUSEHOLD_DESCRIPTION);
-		final boolean joinHousehold = Boolean.parseBoolean(request.getParameter("joinHousehold"));
-		String houseHoldId = "";
-		if (joinHousehold) {
-			houseHoldId = request.getParameter(HOUSEHOLD_ID);
-		}
+    public void includeRequest(final HttpServletRequest request, final HttpServletResponse response)
+            throws IOException {
+        boolean isParamsValid = true;
 
-		final ErrorResults results = new ErrorResults();
-		if (email.isEmpty() || request.getParameter(EMAIL) == null) {
-			results.setEmailError("Email is required!");
-			isParamsValid = false;
-		}
+        final String email = request.getParameter(EMAIL).trim();
+        final String username = request.getParameter(USERNAME).trim();
+        final String password = request.getParameter(PASSWORD);
+        final String householdName = request.getParameter(HOUSEHOLD_NAME);
+        final boolean joinHousehold = Boolean.parseBoolean(request.getParameter("joinHousehold"));
+        String houseHoldId = "";
+        if (joinHousehold) {
+            houseHoldId = request.getParameter(HOUSEHOLD_ID);
+        }
 
-		if (username.isEmpty() || request.getParameter(USERNAME) == null) {
-			results.setUsernameError("Username is required!");
-			isParamsValid = false;
-		}
+        final ErrorResults results = new ErrorResults();
+        if (email.isEmpty() || request.getParameter(EMAIL) == null) {
+            results.setEmailError("Email is required!");
+            isParamsValid = false;
+        }
 
-		if (password.isEmpty() || request.getParameter(PASSWORD) == null) {
-			results.setPasswordError("Password is required!");
-			isParamsValid = false;
-		}
+        if (username.isEmpty() || request.getParameter(USERNAME) == null) {
+            results.setUsernameError("Username is required!");
+            isParamsValid = false;
+        }
 
-		if ((houseHoldId.isEmpty() || request.getParameter(HOUSEHOLD_ID) == null) && joinHousehold) {
-			results.setHouseholdIdError("");
-			isParamsValid = false;
-		}
+        if (password.isEmpty() || request.getParameter(PASSWORD) == null) {
+            results.setPasswordError("Password is required!");
+            isParamsValid = false;
+        }
 
-		if (isParamsValid) {
+        if ((houseHoldId.isEmpty() || request.getParameter(HOUSEHOLD_ID) == null) && joinHousehold) {
+            results.setHouseholdIdError("");
+            isParamsValid = false;
+        }
 
-			final String usernameValidity = Patterns.isUsernameValid(username);
-			final String validity = Patterns.isPasswordValid(password);
-			if (!Patterns.EMAIL_VERIFICATION_PATTERN.matcher(email).matches()) {
+        if (isParamsValid) {
 
-				final ErrorResults pass = new ErrorResults();
-				pass.setEmailError("Your email is invalid");
-				final String error = gson.toJson(pass);
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				writer = response.getWriter();
-				writer.write(error);
-			} else if (!usernameValidity.isEmpty()) {
+            final String usernameValidity = Patterns.isUsernameValid(username);
+            final String validity = Patterns.isPasswordValid(password);
+            if (!Patterns.EMAIL_VERIFICATION_PATTERN.matcher(email).matches()) {
 
-				final ErrorResults pass = new ErrorResults();
-				pass.setUsernameError(usernameValidity);
-				final String error = gson.toJson(pass);
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				writer = response.getWriter();
-				writer.write(error);
-			} else if (!validity.isEmpty()) {
+                final ErrorResults pass = new ErrorResults();
+                pass.setEmailError("Your email is invalid");
+                final String error = gson.toJson(pass);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                writer = response.getWriter();
+                writer.write(error);
+            } else if (!usernameValidity.isEmpty()) {
 
-				final ErrorResults pass = new ErrorResults();
-				pass.setPasswordError("You password should have these properties:</br>" + validity);
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				final String error = gson.toJson(pass);
-				writer = response.getWriter();
-				writer.write(error);
-				
-			} else {
+                final ErrorResults pass = new ErrorResults();
+                pass.setUsernameError(usernameValidity);
+                final String error = gson.toJson(pass);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                writer = response.getWriter();
+                writer.write(error);
+            } else if (!validity.isEmpty()) {
 
-				User user = new User();
-				user.setAdmin(true);
-				user.setEmail(request.getParameter(EMAIL));
-				user.setUsername(request.getParameter(USERNAME));
-				user.setPassword(request.getParameter(PASSWORD));
-				Household household = new Household();
-				if (joinHousehold) {
-					household.setId(houseHoldId);
-				} else {
-					household.setName(householdName);
-					household.setDescription(houseDesc);
-				}
+                final ErrorResults pass = new ErrorResults();
+                pass.setPasswordError("You password should have these properties:</br>" + validity);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                final String error = gson.toJson(pass);
+                writer = response.getWriter();
+                writer.write(error);
 
-				final UserRequest params = new UserRequest();
-				params.setHousehold(household);
-				params.setUser(user);
+            } else {
 
-				InitUrlConnection<UserRequest> connection = new InitUrlConnection<>();
+                User user = new User();
+                user.setAdmin(true);
+                user.setEmail(request.getParameter(EMAIL));
+                user.setUsername(request.getParameter(USERNAME));
+                user.setPassword(request.getParameter(PASSWORD));
+                Household household = new Household();
+                if (joinHousehold) {
+                    household.setId(houseHoldId);
+                } else {
+                    household.setName(householdName);
+                }
 
-				BufferedReader streamReader;
-				if (joinHousehold) {
-					streamReader = connection.getReader(params, REGISTRATION + "?joinHousehold=true", "POST");
-				} else {
-					streamReader = connection.getReader(params, REGISTRATION + "?joinHousehold=false", "POST");
-				}
+                final UserRequest params = new UserRequest();
+                params.setHousehold(household);
+                params.setUser(user);
 
-				String line = "";
-				UserResponse item = null;
-				while((line = streamReader.readLine()) != null) {
-					item = gson.fromJson(line, UserResponse.class);
-				}
+                InitUrlConnection<UserRequest> connection = new InitUrlConnection<>();
 
-				if (item != null) {
-					if (item.getReport().getStatus() != 200) {
-						String jsonStr = gson.toJson(item.getReport());
-						response.setStatus(item.getReport().getStatus());
-						writer = response.getWriter();
-						writer.write(jsonStr);
+                BufferedReader streamReader;
+                if (joinHousehold) {
+                    streamReader = connection.getReader(params, REGISTRATION + "?joinHousehold=true", "POST");
+                } else {
+                    streamReader = connection.getReader(params, REGISTRATION + "?joinHousehold=false", "POST");
+                }
 
-					} else {
+                String line = "";
+                UserResponse item = null;
+                while((line = streamReader.readLine()) != null) {
+                    item = gson.fromJson(line, UserResponse.class);
+                }
 
-						request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
-						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
-						request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
-						request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
-						request.getSession().setAttribute(TOKEN, item.getReport().getToken());
-						request.getSession().setAttribute(HOUSEHOLD_NAME, item.getHousehold().getName());
-						request.getSession().setAttribute("isAlreadySent", false);
+                if (item != null) {
+                    if (item.getReport().getStatus() != 200) {
+                        String jsonStr = gson.toJson(item.getReport());
+                        response.setStatus(item.getReport().getStatus());
+                        writer = response.getWriter();
+                        writer.write(jsonStr);
 
-						// save the session
-						Cookie cookie = new Cookie(TOKEN, item.getReport().getToken());
-						cookie.setMaxAge(60*60*24);
-						response.addCookie(cookie);
+                    } else {
 
-						Cookie userIdCookie = new Cookie(USER_ID, item.getUser().getUserId());
-						userIdCookie.setMaxAge(60*60*24);
-						response.addCookie(userIdCookie);
+                        request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
+                        request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
+                        request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+                        request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
+                        request.getSession().setAttribute(TOKEN, item.getReport().getToken());
+                        request.getSession().setAttribute(HOUSEHOLD_NAME, item.getHousehold().getName());
+                        request.getSession().setAttribute("isAlreadySent", false);
 
-						Cookie householdNameCookie = new Cookie(HOUSEHOLD_NAME, item.getHousehold().getName());
-						userIdCookie.setMaxAge(60*60*24);
-						response.addCookie(householdNameCookie);
+                        // save the session
+                        Cookie cookie = new Cookie(TOKEN, item.getReport().getToken());
+                        cookie.setMaxAge(60*60*24);
+                        response.addCookie(cookie);
 
-						request.getSession().setAttribute("isAlreadySent", false);
+                        Cookie userIdCookie = new Cookie(USER_ID, item.getUser().getUserId());
+                        userIdCookie.setMaxAge(60*60*24);
+                        response.addCookie(userIdCookie);
 
-						Report report = item.getReport();
-						user = item.getUser();
-						household  = item.getHousehold();
-						UserResponse obj = new UserResponse();
-						obj.setReport(report);
-						obj.setUser(user);
-						obj.setHousehold(household);
+                        Cookie householdNameCookie = new Cookie(HOUSEHOLD_NAME, item.getHousehold().getName());
+                        userIdCookie.setMaxAge(60*60*24);
+                        response.addCookie(householdNameCookie);
 
-						String responseStr = gson.toJson(obj);
+                        request.getSession().setAttribute("isAlreadySent", false);
 
-						writer = response.getWriter();
-						writer.write(responseStr);
-					}
-				}
+                        Report report = item.getReport();
+                        user = item.getUser();
+                        household  = item.getHousehold();
+                        UserResponse obj = new UserResponse();
+                        obj.setReport(report);
+                        obj.setUser(user);
+                        obj.setHousehold(household);
 
-				connection.close();
-			}
-		} else {
-			final String error = gson.toJson(results);
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			writer = response.getWriter();
-			writer.write(error);
-		}
-	}
+                        String responseStr = gson.toJson(obj);
+
+                        writer = response.getWriter();
+                        writer.write(responseStr);
+                    }
+                }
+
+                connection.close();
+            }
+        } else {
+            final String error = gson.toJson(results);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            writer = response.getWriter();
+            writer.write(error);
+        }
+    }
 }

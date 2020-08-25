@@ -34,10 +34,10 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
     @Override
     public int save(MoneyJar item) {
         String query = "INSERT INTO " + MONEY_JAR_TB_NAME + "(" +
-                MONEY_JAR_ID + "," + MONEY_JAR_NAME + "," + CATEGORY + "," +
+                MONEY_JAR_ID + "," + MONEY_EXPENSE_TYPE + "," + CATEGORY + "," +
                 TOTAL_AMOUNT + "," + CREATED_AT + "," + SCHEDULED_FOR + "," +
                 SCHEDULED_TYPE + "," + HOUSEHOLD_ID + "," + JAR_STATUS + ")" +
-                " VALUES (?,?,?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -55,6 +55,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
             preparedStatement.setString(6, item.getScheduledFor());
             preparedStatement.setString(7, item.getScheduleType());
             preparedStatement.setString(8, item.getHouseholdId());
+            preparedStatement.setBoolean(9, item.isJarStatus());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -82,7 +83,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
     @Override
     public int update(MoneyJar item) {
         String query = "UPDATE " + MONEY_JAR_TB_NAME +
-                " SET " + MONEY_JAR_NAME + "=?," +
+                " SET " + MONEY_EXPENSE_TYPE + "=?," +
                 CATEGORY + "=?," +
                 TOTAL_AMOUNT + "=?," +
                 CREATED_AT + "=?," +
@@ -157,7 +158,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
 
             while (resultSet.next()) {
                 envelope.setMoneyJarId(resultSet.getString(MONEY_JAR_ID));
-                envelope.setName(resultSet.getString(MONEY_JAR_NAME));
+                envelope.setName(resultSet.getString(MONEY_EXPENSE_TYPE));
                 envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
                 envelope.setCategory(resultSet.getString(CATEGORY));
                 envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));
@@ -214,7 +215,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
             while (resultSet.next()) {
                 MoneyJar envelope = new MoneyJar();
                 envelope.setMoneyJarId(resultSet.getString(MONEY_JAR_ID));
-                envelope.setName(resultSet.getString(MONEY_JAR_NAME));
+                envelope.setName(resultSet.getString(MONEY_EXPENSE_TYPE));
                 envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
                 envelope.setCategory(resultSet.getString(CATEGORY));
                 envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));

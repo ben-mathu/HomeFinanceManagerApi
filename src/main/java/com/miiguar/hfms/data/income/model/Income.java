@@ -31,10 +31,6 @@ public class Income {
     @Column(columnName = ACCOUNT_TYPE)
     private String accountType = "";
 
-    @SerializedName(INCOME_DESC)
-    @Column(columnName = INCOME_DESC, characterLength = 255)
-    private String incomeDesc = "";
-
     @SerializedName(USER_ID)
     @Column(columnName = USER_ID)
     private String userId = "";
@@ -81,13 +77,5 @@ public class Income {
 
     public void setIncomeId(String incomeId) {
         this.incomeId = incomeId;
-    }
-
-    public String getIncomeDesc() {
-        return incomeDesc;
-    }
-
-    public void setIncomeDesc(String incomeDesc) {
-        this.incomeDesc = incomeDesc;
     }
 }

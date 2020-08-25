@@ -96,9 +96,6 @@ public class Register extends BaseServlet {
             writer.write(jsonResp);
         } else {
 
-            // create a db
-//                createDb(user.getUsername());
-
             GenerateRandomString randomString = new GenerateRandomString(
                     12,
                     new SecureRandom(), GenerateRandomString.getAlphaNumeric()
@@ -159,32 +156,6 @@ public class Register extends BaseServlet {
             writer = resp.getWriter();
             writer.write(jsonResp);
         }
-//        } catch (SQLException e) {
-//            Log.e(TAG, "Error creating user", e);
-//
-//            report = new Report();
-//
-//            String msg = "";
-//            if (e.getMessage().contains(user.getUsername())) {
-//                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//
-//                msg = "User exists, please try another username";
-//            } else {
-//
-//                ConfigureApp configureApp = new ConfigureApp();
-//                Properties properties = configureApp.getProperties();
-//                String email = properties.getProperty("admin.email");
-//                msg = "An error has occurred, please contact the developer: " + email;
-//            }
-//
-//            report.setMessage(msg);
-//            UserResponse response = new UserResponse();
-//            response.setReport(report);
-//            String jsonResp = gson.toJson(response);
-//
-//            PrintWriter out = resp.getWriter();
-//            out.write(jsonResp);
-//        }
     }
 
     private void updateHouseholdStatus(String userId) {

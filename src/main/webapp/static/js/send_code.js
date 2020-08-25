@@ -17,8 +17,8 @@ function sendCode(isCodeSent){
         var request = getXmlHttpRequest();
 
         request.onreadystatechange = function () {
-            if (request.readyState == 4) {
-                if (request.status != 200) {
+            if (request.readyState === 4) {
+                if (request.status !== 200) {
                     var obj = JSON.parse(request.responseText);
                     document.getElementById("code-error").innerHTML = obj.message;
                     document.getElementById("code-sender").hidden = false;
@@ -29,7 +29,7 @@ function sendCode(isCodeSent){
                     document.getElementById("code-sender").hidden = true;
                 }
             }
-        }
+        };
 
         var email = "email=" + escape(document.getElementById("email").value);
         var data = email;

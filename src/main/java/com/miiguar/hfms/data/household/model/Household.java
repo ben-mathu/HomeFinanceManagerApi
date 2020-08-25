@@ -20,10 +20,6 @@ public class Household {
     @Column(columnName = HOUSEHOLD_NAME, unique = true, characterLength = 25)
     private String name = "";
 
-    @SerializedName(HOUSEHOLD_DESCRIPTION)
-    @Column(columnName = HOUSEHOLD_DESCRIPTION, characterLength = 255)
-    private String description = "";
-
     public String getId() {
         return id;
     }
@@ -38,13 +34,5 @@ public class Household {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

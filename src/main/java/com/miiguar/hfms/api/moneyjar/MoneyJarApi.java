@@ -229,44 +229,55 @@ public class MoneyJarApi extends BaseServlet {
         ArrayList<MoneyJarDto> jarDtoList = new ArrayList<>();
 
         // get household
+        Report report;
         UserHouseholdRel userHouseholdRel = userHouseholdDao.get(userId);
-        String householdId = userHouseholdRel.getHouseId();
+        if (userHouseholdRel != null) {
+            String householdId = userHouseholdRel.getHouseId();
+            
+            // get jars
+            List<MoneyJar> jars = jarDao.getAll(householdId);
 
-        // get jars
-        List<MoneyJar> jars = jarDao.getAll(householdId);
+            // loop through each jar to get grocery or expense related
+            for (MoneyJar jar : jars) {
+                MoneyJarDto jarDto = new MoneyJarDto();
+                jarDto.setJar(jar);
 
-        // loop through each jar to get grocery or expense related
-        for (MoneyJar jar : jars) {
-            MoneyJarDto jarDto = new MoneyJarDto();
-            jarDto.setJar(jar);
-
-            String jarId = jar.getMoneyJarId();
-            if (GROCERY_CATEGORY.equals(jar.getCategory())) {
-                List<Grocery> groceries = groceryDao.getAll(jarId);
-                jarDto.setGroceries(groceries);
-            } else {
-                Expense expenses = expenseDao.get(jarId);
-                jarDto.setExpense(expenses);
+                String jarId = jar.getMoneyJarId();
+                if (GROCERY_CATEGORY.equals(jar.getCategory())) {
+                    List<Grocery> groceries = groceryDao.getAll(jarId);
+                    jarDto.setGroceries(groceries);
+                } else {
+                    Expense expenses = expenseDao.get(jarId);
+                    jarDto.setExpense(expenses);
+                }
+                jarDtoList.add(jarDto);
             }
-            jarDtoList.add(jarDto);
-        }
 
-        jarsDto.setJarDto(jarDtoList);
+            jarsDto.setJarDto(jarDtoList);
 
-        String response;
-        Report report = new Report();
-        if (jarsDto.getJarDto().isEmpty()) {
-            report.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            report.setMessage("The items requested were not found");
+            String response;
+            report = new Report();
+            if (jarsDto.getJarDto().isEmpty()) {
+                report.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                report.setMessage("The items requested were not found");
 
+            } else {
+                report.setStatus(HttpServletResponse.SC_OK);
+                report.setMessage("Success");
+
+            }
+            jarsDto.setReport(report);
+            response = gson.toJson(jarsDto);
+            writer = resp.getWriter();
+            writer.write(response);
         } else {
-            report.setStatus(HttpServletResponse.SC_OK);
-            report.setMessage("Success");
-
+            report = new Report();
+            report.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            report.setMessage("Error retrieving jars");
+            resp.setStatus(report.getStatus());
+            
+            writer = resp.getWriter();
+            writer.write(gson.toJson(report)); 
         }
-        jarsDto.setReport(report);
-        response = gson.toJson(jarsDto);
-        writer = resp.getWriter();
-        writer.write(response);
     }
 }

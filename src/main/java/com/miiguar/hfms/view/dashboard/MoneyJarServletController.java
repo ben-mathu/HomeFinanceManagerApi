@@ -70,7 +70,7 @@ public class MoneyJarServletController extends BaseServlet {
         MoneyJar jar = new MoneyJar();
         jar.setMoneyJarId(req.getParameter(MONEY_JAR_ID));
         jar.setCategory(category);
-        jar.setName(req.getParameter(MONEY_JAR_NAME));
+        jar.setName(req.getParameter(MONEY_EXPENSE_TYPE));
         jar.setScheduledFor(req.getParameter(SCHEDULED_FOR));
         String amount = req.getParameter(TOTAL_AMOUNT);
         jar.setTotalAmount(Double.parseDouble(amount));

@@ -60,11 +60,11 @@ class PieChart {
                 li.style.listStyle = "none";
                 li.style.borderLeft = "20px solid " + this.colors[colorIndex % this.colors.length];
                 li.style.padding = "5px";
-                li.textContent = jar.jar_label;
+                li.textContent = jar.expense_type;
                 ul.appendChild(li);
                 colorIndex++;
-            })
-        }
+            });
+        };
     }
 }
 

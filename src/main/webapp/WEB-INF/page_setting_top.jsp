@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
     	<link rel="shortcut icon" type="image/ico" href="<%= request.getContextPath() %>/static/images/favicon.ico" />
-        <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/static/css/style.css?<%= (new java.util.Date()).toLocaleString()%>" />
+        <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/static/css/style.css?<%= (new java.util.Date()).toString() %>" />
     
         <title>${title}</title>
 

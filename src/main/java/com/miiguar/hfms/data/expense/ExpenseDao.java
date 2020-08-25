@@ -34,10 +34,9 @@ public class ExpenseDao implements Dao<Expense> {
     @Override
     public int save(Expense item) {
         String query = "INSERT INTO " + EXPENSES_TB_NAME + "(" +
-                EXPENSE_ID + "," + EXPENSE_NAME + "," + EXPENSE_DESCRIPTION + "," +
-                AMOUNT + "," + MONEY_JAR_ID + "," +
+                EXPENSE_ID + "," + AMOUNT + "," + MONEY_JAR_ID + "," +
                 PAYEE_NAME + "," + BUSINESS_NUMBER + "," + ACCOUNT_NUMBER + ")" +
-                " VALUES (?,?,?,?,?,?,?,?)";
+                " VALUES (?,?,?,?,?,?)";
 
         int affectedRows = 0;
         Connection conn = null;
@@ -48,13 +47,13 @@ public class ExpenseDao implements Dao<Expense> {
             insert = conn.prepareStatement(query);
 
             insert.setString(1, item.getExpenseId());
-            insert.setString(2, item.getName());
-            insert.setString(3, item.getDescription());
-            insert.setDouble(4, item.getAmount());
-            insert.setString(5, item.getJarId());
-            insert.setString(6, item.getPayee());
-            insert.setString(7, item.getBusinessNumber());
-            insert.setString(8, item.getAccountNumber());
+//            insert.setString(2, item.getName());
+//            insert.setString(3, item.getDescription());
+            insert.setDouble(2, item.getAmount());
+            insert.setString(3, item.getJarId());
+            insert.setString(4, item.getPayee());
+            insert.setString(5, item.getBusinessNumber());
+            insert.setString(6, item.getAccountNumber());
 
             affectedRows = insert.executeUpdate();
 
@@ -83,8 +82,7 @@ public class ExpenseDao implements Dao<Expense> {
     @Override
     public int update(Expense item) {
         String query = "UPDATE " + EXPENSES_TB_NAME +
-                " SET " + EXPENSE_NAME + "=?," +
-                EXPENSE_DESCRIPTION + "=?," +
+                " SET " +
                 AMOUNT + "=?," +
                 MONEY_JAR_ID + "=?," +
                 PAYEE_NAME + "=?," +
@@ -100,14 +98,14 @@ public class ExpenseDao implements Dao<Expense> {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             insert = conn.prepareStatement(query);
 
-            insert.setString(1, item.getName());
-            insert.setString(2, item.getDescription());
-            insert.setDouble(3, item.getAmount());
-            insert.setString(4, item.getJarId());
-            insert.setString(5, item.getPayee());
-            insert.setString(6, item.getBusinessNumber());
-            insert.setString(7, item.getAccountNumber());
-            insert.setString(8, item.getExpenseId());
+//            insert.setString(1, item.getName());
+//            insert.setString(2, item.getDescription());
+            insert.setDouble(1, item.getAmount());
+            insert.setString(2, item.getJarId());
+            insert.setString(3, item.getPayee());
+            insert.setString(4, item.getBusinessNumber());
+            insert.setString(5, item.getAccountNumber());
+            insert.setString(6, item.getExpenseId());
 
             affectedRows = insert.executeUpdate();
 
@@ -159,8 +157,8 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setExpenseId(resultSet.getString(EXPENSE_ID));
                 expense.setAmount(resultSet.getDouble(AMOUNT));
                 expense.setBusinessNumber(resultSet.getString(BUSINESS_NUMBER));
-                expense.setDescription(resultSet.getString(EXPENSE_DESCRIPTION));
-                expense.setName(resultSet.getString(EXPENSE_NAME));
+//                expense.setDescription(resultSet.getString(EXPENSE_DESCRIPTION));
+//                expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
                 expense.setAccountNumber(resultSet.getString(ACCOUNT_NUMBER));
                 expense.setJarId(resultSet.getString(MONEY_JAR_ID));
@@ -223,8 +221,8 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setExpenseId(resultSet.getString(EXPENSE_ID));
                 expense.setAmount(resultSet.getDouble(AMOUNT));
                 expense.setBusinessNumber(resultSet.getString(BUSINESS_NUMBER));
-                expense.setDescription(resultSet.getString(EXPENSE_DESCRIPTION));
-                expense.setName(resultSet.getString(EXPENSE_NAME));
+//                expense.setDescription(resultSet.getString(EXPENSE_DESCRIPTION));
+//                expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
                 expense.setAccountNumber(resultSet.getString(ACCOUNT_NUMBER));
                 expense.setJarId(resultSet.getString(MONEY_JAR_ID));

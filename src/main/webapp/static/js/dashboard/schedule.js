@@ -19,28 +19,28 @@ function configureSchedule() {
 
     btnAddTask = document.getElementById("addTasks");
     btnAddTask.onclick = function() {
-        var task = document.getElementById("scheduledTask") == null ? "" : document.getElementById("scheduledTask").value;
-        if (task == "") {
+        var task = document.getElementById("scheduledTask") === undefined ? "" : document.getElementById("scheduledTask").value;
+        if (task === "") {
             errorSection.innerHTML = "Fill in one task before adding another.";
         } else {
             addTaskFields();
         }
-    }
+    };
 
     var btnOpenScheduleModal = document.getElementById("btnOpenScheduleModal");
     btnOpenScheduleModal.onclick = function() {
         scheduleModal.style.display = "block";
-    }
+    };
     
     var btnAddSchedule = document.getElementById("addSchedule");
     btnAddSchedule.onclick = function() {
         scheduleTask();
-    }
+    };
 
     var btnCancelScheduleModal = document.getElementById("cancelScheduleModal");
     btnCancelScheduleModal.onclick = function() {
         scheduleModal.style.display = "none";
-    }
+    };
 }
 
 function addTaskFields() {
@@ -56,12 +56,12 @@ function addTaskFields() {
 function scheduleTask() {
     var request = getXmlHttpRequest();
     request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
                 
             }
         }
-    }
+    };
 
     var description = "schedule-description=" + escape(scheduleDescription.value);
     var time = "schedule-time=" + escape(scheduleHour.value);
@@ -70,8 +70,8 @@ function scheduleTask() {
     var tasks = [];
     var count = 0;
     for (let i = 0; i < scheduledTasksArr.length; i++) {
-        var task = scheduledTasksArr[i] == null ? "" : scheduledTasksArr[i].value;
-        if (task != null && task != "") {
+        var task = scheduledTasksArr[i] === undefined ? "" : scheduledTasksArr[i].value;
+        if (task !== undefined && task !== "") {
             tasks[count] = task;
             count++;
         }

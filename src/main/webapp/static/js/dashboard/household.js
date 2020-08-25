@@ -34,7 +34,7 @@ function setHouseholdId() {
             textOwnership = "You are a Member";
         }
         let ownership = document.createElement("span");
-        ownership.style = "color: #FEC800;"
+        ownership.style = "color: #FEC800;";
         ownership.innerHTML = textOwnership;
 
         let div = document.createElement("div");
@@ -61,20 +61,20 @@ function updateHousehold(incompleteKey) {
     var request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
                 delete incomplete[callback.key];
 
                 let len = Object.keys(incomplete).length;
 
                 if (len > 1) {
                     callback.onNext(callback);
-                } else if(len == 1) {
+                } else if(len === 1) {
                     callback.onDone(callback);
                 } else {
                     callback.onComplete();
                 }
             }
         }
-    }
+    };
 }

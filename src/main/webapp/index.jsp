@@ -12,7 +12,7 @@
                 var token = window.localStorage.getItem("token");
                 var data = "token=" + escape(token);
 
-                if (token != null) {
+                if (token !== undefined) {
                     if (token.length > 0) {
                         document.getElementById("nav-buttons").hidden = true;
                         document.getElementById("nav-dashboard").hidden = false;
@@ -51,8 +51,8 @@
         </div>
 
         <p class="footer text-muted text-center">
-            <code>twitter</code><a class="link" href="https://twitter.com/beniemathu">@beniemathu </a>
-            <code>github</code><a class="link" href="https://github.com/ben-mathu">@ben-mathu </a>
+            <code>Twitter</code><a class="link" href="https://twitter.com/beniemathu">@beniemathu </a>
+            <code>GitHub</code><a class="link" href="https://github.com/ben-mathu">@ben-mathu </a>
             2017-2019
         </p>
     </body>

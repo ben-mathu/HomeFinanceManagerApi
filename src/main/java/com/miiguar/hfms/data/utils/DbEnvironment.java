@@ -18,6 +18,7 @@ public class DbEnvironment {
     public static final String USERS_TB_NAME = "users";
     public static final String USER_ID = "user_id";
     public static final String USERNAME = "username";
+    public static final String MOB_NUMBER = "mob_number";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String IS_ADMIN = "is_admin";
@@ -108,7 +109,7 @@ public class DbEnvironment {
      */
     public static final String MONEY_JAR_TB_NAME = "money_jars";
     public static final String MONEY_JAR_ID = "jar_id";
-    public static final String MONEY_JAR_NAME = "jar_label";
+    public static final String MONEY_EXPENSE_TYPE = "expense_type";
     public static final String CATEGORY = "category";
     public static final String TOTAL_AMOUNT = "amount";
     // created at {type: string date}

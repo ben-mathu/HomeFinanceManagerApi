@@ -88,6 +88,7 @@ public class LoginServlet extends BaseServlet {
                     request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
                     request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
                     request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
+                    request.getSession().setAttribute(MOB_NUMBER, item.getUser().getMobNum());
                     request.getSession().setAttribute(TOKEN, item.getReport().getToken());
                     request.getSession().setAttribute("isAlreadySent", false);
 
