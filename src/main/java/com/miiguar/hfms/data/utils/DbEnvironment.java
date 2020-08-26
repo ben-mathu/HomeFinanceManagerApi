@@ -99,6 +99,7 @@ public class DbEnvironment {
     // Reference user_id from users table
     public static final String INCOME_STATUS = "income_status";
     public static final String JAR_STATUS = "jar_status";
+    public static final String PAYMENT_STATUS = "payment_status";
     public static final String HOUSEHOLD_STATUS = "household_status";
     public static final String BUDGET_STATUS = "budget_status";
     public static final String COMPLETE_AT = "completed_at";
@@ -126,7 +127,7 @@ public class DbEnvironment {
     public static final String EXPENSE_ID = "expense_id";
     public static final String EXPENSE_NAME = "expense_name";
     public static final String EXPENSE_DESCRIPTION = "expense_description";
-    // amount {type: double}
+    // amount
     // householdId  references households household_id
     // envelope id ref envelopes envelope id
     public static final String PAYEE_NAME = "payee_name";
@@ -149,6 +150,15 @@ public class DbEnvironment {
     public static final String RESULT_DESC = "result_description";
     public static final String CALLBACK_METADATA = "callback_metadata";
     public static final String TRANSACTION_STATUS = "transaction_status";
+    
+    public static final String TRANSACTION_ID = "transaction_id";
+    public static final String TRANSACTION_DESCRIPTION = "transaction_desc";
+    public static final String PAYMENT_DETAILS = "payment_details";
+    // amount
+    public static final String PAYMENT_TIMESTAMP = "payment_timestamp";
+    // created at timestamp
+    // jar_id reference jar table
+    public static final String FK_TRANSACTIONS_JAR_ID = "fk_transactions_jar_id_ref_jars";
 
     /**
      * Budget

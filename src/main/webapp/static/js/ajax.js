@@ -3,7 +3,7 @@ let householdFieldNames = {
     NAME: 'household_name',
     DESCRIPTION: 'description',
     ID: 'household_id'
-}
+};
 
 function getXmlHttpRequest() {
     var request;
@@ -139,7 +139,7 @@ function registerUser() {
                     document.getElementById("passwordError").innerHTML = obj.password_error;
                     document.getElementById("householdIdError").innerHTML = obj.household_id_error;
                     document.getElementById("progress").hidden = true;
-                } else if (request.status === 403) {
+                } else if (request.status === 409) {
 
                     var error = JSON.parse(request.responseText);
                     document.getElementById("result").innerHTML = error.message;

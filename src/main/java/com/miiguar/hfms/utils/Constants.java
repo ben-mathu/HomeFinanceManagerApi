@@ -4,6 +4,9 @@ package com.miiguar.hfms.utils;
  * @author bernard
  */
 public class Constants {
+    private Constants() {
+        throw new IllegalStateException("This class is a utility class it should be used this way");
+    }
     public static final String ISSUER = "miiguar";
 
     // Session keys
@@ -11,7 +14,7 @@ public class Constants {
     public static final String SUBJECT = "subject";
 
     /**
-     * Menu items and corresponding url
+     * Menu items and corresponding URL
      */
     public static final String MESSAGES = "Messages";
     public static final String URL_MESSAGES = "/dashboard/messages";

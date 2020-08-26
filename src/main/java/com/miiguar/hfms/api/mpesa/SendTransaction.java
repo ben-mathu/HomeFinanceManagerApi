@@ -93,9 +93,13 @@ public class SendTransaction extends BaseServlet {
         budget.setBudgetAmount(request.getAmount());
         budget.setBudgetId(rand.nextString());
 
+        // create transaction id
+        rand = new GenerateRandomString(12);
+        String tId = rand.nextString();
+        
         // Start server to listen for mpesa callbacks for this request
         ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(new SendTransactionRunnable(randomString));
+        service.execute(new SendTransactionRunnable(randomString, jar, tId));
 
         try {
             Thread.sleep(1000);
@@ -123,8 +127,12 @@ public class SendTransaction extends BaseServlet {
         if ("0".equals(response.getRespCode())) {
 
             Transaction transaction = new Transaction();
-            transaction.setMerchantReqId(response.getMerchantReqId());
-            transaction.setCheckoutReqId(response.getCheckoutReqId());
+            transaction.setId(tId);
+            transaction.setTransactionDesc(jar.getName());
+            transaction.setPaymentDetails(response.getCustomerMessage());
+            transaction.setAmount(jar.getTotalAmount());
+            transaction.setJarId(jar.getMoneyJarId());
+            transaction.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
 
             int affected = transactionDao.save(transaction);
             int budgetAffected = budgetDao.save(budget);
@@ -145,7 +153,6 @@ public class SendTransaction extends BaseServlet {
         report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         report.setMessage("Transaction was not successful, please contact administrator.");
 
-        resp.setStatus(report.getStatus());
         writer = resp.getWriter();
         writer.write(gson.toJson(report));
     }
@@ -157,7 +164,6 @@ public class SendTransaction extends BaseServlet {
             report.setStatus(HttpServletResponse.SC_ACCEPTED);
             report.setSubject(randomString);
 
-            httpServletResponse.setStatus(report.getStatus());
             writer = httpServletResponse.getWriter();
             writer.write(gson.toJson(report));
         } else {

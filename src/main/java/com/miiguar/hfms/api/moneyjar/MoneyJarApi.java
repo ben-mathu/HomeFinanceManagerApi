@@ -17,6 +17,7 @@ import com.miiguar.hfms.data.tablerelationships.UserHouseholdDao;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
+import com.miiguar.hfms.data.user.UserDao;
 import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
@@ -51,6 +52,7 @@ public class MoneyJarApi extends BaseServlet {
     private final GroceryDao groceryDao;
     private final ExpenseDao expenseDao;
     private final MoneyJarsDao jarDao;
+    private final UserDao userDao;
 
     private final GenerateRandomString randomString;
 
@@ -63,6 +65,7 @@ public class MoneyJarApi extends BaseServlet {
         groceryDao = new GroceryDao();
         expenseDao = new ExpenseDao();
         jarDao = new MoneyJarsDao();
+        userDao = new UserDao();
 
         randomString = new GenerateRandomString(
                 12,
@@ -81,6 +84,15 @@ public class MoneyJarApi extends BaseServlet {
 
         MoneyJarDto dto = gson.fromJson(requestStr, MoneyJarDto.class);
         MoneyJar jar = dto.getJar();
+        
+        if (dto.getUser() == null) {
+            String houseId = dto.getJar().getHouseholdId();
+            String userId = householdDao.getUserId(houseId);
+            
+            User user = userDao.get(userId);
+            
+            dto.setUser(user);
+        }
 
         if (!jar.getMoneyJarId().isEmpty())
             updateDatabase(dto, req, resp);
@@ -137,6 +149,11 @@ public class MoneyJarApi extends BaseServlet {
                 writer = resp.getWriter();
                 writer.write(responseStr);
             }
+        } else {
+            String responseStr = gson.toJson(dto);
+
+            writer = resp.getWriter();
+            writer.write(responseStr);
         }
     }
 
@@ -196,6 +213,11 @@ public class MoneyJarApi extends BaseServlet {
                 writer = resp.getWriter();
                 writer.write(responseStr);
             }
+        } else {
+            String responseStr = gson.toJson(dto);
+
+            writer = resp.getWriter();
+            writer.write(responseStr);
         }
     }
 

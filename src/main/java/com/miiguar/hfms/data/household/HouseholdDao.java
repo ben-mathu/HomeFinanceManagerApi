@@ -240,4 +240,53 @@ public class HouseholdDao implements Dao<Household> {
         }
         return householdId;
     }
+
+    public String getUserId(String houseId) {
+        String userId = "";
+        String query = "SELECT " + USER_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, houseId);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                userId = resultSet.getString(USER_ID);
+            }
+
+            resultSet.close();
+            resultSet = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        }catch (SQLException e) {
+            Log.e(TAG, "Error Processing household id", e);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (resultSet != null)
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return userId;
+    }
 }

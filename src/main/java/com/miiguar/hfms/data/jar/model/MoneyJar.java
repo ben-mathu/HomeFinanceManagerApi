@@ -54,7 +54,11 @@ public class MoneyJar {
 
     @SerializedName(JAR_STATUS)
     @Column(columnName = JAR_STATUS)
-    private boolean jarStatus;
+    private boolean jarStatus = false;
+    
+    @SerializedName(PAYMENT_STATUS)
+    @Column(columnName = PAYMENT_STATUS)
+    private boolean paymentStatus = false;
 
     public String getMoneyJarId() {
         return moneyJarId;
@@ -126,5 +130,13 @@ public class MoneyJar {
 
     public void setJarStatus(boolean jarStatus) {
         this.jarStatus = jarStatus;
+    }
+
+    public boolean isPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(boolean paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

@@ -29,6 +29,12 @@
     margin-left: 5px;
 }
 
+.notifications {
+    max-height: 180px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 .grocery-members-container {
     width: 100%;
 }
@@ -46,6 +52,12 @@
 .jar-item {
     margin-bottom: 10px;
     cursor: pointer;
+}
+
+.jar-list-container {
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .scheduled-interval {

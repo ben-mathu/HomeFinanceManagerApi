@@ -239,16 +239,19 @@ function activateTimer() {
         let jarDto = jars.getJar(key);
         let jar = jarDto.jar;
         let type = jar.expense_type;
-        (function(key, dayScheduled) {
+        (function(key, dayScheduled, jarStatus) {
             let today = new Date();
             let timeScheduled = new Date(dayScheduled);
-            if (timeScheduled.getTime() <= today.getTime()) {
+            if (timeScheduled.getTime() <= today.getTime() && !jarStatus) {
                 showNotificationDialog(key, jarDto);
+                return;
+            } else {
+                populateNotificationSection(key);
                 return;
             }
 
             window.setTimeout(arguments.callee, 1000, dayScheduled);
-        })(key, jar.scheduled_for);
+        })(key, jar.scheduled_for, jar.jar_status);
     });
 }
 
@@ -392,6 +395,40 @@ function sendJarRequest() {
     request.send();
 }
 
+/**
+ * sends request to API to add an item
+ * @param {JarDto} jarDto object containing items to be added
+ * @param {string} date date to modify the query
+ */
+function sendJarRequestJson(jarDto, date) {
+    var request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                var json = request.responseText;
+                let moneyJarDto = JSON.parse(json);
+                addJarToList(moneyJarDto);
+
+                jarModal.style.display = "none";
+            } else {
+                showError();
+            }
+        }
+    };
+
+    let dataSending = jarDto;
+    dataSending.jar.jar_id = "";
+    dataSending.jar.scheduled_for = date;
+    let data = JSON.stringify(dataSending);
+    let token = window.localStorage.getItem(userFields.TOKEN);
+
+    request.open("PUT", ctx + "/api/jars/add-money-jar", true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.APPLICATION_JSON);
+    request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
+    request.send(data);
+}
+
 function updateJar(callback) {
     var request = getXmlHttpRequest();
 
@@ -461,6 +498,41 @@ function updateMoneyJar(jarId) {
 }
 
 /**
+ * updates the backend by JSON
+ * @param {type} jarId identifies the jar
+ */
+function updateMoneyJarJson(jarId) {
+
+    // Update remote record
+    let request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                
+                let json = request.responseText;
+                let moneyJarDto = JSON.parse(json);
+                addJarToList(moneyJarDto);
+            } else {
+                showError();
+            }
+        }
+    };
+
+    let jarDto = jars.getJar(jarId);
+    if (jarDto.jar.jar_id === '') {
+        jarDto.jar.jar_id = jarId;
+    }
+    let data = JSON.stringify(jars.getJar(jarId));
+    let token = window.localStorage.getItem(userFields.TOKEN);
+
+    request.open("PUT", ctx + "/api/jars/update-money-jar", true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.APPLICATION_JSON);
+    request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
+    request.send(data);
+}
+
+/**
  * Add the item added by the user to aa global list variable
  * @param {string} moneyJarDto contains a list of jars with elements
  */
@@ -477,7 +549,11 @@ function addJarToList(moneyJarDto) {
     if (afterLen > beforeLen) {
         setJars(jar.jar_id);
     }
-
+    
+    emptyExpenseList.hidden = true;
+    
+    let values = Object.values(jars.getJarList());
+    drawPieChart(values);
 }
 
 /**

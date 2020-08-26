@@ -134,12 +134,13 @@ public class RegistrationServlet extends BaseServlet {
                     streamReader = connection.getReader(params, REGISTRATION + "?joinHousehold=false", "POST");
                 }
 
-                String line = "";
-                UserResponse item = null;
+                String line;
+                StringBuilder builder = new StringBuilder();
                 while((line = streamReader.readLine()) != null) {
-                    item = gson.fromJson(line, UserResponse.class);
+                    builder.append(line);
                 }
 
+                UserResponse item = gson.fromJson(builder.toString(), UserResponse.class);
                 if (item != null) {
                     if (item.getReport().getStatus() != 200) {
                         String jsonStr = gson.toJson(item.getReport());

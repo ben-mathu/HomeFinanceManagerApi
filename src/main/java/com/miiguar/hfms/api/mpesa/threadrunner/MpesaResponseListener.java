@@ -6,6 +6,9 @@ import com.miiguar.hfms.data.daraja.callback.CallbackMetadata;
 import com.miiguar.hfms.data.daraja.callback.CallbackResponse;
 import com.miiguar.hfms.data.daraja.callback.StkCallback;
 import com.miiguar.hfms.data.daraja.models.Transaction;
+import com.miiguar.hfms.data.jar.MoneyJarsDao;
+import com.miiguar.hfms.data.jar.model.MoneyJar;
+import com.miiguar.hfms.data.status.Report;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -17,6 +20,18 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 
 import static com.miiguar.hfms.data.utils.URL.*;
+import com.miiguar.hfms.utils.Constants;
+import com.miiguar.hfms.utils.Log;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 
 /**
  * @author bernard
@@ -25,22 +40,30 @@ public class MpesaResponseListener implements StopServerListener {
     private HttpServer server;
     public static final String TAG = MpesaResponseListener.class.getSimpleName();
     private final String randomString;
+    private final MoneyJar jar;
+    private final String transactionId;
 
-    public MpesaResponseListener(String randomString) {
+    public MpesaResponseListener(String randomString, MoneyJar jar, String transactionId) {
         this.randomString = randomString;
+        this.jar = jar;
+        this.transactionId = transactionId;
+        
+        // start the server
         try {
             int port = 8000;
 
             server = HttpServer.create(new InetSocketAddress(port), 0);
 
-            server.createContext(API + LNMO_CALLBACK_URL + "/" + randomString, new ConfirmHandler(this));
-            server.setExecutor(null);
+            server.createContext(API + LNMO_CALLBACK_URL + "/" + randomString, new ConfirmHandler(this, jar, randomString, transactionId));
+            
+            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+            server.setExecutor(threadPoolExecutor);
 
             // start the server
             server.start();
-            System.out.println("Server started");
+            Log.d(TAG, "Server started");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error: ", e);
         }
     }
 
@@ -53,15 +76,24 @@ public class MpesaResponseListener implements StopServerListener {
 
         private StopServerListener listener;
         private final TransactionDao transactionDao;
+        private final MoneyJar jar;
+        private final String randomString;
+        private final MoneyJarsDao moneyJarsDao;
+        private final String transactionId;
 
-        public ConfirmHandler(StopServerListener listener) {
+        public ConfirmHandler(StopServerListener listener, MoneyJar jar, String randomString, String transactionId) {
             this.listener = listener;
             this.transactionDao = new TransactionDao();
+            this.jar = jar;
+            this.randomString = randomString;
+            
+            moneyJarsDao = new MoneyJarsDao();
+            this.transactionId = transactionId;
         }
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
-            System.out.println("Request received.");
+            Log.d(TAG, "Request received.");
 
             BufferedReader br = new BufferedReader(new InputStreamReader(httpExchange.getRequestBody(), StandardCharsets.UTF_8));
 
@@ -77,32 +109,60 @@ public class MpesaResponseListener implements StopServerListener {
 
             if (stkCallback.getMetadata() == null
                     && !stkCallback.getResultDesc().isEmpty()) {
-                // TODO: Notify the user of cancelled transaction
+                
+                final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url/" + randomString);
+                final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                
+                try (OutputStream writer = conn.getOutputStream()) {
+                    Report report = new Report();
+                    report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    report.setMessage(stkCallback.getResultDesc());
+                    String responseBody = gson.toJson(report);
+                    
+                    writer.write(responseBody.getBytes());
+                }
+                
                 listener.stopListening();
                 return;
             }
 
             // get transaction already set in the database
-            Transaction transaction = transactionDao.get(stkCallback.getCheckoutRequestID());
+            Transaction transaction = transactionDao.get(transactionId);
 
             if (transaction != null) {
-                transaction.setResultCode(stkCallback.getResultCode());
-                transaction.setResultDesc(stkCallback.getResultDesc());
+                transaction.setPaymentStatus(true);
+                transaction.setPaymentTimestamp(new SimpleDateFormat(Constants.DATE_FORMAT).format(new Date().getTime()));
 
                 // Serialize the callback metadata
                 CallbackMetadata metadata = stkCallback.getMetadata();
                 String metadataStr = gson.toJson(metadata);
 
-                transaction.setCallbackMetadata(metadataStr);
-                transaction.setTransactionComplete(true);
-
                 // save the transaction to database
                 transactionDao.save(transaction);
+                
+                jar.setPaymentStatus(true);
+                moneyJarsDao.update(jar);
 
-                // TODO: Notify the user that the transaction was successful
+                final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url/" + randomString);
+                final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conn.setRequestMethod("POST");
+                conn.setDoOutput(true);
+                
+                try (OutputStream writer = conn.getOutputStream()) {
+                    Report report = new Report();
+                    report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    report.setMessage(stkCallback.getResultDesc());
+                    String responseBody = gson.toJson(report);
+                    
+                    writer.write(responseBody.getBytes());
+                }
             }
 
-            System.out.println("Resp: " + callbackResponse.toString());
+            Log.d(TAG, "Resp: " + callbackResponse.toString());
 
             listener.stopListening();
         }
@@ -113,6 +173,6 @@ public class MpesaResponseListener implements StopServerListener {
     }
 
     public static void main(String[] args) {
-        MpesaResponseListener listener = new MpesaResponseListener("");
+        new MpesaResponseListener("", null, "");
     }
 }

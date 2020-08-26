@@ -223,6 +223,11 @@ window.onload = function() {
 //    configureBudget();
 };
 
+//window.setInterval(function() {
+//    getUserDetails();
+//    getAllMoneyJars();
+//}, 5000);
+
 /**
  * set income when reeived.
  * 

@@ -126,6 +126,7 @@ function showNotificationDialog(jarId, jarDto) {
     btnExpandLiabilities = templateClone.querySelector("#expandButton" + count);
     btnExpandLiabilities.onclick = function (event) {
         let elementIndex = event.target.id[event.target.id.length - 1];
+        liabilitySection = document.getElementById("liabilitySection" + elementIndex);
         
         if (isExpanded) {
             liabilitySection.hidden = true;
@@ -180,6 +181,43 @@ let notifications = {
 let notificationCount = 0;
 function addNotification(jarId) {
     let jarDto = jars.getJar(jarId);
+    let jar = jarDto.jar;
+    
+    populateNotificationSection(jarId);
+    
+    // update date depending on schedule
+    let date;
+    if (jar.scheduled_type === scheduleType.DAILY) {
+        date = new Date().addDays()(jar.scheduled_for, 1);
+    } else if (jar.scheduled_type === scheduleType.WEEKLY) {
+        date = new Date().addDays(jar.scheduled_for, 7);
+    } else if (jar.scheduled_type === scheduleType.MONTHLY) {
+        date = new Date().addMonths(jar.scheduled_for, 1);
+    } else if (jar.scheduled_type === scheduleType.SCHEDULED) {
+        date = new Date(jar.scheduled_for);
+    }
+    
+//    format date
+    if (date !== undefined) {
+        const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false});
+        const [{ value: month },,{ value: day },,{ value: year },,{value: hour},,{value: minute}] = dateTimeFormat .formatToParts(date );
+        
+        let dateStr = `${year}-${month}-${day} ${hour}:${minute}`;
+        sendJarRequestJson(jarDto, dateStr);
+    }
+    
+    jar.jar_status = true;
+    jarDto.jar = jar;
+    jars.setJar(jarId, jarDto);
+    updateMoneyJarJson(jarId);
+}
+
+/**
+ * update the notification section
+ * @param {string} jarId identifies a jar object
+ */
+function populateNotificationSection(jarId) {
+    let jarDto = jars.getJar(jarId);
     
     // create a unique id for notification
     let dateNow = Date.now();
@@ -196,9 +234,33 @@ function addNotification(jarId) {
     let notificationMessage = templateClone.querySelector("#notificationMessage" + notificationCount);
     notificationMessage.innerHTML = jar.category + " Amount: " + jar.amount;
     
-    jarId += dateNow;
-    notifications.setNotification(jarId, jarDto, templateClone);
+    let id = jarId + "-" + dateNow;
+    notifications.setNotification(id, jarDto, templateClone);
 }
+
+Date.prototype.addHours = function(scheduled, hours) {
+    let date = new Date(scheduled);
+    date.setHours(date.getHours() + hours);
+    return date;
+};
+
+Date.prototype.addDays = function(scheduled, days) {
+    let date = new Date(scheduled);
+    date.setDate(date.getDate() + days);
+    return date;
+};
+
+Date.prototype.addWeeks = function(scheduled, weeks) {
+    let date = new Date(scheduled);
+    date.setDate(date.getDate() + weeks * 7);
+    return date;
+};
+
+Date.prototype.addMonths = function(scheduled, months) {
+    let date = new Date(scheduled);
+    date.setMonth(date.getMonth() + months);
+    return date;
+};
 
 /**
  * Send a transaction to Mpesa

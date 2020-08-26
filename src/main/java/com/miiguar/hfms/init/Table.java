@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Defines a table and its attributes, e.g table name
+ * or constraint
  * @author bernard
  */
 @Target({ElementType.TYPE})

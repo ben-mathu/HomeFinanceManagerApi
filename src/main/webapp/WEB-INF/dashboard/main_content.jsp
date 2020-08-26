@@ -5,7 +5,7 @@
             <h4>Chart</h4>
         </div>
         <div class="chat-container rounded-corner shadow-1pt subsection-background" >
-            <div id="notificationContainer" class="notifications" >
+            <div id="notificationContainer" class="notifications">
                 <%@ include file = "../template/notification.jsp" %>
             </div>
         </div>

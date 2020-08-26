@@ -6,81 +6,112 @@ import com.miiguar.hfms.init.PrimaryKey;
 import com.miiguar.hfms.init.Table;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
+import com.miiguar.hfms.init.Constraint;
 
 /**
  * @author bernard
  */
-@Table(tableName = TRANSACTION_TB_NAME)
+@Table(tableName = TRANSACTION_TB_NAME,
+        constraint = {@Constraint(
+                name = FK_TRANSACTIONS_JAR_ID,
+                columnName = MONEY_JAR_ID,
+                tableName = MONEY_JAR_TB_NAME
+        )}
+)
 public class Transaction {
-    @SerializedName(CHECKOUT_REQ_ID)
-    @PrimaryKey(columnName = CHECKOUT_REQ_ID, characterLength = 45)
-    private String checkoutReqId = "";
+    @SerializedName(TRANSACTION_ID)
+    @PrimaryKey(columnName = TRANSACTION_ID)
+    private String id;
+    
+    @SerializedName(TRANSACTION_DESCRIPTION)
+    @Column(columnName = TRANSACTION_DESCRIPTION)
+    private String transactionDesc;
+    
+    @SerializedName(PAYMENT_DETAILS)
+    @Column(columnName = PAYMENT_DETAILS, characterLength = 255, notNull = false)
+    private String paymentDetails;
+    
+    @SerializedName(AMOUNT)
+    @Column(columnName = AMOUNT)
+    private Double amount;
+    
+    @SerializedName(PAYMENT_STATUS)
+    @Column(columnName = PAYMENT_STATUS)
+    private boolean paymentStatus = false;
+    
+    @SerializedName(MONEY_JAR_ID)
+    @Column(columnName = MONEY_JAR_ID)
+    private String jarId;
+    
+    @SerializedName(PAYMENT_TIMESTAMP)
+    @Column(columnName = PAYMENT_TIMESTAMP, characterLength = 45)
+    private String paymentTimestamp;
+    
+    @SerializedName(CREATED_AT)
+    @Column(columnName = CREATED_AT, characterLength = 45)
+    private String createdAt;
 
-    @SerializedName(MERCHANT_REQUEST_ID)
-    @Column(columnName = MERCHANT_REQUEST_ID, characterLength = 45, unique = true, notNull = false)
-    private String merchantReqId;
-
-    @SerializedName(RESULT_CODE)
-    @Column(columnName = RESULT_CODE, notNull = false)
-    private String resultCode;
-
-    @SerializedName(RESULT_DESC)
-    @Column(columnName = RESULT_DESC, characterLength = 255, notNull = false)
-    private String resultDesc;
-
-    @SerializedName(CALLBACK_METADATA)
-    @Column(columnName = CALLBACK_METADATA, characterLength = 1024, notNull = false)
-    private String callbackMetadata;
-
-    @SerializedName(TRANSACTION_STATUS)
-    @Column(columnName = TRANSACTION_STATUS, characterLength = 1, notNull = false)
-    private boolean transactionComplete = false;
-
-    public String getMerchantReqId() {
-        return merchantReqId;
+    public String getId() {
+        return id;
     }
 
-    public void setMerchantReqId(String merchantReqId) {
-        this.merchantReqId = merchantReqId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getCheckoutReqId() {
-        return checkoutReqId;
+    public void setTransactionDesc(String transactionDesc) {
+        this.transactionDesc = transactionDesc;
     }
 
-    public void setCheckoutReqId(String checkoutReqId) {
-        this.checkoutReqId = checkoutReqId;
+    public String getTransactionDesc() {
+        return transactionDesc;
     }
 
-    public String getResultCode() {
-        return resultCode;
+    public void setPaymentDetails(String paymentDetails) {
+        this.paymentDetails = paymentDetails;
     }
 
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
+    public String getPaymentDetails() {
+        return paymentDetails;
     }
 
-    public String getResultDesc() {
-        return resultDesc;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
-    public void setResultDesc(String resultDesc) {
-        this.resultDesc = resultDesc;
+    public Double getAmount() {
+        return amount;
     }
 
-    public String getCallbackMetadata() {
-        return callbackMetadata;
+    public void setPaymentStatus(boolean paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
-    public void setCallbackMetadata(String callbackMetadata) {
-        this.callbackMetadata = callbackMetadata;
+    public boolean isPaymentStatus() {
+        return paymentStatus;
     }
 
-    public boolean isTransactionComplete() {
-        return transactionComplete;
+    public void setJarId(String jarId) {
+        this.jarId = jarId;
     }
 
-    public void setTransactionComplete(boolean transactionComplete) {
-        this.transactionComplete = transactionComplete;
+    public String getJarId() {
+        return jarId;
+    }
+
+    public void setPaymentTimestamp(String paymentTimestamp) {
+        this.paymentTimestamp = paymentTimestamp;
+    }
+
+    public String getPaymentTimestamp() {
+        return paymentTimestamp;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
     }
 }

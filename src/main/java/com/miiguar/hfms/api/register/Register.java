@@ -76,7 +76,6 @@ public class Register extends BaseServlet {
             response.setReport(report);
 
             String jsonResp = gson.toJson(response);
-            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             writer = resp.getWriter();
             writer.write(jsonResp);
             return;
@@ -85,13 +84,12 @@ public class Register extends BaseServlet {
         if (isUserExists(user.getUsername())) {
             report = new Report();
             report.setMessage("username already in use");
-            report.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            report.setStatus(HttpServletResponse.SC_CONFLICT);
 
             UserResponse response = new UserResponse();
             response.setReport(report);
             String jsonResp = gson.toJson(response);
 
-            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             writer = resp.getWriter();
             writer.write(jsonResp);
         } else {

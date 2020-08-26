@@ -90,7 +90,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
                 SCHEDULED_FOR + "=?," +
                 SCHEDULED_TYPE + "=?," +
                 HOUSEHOLD_ID + "=?," +
-                JAR_STATUS + "=?," +
+                JAR_STATUS + "=?" +
                 " WHERE " + MONEY_JAR_ID + "=?";
         int affectedRows = 0;
 
@@ -218,6 +218,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
                 envelope.setName(resultSet.getString(MONEY_EXPENSE_TYPE));
                 envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
                 envelope.setCategory(resultSet.getString(CATEGORY));
+                envelope.setJarStatus(resultSet.getBoolean(JAR_STATUS));
                 envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));
                 envelope.setScheduleType(resultSet.getString(SCHEDULED_TYPE));
                 envelope.setHouseholdId(resultSet.getString(HOUSEHOLD_ID));

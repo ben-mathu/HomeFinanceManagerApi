@@ -55,7 +55,7 @@ public class Application implements IntervalChangeListener {
 
     public static void main(String[] args) {
         logger = Logger.getRootLogger();
-        BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%d{ABSOLUTE} [%t] %p %c %x - %m%n")));
+        BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%d{ABSOLUTE} [%t] %p %c %x - %m%n\n")));
 
         Application main = new Application();
 
@@ -98,7 +98,9 @@ public class Application implements IntervalChangeListener {
             conn.close();
             conn = null;
         } catch (SQLException e) {
-            Log.d(TAG, "Username already exists: " + prop.getProperty("db.username"));
+            Log.d(TAG, "Username already exists: "
+                    + prop.getProperty("db.username") + "\n"
+                    + e.getMessage() + "\n");
         } finally {
             if (conn != null) {
                 try {
@@ -130,7 +132,9 @@ public class Application implements IntervalChangeListener {
             conn.close();
             conn = null;
         } catch (SQLException e) {
-            Log.d(TAG, "Database already exists. DbName:" + prop.getProperty("db.main_db"));
+            Log.d(TAG, "Database already exists. DbName: "
+                    + prop.getProperty("db.main_db") + "\n"
+                    + e.getMessage());
         } finally {
             if (conn != null) {
                 try {
@@ -207,7 +211,9 @@ public class Application implements IntervalChangeListener {
                 conn.close();
                 conn = null;
             } catch (SQLException throwable) {
-                Log.e(TAG, "Error create tables: ", throwable);
+                Log.d(TAG, "Error create tables: "
+                        + str.toString() + "\n"
+                        + throwable.getMessage());
             } finally {
                 if (conn != null) {
                     try {
@@ -249,7 +255,9 @@ public class Application implements IntervalChangeListener {
                     conn.close();
                     conn = null;
                 } catch (SQLException throwable) {
-                    Log.d(TAG, "Error creating constraints: " + str.toString());
+                    Log.d(TAG, "Error creating constraints: "
+                            + str.toString() + "\n"
+                            + throwable.getMessage());
                 } finally {
                     if (conn != null) {
                         try { conn.close(); conn = null; } catch (SQLException throwable) { /* Intentionally blank. */ }
