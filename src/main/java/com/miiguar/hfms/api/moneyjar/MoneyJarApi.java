@@ -78,6 +78,25 @@ public class MoneyJarApi extends BaseServlet {
     }
 
     @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String jarId = req.getParameter(MONEY_JAR_ID);
+        
+        MoneyJar jar = new MoneyJar();
+        jar.setMoneyJarId(jarId);
+        int affected = jarDao.delete(jar);
+        
+        if (affected > 0) {
+            Report report = new Report();
+            report.setMessage("Expense item was successfully deleted.");
+            report.setStatus(HttpServletResponse.SC_OK);
+            
+            resp.setStatus(report.getStatus());
+            writer = resp.getWriter();
+            writer.write(gson.toJson(report));
+        }
+    }
+
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String requestStr = BufferRequestReader.bufferRequest(req);

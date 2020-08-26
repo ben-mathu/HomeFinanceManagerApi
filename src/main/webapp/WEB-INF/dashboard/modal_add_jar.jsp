@@ -5,10 +5,6 @@
             <h4 class="modal-title">Add Expenses</h4>
             <p id="jarModalError" class="error-text"></p>
             <div class="jar-container jar-elements" >
-                <%-- name --%>
-<!--                <div >
-                    <input id="jarLabel" class="input-style" type="text" name="name" placeholder="Money Jar Label">
-                </div>-->
                 <div>
                     <label for="#expenseType">Expense Type</label></br>
                     <select id="expenseType" class="select-style">
@@ -68,36 +64,15 @@
                     <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
                 </div>
                 <div id="expense" class="expense-container">
-<!--                    <div>
-                        <input id="expenseName" class="input-style" type="text" name="expense_name" placeholder="Expense Name" />
-                    </div>
-                    <div>
-                        <input id="expenseDesc" class="input-style" type="text" name="expense_description" placeholder="Description" />
-                    </div>-->
                     <div>
                         <input id="expenseAmount" class="input-style" type="number" name="expense_amount" placeholder="300" />
                     </div>
-<!--                    <div>
-                        <input id="payeeName" class="input-style" type="text" name="payee-name" placeholder="Payee Name" />
-                    </div>-->
                     <div>
                         <label for="#payeeName">Payee Name</label></br>
                         <select id="payeeName" class="select-style">
                             <option value="--Select Expense Type--">--Select Expense Type--</option>
                         </select>
                     </div>
-<!--                    <div class="radio-container">
-                        <input id="personal" class="radio-style" type="radio" name="payee_entity" value="Personal" />
-                        <label for="#personal">Personal Expense</label>
-                    </div>
-                    <div class="radio-container" >
-                        <input id="householdExpense" class="radio-style" type="radio" name="payee_entity" value="Household" />
-                        <label for="#householdExpense">Household Expense</label>
-                    </div>
-                    <div class="radio-container" >
-                        <input id="employee" class="radio-style" type="radio" name="payee_entity" value="Employee" />
-                        <label for="#employee">Employee</label>
-                    </div>-->
                     <div id="businessNumber">
                         <input id="payeeBusinessNumber" class="input-style" type="text" name="business_number" placeholder="Business Number (Optional)" />
                     </div>
@@ -106,20 +81,14 @@
                     </div>
                     <div id="expenseContainer" >
                         <%@ include file = "../template/expense.jsp" %>
-                        
-<!--                        <div>
-                            <input id="addExpense" class="btn2" type="button" value="Submit" />
-                            <input id="closeExpenseModal" class="btn4-caution" type="button" value="Cancel">
-                        </div>-->
                     </div>
-                    <%-- <input id="btnOpenExpenseModal" class="btn2" type="button" value="Add Expense Details">
-                    <input id="btnEditExpenseModal" class="btn2" type="button" value="Edit Expense Details" hidden> --%>
                 </div>
             </div>
         </div>
         <div class="btn-submit">
-            <input id="btnSaveJar" class="btn2 btn-right" type="button" value="Submit">
+            <input id="btnSaveJar" class="btn2" type="button" value="Submit">
             <input id="cancelJarModal" class="btn4-caution" type="button" value="Cancel">
+            <input id="btnDeleteExpense" class="btn3-warn btn-right" type="button" value="Delete" hidden/>
         </div>
     </div>
 </div>

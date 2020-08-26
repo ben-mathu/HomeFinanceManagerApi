@@ -104,6 +104,12 @@
     display: flex;
 }
 
+.legends-for-piechart {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 .budget-btn-container {
     display: block;
 }

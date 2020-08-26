@@ -31,12 +31,13 @@ const expenseTypes = {
 
 let jars = {
     moneyJarList: {},
-    moneyJarListListener: function(val) {
-        
-    },
+    moneyJarListListener: function(val) {},
     setJar: function(id, val) {
         this.moneyJarList[id] = val;
         this.moneyJarListListener(val);
+    },
+    deleteJar: function(id) {
+        delete this.moneyJarList[id];
     },
     getJar: function(val) {
         return this.moneyJarList[val];
@@ -210,7 +211,19 @@ function getAllMoneyJars() {
 
                     jars.setJar(jar.jar_id, moneyJarDto);
                 }
-
+                
+//                reload canvas
+//                jarsCanvas = document.getElementById("jarsCanvas");
+//                document.removeChild(jarsCanvas);
+//                
+//                jarsCanvas = document.createElement("canvas");
+//                jarsCanvas.id = "jarsCanvas";
+//                
+//                jarsCanvas.width = 300;
+//                jarsCanvas.height = 300;
+                
+                jarList.innerHTML = "";
+                jarCount = 0;
                 setJars("");
 
                 let values = Object.values(jars.getJarList());
@@ -283,7 +296,17 @@ function openJarModal(callback) {
     };
 }
 
+/**
+ * Open expense dialog box
+ * @param {type} jarId allows users delete or update the expense
+ */
+let btnDeleteExpense;
 function openJarModalForEdit(jarId) {
+    btnDeleteExpense = document.getElementById("btnDeleteExpense");
+    btnDeleteExpense.hidden = false;
+    btnDeleteExpense.addEventListener("click", function(event) {
+        deleteExpense(jarId);
+    });
 
     moneyJarIdModal.value = jarId;
     
@@ -341,6 +364,41 @@ function openJarModalForEdit(jarId) {
     btnSubmitJar.onclick = function() {
         updateMoneyJar(jarId);
     };
+    
+    cancelJarModal.addEventListener("click", function (event) {
+        btnDeleteExpense.hidden = true;
+        jarModal.style.display = "none";
+    });
+}
+
+/**
+ * Delete expense from backend.
+ * @param {type} jarId identifies the expense
+ */
+function deleteExpense(jarId) {
+    var request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                jars.deleteJar(jarId);
+
+                jarModal.style.display = "none";
+                
+                getAllMoneyJars();
+            } else {
+                showError();
+            }
+        }
+    };
+
+    let token = window.localStorage.getItem(userFields.TOKEN);
+    let data = jarFields.JAR_ID + "=" + jarId;
+
+    request.open("DELETE", ctx + "/api/jars/delete-money-jar?" + data, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.APPLICATION_JSON);
+    request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
+    request.send();
 }
 
 /**
@@ -575,9 +633,51 @@ function setJars(jarId) {
         
         let jarDto = jars.getJar(jarId);
         let jar = jarDto.jar;
-        updateJarTable(jar);
+        addToJarTable(jar);
     }
     // update the table with new item
+}
+
+/**
+ * reload the jar table with the name of the jar and scheduled date
+ * @param {Jar} jar contains all items of the jar
+ * @param {Integer} index represents the row to update
+ */
+let jarCount = 0;
+function updateJarTable(jar) {
+    let clone = jarTemplate.content.cloneNode(true);
+
+    clone.querySelector("#jarId").id += jarCount;
+    let idTemplate = clone.querySelector("#jarId" + jarCount);
+    idTemplate.value = jar.jar_id;
+    
+    clone.querySelector("#expType").id += jarCount;
+    let type = clone.querySelector("#expType" + jarCount);
+    type.textContent = jar.expense_type;
+
+    clone.querySelector("#scheduleInterval").id += jarCount;
+    let interval = clone.querySelector("#scheduleInterval" + jarCount);
+    interval.textContent = jar.scheduled_type;
+
+    clone.querySelector("#scheduleDate").id += jarCount;
+    let jarDate = clone.querySelector("#scheduleDate" + jarCount);
+    jarDate.textContent = jar.scheduled_for;
+
+    clone.querySelector("#jarAmount").id += jarCount;
+    let amount = clone.querySelector("#jarAmount" + jarCount);
+    amount.textContent = jar.amount;
+
+    clone.querySelector("#jarItem").id += jarCount;
+    let jarBudgetItem = clone.querySelector("#jarItem" + jarCount);
+    jarBudgetItem.addEventListener("click", function(event) {
+        let idIndex = event.target.id[event.target.id.length - 1];
+        let jarId = document.getElementById("jarId" + idIndex);
+        openJarModalForEdit(jarId.value);
+    });
+
+    jarList.appendChild(clone);
+
+    jarCount++;
 }
 
 /**
@@ -585,8 +685,7 @@ function setJars(jarId) {
  * @param {Jar} jar contains all items of the jar
  * @param {Integer} index represents the row to update
  */
-let jarCount = 0;
-function updateJarTable(jar) {
+function addToJarTable(jar) {
     let clone = jarTemplate.content.cloneNode(true);
 
     clone.querySelector("#jarId").id += jarCount;

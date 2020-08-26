@@ -32,7 +32,7 @@
                 </div>
                 <div class="jars-pie-chart" >
                     <canvas id="jarsCanvas"></canvas>
-                    <legend for="jarsCanvas"></legend>
+                    <legend class="legends-for-piechart" for="jarsCanvas"></legend>
                 </div>
             </div>
 

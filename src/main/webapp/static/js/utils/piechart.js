@@ -52,6 +52,7 @@ class PieChart {
 
             let legend = document.querySelector("legend[for='jarsCanvas']");
             let ul = document.createElement("ul");
+            legend.innerHTML = "";
             legend.appendChild(ul);
             colorIndex = 0;
             this.jars.forEach(jar => {

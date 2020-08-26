@@ -3,7 +3,7 @@
 }
 
 .btn-right {
-    right: 0%;
+    float: right;
 }
 
 .select-style {

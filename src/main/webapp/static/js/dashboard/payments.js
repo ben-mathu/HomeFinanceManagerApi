@@ -50,8 +50,7 @@ function configurePayments() {
     paymentTemplate = document.getElementById("paymentTemplate").content;
     notificationTemplate = document.getElementById("notificationDetails").content;
 
-    notifications.registerLister(function(val, clone) {
-        window.localStorage.setItem(val, JSON.stringify(notifications.getAll));
+    notifications.registerListener(function(val, clone) {
 
         let notificationContainer = document.getElementById("notificationContainer");
         notificationContainer.appendChild(clone);
@@ -168,7 +167,7 @@ let notifications = {
     getAll: function() {
         return this.notificationList;
     },
-    registerLister: function(listener) {
+    registerListener: function(listener) {
         this.notificationAddListener = listener;
     }
 };
@@ -225,6 +224,10 @@ function populateNotificationSection(jarId) {
     let jar = jarDto.jar;
 
     let templateClone = notificationTemplate.cloneNode(true);
+    
+    templateClone.querySelector("#notificationId").id += notificationCount;
+    let notificationId = templateClone.querySelector("#notificationId" + notificationCount);
+    notificationId.value = jarId;
 
     templateClone.querySelector("#notificationTitle").id += notificationCount;
     let notificationTitle = templateClone.querySelector("#notificationTitle" + notificationCount);
@@ -233,6 +236,14 @@ function populateNotificationSection(jarId) {
     templateClone.querySelector("#notificationMessage").id += notificationCount;
     let notificationMessage = templateClone.querySelector("#notificationMessage" + notificationCount);
     notificationMessage.innerHTML = jar.category + " Amount: " + jar.amount;
+    
+    templateClone.querySelector("#notificationDetailsCon").id += notificationCount;
+    let notificationItem = templateClone.querySelector("#notificationDetailsCon" + notificationCount);
+    notificationItem.addEventListener("click", function (event) {
+        let itemIndex = event.target.id[event.target.id.length - 1];
+        let id = document.getElementById("notificationId" + itemIndex);
+        openJarModalForEdit(id.value);
+    });
     
     let id = jarId + "-" + dateNow;
     notifications.setNotification(id, jarDto, templateClone);
