@@ -29,8 +29,26 @@
     margin-left: 5px;
 }
 
+/*
+    Notification
+*/
+.notification-details-container {
+    background-color: white;
+    border-radius: 5px;
+    color: #3F3A4B;
+    margin: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.notification-status {
+    font-size: small;
+    font-style: italic;
+    color: #AA002E;
+}
+
 .notifications {
-    max-height: 180px;
+    max-height: 250px;
     overflow-x: hidden;
     overflow-y: scroll;
 }

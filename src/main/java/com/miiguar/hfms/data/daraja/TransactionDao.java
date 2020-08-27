@@ -38,9 +38,9 @@ public class TransactionDao implements Dao<Transaction> {
                 TRANSACTION_DESCRIPTION + "," +
                 PAYMENT_DETAILS + "," +
                 AMOUNT + "," +
-                PAYMENT_STATUS + ")" +
-                MONEY_JAR_ID + ")" +
-                PAYMENT_TIMESTAMP + ")" +
+                PAYMENT_STATUS + "," +
+                MONEY_JAR_ID + "," +
+                PAYMENT_TIMESTAMP + "," +
                 CREATED_AT + ")" +
                 " VALUES (?,?,?,?,?,?,?,?)" +
                 " ON CONFLICT (" + TRANSACTION_ID + ")" +

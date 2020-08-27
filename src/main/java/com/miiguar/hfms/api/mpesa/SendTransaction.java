@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
 
 import static com.miiguar.hfms.data.utils.URL.*;
 import static com.miiguar.hfms.utils.Constants.*;
+import java.security.SecureRandom;
 
 /**
  * @author bernard
@@ -80,26 +81,22 @@ public class SendTransaction extends BaseServlet {
         request.setPassword(password);
         request.setTimestamp(timestamp);
         request.setTransactionType(PAY_BILL);
+        request.setCallbackUrl(BASE_URL + LNMO_CALLBACK_URL);
 
-        // generate a unique code for the callback
-        GenerateRandomString rand = new GenerateRandomString(6);
-        String randomString = rand.nextString();
-        request.setCallbackUrl(LNMO_CALLBACK_URL + "/" + randomString);
-
-        Budget budget = new Budget();
-        budget.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date()));
-        budget.setHouseholdId(rel.getHouseId());
-        budget.setBudgetDesc("Top Up");
-        budget.setBudgetAmount(request.getAmount());
-        budget.setBudgetId(rand.nextString());
+//        Budget budget = new Budget();
+//        budget.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date()));
+//        budget.setHouseholdId(rel.getHouseId());
+//        budget.setBudgetDesc("Top Up");
+//        budget.setBudgetAmount(request.getAmount());
+//        budget.setBudgetId(rand.nextString());
 
         // create transaction id
-        rand = new GenerateRandomString(12);
+        GenerateRandomString rand = new GenerateRandomString(12);
         String tId = rand.nextString();
         
         // Start server to listen for mpesa callbacks for this request
         ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(new SendTransactionRunnable(randomString, jar, tId));
+        service.execute(new SendTransactionRunnable(jar, tId));
 
         try {
             Thread.sleep(1000);
@@ -135,11 +132,14 @@ public class SendTransaction extends BaseServlet {
             transaction.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
 
             int affected = transactionDao.save(transaction);
-            int budgetAffected = budgetDao.save(budget);
 
-            jar.setJarStatus(true);
+            if (!jar.isJarStatus()) {
+                jar.setJarStatus(true);
+            }
+            
+            jar.setPaymentStatus(true);
             moneyJarsDao.update(jar);
-            sendNotification(affected, httpServletResponse, response, randomString, budgetAffected);
+            sendNotification(affected, httpServletResponse, response);
         } else {
             LnmoErrorResponse error = gson.fromJson(builder.toString(), LnmoErrorResponse.class);
             Log.d(TAG, "Error/" + error.getErrorMessage() + ": " + error.getErrorMessage());
@@ -157,12 +157,11 @@ public class SendTransaction extends BaseServlet {
         writer.write(gson.toJson(report));
     }
 
-    private void sendNotification(int affected, HttpServletResponse httpServletResponse, LnmoResponse response, String randomString, int budgetAffected) throws IOException {
-        if (affected > 0 && budgetAffected > 0) {
+    private void sendNotification(int affected, HttpServletResponse httpServletResponse, LnmoResponse response) throws IOException {
+        if (affected > 0) {
             Report report = new Report();
             report.setMessage(response.getCustomerMessage());
             report.setStatus(HttpServletResponse.SC_ACCEPTED);
-            report.setSubject(randomString);
 
             writer = httpServletResponse.getWriter();
             writer.write(gson.toJson(report));

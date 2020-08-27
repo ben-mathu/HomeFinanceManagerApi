@@ -44,7 +44,7 @@ public class URL {
     // Callback URLs
     public static final String MPESA_URL = "/mpesa/confirm-url";
     public static final String LNMO_CALLBACK_URL = "/mpesa/lnmo-url";
-    public static final String BASE_URL = "https://77b54ff2c6da.ngrok.io";
+    public static final String BASE_URL = "https://b4d3c67b734b.ngrok.io:8000";
     
     // Change Account details
     public static final String CHANGE_ACCOUNT_URL = "/accounts/*";

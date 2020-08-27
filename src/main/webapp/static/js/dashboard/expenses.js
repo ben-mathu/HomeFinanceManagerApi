@@ -33,6 +33,7 @@ let expenseGlobal = {
 let payeeNames = {
     'KPLC': '888888',
     'Kiambu Water and sewage Company': '885100',
+    'Testing': '174379',
     'Other': ''
 };
 
@@ -59,6 +60,7 @@ function configureExpenses() {
     payeeName.addEventListener("change", function(event) {
         expenseGlobal.payee_name = event.target.value;
         businessNumber.value = payeeNames[event.target.value];
+        expenseGlobal.business_number = payeeNames[event.target.value];
     });
     
     businessNumber.addEventListener("input", function(event) {

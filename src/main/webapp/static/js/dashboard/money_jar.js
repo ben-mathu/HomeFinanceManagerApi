@@ -109,7 +109,7 @@ function configureMoneyJar() {
     
     btnOpenJarModal = document.getElementById("btnOpenJarModal");
     btnOpenJarModal.onclick = function() {
-        jarModal.style.display = "block";
+        openJarModal(null);
     };
 
     // closing modal
@@ -223,6 +223,14 @@ function getAllMoneyJars() {
 //                jarsCanvas.height = 300;
                 
                 jarList.innerHTML = "";
+                jarList.appendChild(jarTemplate);
+                
+                paymentDetails.innerHTML = "";
+                paymentDetails.appendChild(paymentTemplate);
+                
+                notificationContainer.innerHTML = "";
+                notificationContainer.appendChild(notificationTemplate);
+                
                 jarCount = 0;
                 setJars("");
 
@@ -255,25 +263,31 @@ function activateTimer() {
         (function(key, dayScheduled, jarStatus) {
             let today = new Date();
             let timeScheduled = new Date(dayScheduled);
-            if (timeScheduled.getTime() <= today.getTime() && !jarStatus) {
+            
+            let isTimeReached = timeScheduled.getTime() >= today.getTime();
+            if (!isTimeReached) {
                 showNotificationDialog(key, jarDto);
                 return;
-            } else {
+            } else if (isTimeReached && jarStatus) {
                 populateNotificationSection(key);
                 return;
             }
 
-            window.setTimeout(arguments.callee, 1000, dayScheduled);
+            window.setTimeout(arguments.callee, 1000, key, dayScheduled, jarStatus);
         })(key, jar.scheduled_for, jar.jar_status);
     });
 }
 
 function drawPieChart(jarElements) {
     let jarMap = {};
+    let expenseTypeMap = {};
     let count = 0;
     jarElements.forEach(jarElement => {
-        jarMap[count] = jarElement.jar;
-        count++;
+        if (!isInExpenseTypeMap(jarElement.jar.expense_type, expenseTypeMap) && !jarElement.jar.jar_status) {
+            expenseTypeMap[jarElement.jar.expense_type] = count;
+            jarMap[count] = jarElement.jar;
+            count++;
+        }
     });
 
     let jarItems = Object.values(jarMap);
@@ -288,8 +302,45 @@ function drawPieChart(jarElements) {
     pieChart.draw();
 }
 
+function isInExpenseTypeMap(expenseType, map) {
+    let keys = Object.keys(map);
+    
+    // return false if map is empty
+    if (keys.length === 0) {
+        return false;
+    }
+    
+    keys.forEach(key => {
+        if (key === expenseType) {
+            return true;
+        }
+    });
+    return false;
+}
+
 function openJarModal(callback) {
     jarModal.style.display = "block";
+    btnDeleteExpense = document.getElementById("btnDeleteExpense");
+    btnDeleteExpense.hidden = true;
+    
+    expenseTypeElem.options[0].selected = true;
+    amountElem.innerHTML = "";
+    time.value = "";
+    date.value = "";
+    jarTemplate = document.getElementById("jarTemplate");
+    groceriesList.innerHTML = "";
+    groceriesList.appendChild(jarTemplate);
+    categorySelector.options[1].selected = true;
+    scheduleSelector.options[0].selected = true;
+    daySelector.options[0].selected = true;
+    businessNumber.value = "";
+    payeeAccountNumber.value = "";
+    payeeName.options[0].selected = true;
+    expenseAmount.value = "";
+    
+    cancelJarModal.addEventListener("click", function (event) {
+        jarModal.style.display = "none";
+    });
 
     btnSubmitJar.onclick = function() {
         updateJar(callback);
@@ -332,7 +383,7 @@ function openJarModalForEdit(jarId) {
 
     amountElem.innerHTML = jar.amount;
 
-    if (jar.category === categoryOption.GROCERIES) {
+    if (jar.category === categoryOption.LIST) {
         categorySelector.options[0].selected = true;
         let groceries = jar.liabilities;
 
@@ -363,6 +414,81 @@ function openJarModalForEdit(jarId) {
 
     btnSubmitJar.onclick = function() {
         updateMoneyJar(jarId);
+    };
+    
+    cancelJarModal.addEventListener("click", function (event) {
+        btnDeleteExpense.hidden = true;
+        jarModal.style.display = "none";
+    });
+}
+
+/**
+ * Open expense dialog box
+ * @param {type} jarId allows users delete or update the expense
+ */
+function openJarModalForPay(jarId) {
+    btnDeleteExpense = document.getElementById("btnDeleteExpense");
+    btnDeleteExpense.hidden = false;
+    btnDeleteExpense.addEventListener("click", function(event) {
+        deleteExpense(jarId);
+    });
+
+    moneyJarIdModal.value = jarId;
+    
+    jarModal.style.display = "block";
+
+    let jarDto = jars.getJar(jarId);
+    let jar = jarDto.jar;
+    // Set inputs to be changed
+    let expenseOptions = expenseTypeElem.options;
+    
+    for (var i = 0; i < expenseOptions.length; i++) {
+        let option = expenseOptions[i];
+        if (jar.expense_type === option.value) {
+            expenseTypeElem.options[i].selected = true;
+            break;
+        }
+    }
+    
+    amountElem.innerHTML = jar.amount;
+    let dateArr = jar.scheduled_for.split(" ");
+    date.value = dateArr[0];
+    time.value = dateArr[1];
+
+    amountElem.innerHTML = jar.amount;
+
+    if (jar.category === categoryOption.LIST) {
+        categorySelector.options[0].selected = true;
+        let groceries = jar.liabilities;
+
+        groceryListSection.innerHTML = "";
+        groceryListSection.appendChild(setGroceries(groceries));
+
+        expenseSection.hidden = true;
+        grocerySection.hidden = false;
+    } else {
+        categorySelector.options[1].selected = true;
+
+        setExpenseFields(jarId);
+
+        expenseSection.hidden = false;
+        grocerySection.hidden = true;
+    }
+
+    if (jar.scheduled_type === "scheduled") {
+        scheduleSelector.options[0].selected = true;
+    } else if (jar.scheduled_type === "Daily") {
+        scheduleSelector.options[1].selected = true;
+    } else if (jar.scheduled_type === "Weekly") {
+        scheduleSelector.options[2].selected = true;
+        setDay(jar.scheduled_for);
+    } else if (jar.scheduled_type === "Monthly") {
+        scheduleSelector.options[3].selected = true;
+    }
+
+    btnSubmitJar.value = "Pay";
+    btnSubmitJar.onclick = function() {
+        makePayments(jarId);
     };
     
     cancelJarModal.addEventListener("click", function (event) {
@@ -466,7 +592,8 @@ function sendJarRequestJson(jarDto, date) {
             if (request.status === 200) {
                 var json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
-                addJarToList(moneyJarDto);
+//                addJarToList(moneyJarDto);
+                getAllMoneyJars();
 
                 jarModal.style.display = "none";
             } else {
@@ -497,20 +624,23 @@ function updateJar(callback) {
                 let moneyJarDto = JSON.parse(json);
 
                 addJarToList(moneyJarDto);
+                
+                if (callback !== null) {
+                    delete incomplete[callback.key];
 
-                delete incomplete[callback.key];
+                    let len = Object.keys(incomplete).length;
 
-                let len = Object.keys(incomplete).length;
-
-                if (len > 1) {
-                    callback.onNext(callback);
-                } else if(len === 1) {
-                    callback.onDone(callback);
-                } else {
-                    callback.onComplete();
+                    if (len > 1) {
+                        callback.onNext(callback);
+                    } else if(len === 1) {
+                        callback.onDone(callback);
+                    } else {
+                        callback.onComplete();
+                    }
                 }
                 
                 jarModal.style.display = "none";
+                getAllMoneyJars();
             } else {
                 showError();
             }
@@ -542,6 +672,8 @@ function updateMoneyJar(jarId) {
                 addJarToList(moneyJarDto);
 
                 jarModal.style.display = "none";
+                
+                getAllMoneyJars();
             } else {
                 showError();
             }
@@ -570,7 +702,7 @@ function updateMoneyJarJson(jarId) {
                 
                 let json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
-                addJarToList(moneyJarDto);
+                getAllMoneyJars();
             } else {
                 showError();
             }
@@ -627,7 +759,9 @@ function setJars(jarId) {
         keys.forEach(key =>  {
             let jarDto = jars.getJar(key);
             let jar = jarDto.jar;
-            updateJarTable(jar);
+            if (!jar.jar_status) {
+                updateJarTable(jar);
+            }
         });
     } else {
         

@@ -23,6 +23,7 @@ import static com.miiguar.hfms.data.utils.URL.*;
 import com.miiguar.hfms.utils.Constants;
 import com.miiguar.hfms.utils.Log;
 import java.io.OutputStream;
+import java.net.BindException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -39,22 +40,19 @@ import javax.ws.rs.core.MediaType;
 public class MpesaResponseListener implements StopServerListener {
     private HttpServer server;
     public static final String TAG = MpesaResponseListener.class.getSimpleName();
-    private final String randomString;
     private final MoneyJar jar;
     private final String transactionId;
 
-    public MpesaResponseListener(String randomString, MoneyJar jar, String transactionId) {
-        this.randomString = randomString;
+    public MpesaResponseListener(MoneyJar jar, String transactionId) {
         this.jar = jar;
         this.transactionId = transactionId;
         
         // start the server
         try {
             int port = 8000;
-
             server = HttpServer.create(new InetSocketAddress(port), 0);
 
-            server.createContext(API + LNMO_CALLBACK_URL + "/" + randomString, new ConfirmHandler(this, jar, randomString, transactionId));
+            server.createContext(LNMO_CALLBACK_URL, new ConfirmHandler(this, jar, transactionId));
             
             ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
             server.setExecutor(threadPoolExecutor);
@@ -63,7 +61,7 @@ public class MpesaResponseListener implements StopServerListener {
             server.start();
             Log.d(TAG, "Server started");
         } catch (IOException e) {
-            Log.e(TAG, "Error: ", e);
+            Log.d(TAG, "Error: " + e.getMessage());
         }
     }
 
@@ -77,15 +75,13 @@ public class MpesaResponseListener implements StopServerListener {
         private StopServerListener listener;
         private final TransactionDao transactionDao;
         private final MoneyJar jar;
-        private final String randomString;
         private final MoneyJarsDao moneyJarsDao;
         private final String transactionId;
 
-        public ConfirmHandler(StopServerListener listener, MoneyJar jar, String randomString, String transactionId) {
+        public ConfirmHandler(StopServerListener listener, MoneyJar jar, String transactionId) {
             this.listener = listener;
             this.transactionDao = new TransactionDao();
             this.jar = jar;
-            this.randomString = randomString;
             
             moneyJarsDao = new MoneyJarsDao();
             this.transactionId = transactionId;
@@ -110,7 +106,7 @@ public class MpesaResponseListener implements StopServerListener {
             if (stkCallback.getMetadata() == null
                     && !stkCallback.getResultDesc().isEmpty()) {
                 
-                final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url/" + randomString);
+                final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url");
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
                 conn.setRequestMethod("POST");
@@ -146,7 +142,7 @@ public class MpesaResponseListener implements StopServerListener {
                 jar.setPaymentStatus(true);
                 moneyJarsDao.update(jar);
 
-                final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url/" + randomString);
+                final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url");
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
                 conn.setRequestMethod("POST");
@@ -168,11 +164,7 @@ public class MpesaResponseListener implements StopServerListener {
         }
     }
 
-    public String getRandomString() {
-        return randomString;
-    }
-
     public static void main(String[] args) {
-        new MpesaResponseListener("", null, "");
+        new MpesaResponseListener(null, "");
     }
 }

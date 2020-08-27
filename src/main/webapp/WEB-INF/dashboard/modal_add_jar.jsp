@@ -2,7 +2,7 @@
     <div class="modal-content elements-modal-inline" >
         <input id="moneyJarIdModal" type="text" name="jar-id" placeholder="Money Jar ID" hidden>
         <div class="" >
-            <h4 class="modal-title">Add Expenses</h4>
+            <h4 class="modal-title">Add Expense(Reminder)</h4>
             <p id="jarModalError" class="error-text"></p>
             <div class="jar-container jar-elements" >
                 <div>

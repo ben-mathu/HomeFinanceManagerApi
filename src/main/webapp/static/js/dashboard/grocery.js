@@ -7,6 +7,7 @@ var groceryPrice;
 var groceryRequired;
 var groceryRemaining;
 var btnAddGrocery;
+let groceriesList;
 
 /**
  * Grocery table
@@ -26,6 +27,7 @@ let grocery = {
 }
 
 function configureGrocery() {
+    groceriesList = document.getElementById("groceryContainer");
     var btnCloseGroceryModal = document.getElementById("cancelGroceryModal");
     btnCloseGroceryModal.onclick = function() {
         groceryModal.style.display = "none";
@@ -126,8 +128,6 @@ function showError() {
  * adds grocery values to grocery modal
  */
 function addGrocery() {
-
-    let groceriesList = document.getElementById("groceryContainer");
     let template = document.getElementById("groceryTemplate");
     groceryListTBody = template.content.querySelector("groceryItems").getElementsByTagName("tbody")[0];
 

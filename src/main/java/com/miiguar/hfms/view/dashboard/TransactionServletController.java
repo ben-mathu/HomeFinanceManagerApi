@@ -71,8 +71,11 @@ public class TransactionServletController extends BaseServlet {
         Log.d(TAG, "Response body" + builder.toString());
 
         Report report = gson.fromJson(builder.toString(), Report.class);
-        if (200 == report.getStatus()) {
-            // start mpesa callback listener
+        if (report.getStatus() > 400) {
+            resp.setStatus(HttpServletResponse.SC_OK);
+            
+            writer = resp.getWriter();
+            writer.write(gson.toJson(report));
         } else {
             resp.setStatus(report.getStatus());
 

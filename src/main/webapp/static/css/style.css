@@ -352,23 +352,6 @@ td {
     color: #008aca;
 }
 
-/*
-    Notification
-*/
-.notification-details-container {
-    background-color: white;
-    border-radius: 5px;
-    color: #3F3A4B;
-    margin: 5px;
-    padding: 5px;
-}
-
-.notification-status {
-    font-size: small;
-    font-style: italic;
-    color: #AA002E;
-}
-
 /* width */
 ::-webkit-scrollbar {
     width: 14px;

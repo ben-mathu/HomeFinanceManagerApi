@@ -104,7 +104,7 @@ public class BudgetDao implements Dao<Budget> {
             preparedStatement.setString(2, item.getBudgetAmount());
             preparedStatement.setString(3, item.getBudgetDesc());
             preparedStatement.setString(4, item.getHouseholdId());
-            preparedStatement.setString(6, item.getCreatedAt());
+            preparedStatement.setString(5, item.getCreatedAt());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();

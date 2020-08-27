@@ -2,7 +2,8 @@
     <input type="hidden" id="contextPath" name="context_path" value="<%= request.getContextPath() %>">
     <div class="chart-chat-section section-style" >
         <div class="chart-container rounded-corner shadow-1pt subsection-background" >
-            <h4>Chart</h4>
+            <canvas id="lineGraphCanvas"></canvas>
+            <legend class="legends-for-piechart" for="lineGraphCanvas"></legend>
         </div>
         <div class="chat-container rounded-corner shadow-1pt subsection-background" >
             <div id="notificationContainer" class="notifications">

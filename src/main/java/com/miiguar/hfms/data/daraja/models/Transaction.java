@@ -33,7 +33,7 @@ public class Transaction {
     
     @SerializedName(AMOUNT)
     @Column(columnName = AMOUNT)
-    private Double amount;
+    private double amount;
     
     @SerializedName(PAYMENT_STATUS)
     @Column(columnName = PAYMENT_STATUS)
@@ -44,7 +44,7 @@ public class Transaction {
     private String jarId;
     
     @SerializedName(PAYMENT_TIMESTAMP)
-    @Column(columnName = PAYMENT_TIMESTAMP, characterLength = 45)
+    @Column(columnName = PAYMENT_TIMESTAMP, characterLength = 45, notNull = false)
     private String paymentTimestamp;
     
     @SerializedName(CREATED_AT)

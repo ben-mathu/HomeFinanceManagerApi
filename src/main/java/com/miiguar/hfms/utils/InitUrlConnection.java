@@ -175,11 +175,16 @@ public class InitUrlConnection<T> {
 
             writer.write(requestBody.getBytes());
         }
+        
+        InputStreamReader inputStreamReader = null;
+        if (conn.getResponseCode() >= 400) {
+            inputStreamReader = new InputStreamReader(conn.getErrorStream());
+        } else {
+            inputStreamReader = new InputStreamReader(conn.getInputStream());
+        }
 
         // Set up the output line/response stream
-        streamReader = new BufferedReader(
-                new InputStreamReader(conn.getInputStream())
-        );
+        streamReader = new BufferedReader(inputStreamReader);
         return streamReader;
     }
 }
