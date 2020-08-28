@@ -48,7 +48,7 @@
 }
 
 .notifications {
-    max-height: 250px;
+    width: 25%;
     overflow-x: hidden;
     overflow-y: scroll;
 }
@@ -58,13 +58,16 @@
 }
 
 .members {
-    width: 25%;
     margin-right: 5px;
 }
 
 .expenses-section {
     width: 75%;
     margin-left: 5px;
+}
+
+.expenses {
+    margin-bottom: 10px;
 }
 
 .jar-item {
