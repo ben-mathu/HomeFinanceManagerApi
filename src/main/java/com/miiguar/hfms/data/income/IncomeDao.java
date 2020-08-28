@@ -37,8 +37,8 @@ public class IncomeDao implements Dao<Income> {
     public int save(Income item) {
         String query = "INSERT INTO " + INCOME_TB_NAME + "(" +
                 INCOME_ID + "," + AMOUNT + "," + ACCOUNT_TYPE + "," +
-                USER_ID + "," + CREATED_AT + ")" +
-                " VALUES (?,?,?,?,?)";
+                USER_ID + "," + SCHEDULED_FOR + "," + CREATED_AT + ")" +
+                " VALUES (?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -51,7 +51,8 @@ public class IncomeDao implements Dao<Income> {
             preparedStatement.setDouble(2, item.getAmount());
             preparedStatement.setString(3, item.getAccountType());
             preparedStatement.setString(4, item.getUserId());
-            preparedStatement.setString(5, item.getCreatedAt());
+            preparedStatement.setString(5, item.getSchedule());
+            preparedStatement.setString(6, item.getCreatedAt());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -108,6 +109,7 @@ public class IncomeDao implements Dao<Income> {
                 income.setCreatedAt(resultSet.getString(CREATED_AT));
                 income.setAccountType(resultSet.getString(ACCOUNT_TYPE));
                 income.setIncomeId(resultSet.getString(INCOME_ID));
+                income.setSchedule(resultSet.getString(SCHEDULED_FOR));
                 income.setUserId(resultSet.getString(USER_ID));
             }
 

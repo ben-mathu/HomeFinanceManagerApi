@@ -104,14 +104,14 @@ public class MoneyJarApi extends BaseServlet {
         MoneyJarDto dto = gson.fromJson(requestStr, MoneyJarDto.class);
         MoneyJar jar = dto.getJar();
         
-        if (dto.getUser() == null) {
-            String houseId = dto.getJar().getHouseholdId();
-            String userId = householdDao.getUserId(houseId);
-            
-            User user = userDao.get(userId);
-            
-            dto.setUser(user);
-        }
+//        if (dto.getUser() == null) {
+//            String houseId = dto.getJar().getHouseholdId();
+//            String userId = householdDao.getUserId(houseId);
+//            
+//            User user = userDao.get(userId);
+//            
+//            dto.setUser(user);
+//        }
 
         if (!jar.getMoneyJarId().isEmpty())
             updateDatabase(dto, req, resp);

@@ -35,6 +35,7 @@ public class URL {
     // Transactions
     public static final String TRANSACTIONS = "/transactions/*";
     public static final String SEND_TRANSACTION = "/transactions/send-transaction";
+    public static final String GET_TRANSACTIONS = "/transactions/get-transactions";
 
     // Daraja
     // Request url

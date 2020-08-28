@@ -34,6 +34,10 @@ public class Income {
     @SerializedName(USER_ID)
     @Column(columnName = USER_ID)
     private String userId = "";
+    
+    @SerializedName(SCHEDULED_FOR)
+    @Column(columnName = SCHEDULED_FOR, characterLength = 25)
+    private String schedule = "";
 
     @SerializedName(CREATED_AT)
     @Column(columnName = CREATED_AT, characterLength = 25)
@@ -77,5 +81,13 @@ public class Income {
 
     public void setIncomeId(String incomeId) {
         this.incomeId = incomeId;
+    }
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
+
+    public String getSchedule() {
+        return schedule;
     }
 }

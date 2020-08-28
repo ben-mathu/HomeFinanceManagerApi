@@ -2,6 +2,7 @@ package com.miiguar.hfms.view.dashboard;
 
 import com.miiguar.hfms.data.daraja.LnmoRequest;
 import com.miiguar.hfms.data.status.Report;
+import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.utils.InitUrlConnection;
 import com.miiguar.hfms.utils.Log;
 import com.miiguar.hfms.view.base.BaseServlet;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 import static com.miiguar.hfms.data.utils.DbEnvironment.MONEY_JAR_ID;
 import static com.miiguar.hfms.data.utils.DbEnvironment.USER_ID;
+import static com.miiguar.hfms.data.utils.URL.GET_TRANSACTIONS;
 import static com.miiguar.hfms.data.utils.URL.SEND_TRANSACTION;
 import static com.miiguar.hfms.utils.Constants.LnmoRequestFields.*;
 import static com.miiguar.hfms.utils.Constants.TOKEN;
@@ -27,6 +29,26 @@ public class TransactionServletController extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     public static final String TAG = TransactionServletController.class.getSimpleName();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter(USER_ID);
+        String token = req.getParameter(TOKEN);
+        
+        String requestParam = "?" + USER_ID + "=" + userId;
+        
+        InitUrlConnection<User> conn = new InitUrlConnection<>();
+        BufferedReader streamReader = conn.getReader(GET_TRANSACTIONS + requestParam, token, "GET");
+        
+        String line;
+        StringBuilder builder = new StringBuilder();
+        while ((line = streamReader.readLine()) != null) {            
+            builder.append(line);
+        }
+        
+        writer = resp.getWriter();
+        writer.write(builder.toString());
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

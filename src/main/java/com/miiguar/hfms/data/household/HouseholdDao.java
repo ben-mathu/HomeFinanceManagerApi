@@ -241,8 +241,8 @@ public class HouseholdDao implements Dao<Household> {
         return householdId;
     }
 
-    public String getUserId(String houseId) {
-        String userId = "";
+    public List<String> getUserId(String houseId) {
+        List<String> userIdList = new ArrayList<>();
         String query = "SELECT " + USER_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
                 " WHERE " + HOUSEHOLD_ID + "=?";
 
@@ -257,7 +257,7 @@ public class HouseholdDao implements Dao<Household> {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                userId = resultSet.getString(USER_ID);
+                userIdList.add(resultSet.getString(USER_ID));
             }
 
             resultSet.close();
@@ -287,6 +287,6 @@ public class HouseholdDao implements Dao<Household> {
                     resultSet = null;
                 } catch (Exception e) { /* Intentionally blank */ }
         }
-        return userId;
+        return userIdList;
     }
 }

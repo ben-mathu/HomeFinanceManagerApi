@@ -158,7 +158,7 @@ public class DbEnvironment {
     public static final String PAYMENT_TIMESTAMP = "payment_timestamp";
     // created at timestamp
     // jar_id reference jar table
-    public static final String FK_TRANSACTIONS_JAR_ID = "fk_transactions_jar_id_ref_jars";
+    public static final String FK_TRANSACTIONS_USER_ID = "fk_transactions_user_id_ref_users";
 
     /**
      * Budget

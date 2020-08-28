@@ -4,55 +4,86 @@ import com.miiguar.hfms.api.base.BaseServlet;
 import com.miiguar.hfms.api.mpesa.threadrunner.SendTransactionRunnable;
 import com.miiguar.hfms.config.ConfigureApp;
 import com.miiguar.hfms.data.budget.BudgetDao;
-import com.miiguar.hfms.data.budget.model.Budget;
 import com.miiguar.hfms.data.daraja.LnmoErrorResponse;
 import com.miiguar.hfms.data.daraja.LnmoRequest;
 import com.miiguar.hfms.data.daraja.LnmoResponse;
-import com.miiguar.hfms.data.daraja.TransactionDao;
-import com.miiguar.hfms.data.daraja.models.Transaction;
+import com.miiguar.hfms.data.income.IncomeDao;
+import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.jar.MoneyJarsDao;
 import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdDao;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
-import com.miiguar.hfms.data.user.model.User;
-import com.miiguar.hfms.utils.*;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.miiguar.hfms.data.transactions.TransactionDao;
+import com.miiguar.hfms.data.transactions.TransactionDto;
+import com.miiguar.hfms.data.transactions.model.Transaction;
+import com.miiguar.hfms.data.utils.DbEnvironment;
+import static com.miiguar.hfms.data.utils.URL.API;
+import static com.miiguar.hfms.data.utils.URL.BASE_URL;
+import static com.miiguar.hfms.data.utils.URL.LNMO;
+import static com.miiguar.hfms.data.utils.URL.LNMO_CALLBACK_URL;
+import static com.miiguar.hfms.data.utils.URL.TRANSACTIONS;
+import com.miiguar.hfms.utils.BufferRequestReader;
+import static com.miiguar.hfms.utils.Constants.ACCESS_TOKEN;
+import static com.miiguar.hfms.utils.Constants.DARAJA_DATE_FORMAT;
+import static com.miiguar.hfms.utils.Constants.DATE_FORMAT;
+import static com.miiguar.hfms.utils.Constants.PAY_BILL;
+import com.miiguar.hfms.utils.GenerateCipher;
+import com.miiguar.hfms.utils.GenerateRandomString;
+import com.miiguar.hfms.utils.InitUrlConnection;
+import com.miiguar.hfms.utils.Log;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.miiguar.hfms.data.utils.URL.*;
-import static com.miiguar.hfms.utils.Constants.*;
-import java.security.SecureRandom;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
+ *
  * @author bernard
  */
-@WebServlet(API + TRANSACTIONS)
-public class SendTransaction extends BaseServlet {
-    private static final long serialVersionUID = 1L;
-
-    private TransactionDao transactionDao;
-    private MoneyJarsDao moneyJarsDao;
-    private BudgetDao budgetDao;
-    private UserHouseholdDao userHouseholdDao;
-
-    public SendTransaction() {
+@WebServlet(name = "TransactionApi", urlPatterns = {API + TRANSACTIONS})
+public class TransactionApi extends BaseServlet {
+    private final TransactionDao transactionDao;
+    private final MoneyJarsDao moneyJarsDao;
+    private final BudgetDao budgetDao;
+    private final UserHouseholdDao userHouseholdDao;
+    private final IncomeDao incomeDao;
+    
+    public TransactionApi() {
         transactionDao = new TransactionDao();
         moneyJarsDao = new MoneyJarsDao();
         budgetDao = new BudgetDao();
         userHouseholdDao = new UserHouseholdDao();
+        incomeDao = new IncomeDao();
+    }
+
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String userId = request.getParameter(DbEnvironment.USER_ID);
+        
+        TransactionDto dto = new TransactionDto();
+        dto.setTransactions(transactionDao.getAllByUserId(userId));
+        
+        if (dto.getTransactions() != null) {
+            writer = response.getWriter();
+            writer.write(gson.toJson(dto));
+        }
     }
 
     @Override
@@ -122,14 +153,19 @@ public class SendTransaction extends BaseServlet {
         LnmoResponse response = gson.fromJson(builder.toString(), LnmoResponse.class);
 
         if ("0".equals(response.getRespCode())) {
+            
+            Income income = incomeDao.get(request.getUserId());
+            income.setAmount(income.getAmount() - jar.getTotalAmount());
 
             Transaction transaction = new Transaction();
             transaction.setId(tId);
             transaction.setTransactionDesc(jar.getName());
             transaction.setPaymentDetails(response.getCustomerMessage());
             transaction.setAmount(jar.getTotalAmount());
-            transaction.setJarId(jar.getMoneyJarId());
+            transaction.setUserId(request.getUserId());
             transaction.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
+            transaction.setPaymentStatus(true);
+            transaction.setPaymentTimestamp(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
 
             int affected = transactionDao.save(transaction);
 

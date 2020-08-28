@@ -1,11 +1,11 @@
 package com.miiguar.hfms.api.mpesa.threadrunner;
 
 import com.google.gson.Gson;
-import com.miiguar.hfms.data.daraja.TransactionDao;
+import com.miiguar.hfms.data.transactions.TransactionDao;
 import com.miiguar.hfms.data.daraja.callback.CallbackMetadata;
 import com.miiguar.hfms.data.daraja.callback.CallbackResponse;
 import com.miiguar.hfms.data.daraja.callback.StkCallback;
-import com.miiguar.hfms.data.daraja.models.Transaction;
+import com.miiguar.hfms.data.transactions.model.Transaction;
 import com.miiguar.hfms.data.jar.MoneyJarsDao;
 import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.status.Report;

@@ -44,6 +44,17 @@
     </div>
     
     <div class="expenses rounded-corner shadow-1pt subsection-background" >
-        <h4>Transactions</h4>
+        <table id="transactionTable">
+        <thead>
+            <tr>
+                <th>Index</th>
+                <th>Transaction Description</th>
+                <th>Amount</th>
+                <th>Payment Status</th>
+                <th>Payment Timestamp</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
     </div>
 </div>

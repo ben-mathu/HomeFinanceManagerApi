@@ -220,6 +220,7 @@ window.onload = function() {
     configureExpenses();
     configureMembers();
     configurePayments();
+    configureTransactions();
 //    configureBudget();
 };
 

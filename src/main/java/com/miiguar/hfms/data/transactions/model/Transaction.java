@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.daraja.models;
+package com.miiguar.hfms.data.transactions.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
@@ -13,9 +13,9 @@ import com.miiguar.hfms.init.Constraint;
  */
 @Table(tableName = TRANSACTION_TB_NAME,
         constraint = {@Constraint(
-                name = FK_TRANSACTIONS_JAR_ID,
-                columnName = MONEY_JAR_ID,
-                tableName = MONEY_JAR_TB_NAME
+                name = FK_TRANSACTIONS_USER_ID,
+                columnName = USER_ID,
+                tableName = USERS_TB_NAME
         )}
 )
 public class Transaction {
@@ -39,9 +39,9 @@ public class Transaction {
     @Column(columnName = PAYMENT_STATUS)
     private boolean paymentStatus = false;
     
-    @SerializedName(MONEY_JAR_ID)
-    @Column(columnName = MONEY_JAR_ID)
-    private String jarId;
+    @SerializedName(USER_ID)
+    @Column(columnName = USER_ID)
+    private String userId;
     
     @SerializedName(PAYMENT_TIMESTAMP)
     @Column(columnName = PAYMENT_TIMESTAMP, characterLength = 45, notNull = false)
@@ -91,12 +91,12 @@ public class Transaction {
         return paymentStatus;
     }
 
-    public void setJarId(String jarId) {
-        this.jarId = jarId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getJarId() {
-        return jarId;
+    public String getUserId() {
+        return userId;
     }
 
     public void setPaymentTimestamp(String paymentTimestamp) {
