@@ -20,20 +20,20 @@ function loginUser() {
     var request = getXmlHttpRequest();
     try {
         request.onreadystatechange = function() {
-            if (request.readyState == 4) {
-                if (request.status == 400) {
+            if (request.readyState === 4) {
+                if (request.status === 400) {
 
                     var obj = JSON.parse(request.responseText);
                     document.getElementById("usernameError").innerHTML = obj.username_error;
                     document.getElementById("passwordError").innerHTML = obj.password_error;
                     document.getElementById("progress").hidden = true;
-                } else if (request.status == 403) {
+                } else if (request.status === 403) {
 
                     var error = JSON.parse(request.responseText);
                     document.getElementById("result").innerHTML = error.message;
                     document.getElementById("progress").hidden = true;
                     document.getElementById("result").hidden = false;
-                } else if (request.status == 200) {
+                } else if (request.status === 200) {
 
                     var path = document.getElementById("contextPath").value;
 

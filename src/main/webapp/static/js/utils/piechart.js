@@ -52,6 +52,7 @@ class PieChart {
 
             let legend = document.querySelector("legend[for='jarsCanvas']");
             let ul = document.createElement("ul");
+            legend.innerHTML = "";
             legend.appendChild(ul);
             colorIndex = 0;
             this.jars.forEach(jar => {
@@ -60,11 +61,11 @@ class PieChart {
                 li.style.listStyle = "none";
                 li.style.borderLeft = "20px solid " + this.colors[colorIndex % this.colors.length];
                 li.style.padding = "5px";
-                li.textContent = jar.jar_label;
+                li.textContent = jar.expense_type;
                 ul.appendChild(li);
                 colorIndex++;
-            })
-        }
+            });
+        };
     }
 }
 

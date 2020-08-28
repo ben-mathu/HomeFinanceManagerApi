@@ -1,5 +1,5 @@
-<div id="paymentDueDialog" class="dialog">
-    <div id="paymentDialogContainer" class="payment-due-container" >
+<div id="messageDialog" class="dialog">
+    <div id="messageDialogContainer" class="message-container" >
         <span id="messageReport"></span>
     </div>
 </div>

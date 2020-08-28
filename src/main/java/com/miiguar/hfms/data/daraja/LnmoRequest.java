@@ -1,10 +1,13 @@
 package com.miiguar.hfms.data.daraja;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.config.ConfigureApp;
 
 import java.util.Properties;
 
+import static com.miiguar.hfms.data.utils.DbEnvironment.MONEY_JAR_ID;
+import static com.miiguar.hfms.data.utils.DbEnvironment.USER_ID;
 import static com.miiguar.hfms.data.utils.URL.API;
 import static com.miiguar.hfms.data.utils.URL.BASE_URL;
 import static com.miiguar.hfms.utils.Constants.LnmoRequestFields.*;
@@ -14,27 +17,42 @@ import static com.miiguar.hfms.utils.Constants.LnmoRequestFields.*;
  */
 public class LnmoRequest {
     @SerializedName(SHORT_CODE)
+    @Expose
     private String businessShortCode = "";
     @SerializedName(PASSWORD)
+    @Expose
     private String password = "";
     @SerializedName(TIMESTAMP)
+    @Expose
     private String timestamp = "";
     @SerializedName(TRANSACTION_TYPE)
+    @Expose
     private String transactionType = "";
     @SerializedName(AMOUNT)
+    @Expose
     private String amount = "";
     @SerializedName(PARTY_A)
+    @Expose
     private String payer = "";
     @SerializedName(PARTY_B)
+    @Expose
     private String payee = "";
     @SerializedName(PHONE_NUMBER)
+    @Expose
     private String phoneNumber = "";
     @SerializedName(CALLBACK_URL)
+    @Expose
     private String callbackUrl = "";
     @SerializedName(ACCOUNT_REF)
+    @Expose
     private String accountRef = "";
     @SerializedName(TRANSACTION_DESC)
+    @Expose
     private String transactionDesc = "";
+    @SerializedName(MONEY_JAR_ID)
+    private String jarId;
+    @SerializedName(USER_ID)
+    private String userId;
 
     public String getBusinessShortCode() {
         return businessShortCode;
@@ -124,5 +142,21 @@ public class LnmoRequest {
 
     public void setTransactionDesc(String transactionDesc) {
         this.transactionDesc = transactionDesc;
+    }
+
+    public void setJarId(String jarId) {
+        this.jarId = jarId;
+    }
+
+    public String getJarId() {
+        return jarId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

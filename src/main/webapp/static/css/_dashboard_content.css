@@ -29,6 +29,30 @@
     margin-left: 5px;
 }
 
+/*
+    Notification
+*/
+.notification-details-container {
+    background-color: white;
+    border-radius: 5px;
+    color: #3F3A4B;
+    margin: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.notification-status {
+    font-size: small;
+    font-style: italic;
+    color: #AA002E;
+}
+
+.notifications {
+    max-height: 250px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 .grocery-members-container {
     width: 100%;
 }
@@ -45,6 +69,13 @@
 
 .jar-item {
     margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.jar-list-container {
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .scheduled-interval {
@@ -88,5 +119,15 @@
 
 .jars-pie-chart {
     width: 600px;
-    display: inline-flex;
+    display: flex;
+}
+
+.legends-for-piechart {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.budget-btn-container {
+    display: block;
 }

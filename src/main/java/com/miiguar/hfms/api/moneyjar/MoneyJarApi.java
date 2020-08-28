@@ -17,6 +17,7 @@ import com.miiguar.hfms.data.tablerelationships.UserHouseholdDao;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
+import com.miiguar.hfms.data.user.UserDao;
 import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
@@ -51,6 +52,7 @@ public class MoneyJarApi extends BaseServlet {
     private final GroceryDao groceryDao;
     private final ExpenseDao expenseDao;
     private final MoneyJarsDao jarDao;
+    private final UserDao userDao;
 
     private final GenerateRandomString randomString;
 
@@ -63,6 +65,7 @@ public class MoneyJarApi extends BaseServlet {
         groceryDao = new GroceryDao();
         expenseDao = new ExpenseDao();
         jarDao = new MoneyJarsDao();
+        userDao = new UserDao();
 
         randomString = new GenerateRandomString(
                 12,
@@ -75,12 +78,40 @@ public class MoneyJarApi extends BaseServlet {
     }
 
     @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String jarId = req.getParameter(MONEY_JAR_ID);
+        
+        MoneyJar jar = new MoneyJar();
+        jar.setMoneyJarId(jarId);
+        int affected = jarDao.delete(jar);
+        
+        if (affected > 0) {
+            Report report = new Report();
+            report.setMessage("Expense item was successfully deleted.");
+            report.setStatus(HttpServletResponse.SC_OK);
+            
+            resp.setStatus(report.getStatus());
+            writer = resp.getWriter();
+            writer.write(gson.toJson(report));
+        }
+    }
+
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String requestStr = BufferRequestReader.bufferRequest(req);
 
         MoneyJarDto dto = gson.fromJson(requestStr, MoneyJarDto.class);
         MoneyJar jar = dto.getJar();
+        
+//        if (dto.getUser() == null) {
+//            String houseId = dto.getJar().getHouseholdId();
+//            String userId = householdDao.getUserId(houseId);
+//            
+//            User user = userDao.get(userId);
+//            
+//            dto.setUser(user);
+//        }
 
         if (!jar.getMoneyJarId().isEmpty())
             updateDatabase(dto, req, resp);
@@ -137,6 +168,11 @@ public class MoneyJarApi extends BaseServlet {
                 writer = resp.getWriter();
                 writer.write(responseStr);
             }
+        } else {
+            String responseStr = gson.toJson(dto);
+
+            writer = resp.getWriter();
+            writer.write(responseStr);
         }
     }
 
@@ -196,6 +232,11 @@ public class MoneyJarApi extends BaseServlet {
                 writer = resp.getWriter();
                 writer.write(responseStr);
             }
+        } else {
+            String responseStr = gson.toJson(dto);
+
+            writer = resp.getWriter();
+            writer.write(responseStr);
         }
     }
 
@@ -229,44 +270,55 @@ public class MoneyJarApi extends BaseServlet {
         ArrayList<MoneyJarDto> jarDtoList = new ArrayList<>();
 
         // get household
+        Report report;
         UserHouseholdRel userHouseholdRel = userHouseholdDao.get(userId);
-        String householdId = userHouseholdRel.getHouseId();
+        if (userHouseholdRel != null) {
+            String householdId = userHouseholdRel.getHouseId();
+            
+            // get jars
+            List<MoneyJar> jars = jarDao.getAll(householdId);
 
-        // get jars
-        List<MoneyJar> jars = jarDao.getAll(householdId);
+            // loop through each jar to get grocery or expense related
+            for (MoneyJar jar : jars) {
+                MoneyJarDto jarDto = new MoneyJarDto();
+                jarDto.setJar(jar);
 
-        // loop through each jar to get grocery or expense related
-        for (MoneyJar jar : jars) {
-            MoneyJarDto jarDto = new MoneyJarDto();
-            jarDto.setJar(jar);
-
-            String jarId = jar.getMoneyJarId();
-            if (GROCERY_CATEGORY.equals(jar.getCategory())) {
-                List<Grocery> groceries = groceryDao.getAll(jarId);
-                jarDto.setGroceries(groceries);
-            } else {
-                Expense expenses = expenseDao.get(jarId);
-                jarDto.setExpense(expenses);
+                String jarId = jar.getMoneyJarId();
+                if (GROCERY_CATEGORY.equals(jar.getCategory())) {
+                    List<Grocery> groceries = groceryDao.getAll(jarId);
+                    jarDto.setGroceries(groceries);
+                } else {
+                    Expense expenses = expenseDao.get(jarId);
+                    jarDto.setExpense(expenses);
+                }
+                jarDtoList.add(jarDto);
             }
-            jarDtoList.add(jarDto);
-        }
 
-        jarsDto.setJarDto(jarDtoList);
+            jarsDto.setJarDto(jarDtoList);
 
-        String response;
-        Report report = new Report();
-        if (jarsDto.getJarDto().isEmpty()) {
-            report.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            report.setMessage("The items requested were not found");
+            String response;
+            report = new Report();
+            if (jarsDto.getJarDto().isEmpty()) {
+                report.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                report.setMessage("The items requested were not found");
 
+            } else {
+                report.setStatus(HttpServletResponse.SC_OK);
+                report.setMessage("Success");
+
+            }
+            jarsDto.setReport(report);
+            response = gson.toJson(jarsDto);
+            writer = resp.getWriter();
+            writer.write(response);
         } else {
-            report.setStatus(HttpServletResponse.SC_OK);
-            report.setMessage("Success");
-
+            report = new Report();
+            report.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            report.setMessage("Error retrieving jars");
+            resp.setStatus(report.getStatus());
+            
+            writer = resp.getWriter();
+            writer.write(gson.toJson(report)); 
         }
-        jarsDto.setReport(report);
-        response = gson.toJson(jarsDto);
-        writer = resp.getWriter();
-        writer.write(response);
     }
 }

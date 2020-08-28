@@ -6,16 +6,19 @@
                 <div id="accountSettings" class="setting-option-style selected-option" >
                     <span>Account</span>
                 </div>
+                
                 <div id="householdSettings" class="setting-option-style" >
                     <span>Household</span>
                 </div>
+                
                 <div id="preferencesSettings" class="setting-option-style" >
                     <span>Preferences</span>
                 </div>
+                
+                <div class="save-settings" >
+                    <input id="btnSaveAccountDetails" class="btn2 save-button" type="button" name="submit" value="Save">
+                </div>
             </div>
-            <%-- <div class="save-settings" >
-                <input class="btn2 save-button" type="button" name="submit" value="Save">
-            </div> --%>
         </div>
         <div class="settings-details setting-element" >
             <%@ include file = "00_account.jsp" %>

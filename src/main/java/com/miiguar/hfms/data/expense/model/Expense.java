@@ -24,13 +24,13 @@ public class Expense {
     @PrimaryKey(columnName = EXPENSE_ID)
     private String expenseId = "";
 
-    @SerializedName(EXPENSE_NAME)
-    @Column(columnName = EXPENSE_NAME, characterLength = 45, unique = true)
-    private String name = "";
-
-    @SerializedName(EXPENSE_DESCRIPTION)
-    @Column(columnName = EXPENSE_DESCRIPTION, characterLength = 255)
-    private String description = "";
+//    @SerializedName(EXPENSE_NAME)
+//    @Column(columnName = EXPENSE_NAME, characterLength = 45, unique = true)
+//    private String name = "";
+//
+//    @SerializedName(EXPENSE_DESCRIPTION)
+//    @Column(columnName = EXPENSE_DESCRIPTION, characterLength = 255)
+//    private String description = "";
 
     @SerializedName(AMOUNT)
     @Column(columnName = AMOUNT)
@@ -60,13 +60,13 @@ public class Expense {
         this.expenseId = expenseId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
     public double getAmount() {
         return amount;
@@ -76,13 +76,13 @@ public class Expense {
         this.amount = amount;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
 
     public String getJarId() {
         return jarId;

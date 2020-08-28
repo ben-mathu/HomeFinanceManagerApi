@@ -31,13 +31,13 @@ public class Income {
     @Column(columnName = ACCOUNT_TYPE)
     private String accountType = "";
 
-    @SerializedName(INCOME_DESC)
-    @Column(columnName = INCOME_DESC, characterLength = 255)
-    private String incomeDesc = "";
-
     @SerializedName(USER_ID)
     @Column(columnName = USER_ID)
     private String userId = "";
+    
+    @SerializedName(SCHEDULED_FOR)
+    @Column(columnName = SCHEDULED_FOR, characterLength = 25)
+    private String schedule = "";
 
     @SerializedName(CREATED_AT)
     @Column(columnName = CREATED_AT, characterLength = 25)
@@ -83,11 +83,11 @@ public class Income {
         this.incomeId = incomeId;
     }
 
-    public String getIncomeDesc() {
-        return incomeDesc;
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 
-    public void setIncomeDesc(String incomeDesc) {
-        this.incomeDesc = incomeDesc;
+    public String getSchedule() {
+        return schedule;
     }
 }

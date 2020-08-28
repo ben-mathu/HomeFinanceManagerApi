@@ -109,28 +109,5 @@ public class Login extends BaseServlet {
             writer = response.getWriter();
             writer.write(jsonResp);
         }
-//        } catch (SQLException throwables) {
-//            Log.e(TAG, "Error: logging in the user.", throwables);
-//
-//            EmailEnv emailEnv = new EmailEnv();
-//            Properties prop = emailEnv.getProperties();
-//            String email = prop.getProperty("email");
-//
-//            if (throwables.getMessage().contains(user.getUsername())) {
-//                report = new Report();
-//                report.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//                report.setMessage("Invalid Username/password.");
-//            } else {
-//                report = new Report();
-//                report.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//                report.setMessage("An Error occurred,</br> please contact the admin: " + email);
-//            }
-//
-//            UserResponse res = new UserResponse();
-//            res.setReport(report);
-//            String jsonResp = gson.toJson(res);
-//            writer = response.getWriter();
-//            writer.write(jsonResp);
-//        }
     }
 }

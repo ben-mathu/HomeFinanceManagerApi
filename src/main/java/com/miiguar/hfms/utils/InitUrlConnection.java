@@ -2,6 +2,7 @@ package com.miiguar.hfms.utils;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.miiguar.hfms.config.ConfigureApp;
 
 import javax.ws.rs.core.MediaType;
@@ -22,6 +23,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
  * @param <T> Request made to the server/backend
  */
 public class InitUrlConnection<T> {
+    public static final String TAG = InitUrlConnection.class.getSimpleName();
+
     private BufferedReader streamReader;
     private OutputStreamWriter outputStreamWriter;
 
@@ -163,15 +166,25 @@ public class InitUrlConnection<T> {
         conn.setDoOutput(true);
 
         try (OutputStream writer = conn.getOutputStream()) {
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .create();
             String requestBody = gson.toJson(item);
+
+            Log.d(TAG, "Request: " + requestBody);
+
             writer.write(requestBody.getBytes());
+        }
+        
+        InputStreamReader inputStreamReader = null;
+        if (conn.getResponseCode() >= 400) {
+            inputStreamReader = new InputStreamReader(conn.getErrorStream());
+        } else {
+            inputStreamReader = new InputStreamReader(conn.getInputStream());
         }
 
         // Set up the output line/response stream
-        streamReader = new BufferedReader(
-                new InputStreamReader(conn.getInputStream())
-        );
+        streamReader = new BufferedReader(inputStreamReader);
         return streamReader;
     }
 }

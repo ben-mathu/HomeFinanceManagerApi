@@ -1,6 +1,8 @@
 package com.miiguar.hfms.api.users;
 
 import com.miiguar.hfms.api.base.BaseServlet;
+import com.miiguar.hfms.data.budget.BudgetDao;
+import com.miiguar.hfms.data.budget.model.Budget;
 import com.miiguar.hfms.data.household.HouseholdDao;
 import com.miiguar.hfms.data.household.model.Household;
 import com.miiguar.hfms.data.income.IncomeDao;
@@ -9,6 +11,8 @@ import com.miiguar.hfms.data.status.AccountStatus;
 import com.miiguar.hfms.data.status.AccountStatusDao;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdDao;
 import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
+import com.miiguar.hfms.data.transactions.TransactionDao;
+import com.miiguar.hfms.data.transactions.model.Transaction;
 import com.miiguar.hfms.data.user.UserDao;
 import com.miiguar.hfms.data.user.UserDto;
 import com.miiguar.hfms.data.user.model.User;
@@ -37,6 +41,7 @@ public class UserApi extends BaseServlet {
     private UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
     private AccountStatusDao accountStatusDao = new AccountStatusDao();
     private UserDao userDao = new UserDao();
+    private TransactionDao transactionDao = new TransactionDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,14 +61,11 @@ public class UserApi extends BaseServlet {
             Household household = getHousehold(userHouseholdRel);
             households.add(household);
         }
-
-        List<UserHouseholdRel> rels = userHouseholdDao.getAll();
-
-        for (UserHouseholdRel rel : rels) {
-            if (!userId.equals(rel.getUserId())) {
-                User member = getUser(rel.getUserId());
-                members.add(member);
-            }
+        
+        ArrayList<Transaction> transactions = (ArrayList<Transaction>) getAllTransactions(userId);
+        
+        for (Household household : households) {
+            members.addAll(getUser(household.getId()));
         }
 
         // get account status
@@ -76,6 +78,7 @@ public class UserApi extends BaseServlet {
         dto.setAccountStatus(accountStatus);
         dto.setUserHouseholdRels((ArrayList<UserHouseholdRel>) list);
         dto.setMembers(members);
+        dto.setTransactions(transactions);
 
         String response = gson.toJson(dto);
 
@@ -83,11 +86,20 @@ public class UserApi extends BaseServlet {
         writer.write(response);
     }
 
-    private User getUser(String userId) {
-        return userDao.get(userId);
+    private List<User> getUser(String houseId) {
+        List<String> userIdList = householdDao.getUserId(houseId);
+        ArrayList<User> users = new ArrayList<>();
+        for (String userId : userIdList) {
+            users.add(userDao.get(userId));
+        }
+        return users;
     }
 
     private Household getHousehold(UserHouseholdRel item) {
         return householdDao.get(item.getHouseId());
+    }
+    
+    private List<Transaction> getAllTransactions(String userId) {
+        return transactionDao.getAllByUserId(userId);
     }
 }

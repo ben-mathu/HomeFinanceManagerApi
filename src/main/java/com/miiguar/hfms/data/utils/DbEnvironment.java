@@ -18,6 +18,7 @@ public class DbEnvironment {
     public static final String USERS_TB_NAME = "users";
     public static final String USER_ID = "user_id";
     public static final String USERNAME = "username";
+    public static final String MOB_NUMBER = "mob_number";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String IS_ADMIN = "is_admin";
@@ -98,7 +99,9 @@ public class DbEnvironment {
     // Reference user_id from users table
     public static final String INCOME_STATUS = "income_status";
     public static final String JAR_STATUS = "jar_status";
+    public static final String PAYMENT_STATUS = "payment_status";
     public static final String HOUSEHOLD_STATUS = "household_status";
+    public static final String BUDGET_STATUS = "budget_status";
     public static final String COMPLETE_AT = "completed_at";
     public static final String FK_ACCOUNT_STATUS_USER_ID = "fk_account_status_user_id_ref_users";
 
@@ -107,7 +110,7 @@ public class DbEnvironment {
      */
     public static final String MONEY_JAR_TB_NAME = "money_jars";
     public static final String MONEY_JAR_ID = "jar_id";
-    public static final String MONEY_JAR_NAME = "jar_label";
+    public static final String MONEY_EXPENSE_TYPE = "expense_type";
     public static final String CATEGORY = "category";
     public static final String TOTAL_AMOUNT = "amount";
     // created at {type: string date}
@@ -124,7 +127,7 @@ public class DbEnvironment {
     public static final String EXPENSE_ID = "expense_id";
     public static final String EXPENSE_NAME = "expense_name";
     public static final String EXPENSE_DESCRIPTION = "expense_description";
-    // amount {type: double}
+    // amount
     // householdId  references households household_id
     // envelope id ref envelopes envelope id
     public static final String PAYEE_NAME = "payee_name";
@@ -147,4 +150,24 @@ public class DbEnvironment {
     public static final String RESULT_DESC = "result_description";
     public static final String CALLBACK_METADATA = "callback_metadata";
     public static final String TRANSACTION_STATUS = "transaction_status";
+    
+    public static final String TRANSACTION_ID = "transaction_id";
+    public static final String TRANSACTION_DESCRIPTION = "transaction_desc";
+    public static final String PAYMENT_DETAILS = "payment_details";
+    // amount
+    public static final String PAYMENT_TIMESTAMP = "payment_timestamp";
+    // created at timestamp
+    // jar_id reference jar table
+    public static final String FK_TRANSACTIONS_USER_ID = "fk_transactions_user_id_ref_users";
+
+    /**
+     * Budget
+     */
+    public static final String BUDGET_TB_NAME = "budgets";
+    public static final String BUDGET_ID = "budget_id";
+    public static final String BUDGET_AMOUNT = "budget_amount";
+    public static final String BUDGET_DESC = "budget_description";
+    // household id, budget saved for a household not individual
+    // created at field.
+    public static final String FK_BUDGETS_HOUSEHOLD_ID = "fk_budgets_household_id_ref_households";
 }

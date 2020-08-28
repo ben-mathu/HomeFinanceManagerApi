@@ -15,8 +15,10 @@ let btnExpandLiabilities;
 let liabilitySection;
 let isExpanded = false;
 
+let paymentDetails;
 let paymentTemplate;
 let notificationTemplate;
+let notificationContainer;
 
 const paybillFields = {
     SHORT_CODE: "BusinessShortCode",
@@ -26,19 +28,35 @@ const paybillFields = {
     PHONE_NUMBER: "PhoneNumber",
     ACCOUNT_REF: "AccountReference",
     TRANSACTION_DESC: "TransactionDesc"
-}
+};
+
+const topUpFields = {
+    SHORT_CODE: "BusinessShortCode",
+    AMOUNT: "Amount",
+    PARTY_A: "PartyA",
+    PARTY_B: "PartyB",
+    PHONE_NUMBER: "PhoneNumber",
+    ACCOUNT_REF: "AccountReference",
+    TRANSACTION_DESC: "TransactionDesc"
+};
+
+/**
+ * make payments array functions
+ */
+let makePaymentsArrays = {};
 
 /**
  * Configure payment elements and global variables
  */
 function configurePayments() {
-    paymentTemplate = document.getElementById("paymentTemplate").content;
-    notificationTemplate = document.getElementById("notificationDetails").content;
+    paymentDetails = document.getElementById("paymentDialogContainer");
+    paymentTemplate = document.getElementById("paymentTemplate");
+    notificationTemplate = document.getElementById("notificationDetails");
+    
+    notificationContainer = document.getElementById("notificationContainer");
 
-    notifications.registerLister(function(val, clone) {
-        window.localStorage.setItem(val, JSON.stringify(notifications.getAll));
+    notifications.registerListener(function(val, clone) {
 
-        let notificationContainer = document.getElementById("notificationContainer");
         notificationContainer.appendChild(clone);
 
         notificationCount++;
@@ -55,7 +73,7 @@ let count = 0;
 function showNotificationDialog(jarId, jarDto) {
     let jar = jarDto.jar;
 
-    let templateClone = paymentTemplate.cloneNode(true);
+    let templateClone = paymentTemplate.content.cloneNode(true);
 
     templateClone.querySelector("#moneyJarId").id += count;
     moneyJarId = templateClone.querySelector("#moneyJarId" + count);
@@ -64,21 +82,12 @@ function showNotificationDialog(jarId, jarDto) {
     templateClone.querySelector("#liabilitySection").id += count;
     liabilitySection = templateClone.querySelector("#liabilitySection" + count);
 
-    if (jar.category == "Expenses") {
+    if (jar.category === categoryOption.SINGLE) {
         let expenseItems = jarDto.expense;
-
-        expense.expense_id = expenseItems.expense_id;
-        expense.expense_name = expenseItems.expense_name;
-        expense.expense_description = expenseItems.expense_description;
-        expense.amount = expenseItems.amount;
-        expense.payee_name = expenseItems.payee_name;
-        expense.type = expenseItems.type
-        expense.business_number = expenseItems.business_number;
-        expense.account_number = expenseItems.account_number;
 
         templateClone.querySelector("#paymentExpense").id += count;
         paymentExpenseSection = templateClone.querySelector("#paymentExpense" + count);
-        paymentExpenseSection.appendChild(setExpense(jarId));
+        paymentExpenseSection.appendChild(setExpense(jarId, expenseItems));
         liabilitySection.appendChild(paymentExpenseSection);
     } else {
         let groceries = jarDto.groceries;
@@ -89,7 +98,7 @@ function showNotificationDialog(jarId, jarDto) {
         liabilitySection.appendChild(paymentGorcerySection);
     }
 
-    let nameTitle = jar.jar_label;
+    let nameTitle = jar.expense_type;
     templateClone.querySelector("#nameTitle").id += count;
     let nameTitleSpan = templateClone.querySelector("#nameTitle" + count);
     nameTitleSpan.innerHTML = nameTitle;
@@ -106,17 +115,22 @@ function showNotificationDialog(jarId, jarDto) {
     btnEditDetails = templateClone.querySelector("#btnEditDetails" + count);
     btnEditDetails.onclick = function () {
         openJarModalForEdit(moneyJarId.value);
-    }
+    };
 
     templateClone.querySelector("#btnPay").id += count;
     btnPay = templateClone.querySelector("#btnPay" + count);
-    btnPay.onclick = function() {
-        makePayments(moneyJarId.value);
-    }
+    btnPay.addEventListener("click", function(event) {
+        let elementIndex = event.target.id[event.target.id.length - 1];
+        let mJarId = document.getElementById("moneyJarId" + elementIndex);
+        makePayments(mJarId.value);
+    }, false);
 
     templateClone.querySelector("#expandButton").id += count;
     btnExpandLiabilities = templateClone.querySelector("#expandButton" + count);
-    btnExpandLiabilities.onclick = function () {
+    btnExpandLiabilities.onclick = function (event) {
+        let elementIndex = event.target.id[event.target.id.length - 1];
+        liabilitySection = document.getElementById("liabilitySection" + elementIndex);
+        
         if (isExpanded) {
             liabilitySection.hidden = true;
             isExpanded = false;
@@ -124,8 +138,8 @@ function showNotificationDialog(jarId, jarDto) {
             liabilitySection.hidden = false;
             isExpanded = true;
         }
-    }
-
+    };
+    
     templateClone.querySelector("#paymentDetailsContainer").id += count;
     let paymentDialog = templateClone.querySelector("#paymentDetailsContainer" + count);
 
@@ -133,9 +147,8 @@ function showNotificationDialog(jarId, jarDto) {
         paymentDialog.style.display = "none";
 
         addNotification(jarId);
-    }, 10000);
+    }, 20000);
 
-    let paymentDetails = document.getElementById("paymentDialogContainer");
     paymentDetails.appendChild(templateClone);
 
     let paymentDueDialog = document.getElementById("paymentDueDialog");
@@ -157,10 +170,10 @@ let notifications = {
     getAll: function() {
         return this.notificationList;
     },
-    registerLister: function(listener) {
+    registerListener: function(listener) {
         this.notificationAddListener = listener;
     }
-}
+};
 
 /**
  * add to a list of notifications
@@ -170,25 +183,100 @@ let notifications = {
 let notificationCount = 0;
 function addNotification(jarId) {
     let jarDto = jars.getJar(jarId);
+    let jar = jarDto.jar;
+    
+    populateNotificationSection(jarId);
+    
+    // update date depending on schedule
+    let date;
+    if (jar.scheduled_type === scheduleType.DAILY) {
+        date = new Date().addDays()(jar.scheduled_for, 1);
+    } else if (jar.scheduled_type === scheduleType.WEEKLY) {
+        date = new Date().addDays(jar.scheduled_for, 7);
+    } else if (jar.scheduled_type === scheduleType.MONTHLY) {
+        date = new Date().addMonths(jar.scheduled_for, 1);
+    } else if (jar.scheduled_type === scheduleType.SCHEDULED) {
+        date = new Date(jar.scheduled_for);
+    }
+    
+//    format date
+    if (date !== undefined) {
+        const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false});
+        const [{ value: month },,{ value: day },,{ value: year },,{value: hour},,{value: minute}] = dateTimeFormat .formatToParts(date );
+        
+        let dateStr = `${year}-${month}-${day} ${hour}:${minute}`;
+        sendJarRequestJson(jarDto, dateStr);
+    }
+    
+    if (!jar.jar_status) {
+        jar.jar_status = true;
+        jarDto.jar = jar;
+        jars.setJar(jarId, jarDto);
+        updateMoneyJarJson(jarId);
+    }
+}
+
+/**
+ * update the notification section
+ * @param {string} jarId identifies a jar object
+ */
+function populateNotificationSection(jarId) {
+    let jarDto = jars.getJar(jarId);
     
     // create a unique id for notification
     let dateNow = Date.now();
 
     let jar = jarDto.jar;
 
-    let templateClone = notificationTemplate.cloneNode(true);
+    let templateClone = notificationTemplate.content.cloneNode(true);
+    
+    templateClone.querySelector("#notificationId").id += notificationCount;
+    let notificationId = templateClone.querySelector("#notificationId" + notificationCount);
+    notificationId.value = jarId;
 
     templateClone.querySelector("#notificationTitle").id += notificationCount;
     let notificationTitle = templateClone.querySelector("#notificationTitle" + notificationCount);
-    notificationTitle.innerHTML = jar.jar_label;
+    notificationTitle.innerHTML = jar.expense_type;
 
     templateClone.querySelector("#notificationMessage").id += notificationCount;
     let notificationMessage = templateClone.querySelector("#notificationMessage" + notificationCount);
     notificationMessage.innerHTML = jar.category + " Amount: " + jar.amount;
     
-    jarId += dateNow;
-    notifications.setNotification(jarId, jarDto, templateClone);
+    templateClone.querySelector("#notificationDetailsCon").id += notificationCount;
+    let notificationItem = templateClone.querySelector("#notificationDetailsCon" + notificationCount);
+    notificationItem.addEventListener("click", function (event) {
+        let itemIndex = event.target.id[event.target.id.length - 1];
+        let id = document.getElementById("notificationId" + itemIndex);
+        openJarModalForPay(id.value);
+    });
+    
+    let id = jarId + "-" + dateNow;
+    notifications.setNotification(id, jarDto, templateClone);
 }
+
+Date.prototype.addHours = function(scheduled, hours) {
+    let date = new Date(scheduled);
+    date.setHours(date.getHours() + hours);
+    return date;
+};
+
+Date.prototype.addDays = function(scheduled, days) {
+    let date = new Date(scheduled);
+    date.setDate(date.getDate() + days);
+    return date;
+};
+
+Date.prototype.addWeeks = function(scheduled, weeks) {
+    let date = new Date(scheduled);
+    date.setDate(date.getDate() + weeks * 7);
+    return date;
+};
+
+Date.prototype.addMonths = function(scheduled, months) {
+    let date = new Date(scheduled);
+    date.setMonth(date.getMonth() + months);
+    return date;
+};
 
 /**
  * Send a transaction to Mpesa
@@ -196,21 +284,22 @@ function addNotification(jarId) {
  * @param {String} jarId represents a money jar element in the moneyJarList field
  */
 function makePayments(jarId) {
-
     let request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
-                let responseData = request.responseText
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                let responseData = request.responseText;
                 showSuccessNotification(responseData, jarId);
+                
+                jarModal.style.display = "none";
             }
         }
-    }
+    };
 
     let data = serializePaymentData(jarId);
 
-    request.open("POST", ctx + "/dashboard/transactions/send-payment" + data, true);
+    request.open("POST", ctx + "/dashboard/transactions/send-payment?" + data, true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
     request.send(data);
 }
@@ -221,12 +310,12 @@ function showSuccessNotification(data, notificationId) {
     let request = getXmlHttpRequest();
 
     request.onload = function() {
-        if (request.status == 200) {
+        if (request.status === 200) {
             updateNoitification(notificationId);
         }
-    }
+    };
 
-    request.open("POST", ctx + "/mpesa/lnmo-url/" + report.subject);
+    request.open("POST", ctx + "/mpesa/lnmo-url");
 }
 
 /**
@@ -235,7 +324,11 @@ function showSuccessNotification(data, notificationId) {
  * @param {string} notificationId identify notification of payement request
  */
 function updateNoitification(notificationId) {
-    
+    let paymentStatus = paymentTemplate.content.querySelector("#paymentStatus");
+    paymentStatus.innerHTML = "paid";
+    paymentStatus.style.color = "white";
+
+    let notification = notifications.getNotification(notificationId);
 }
 
 function serializePaymentData(jarId) {
@@ -244,18 +337,28 @@ function serializePaymentData(jarId) {
     
     let data = "";
 
-    let token = window.localStorage.getItem(userFields.TOKEN)
+    let token = window.localStorage.getItem(userFields.TOKEN);
     data += userFields.TOKEN + "=" + token + "&";
     
-    if (jar.category == categoryOption.EXPENSE) {
-        let expenseItem = jar.expense;
-        data += paybillFields.SHORT_CODE + "=" + expenseItem.business_number + "&";
-        data += paybillFields.AMOUNT + "=" + jar.amount + "&";
-        data += paybillFields.PARTY_A + "=" + expenseItem.account_number + "&";
-        data += paybillFields.PARTY_B + "=" + expenseItem.business_number + "&";
-        data += paybillFields.PHONE_NUMBER + "=" + expenseItem.account_number + "&";
-        data += paybillFields.ACCOUNT_REF + "=account" + "&";
-        data += paybillFields.TRANSACTION_DESC + "=First transaction from code";
+    let userId = window.localStorage.getItem(userFields.USER_ID);
+    data += userFields.USER_ID + "=" + userId + "&";
+
+    let isSameCategory = isSameCategoryFun(jar.category);
+    
+    if (isSameCategory) {
+        let expenseItem = jarElement.expense;
+        data += paybillFields.SHORT_CODE + "=" + escape(expenseItem.business_number) + "&";
+        data += paybillFields.AMOUNT + "=" + escape(jar.amount) + "&";
+        data += paybillFields.PARTY_A + "=" + escape(expenseItem.account_number) + "&";
+        data += paybillFields.PARTY_B + "=" + escape(expenseItem.business_number) + "&";
+        data += paybillFields.PHONE_NUMBER + "=" + escape(expenseItem.account_number) + "&";
+        data += paybillFields.ACCOUNT_REF + "=" + escape("account") + "&";
+        data += paybillFields.TRANSACTION_DESC + "=" + escape("First transaction from code") + "&";
+        data += jarFields.JAR_ID + "=" + escape(jarId);
     }
     return data;
+}
+
+function isSameCategoryFun(category) {
+    return category === categoryOption.SINGLE;
 }

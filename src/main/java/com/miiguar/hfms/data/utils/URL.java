@@ -23,6 +23,7 @@ public class URL {
     public static final String GET_MONEY_JAR = "/jars/get-money-jar";
     public static final String GET_ALL_MONEY_JARS = "/jars/get-all-jars";
     public static final String UPDATE_MONEY_JAR = "/jars/update-money-jar";
+    public static final String DELETE_MONEY_JAR = "/jars/delete-money-jar";
 
     public static final String USER_DETAILS = "/users/*";
     public static final String GET_USER_DETAILS = "/users/user";
@@ -34,6 +35,7 @@ public class URL {
     // Transactions
     public static final String TRANSACTIONS = "/transactions/*";
     public static final String SEND_TRANSACTION = "/transactions/send-transaction";
+    public static final String GET_TRANSACTIONS = "/transactions/get-transactions";
 
     // Daraja
     // Request url
@@ -43,5 +45,12 @@ public class URL {
     // Callback URLs
     public static final String MPESA_URL = "/mpesa/confirm-url";
     public static final String LNMO_CALLBACK_URL = "/mpesa/lnmo-url";
-    public static final String BASE_URL = "https://3c142f095966.ngrok.io";
+    public static final String BASE_URL = "https://b4d3c67b734b.ngrok.io:8000";
+    
+    // Change Account details
+    public static final String CHANGE_ACCOUNT_URL = "/accounts/*";
+    public static final String CHANGE_ACCOUNT_DETAILS = "/accounts/change-password";
+    public static final String CHANGE_EMAIL_DETAILS = "/accounts/change-email";
+    public static final String CHANGE_USERNAME_DETAILS = "/accounts/change-username";
+    public static final String CHANGE_NUMBER_DETAILS = "/accounts/change-number";
 }

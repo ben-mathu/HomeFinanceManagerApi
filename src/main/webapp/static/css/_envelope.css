@@ -1,14 +1,9 @@
-.jar-elements {
-    display: inline-block;
-    color: #3F3A4B;
-}
-
 .btn-submit {
     width: 100%;
 }
 
 .btn-right {
-    right: 0%;
+    float: right;
 }
 
 .select-style {

@@ -58,6 +58,7 @@ public class IncomeApi extends BaseServlet {
 
         income.setIncomeId(incomeId);
         income.setCreatedAt(today);
+        income.setSchedule(today);
 
         incomeDao.save(income);
 

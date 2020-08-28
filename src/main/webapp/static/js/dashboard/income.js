@@ -8,9 +8,8 @@ let btnCancelIncomeModal;
 let incomeTypeSelector;
 
 const incomeTypeFields = {
-    MOB_MONEY: 'Mobile Money',
-    BANK_ACC: 'Bank Account'
-}
+    MOB_MONEY: 'Mobile Money'
+};
 
 function configureIncomeElements() {
 
@@ -20,17 +19,17 @@ function configureIncomeElements() {
     
     btnOpenIncomeModal.onclick = function() {
         incomeModal.style.display = "block";
-    }
+    };
 
     btnCancelIncomeModal = document.getElementById("cancelIncomeModal");
     btnCancelIncomeModal.onclick = function() {
         incomeModal.style.display = "none";
-    }
+    };
 
     btnAddIncome = document.getElementById("addIncome");
     btnAddIncome.onclick = function() {
         addIncome();
-    }
+    };
 
     // declare income type selector
     incomeTypeSelector = document.getElementById("incomeType");
@@ -42,7 +41,7 @@ function openIncomeModal(modalDetails) {
 
     btnAddIncome.onclick = function() {
         updateIncome(modalDetails);
-    }
+    };
 }
 
 function closeIncomeModal() {
@@ -52,8 +51,8 @@ function closeIncomeModal() {
 function updateIncome(callback) {
     var request = getXmlHttpRequest();
     request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
                 // close modal
                 closeIncomeModal();
 
@@ -67,14 +66,14 @@ function updateIncome(callback) {
 
                 if (len > 1) {
                     callback.onNext(callback);
-                } else if(len == 1) {
+                } else if(len === 1) {
                     callback.onDone(callback);
                 } else {
                     callback.onComplete();
                 }
             }
         }
-    }
+    };
 
     var token = userFields.TOKEN + "=" + escape(window.localStorage.getItem(userFields.TOKEN));
     var userId = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID));
@@ -82,10 +81,10 @@ function updateIncome(callback) {
 
     let incomeType = incomeTypeSelector.options[incomeTypeSelector.selectedIndex].value;
     incomeType = incomeFields.ACCOUNT_TYPE + "=" + escape(incomeType);
-    var incomeDesc = incomeFields.INCOME_DESC + "=" + escape(document.getElementById("incomeDescription").value);
+//    var incomeDesc = incomeFields.INCOME_DESC + "=" + escape(document.getElementById("incomeDescription").value);
     var incomeValue = incomeFields.AMOUNT + "=" + escape(document.getElementById("incomeValue").value);
 
-    var data = userId + "&" + incomeType + "&" + incomeDesc + "&" + incomeValue + "&" + token;
+    var data = userId + "&" + incomeType + "&" + incomeValue + "&" + token;
 
     request.open("POST", ctx + "/dashboard/user-controller/add-income", true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
@@ -97,22 +96,24 @@ function addIncome() {
 
     var request = getXmlHttpRequest();
     request.onreadystatechanged = function() {
-        if (request.readyState == 4) {
-            if (reaquest.status == 200) {
+        if (request.readyState === 4) {
+            if (reaquest.status === 200) {
                 setIncome(JSON.parse(request.responseText));
 
                 showIncome(user);
             }
         }
-    }
+    };
 
     var token = userFields.TOKEN + "=" + escape(window.localStorage.getItem(userFields.TOKEN));
     var userId = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID));
 
-    var incomeDescription = incomeFields.ACCOUNT_TYPE + "=" + escape(document.getElementById("incomeDescription").value);
+//    var incomeDescription = incomeFields.ACCOUNT_TYPE + "=" + escape(document.getElementById("incomeDescription").value);
+    var incomeType = incomeTypeSelector.options[incomeTypeSelector.selectedIndex].value;
+    incomeType = incomeFields.ACCOUNT_TYPE + "=" + escape(incomeType);
     var value = incomeFields.AMOUNT + "=" + escape(document.getElementById("incomeValue").value);
 
-    var data = userId + "&" + incomeDescription + "&" + value + "&" + token;
+    var data = userId + "&" + incomeType + "&" + value + "&" + token;
 
     request.open("POST", ctx + "/dashboard/user-controller/add-income", true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
@@ -125,7 +126,7 @@ function addIncome() {
  * @param {Income} income Contain income details
  */
 function showIncome(income) {
-    if (income != null) {
+    if (income !== undefined) {
         if (income.amount > 0) {
             incomeSpan.hidden = false;
             var text = incomeSpan.innerHTML + income.amount;

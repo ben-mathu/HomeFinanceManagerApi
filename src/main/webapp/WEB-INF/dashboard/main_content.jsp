@@ -2,10 +2,11 @@
     <input type="hidden" id="contextPath" name="context_path" value="<%= request.getContextPath() %>">
     <div class="chart-chat-section section-style" >
         <div class="chart-container rounded-corner shadow-1pt subsection-background" >
-            <h4>Chart</h4>
+            <canvas id="lineGraphCanvas"></canvas>
+            <legend class="legends-for-piechart" for="lineGraphCanvas"></legend>
         </div>
         <div class="chat-container rounded-corner shadow-1pt subsection-background" >
-            <div id="notificationContainer" class="notifications" >
+            <div id="notificationContainer" class="notifications">
                 <%@ include file = "../template/notification.jsp" %>
             </div>
         </div>
@@ -20,8 +21,8 @@
             <div class="grocery-subsection rounded-corner shadow-1pt subsection-background" >
                 <div class="jar-list-container" >
                     <%-- Create a table of scheduled money jar labels and scheduled date. --%>
-                    <div class="empty"  hidden>
-                        you can have all money jars listed here
+                    <div id="emptyExpenseList" class="empty"  hidden>
+                        Your expenses will be listed here
                     </div>
 
                     <div id="jarList" class="jar-list">
@@ -32,7 +33,7 @@
                 </div>
                 <div class="jars-pie-chart" >
                     <canvas id="jarsCanvas"></canvas>
-                    <legend for="jarsCanvas"></legend>
+                    <legend class="legends-for-piechart" for="jarsCanvas"></legend>
                 </div>
             </div>
 
@@ -43,6 +44,17 @@
     </div>
     
     <div class="expenses rounded-corner shadow-1pt subsection-background" >
-        <h4>Transactions</h4>
+        <table id="transactionTable">
+        <thead>
+            <tr>
+                <th>Index</th>
+                <th>Transaction Description</th>
+                <th>Amount</th>
+                <th>Payment Status</th>
+                <th>Payment Timestamp</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
     </div>
 </div>

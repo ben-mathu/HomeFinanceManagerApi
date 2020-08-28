@@ -65,14 +65,14 @@
                             </div>
                             <span id="householdNameError" class="resp">${householdNameError.householdNameError}</span>
                         </div>
-
+<!--
                         <%-- Household Description --%>
                         <div class="input-container">
                             <div>
                             	<input class="input-style" id="householdDesc" type="text" name="householdDesc" placeholder="Household Description">
                             </div>
                             <span id="householdDescError" class="resp">${householdDescError.householdDescError}</span>
-                        </div>
+                        </div>-->
                         
                         <%-- Household Unique id field --%>
                         <div class="input-container">

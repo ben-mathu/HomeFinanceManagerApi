@@ -24,8 +24,8 @@ public class MoneyJar {
     @SerializedName(MONEY_JAR_ID)
     private String moneyJarId = "";
 
-    @SerializedName(MONEY_JAR_NAME)
-    @Column(columnName = MONEY_JAR_NAME, characterLength = 45, unique = true)
+    @SerializedName(MONEY_EXPENSE_TYPE)
+    @Column(columnName = MONEY_EXPENSE_TYPE, characterLength = 45)
     private String name = "";
 
     @SerializedName(CATEGORY)
@@ -51,6 +51,14 @@ public class MoneyJar {
     @SerializedName(HOUSEHOLD_ID)
     @Column(columnName = HOUSEHOLD_ID)
     private String householdId;
+
+    @SerializedName(JAR_STATUS)
+    @Column(columnName = JAR_STATUS)
+    private boolean jarStatus = false;
+    
+    @SerializedName(PAYMENT_STATUS)
+    @Column(columnName = PAYMENT_STATUS)
+    private boolean paymentStatus = false;
 
     public String getMoneyJarId() {
         return moneyJarId;
@@ -114,5 +122,21 @@ public class MoneyJar {
 
     public void setHouseholdId(String householdId) {
         this.householdId = householdId;
+    }
+
+    public boolean isJarStatus() {
+        return jarStatus;
+    }
+
+    public void setJarStatus(boolean jarStatus) {
+        this.jarStatus = jarStatus;
+    }
+
+    public boolean isPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(boolean paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

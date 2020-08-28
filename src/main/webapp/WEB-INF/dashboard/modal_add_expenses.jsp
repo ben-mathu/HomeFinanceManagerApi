@@ -1,10 +1,10 @@
 <div id="expensesModal" class="modal">
     <div class="modal-content" >
-        <input id="expenseId" type="text" name="expense_id" placeholder="Expense Id">
+        <input id="expenseId" type="text" name="expense_id" placeholder="Expense Id" hidden>
         <h4 class="modal-title">Add Expense Details</h4>
         <p id="expense-modal-error" class="error-text"></p>
         <form>
-            <div>
+<!--            <div>
                 <input id="expenseName" class="input-style" type="text" name="expense_name" placeholder="Expense Name" />
             </div>
             <div>
@@ -37,7 +37,7 @@
             <div>
                 <input id="addExpense" class="btn2" type="button" value="Submit" />
                 <input id="closeExpenseModal" class="btn4-caution" type="button" value="Cancel">
-            </div>
+            </div>-->
         </form>
     </div>
 </div>

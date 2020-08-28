@@ -34,10 +34,10 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
     @Override
     public int save(MoneyJar item) {
         String query = "INSERT INTO " + MONEY_JAR_TB_NAME + "(" +
-                MONEY_JAR_ID + "," + MONEY_JAR_NAME + "," + CATEGORY + "," +
+                MONEY_JAR_ID + "," + MONEY_EXPENSE_TYPE + "," + CATEGORY + "," +
                 TOTAL_AMOUNT + "," + CREATED_AT + "," + SCHEDULED_FOR + "," +
-                SCHEDULED_TYPE + "," + HOUSEHOLD_ID + ")" +
-                " VALUES (?,?,?,?,?,?,?,?)";
+                SCHEDULED_TYPE + "," + HOUSEHOLD_ID + "," + JAR_STATUS + ")" +
+                " VALUES (?,?,?,?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -55,6 +55,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
             preparedStatement.setString(6, item.getScheduledFor());
             preparedStatement.setString(7, item.getScheduleType());
             preparedStatement.setString(8, item.getHouseholdId());
+            preparedStatement.setBoolean(9, item.isJarStatus());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -82,13 +83,14 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
     @Override
     public int update(MoneyJar item) {
         String query = "UPDATE " + MONEY_JAR_TB_NAME +
-                " SET " + MONEY_JAR_NAME + "=?," +
+                " SET " + MONEY_EXPENSE_TYPE + "=?," +
                 CATEGORY + "=?," +
                 TOTAL_AMOUNT + "=?," +
                 CREATED_AT + "=?," +
                 SCHEDULED_FOR + "=?," +
                 SCHEDULED_TYPE + "=?," +
-                HOUSEHOLD_ID + "=?" +
+                HOUSEHOLD_ID + "=?," +
+                JAR_STATUS + "=?" +
                 " WHERE " + MONEY_JAR_ID + "=?";
         int affectedRows = 0;
 
@@ -106,7 +108,8 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
             preparedStatement.setString(5, item.getScheduledFor());
             preparedStatement.setString(6, item.getScheduleType());
             preparedStatement.setString(7, item.getHouseholdId());
-            preparedStatement.setString(8, item.getMoneyJarId());
+            preparedStatement.setBoolean(8, item.isJarStatus());
+            preparedStatement.setString(9, item.getMoneyJarId());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -133,12 +136,92 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
 
     @Override
     public int delete(MoneyJar item) {
-        return 0;
+        String query = "DELETE FROM " + MONEY_JAR_TB_NAME +
+                " WHERE " + MONEY_JAR_ID + "=?";
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        int affectedRows = 0;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, item.getMoneyJarId());
+
+            affectedRows = preparedStatement.executeUpdate();
+            
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error deleting expense", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return affectedRows;
     }
 
     @Override
     public MoneyJar get(String id) {
-        return null;
+        String query = "SELECT * FROM " + MONEY_JAR_TB_NAME +
+                " WHERE " + MONEY_JAR_ID + "=?";
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        MoneyJar envelope = new MoneyJar();
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                envelope.setMoneyJarId(resultSet.getString(MONEY_JAR_ID));
+                envelope.setName(resultSet.getString(MONEY_EXPENSE_TYPE));
+                envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
+                envelope.setCategory(resultSet.getString(CATEGORY));
+                envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));
+                envelope.setScheduleType(resultSet.getString(SCHEDULED_TYPE));
+                envelope.setHouseholdId(resultSet.getString(HOUSEHOLD_ID));
+                envelope.setCreatedAt(resultSet.getString(CREATED_AT));
+            }
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing envelope query", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (resultSet != null)
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return envelope;
     }
 
     @Override
@@ -166,9 +249,10 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
             while (resultSet.next()) {
                 MoneyJar envelope = new MoneyJar();
                 envelope.setMoneyJarId(resultSet.getString(MONEY_JAR_ID));
-                envelope.setName(resultSet.getString(MONEY_JAR_NAME));
+                envelope.setName(resultSet.getString(MONEY_EXPENSE_TYPE));
                 envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
                 envelope.setCategory(resultSet.getString(CATEGORY));
+                envelope.setJarStatus(resultSet.getBoolean(JAR_STATUS));
                 envelope.setScheduledFor(resultSet.getString(SCHEDULED_FOR));
                 envelope.setScheduleType(resultSet.getString(SCHEDULED_TYPE));
                 envelope.setHouseholdId(resultSet.getString(HOUSEHOLD_ID));

@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Defines a table column and its attributes
  * @author bernard
  */
 @Target({ElementType.FIELD})

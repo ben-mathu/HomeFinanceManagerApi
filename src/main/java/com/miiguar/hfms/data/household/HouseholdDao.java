@@ -51,11 +51,12 @@ public class HouseholdDao implements Dao<Household> {
                 household = new Household();
                 household.setId(resultSet.getString(HOUSEHOLD_ID));
                 household.setName(resultSet.getString(HOUSEHOLD_NAME));
-                household.setDescription(resultSet.getString(HOUSEHOLD_DESCRIPTION));
             }
 
             preparedStatement.close();
             preparedStatement = null;
+            resultSet.close();
+            resultSet = null;
             conn.close();
             conn = null;
         } catch (SQLException throwables) {
@@ -79,8 +80,8 @@ public class HouseholdDao implements Dao<Household> {
     @Override
     public int save(Household item) {
         String query = "INSERT INTO " + HOUSEHOLD_TB_NAME + "(" +
-                HOUSEHOLD_ID + "," + HOUSEHOLD_NAME + "," + HOUSEHOLD_DESCRIPTION + ")" +
-                " VALUES (?,?,?)";
+                HOUSEHOLD_ID + "," + HOUSEHOLD_NAME + ")" +
+                " VALUES (?,?)";
 
         int affectedRows = 0;
 
@@ -92,7 +93,6 @@ public class HouseholdDao implements Dao<Household> {
 
             preparedStatement.setString(1, item.getId());
             preparedStatement.setString(2, item.getName());
-            preparedStatement.setString(3, item.getDescription());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -144,7 +144,6 @@ public class HouseholdDao implements Dao<Household> {
 
             while (resultSet.next()) {
                 household.setId(id);
-                household.setDescription(resultSet.getString(HOUSEHOLD_DESCRIPTION));
                 household.setName(resultSet.getString(HOUSEHOLD_NAME));
             }
 
@@ -240,5 +239,54 @@ public class HouseholdDao implements Dao<Household> {
                 } catch (Exception e) { /* Intentionally blank */ }
         }
         return householdId;
+    }
+
+    public List<String> getUserId(String houseId) {
+        List<String> userIdList = new ArrayList<>();
+        String query = "SELECT " + USER_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, houseId);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                userIdList.add(resultSet.getString(USER_ID));
+            }
+
+            resultSet.close();
+            resultSet = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        }catch (SQLException e) {
+            Log.e(TAG, "Error Processing household id", e);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (resultSet != null)
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return userIdList;
     }
 }

@@ -1,5 +1,6 @@
 let user;
 let income;
+let budget;
 let householdArr;
 let userHouseholdArr;
 let accountStatus;
@@ -29,6 +30,7 @@ var householdModal;
 var jarModal;
 var groceryModal;
 var expensesModal;
+let budgetModal;
 
 /**
  * Required settings in account
@@ -37,17 +39,6 @@ var incomplete = {};
 var complete = {};
 var scheduled = {};
 
-let expense = {
-    expense_id: "",
-    expense_name: "",
-    expense_description: "",
-    amount: "",
-    payee_name: "",
-    type: "",
-    business_number: "",
-    account_number: ""
-}
-
 /**
  * Enumerations to represent folders in settings page
  */
@@ -55,7 +46,7 @@ const folders = {
     ROOT: 'root',
     INCOME: 'income',
     PREFERENCES: 'preferences'
-}
+};
 
 /**
  * Fields of known values used in app
@@ -67,26 +58,26 @@ const userFields = {
     PASSWORD: 'password',
     IS_ADMIN: 'is_admin',
     INCOME: 'income',
-    TOKEN: 'token'
-}
+    TOKEN: 'token',
+    PHONE_NUMBER: 'mob_number'
+};
 
 const incomeFields = {
     INCOME_ID: 'income_id',
     ACCOUNT_TYPE: 'account_type',
-    INCOME_DESC: 'income_description',
     AMOUNT: 'amount',
-    CREATED_AT: 'created_at',
-}
+    CREATED_AT: 'created_at'
+};
 
 const requestHeader = {
     CONTENT_TYPE: 'Content-Type',
     AUTHORIZATION: 'Authorization'
-}
+};
 
 const mediaType = {
     APPLICATION_JSON: 'application/json',
     FORM_ENCODED: 'application/x-www-form-urlencoded'
-}
+};
 
 const requestMethod = {
     PUT: 'PUT',
@@ -94,15 +85,16 @@ const requestMethod = {
     UPDATE: 'UPDATE',
     POST: 'POST',
     DELETE: 'DELETE'
-}
+};
 
 const accountStatusField = {
     HOUSEHOLD: 'household_status',
     EXPENSES: 'expenses_status',
     MONEY_JAR: 'jar_status',
     INCOME: 'income_status',
-    ACCOUNT: 'account_status'
-}
+    ACCOUNT: 'account_status',
+    BUDGET: 'budget_status'
+};
 
 /**
  * Serializeable names for expense JSON Object
@@ -115,20 +107,20 @@ const expenseFields = {
     PAYEE_NAME: "payee_name",
     BUSINESS_NUMBER: "business_number",
     ACCOUNT_NUMBER: "account_number"
-}
+};
 
 /**
  * Serializeable fields for Money Jar JSON object
  */
 const jarFields = {
     JAR_ID: "jar_id",
-    JAR_LABEL: "jar_label",
+    EXPENSE_TYPE: "expense_type",
     CATEGORY: "category",
     TOTAL_AMOUNT: "amount",
     LIABILITIES: "liabilities",
     SCHEDULE: "scheduled_for",
     SCHEDULED_TYPE: "scheduled_type"
-}
+};
 
 window.onload = function() {
     
@@ -161,19 +153,19 @@ window.onload = function() {
 
     document.getElementById("settings").onclick = function() {
         getPage("settings-title:root");
-    }
+    };
 
     document.getElementById("members").onclick = function() {
         getPage("members-title");
-    }
+    };
     
     document.getElementById("home").onclick = function() {
         getPage("home-title");
-    }
+    };
 
     document.getElementById("option-logout").onclick = function() {
         logout();
-    }
+    };
 
     optionsMenu = document.getElementById("optionsMenu");
     optionsMenuItems = document.getElementsByClassName("option-menu-item");
@@ -186,11 +178,11 @@ window.onload = function() {
             closeOptionsMenu();
             isOptionsMenuOpen = false;
         }
-    }
+    };
 
     document.getElementById("settings-item").onclick = function() {
         getPage("settings-option");
-    }
+    };
 
     groceryModal = document.getElementById("groceryModal");
     scheduleModal = document.getElementById("scheduleModal");
@@ -198,20 +190,23 @@ window.onload = function() {
     householdModal = document.getElementById("householdModal");
     jarModal = document.getElementById("jarModal");
     expensesModal = document.getElementById("expensesModal");
+    budgetModal = document.getElementById("budgetModal");
 
     window.onclick = function(event) {
-        if (event.target == groceryModal) {
+        if (event.target === groceryModal) {
             groceryModal.style.display = "none";
-        } else if (event.target == scheduleModal) {
+        } else if (event.target === scheduleModal) {
             scheduleModal.style.display = "none";
-        } else if (event.target == incomeModal) {
+        } else if (event.target === incomeModal) {
             incomeModal.style.display = "none";
-        } else if (event.target == jarModal) {
+        } else if (event.target === jarModal) {
             jarModal.style.display = "none";
-        } else if (event.target == expensesModal) {
+        } else if (event.target === expensesModal) {
             expensesModal.style.display = "none";
+        } else if (event.target === budgetModal) {
+            budgetModal.style.display = "none";
         }
-    }
+    };
 
     getUserDetails();
 
@@ -225,7 +220,14 @@ window.onload = function() {
     configureExpenses();
     configureMembers();
     configurePayments();
-}
+    configureTransactions();
+//    configureBudget();
+};
+
+//window.setInterval(function() {
+//    getUserDetails();
+//    getAllMoneyJars();
+//}, 5000);
 
 /**
  * set income when reeived.
@@ -243,11 +245,12 @@ function setIncome(obj) {
 function getUserDetails() {
     var request = getXmlHttpRequest();
     request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
                 var obj = JSON.parse(request.responseText);
                 user = obj.user;
                 income = obj.income;
+                budget = obj.budget;
                 
                 householdArr = obj.households;
                 userHouseholdArr = obj.relations;
@@ -270,9 +273,11 @@ function getUserDetails() {
                 usernameEle.innerHTML = user.username;
 
                 showIncome(income);
+
+//                showBudgetAmount(budget);
             }
         }
-    }
+    };
 
     var userId = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID));
     var token = userFields.TOKEN + "=" + escape(window.localStorage.getItem("token"));
@@ -285,7 +290,6 @@ function getUserDetails() {
 
 /**
  * Open Modals whose settings have not been completed.
- * 
  * @param {Map} statusMap holds all account settings updates
  */
 function openNotCompleteModals(statusMap) {
@@ -294,37 +298,44 @@ function openNotCompleteModals(statusMap) {
     // Loop through the hashmap checking date and status
     for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
-        if (statusMap[key] != null) {
+        if (statusMap[key] !== undefined) {
             var obj = JSON.parse(statusMap[key]);
             var status = obj.status;
             var dateStr = obj.date;
     
             var now = new Date();
-            if (dateStr != "" && status != Status.COMPLETE) {
+            // check that status is not complete or date set
+            if (dateStr !== "" && status !== Status.COMPLETE) {
                 if (now > new Date(dateStr)) {
-                    if (key == accountStatusField.INCOME) {
+                    if (key === accountStatusField.INCOME) {
                         incomplete[key] = incomeModal;
-                    } else if (key == accountStatusField.MONEY_JAR) {
+                    } else if (key === accountStatusField.MONEY_JAR) {
                         incomplete[key] = jarModal;
-                    } else if (key == accountStatusField.HOUSEHOLD) {
+                    } else if(key === accountStatusField.BUDGET){
+                        incomplete[key] = budgetModal;
+                    } else if (key === accountStatusField.HOUSEHOLD) {
                         incomplete[key] = householdModal;
                     }
                 } else if (now < new Date(dateStr)) {
-                    if (key == accountStatusField.INCOME) {
+                    if (key === accountStatusField.INCOME) {
                         scheduled[key] = incomeModal;
-                    } else if (key == accountStatusField.MONEY_JAR) {
+                    } else if (key === accountStatusField.MONEY_JAR) {
                         scheduled[key] = jarModal;
-                    } else if (key == accountStatusField.HOUSEHOLD) {
+                    }  else if(key === accountStatusField.BUDGET){
+                        incomplete[key] = budgetModal;
+                    } else if (key === accountStatusField.HOUSEHOLD) {
                         scheduled[key] = householdModal;
                     }
                 }
             }
         } else {
-            if (key == accountStatusField.INCOME) {
+            if (key === accountStatusField.INCOME) {
                 incomplete[key] = incomeModal;
-            } else if (key == accountStatusField.MONEY_JAR) {
+            } else if (key === accountStatusField.MONEY_JAR) {
                 incomplete[key] = jarModal;
-            } else if (key == accountStatusField.HOUSEHOLD) {
+            } else if(key === accountStatusField.BUDGET){
+                incomplete[key] = budgetModal;
+            } else  if (key === accountStatusField.HOUSEHOLD) {
                 incomplete[key] = householdModal;
             }
         }
@@ -336,7 +347,7 @@ function openNotCompleteModals(statusMap) {
         var modalKeys = Object.keys(incomplete);
 
         openIncompleteModals(modalKeys);
-    } else if (len == 1) {
+    } else if (len === 1) {
         modalKeys = Object.keys(incomplete);
         openIncompleteModals(modalKeys);
     }
@@ -366,14 +377,14 @@ function openIncompleteModals(modalKeys) {
 }
 
 window.openModal = function(modal) {
-    if (modal.key == accountStatusField.INCOME) {
+    if (modal.key === accountStatusField.INCOME) {
         openIncomeModal(modal);
-    } else if (modal.key == accountStatusField.MONEY_JAR) {
+    } else if (modal.key === accountStatusField.MONEY_JAR) {
         openJarModal(modal);
-    } else if (modal.key == accountStatusField.HOUSEHOLD) {
+    } else if (modal.key === accountStatusField.HOUSEHOLD) {
         openHouseholdModal(modal);
     }
-}
+};
 
 function getXmlHttpRequest() {
     var request;
@@ -393,15 +404,15 @@ function myTimer() {
     var min = "" + date.getMinutes();
     var seconds = "" + date.getSeconds();
 
-    if (getLength(hours) == 1) {
+    if (getLength(hours) === 1) {
         hours = "0" + hours;
     }
 
-    if (getLength(min) == 1) {
+    if (getLength(min) === 1) {
         min = "0" + min;
     }
 
-    if (getLength(seconds) == 1) {
+    if (getLength(seconds) === 1) {
         seconds = "0" + seconds;
     }
 
@@ -462,29 +473,29 @@ function getPage(id) {
     var request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {
-        if (request.readyState == 4) {
-            if (request.status == 200) {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
                 var obj = JSON.parse(request.responseText);
 
                 //
-                if (obj.title != "") {
+                if (obj.title !== "") {
                     var lastKey = getLastHistoryKey();
                     window.history.pushState(obj.title, obj.title, obj.url);
                     urlMap[obj.title] = obj.url;
-                    document.getElementById(lastKey == "" ? "mainContent" : lastKey).hidden = true;
+                    document.getElementById(lastKey === "" ? "mainContent" : lastKey).hidden = true;
                     document.getElementById(obj.title).hidden = false;
                 } else {
                     var lastKey = getLastHistoryKey();
-                    document.getElementById(lastKey == "" ? "mainContent" : lastKey).hidden = false;
+                    document.getElementById(lastKey === "" ? "mainContent" : lastKey).hidden = false;
                     if (!document.getElementById("mainContent").hidden) {
                         document.getElementById("mainContent").hidden = true;
                     }
                 }
             }
         }
-    }
+    };
     
-    var key = id == "refresh" ? id : document.getElementById(id).value;
+    var key = id === "refresh" ? id : document.getElementById(id).value;
     if (isTitleInUrlMap(key)) {
         var url = getUrl(key);
         window.history.pushState(key, key, url);
@@ -507,7 +518,7 @@ function isTitleInUrlMap(urlKey) {
     var title = urlKey;
     var isKeyFound = false;
     Object.keys(urlMap).forEach(function(key) {
-        if (title == key) {
+        if (title === key) {
             isKeyFound = true;
         }
     });
@@ -516,6 +527,7 @@ function isTitleInUrlMap(urlKey) {
 
 /**
  * get key then pop concequitive elements in history
+ * @param {string} title folder url
  */
 function getUrl(title) {
     var keys = Object.keys(urlMap);
@@ -523,7 +535,7 @@ function getUrl(title) {
     var url = "";
     for (let i = count; i >= 0; i--) {
         const key = keys[i];
-        if (title == key) {
+        if (title === key) {
             url = urlMap[key];
             break;
         } else {
@@ -543,11 +555,11 @@ window.onpopstate = function(e) {
 
     var lastKeyInHistory = getLastHistoryKey();
     document.getElementById(lastKeyInHistory).hidden = false;
-}
+};
 
 function removeKeyFromMap(lastKey) {
     Object.keys(urlMap).forEach(function(key) {
-        if (key == lastKey) {
+        if (key === lastKey) {
             delete urlMap[lastKey];
         }
     });
@@ -558,7 +570,7 @@ function getLastHistoryKey() {
     var size = Object.keys(urlMap).length;
     var lastKey = "";
     Object.keys(urlMap).forEach( function(key) {
-        if (count == (size - 1) ) {
+        if (count === (size - 1) ) {
             lastKey = key;
         }
         count += 1;
@@ -569,7 +581,7 @@ function getLastHistoryKey() {
 
 window.onbeforeunload = function() {
     saveHistory();
-}
+};
 
 /**
  * Save history of visited location in cookie
@@ -585,7 +597,7 @@ function saveHistory() {
     var lastLocation = "";
     var lastKey = "";
     Object.keys(urlMap).forEach( function(key) {
-        if (count == (size - 1) ) {
+        if (count === (size - 1) ) {
             location += key + ":" + urlMap[key];
             lastLocation = urlMap[key];
             lastKey = key;
@@ -598,7 +610,7 @@ function saveHistory() {
 }
 
 function saveCookie(name, dateExpires, history) {
-    document.cookie = name + "=" + history + ((dateExpires == null) ? "" : "; expires=" + dateExpires.toGMTString());
+    document.cookie = name + "=" + history + ((dateExpires === undefined) ? "" : "; expires=" + dateExpires.toGMTString());
 }
 
 function loadHistoryLocation() {
@@ -615,8 +627,8 @@ function loadHistoryLocation() {
         var items = location.split(":");
         var key = "";
         var value = "";
-        if (items.length ==  2) {
-            key = items[0]
+        if (items.length ===  2) {
+            key = items[0];
             value = items[1];
         }
 
@@ -630,7 +642,7 @@ function loadHistoryLocation() {
         var count = 0;
         var size = Object.keys(urlMap).length;
         Object.keys(urlMap).forEach( function(key) {
-            if (count == (size - 1) ) {
+            if (count === (size - 1) ) {
                 if (document.getElementById(key).hidden) {
                     window.history.pushState(key, key, value);
                     document.getElementById(key).hidden = false;
@@ -657,9 +669,9 @@ function getCookie(name) {
 }
 
 function getCookieVal(offSet) {
-    var endstr = document.cookie.indexOf(";", offset);
-    if (endstr == -1) endstr = document.cookie.length;
-    return unescape(document.cookie.substring(offset, endstr));
+    var endstr = document.cookie.indexOf(";", offSet);
+    if (endstr === -1) endstr = document.cookie.length;
+    return unescape(document.cookie.substring(offSet, endstr));
 }
 
 function updateBreadcrumbs() {
@@ -707,7 +719,7 @@ function closeNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status
     for (i = 0; i < menuTitles.length; i++) {
         menuTitles[i].classList.add("fade");
         menuTitles[i].classList.remove("unFade");
-        menuTitles[i].style = "display: none;"
+        menuTitles[i].style = "display: none;";
     }
 
     statusAvatar.hidden = false;
@@ -734,7 +746,7 @@ function openNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status,
     for (i = 0; i < menuTitles.length; i++) {
         menuTitles[i].classList.remove("fade");
         menuTitles[i].classList.add("unFade");
-        menuTitles[i].style = "display: inline;"
+        menuTitles[i].style = "display: inline;";
     }
 
     statusAvatar.hidden = true;

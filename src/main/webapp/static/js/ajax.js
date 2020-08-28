@@ -3,7 +3,7 @@ let householdFieldNames = {
     NAME: 'household_name',
     DESCRIPTION: 'description',
     ID: 'household_id'
-}
+};
 
 function getXmlHttpRequest() {
     var request;
@@ -18,7 +18,7 @@ function getXmlHttpRequest() {
 }
 
 function changeEmail() {
-    if(document.getElementById("email").type == 'hidden') {
+    if(document.getElementById("email").type === 'hidden') {
         document.getElementById("email").type = "text";
         document.getElementById("code").type = "hidden";
 
@@ -40,8 +40,8 @@ function sendRequest() {
 
             // to check if code submitted is valid
             request.onreadystatechange = function() {
-                if (request.readyState == 4) {
-                    if (request.status != 200) {
+                if (request.readyState === 4) {
+                    if (request.status !== 200) {
 
                         var obj = JSON.parse(request.responseText);
                         document.getElementById("code-error").innerHTML = obj.message;
@@ -67,7 +67,7 @@ function sendRequest() {
                         form.submit();
                     }
                 }
-            }
+            };
 
             var token = "token=" + escape(window.localStorage.getItem("token"));
             var userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
@@ -85,8 +85,8 @@ function sendRequest() {
 
             // checks whether email submited is valid
             request.onreadystatechange = function() {
-                if (request.readyState == 4) {
-                    if (request.status != 200) {
+                if (request.readyState === 4) {
+                    if (request.status !== 200) {
 
                         document.getElementById("email-error").innerHTML = request.responseText;
                         document.getElementById("progress").hidden = true;
@@ -96,7 +96,7 @@ function sendRequest() {
                         document.getElementById("progress").hidden = true;
                     }
                 }
-            }
+            };
 
             token = "token=" + escape(window.localStorage.getItem("token"));
             userId = "user_id=" + escape(window.localStorage.getItem("user_id"));
@@ -118,6 +118,8 @@ function sendRequest() {
 }
 
 function registerUser() {
+    checkbox = document.getElementById("checkbox");
+    
     document.getElementById("progress").hidden = false;
     document.getElementById("emailError").innerHTML = "";
     document.getElementById("usernameError").innerHTML = "";
@@ -128,8 +130,8 @@ function registerUser() {
     try {
         var path = document.getElementById("contextPath").value;
         request.onreadystatechange = function() {
-            if (request.readyState == 4) {
-                if (request.status == 400) {
+            if (request.readyState === 4) {
+                if (request.status === 400) {
 
                     var obj = JSON.parse(request.responseText);
                     document.getElementById("emailError").innerHTML = obj.email_error;
@@ -137,12 +139,12 @@ function registerUser() {
                     document.getElementById("passwordError").innerHTML = obj.password_error;
                     document.getElementById("householdIdError").innerHTML = obj.household_id_error;
                     document.getElementById("progress").hidden = true;
-                } else if (request.status == 403) {
+                } else if (request.status === 409) {
 
                     var error = JSON.parse(request.responseText);
                     document.getElementById("result").innerHTML = error.message;
                     document.getElementById("progress").hidden = true;
-                } else if(request.status == 200) {
+                } else if(request.status === 200) {
 
                     obj = JSON.parse(request.responseText);
                     window.localStorage.setItem("token", obj.report.token);
@@ -155,7 +157,7 @@ function registerUser() {
                     window.location.href = path + "/registration/confirm-user";
                 }
             }
-        }
+        };
 
         // if ( !! window.FormData) {
         //     var formData = new FormData();
@@ -167,13 +169,13 @@ function registerUser() {
         var username = "username=" + escape(document.getElementById("username").value);
         var password = "password=" + escape(document.getElementById("password").value);
         
-        var householdName = householdFieldNames.NAME + "=" + escape(document.getElementById("householdName").value)
-        var householdDesc = householdFieldNames.DESCRIPTION + "=" + escape(document.getElementById("householdDesc").value);
+        var householdName = householdFieldNames.NAME + "=" + escape(document.getElementById("householdName").value);
+//        var householdDesc = householdFieldNames.DESCRIPTION + "=" + escape(document.getElementById("householdDesc").value);
         var householdId = escape(document.getElementById("householdId").value);
 
         var data = "";
-        if (householdId == "" || householdId == null) {
-            data = email + "&" + username + "&" + password + "&" + householdName + "&" + householdDesc + "&joinHousehold=false";
+        if ((householdId === "" || householdId === undefined) || !checkbox.checked) {
+            data = email + "&" + username + "&" + password + "&" + householdName + "&joinHousehold=false";
         } else {
 
             householdId = householdFieldNames.ID + "=" + householdId;
