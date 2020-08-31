@@ -17,7 +17,7 @@
     <div class="grocery-members-container section-style" >
         <div class="notifications rounded-corner shadow-1pt subsection-background">
             <label for="#notificationContainer"><i style="font-size: 16px; margin-bottom: 5px">Notification of Expenses (Click to pay)</i></label>
-            <div id="notificationContainer">
+            <div id="notificationContainer" class="notification-list">
                 <%@ include file = "../template/notification.jsp" %>
             </div>
         </div>
@@ -49,20 +49,22 @@
             </div>
             
             <!-- This section displays transactions -->
-            <div class="transaction rounded-corner shadow-1pt subsection-background" >
-                <label for="#transactionTable"><i style="font-size: 16px; margin-bottom: 5px">Transaction Log</i></label>
-                <table id="transactionTable">
-                    <thead>
-                        <tr>
-                            <th>Index</th>
-                            <th>Transaction Description</th>
-                            <th>Amount</th>
-                            <th>Payment Status</th>
-                            <th>Payment Timestamp</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="rounded-corner shadow-1pt subsection-background" >
+                <label for=".transactionTable"><i style="font-size: 16px; margin-bottom: 5px">Transaction Log</i></label>
+                <div class="transaction transactions-table">
+                    <table id="transactionTable">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Transaction Description</th>
+                                <th>Amount</th>
+                                <th>Payment Status</th>
+                                <th>Payment Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

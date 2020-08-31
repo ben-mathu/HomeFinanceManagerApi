@@ -98,6 +98,9 @@ function addIncome() {
     request.onreadystatechanged = function() {
         if (request.readyState === 4) {
             if (reaquest.status === 200) {
+                // close modal
+                closeIncomeModal();
+                
                 setIncome(JSON.parse(request.responseText));
 
                 showIncome(user);

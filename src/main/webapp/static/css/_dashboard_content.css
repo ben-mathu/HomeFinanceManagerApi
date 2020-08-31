@@ -53,6 +53,9 @@
     overflow-y: scroll;
 }
 
+.notification-list {
+    max-height: 700px;
+}
 .grocery-members-container {
     width: 100%;
 }
@@ -77,6 +80,7 @@
 
 .jar-list-container {
     max-height: 300px;
+    width: 250px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -133,4 +137,10 @@
 
 .budget-btn-container {
     display: block;
+}
+
+.transaction {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }

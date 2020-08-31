@@ -10,7 +10,6 @@ let datePicker;
 
 let expenseSection;
 let grocerySection;
-let groceryListSection;
 let expenseItemsSection;
 
 let dayOfWeek;
@@ -55,7 +54,7 @@ let jarTemplate;
 let jarList;
 
 let expenseListDto = {
-    items: []
+    groceries: []
 };
 
 const categoryOption = {
@@ -102,7 +101,25 @@ function configureMoneyJar() {
     // Initialize HTML elements
     emptyExpenseList = document.getElementById("emptyExpenseList");
     moneyJarIdModal = document.getElementById("moneyJarIdModal");
+    
     expenseTypeElem = document.getElementById("expenseType");
+    expenseTypeElem.addEventListener("change", function(event) {
+        let cat = expenseTypeElem.options[expenseTypeElem.selectedIndex].value;
+        if (cat === "Groceries") {
+            categorySelector.options[0].selected = true;
+            grocerySection.hidden = false;
+            expenseSection.hidden = true;
+        } else if (cat === "Personal") {
+            categorySelector.options[0].selected = true;
+            grocerySection.hidden = false;
+            expenseSection.hidden = true;
+        } else {
+            categorySelector.options[1].selected = true;
+            grocerySection.hidden = true;
+            expenseSection.hidden = false;
+        }
+    });
+    
     amountElem = document.getElementById("totalAmount");
     time = document.getElementById("scheduledHour");
     date = document.getElementById("scheduledDate");
@@ -119,13 +136,12 @@ function configureMoneyJar() {
     };
 
     btnSubmitJar = document.getElementById("btnSaveJar");
-    btnSubmitJar.onclick = function() {
-        sendJarRequest();
-    };
+//    btnSubmitJar.onclick = function() {
+//        sendJarRequest();
+//    };
 
     // Grocery section
     grocerySection = document.getElementById("groceries");
-    groceryListSection = document.getElementById("groceryContainer");
     // Jar sections
     expenseSection = document.getElementById("expense");
     expenseItemsSection = document.getElementById("expenseContainer");
@@ -203,13 +219,19 @@ function getAllMoneyJars() {
                 if (jarDtoList.length > 0) {
                     emptyExpenseList.hidden = true;
                 }
+                
+                notificationContainer.innerHTML = "";
+                notificationContainer.appendChild(notificationTemplate);
+                
+                jarList.innerHTML = "";
+                jarList.appendChild(jarTemplate);
 
                 // update the global list; list is empty
                 for (let i = 0; i < jarDtoList.length; i++) {
                     let moneyJarDto = jarDtoList[i];
                     let jar = moneyJarDto.jar;
 
-                    jars.setJar(jar.jar_id, moneyJarDto);
+                    addJarToList(moneyJarDto);
                 }
                 
 //                reload canvas
@@ -222,22 +244,10 @@ function getAllMoneyJars() {
 //                jarsCanvas.width = 300;
 //                jarsCanvas.height = 300;
                 
-                jarList.innerHTML = "";
-                jarList.appendChild(jarTemplate);
-                
-                paymentDetails.innerHTML = "";
-                paymentDetails.appendChild(paymentTemplate);
-                
-                notificationContainer.innerHTML = "";
-                notificationContainer.appendChild(notificationTemplate);
-                
                 jarCount = 0;
-                setJars("");
-
-                let values = Object.values(jars.getJarList());
-                drawPieChart(values);
-
-                activateTimer();
+                
+                transactionTBody.innerHTML = "";
+                getAllTransactions();
             } else if (request.status === 404) {
                 emptyExpenseList.hidden = false;
             } else {
@@ -254,28 +264,25 @@ function getAllMoneyJars() {
     request.send();
 }
 
-function activateTimer() {
-    let ids = Object.keys(jars.getJarList());
-    ids.forEach(key => {
-        let jarDto = jars.getJar(key);
-        let jar = jarDto.jar;
-        let type = jar.expense_type;
-        (function(key, dayScheduled, jarStatus) {
-            let today = new Date();
-            let timeScheduled = new Date(dayScheduled);
-            
-            let isTimeReached = timeScheduled.getTime() >= today.getTime();
-            if (!isTimeReached) {
-                showNotificationDialog(key, jarDto);
-                return;
-            } else if (isTimeReached && jarStatus) {
-                populateNotificationSection(key);
-                return;
-            }
+function activateTimer(jarId) {
+    let jarDto = jars.getJar(jarId);
+    let jar = jarDto.jar;
+    let type = jar.expense_type;
+    (function(key, dayScheduled, jarStatus) {
+        let today = new Date();
+        let timeScheduled = new Date(dayScheduled);
 
-            window.setTimeout(arguments.callee, 1000, key, dayScheduled, jarStatus);
-        })(key, jar.scheduled_for, jar.jar_status);
-    });
+        let isTimeReached = timeScheduled.getTime() <= today.getTime();
+        if (isTimeReached && !jarStatus) {
+            showNotificationDialog(key, jarDto);
+            return;
+        }else if (isTimeReached && jarStatus) {
+            populateNotificationSection(key);
+            return;
+        }
+
+        window.setTimeout(arguments.callee, 1000, key, dayScheduled, jarStatus);
+    })(jarId, jar.scheduled_for, jar.jar_status);
 }
 
 function drawPieChart(jarElements) {
@@ -319,20 +326,20 @@ function isInExpenseTypeMap(expenseType, map) {
 }
 
 function openJarModal(callback) {
+    
     jarModal.style.display = "block";
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = true;
     
     expenseTypeElem.options[0].selected = true;
-    amountElem.innerHTML = "";
+    amountElem.innerHTML = "0";
     time.value = "";
     date.value = "";
-    jarTemplate = document.getElementById("jarTemplate");
-    groceriesList.innerHTML = "";
-    groceriesList.appendChild(jarTemplate);
+    
     categorySelector.options[1].selected = true;
     scheduleSelector.options[0].selected = true;
     daySelector.options[0].selected = true;
+    
     businessNumber.value = "";
     payeeAccountNumber.value = "";
     payeeName.options[0].selected = true;
@@ -353,18 +360,21 @@ function openJarModal(callback) {
  */
 let btnDeleteExpense;
 function openJarModalForEdit(jarId) {
+    jarId = jarId.split("_")[0];
+    
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
     btnDeleteExpense.addEventListener("click", function(event) {
         deleteExpense(jarId);
     });
-
-    moneyJarIdModal.value = jarId;
     
     jarModal.style.display = "block";
 
     let jarDto = jars.getJar(jarId);
     let jar = jarDto.jar;
+    
+    moneyJarIdModal.value = jarId + "_" + jar.scheduled_for;
+    
     // Set inputs to be changed
     let expenseOptions = expenseTypeElem.options;
     
@@ -385,10 +395,9 @@ function openJarModalForEdit(jarId) {
 
     if (jar.category === categoryOption.LIST) {
         categorySelector.options[0].selected = true;
-        let groceries = jar.liabilities;
+        let groceries = jarDto.groceries;
 
-        groceryListSection.innerHTML = "";
-        groceryListSection.appendChild(setGroceries(groceries));
+        setGroceries(groceries);
 
         expenseSection.hidden = true;
         grocerySection.hidden = false;
@@ -427,18 +436,22 @@ function openJarModalForEdit(jarId) {
  * @param {type} jarId allows users delete or update the expense
  */
 function openJarModalForPay(jarId) {
+    jarId = jarId.split("_")[0];
+    
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
     btnDeleteExpense.addEventListener("click", function(event) {
         deleteExpense(jarId);
     });
-
-    moneyJarIdModal.value = jarId;
     
     jarModal.style.display = "block";
 
     let jarDto = jars.getJar(jarId);
     let jar = jarDto.jar;
+    
+    
+    moneyJarIdModal.value = jarId + "_" + jar.scheduled_for;
+    
     // Set inputs to be changed
     let expenseOptions = expenseTypeElem.options;
     
@@ -459,10 +472,9 @@ function openJarModalForPay(jarId) {
 
     if (jar.category === categoryOption.LIST) {
         categorySelector.options[0].selected = true;
-        let groceries = jar.liabilities;
+        let groceries = jarDto.groceries;
 
-        groceryListSection.innerHTML = "";
-        groceryListSection.appendChild(setGroceries(groceries));
+        setGroceries(groceries);
 
         expenseSection.hidden = true;
         grocerySection.hidden = false;
@@ -555,32 +567,32 @@ function setDay(day) {
 /**
  * sends a request throught the controller to add an item to grocery
  */
-function sendJarRequest() {
-    var request = getXmlHttpRequest();
-
-    request.onreadystatechange = function() {
-        if (request.readyState === 4) {
-            if (request.status === 200) {
-                var json = request.responseText;
-                let moneyJarDto = JSON.parse(json);
-                addJarToList(moneyJarDto);
-
-                jarModal.style.display = "none";
-            } else {
-                showError();
-            }
-        }
-    };
-
-    var data = serializeData();
-
-    request.open("PUT", ctx + "/dashboard/jars-controller?" + data, true);
-    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
-    request.send();
-}
+//function sendJarRequest() {
+//    var request = getXmlHttpRequest();
+//
+//    request.onreadystatechange = function() {
+//        if (request.readyState === 4) {
+//            if (request.status === 200) {
+//                var json = request.responseText;
+//                let moneyJarDto = JSON.parse(json);
+//                addJarToList(moneyJarDto);
+//
+//                jarModal.style.display = "none";
+//            } else {
+//                showError();
+//            }
+//        }
+//    };
+//
+//    var data = serializeData();
+//
+//    request.open("PUT", ctx + "/dashboard/jars-controller?" + data, true);
+//    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
+//    request.send();
+//}
 
 /**
- * sends request to API to add an item
+ * sends request to API to add an item - called when updating jar schedule
  * @param {JarDto} jarDto object containing items to be added
  * @param {string} date date to modify the query
  */
@@ -592,8 +604,8 @@ function sendJarRequestJson(jarDto, date) {
             if (request.status === 200) {
                 var json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
-//                addJarToList(moneyJarDto);
-                getAllMoneyJars();
+                addJarToList(moneyJarDto);
+//                getAllMoneyJars();
 
                 jarModal.style.display = "none";
             } else {
@@ -601,19 +613,36 @@ function sendJarRequestJson(jarDto, date) {
             }
         }
     };
+    
+    let jar = {
+        amount: jarDto.jar.amount,
+        category: jarDto.jar.category,
+        expense_type: jarDto.jar.expense_type,
+        created_at: jarDto.jar.created_at,
+        household_id: jarDto.jar.household_id,
+        jar_id: jarDto.jar.jar_id,
+        jar_status: jarDto.jar.jar_status,
+        payment_status: jarDto.jar.payment_status,
+        scheduled_for: date,
+        scheduled_type: jarDto.jar.scheduled_type
+    };
 
-    let dataSending = jarDto;
-    dataSending.jar.jar_id = "";
-    dataSending.jar.scheduled_for = date;
+    let dataSending = {
+        jar: jar
+    };
     let data = JSON.stringify(dataSending);
     let token = window.localStorage.getItem(userFields.TOKEN);
 
-    request.open("PUT", ctx + "/api/jars/add-money-jar", true);
+    request.open("PUT", ctx + "/api/jars/add-jar", true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.APPLICATION_JSON);
     request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
     request.send(data);
 }
 
+/**
+ * send new jar elements
+ * @param {modal} callback to call required modals subsequently
+ */
 function updateJar(callback) {
     var request = getXmlHttpRequest();
 
@@ -640,7 +669,6 @@ function updateJar(callback) {
                 }
                 
                 jarModal.style.display = "none";
-                getAllMoneyJars();
             } else {
                 showError();
             }
@@ -702,6 +730,9 @@ function updateMoneyJarJson(jarId) {
                 
                 let json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
+                
+                jars.setJar(moneyJarDto.jar.jar_id + "-" + moneyJarDto.jar.scheduled_for, moneyJarDto);
+//                addJarToList(moneyJarDto);
                 getAllMoneyJars();
             } else {
                 showError();
@@ -713,25 +744,30 @@ function updateMoneyJarJson(jarId) {
     if (jarDto.jar.jar_id === '') {
         jarDto.jar.jar_id = jarId;
     }
+    
     let data = JSON.stringify(jars.getJar(jarId));
     let token = window.localStorage.getItem(userFields.TOKEN);
 
-    request.open("PUT", ctx + "/api/jars/update-money-jar", true);
+    request.open("PUT", ctx + "/api/jars/update-jar", true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.APPLICATION_JSON);
     request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
     request.send(data);
 }
 
 /**
- * Add the item added by the user to aa global list variable
+ * Add the item added by the user to aa global list variable and populates the jar schedule section
  * @param {string} moneyJarDto contains a list of jars with elements
  */
 function addJarToList(moneyJarDto) {
     let jar = moneyJarDto.jar;
-    // check size before adding item
+    // get length of the list
     let beforeLen = Object.keys(jars.getJarList()).length;
 
-    jars.setJar(jar.jar_id, moneyJarDto);
+//    add to global list
+    jars.setJar(jar.jar_id + "_" + jar.scheduled_for, moneyJarDto);
+    
+    // start a timer for the jar schedule
+    activateTimer(jar.jar_id);
 
     // check length after adding item
     let afterLen = Object.keys(jars.getJarList()).length;
@@ -767,7 +803,9 @@ function setJars(jarId) {
         
         let jarDto = jars.getJar(jarId);
         let jar = jarDto.jar;
-        addToJarTable(jar);
+        if (!jar.jar_status) {
+            addToJarTable(jar);
+        }
     }
     // update the table with new item
 }
@@ -783,7 +821,7 @@ function updateJarTable(jar) {
 
     clone.querySelector("#jarId").id += jarCount;
     let idTemplate = clone.querySelector("#jarId" + jarCount);
-    idTemplate.value = jar.jar_id;
+    idTemplate.value = jar.jar_id + "_" + jar.scheduled_for;
     
     clone.querySelector("#expType").id += jarCount;
     let type = clone.querySelector("#expType" + jarCount);
@@ -824,7 +862,7 @@ function addToJarTable(jar) {
 
     clone.querySelector("#jarId").id += jarCount;
     let idTemplate = clone.querySelector("#jarId" + jarCount);
-    idTemplate.value = jar.jar_id;
+    idTemplate.value = jar.jar_id + "_" + jar.scheduled_for;
     
     clone.querySelector("#expType").id += jarCount;
     let type = clone.querySelector("#expType" + jarCount);
@@ -880,7 +918,7 @@ function serializeData() {
         liabilitiesObj.expense = expenseGlobal;
         items = JSON.stringify(liabilitiesObj);
     } else if (selectedMoneyJarType === categoryOption.LIST) {
-        expenseListDto.items = Object.values(groceryListObj);
+        expenseListDto.groceries = Object.values(groceryListObj);
         items = JSON.stringify(expenseListDto);
     }
 
@@ -930,7 +968,18 @@ function serializeData() {
  */
 function onRowLoaded(amount) {
     var currentTotal = amountElem.innerHTML;
-    currentTotal = parseInt(amount) + parseInt(currentTotal);
+    currentTotal = parseFloat(amount) + parseFloat(currentTotal);
+
+    amountElem.innerHTML = currentTotal;
+}
+
+/**
+ * subtract from total and update modal's amount
+ * @param {double} amount total amount of comodity
+ */
+function onRowRemoved(amount) {
+    var currentTotal = amountElem.innerHTML;
+    currentTotal = parseFloat(currentTotal) - parseFloat(amount);
 
     amountElem.innerHTML = currentTotal;
 }

@@ -59,7 +59,18 @@
                         Your grocery list is empty.
                     </div>
                     <div id="groceryContainer" >
-                        <%@ include file = "../template/groceries.jsp" %>
+                        <table id="groceryItems">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Description</th>
+                                    <th>Remaining</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                     <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
                 </div>

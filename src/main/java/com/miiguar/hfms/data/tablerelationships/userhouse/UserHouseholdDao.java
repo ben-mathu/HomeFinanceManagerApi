@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.tablerelationships;
+package com.miiguar.hfms.data.tablerelationships.userhouse;
 
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.Dao;

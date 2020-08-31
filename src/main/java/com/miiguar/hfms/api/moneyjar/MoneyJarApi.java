@@ -13,10 +13,16 @@ import com.miiguar.hfms.data.household.HouseholdDao;
 import com.miiguar.hfms.data.status.AccountStatus;
 import com.miiguar.hfms.data.status.AccountStatusDao;
 import com.miiguar.hfms.data.status.Status;
-import com.miiguar.hfms.data.tablerelationships.UserHouseholdDao;
-import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
+import com.miiguar.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
+import com.miiguar.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
+import com.miiguar.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesDao;
+import com.miiguar.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesRel;
+import com.miiguar.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseDao;
+import com.miiguar.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRel;
+import com.miiguar.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
+import com.miiguar.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
 import com.miiguar.hfms.data.user.UserDao;
 import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
@@ -37,7 +43,6 @@ import java.util.List;
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.*;
 import static com.miiguar.hfms.utils.Constants.*;
-import static com.miiguar.hfms.utils.Constants.JarType.GROCERY_CATEGORY;
 
 /**
  * @author bernard
@@ -53,6 +58,9 @@ public class MoneyJarApi extends BaseServlet {
     private final ExpenseDao expenseDao;
     private final MoneyJarsDao jarDao;
     private final UserDao userDao;
+    private final MoneyJarGroceriesDao moneyJarListDao;
+    private final MoneyJarExpenseDao moneyJarExpenseDao;
+    private final MoneyJarScheduleDao moneyJarScheduleDao;
 
     private final GenerateRandomString randomString;
 
@@ -66,6 +74,9 @@ public class MoneyJarApi extends BaseServlet {
         expenseDao = new ExpenseDao();
         jarDao = new MoneyJarsDao();
         userDao = new UserDao();
+        moneyJarListDao = new MoneyJarGroceriesDao();
+        moneyJarExpenseDao = new MoneyJarExpenseDao();
+        moneyJarScheduleDao = new MoneyJarScheduleDao();
 
         randomString = new GenerateRandomString(
                 12,
@@ -104,19 +115,80 @@ public class MoneyJarApi extends BaseServlet {
         MoneyJarDto dto = gson.fromJson(requestStr, MoneyJarDto.class);
         MoneyJar jar = dto.getJar();
         
-//        if (dto.getUser() == null) {
-//            String houseId = dto.getJar().getHouseholdId();
-//            String userId = householdDao.getUserId(houseId);
-//            
-//            User user = userDao.get(userId);
-//            
-//            dto.setUser(user);
-//        }
+        if (dto.getUser() == null) {
+            String houseId = dto.getJar().getHouseholdId();
+            String userId = householdDao.getUserId(houseId).get(0);
+            
+            User user = userDao.get(userId);
+            
+            dto.setUser(user);
+        }
 
-        if (!jar.getMoneyJarId().isEmpty())
-            updateDatabase(dto, req, resp);
-        else
+        String uri = req.getRequestURI();
+        if (uri.endsWith("add-jar"))
+            saveJar(dto, req, resp);
+        else if (uri.endsWith("update-jar"))
+            updateJar(dto, req, resp);
+        else if (uri.endsWith("add-money-jar"))
             save(dto, req, resp);
+        else if (uri.endsWith("update-money-jar"))
+            updateDatabase(dto, req, resp);
+    }
+    
+    public void updateJar(MoneyJarDto jarDto, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        MoneyJar jar = jarDto.getJar();
+        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.getWithStatusFalse(jar.getMoneyJarId());
+        
+        jarScheduleDateRel.setJarStatus(true);
+        
+        int affected = moneyJarScheduleDao.update(jarScheduleDateRel);
+        
+        if (affected > 0) {
+            Report report = new Report();
+            report.setMessage("Successfully added!");
+            report.setStatus(HttpServletResponse.SC_OK);
+
+            response.setStatus(report.getStatus());
+            writer = response.getWriter();
+            writer.write(gson.toJson(report));
+        } else {
+            Report report = new Report();
+            report.setMessage("The schedule was not updated.");
+            report.setStatus(HttpServletResponse.SC_OK);
+
+            response.setStatus(report.getStatus());
+            writer = response.getWriter();
+            writer.write(gson.toJson(report));
+        }
+    }
+    
+    public void saveJar(MoneyJarDto jarDto, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        MoneyJar jar = jarDto.getJar();
+        
+        JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
+        jarScheduleDateRel.setHouseholdId(jar.getHouseholdId());
+        jarScheduleDateRel.setJarId(jar.getMoneyJarId());
+        jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
+        
+        int affected = moneyJarScheduleDao.save(jarScheduleDateRel);
+        
+        if (affected > 0) {
+            Report report = new Report();
+            report.setMessage("Successfully added!");
+            report.setStatus(HttpServletResponse.SC_OK);
+
+            response.setStatus(report.getStatus());
+            writer = response.getWriter();
+            writer.write(gson.toJson(report));
+        } else {
+            Report report = new Report();
+            report.setMessage("Saving that schedule was not successful");
+            report.setStatus(HttpServletResponse.SC_OK);
+
+            response.setStatus(report.getStatus());
+            writer = response.getWriter();
+            writer.write(gson.toJson(report));
+        }
     }
 
     public void updateDatabase(MoneyJarDto dto, HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -131,23 +203,49 @@ public class MoneyJarApi extends BaseServlet {
         UserHouseholdRel householdRel = userHouseholdDao.get(user.getUserId());
 
         jar.setHouseholdId(householdRel.getHouseId());
-        envAffectedRows = jarDao.update(jar);
+//        envAffectedRows = jarDao.update(jar);
+
+        JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
+        jarScheduleDateRel.setHouseholdId(householdRel.getHouseId());
+        jarScheduleDateRel.setJarId(jar.getMoneyJarId());
+        jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
+        jarScheduleDateRel.setJarStatus(true);
+        
+        envAffectedRows = moneyJarScheduleDao.update(jarScheduleDateRel);
+        
+        if (envAffectedRows > 0) {
+            jar.setJarStatus(true);
+        }
+        
         dto.setJar(jar);
 
 
         List<Grocery> groceries = dto.getGroceries();
-        if (GROCERY_CATEGORY.equals(dto.getJar().getCategory())) {
+        if (JarType.LIST_EXPENSE_TYPE.equals(dto.getJar().getCategory())) {
 
             for (Grocery grocery : groceries) {
                 grocery.setJarId(jar.getMoneyJarId());
-                groAffectedRows += groceryDao.save(grocery, grocery.getGroceryId());
+//                groAffectedRows += groceryDao.save(grocery, grocery.getGroceryId());
+
+                MoneyJarGroceriesRel moneyJarListRel = new MoneyJarGroceriesRel();
+                moneyJarListRel.setGroceryId(grocery.getGroceryId());
+                moneyJarListRel.setJarId(jar.getMoneyJarId());
+                
+                moneyJarListDao.save(moneyJarListRel);
             }
             dto.setGroceries(groceries);
         } else {
             Expense expense = dto.getExpense();
             expense.setJarId(jar.getMoneyJarId());
-            expAffectedRows = expenseDao.update(expense);
+//            expAffectedRows = expenseDao.update(expense);
+
             dto.setExpense(expense);
+            
+            MoneyJarExpenseRel moneyJarExpenseRel = new MoneyJarExpenseRel();
+            moneyJarExpenseRel.setExpenseId(expense.getExpenseId());
+            moneyJarExpenseRel.setJarId(jar.getMoneyJarId());
+            
+            moneyJarExpenseDao.save(moneyJarExpenseRel);
         }
 
         String uri = req.getRequestURI();
@@ -192,17 +290,34 @@ public class MoneyJarApi extends BaseServlet {
         jar.setCreatedAt(now);
         jar.setHouseholdId(householdRel.getHouseId());
         envAffectedRows = jarDao.save(jar);
+        
+        JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
+        jarScheduleDateRel.setHouseholdId(householdRel.getHouseId());
+        jarScheduleDateRel.setJarId(jarId);
+        jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
+        
+        moneyJarScheduleDao.save(jarScheduleDateRel);
+        
         dto.setJar(jar);
 
         List<Grocery> groceries = dto.getGroceries();
-        if (GROCERY_CATEGORY.equals(dto.getJar().getCategory())) {
+        if (JarType.LIST_EXPENSE_TYPE.equals(dto.getJar().getCategory())) {
+            
             String groceryId;
 
             for (Grocery grocery : groceries) {
-                groceryId = grocery.getGroceryId().isEmpty() ? randomString.nextString() : grocery.getGroceryId();
+                groceryId = randomString.nextString();
                 grocery.setGroceryId(groceryId);
                 grocery.setJarId(jarId);
                 groAffectedRows += groceryDao.save(grocery);
+                
+                
+                // set and save the schedule
+                MoneyJarGroceriesRel moneyJarListRel = new MoneyJarGroceriesRel();
+                moneyJarListRel.setGroceryId(groceryId);
+                moneyJarListRel.setJarId(jarId);
+                
+                moneyJarListDao.save(moneyJarListRel);
             }
             dto.setGroceries(groceries);
         } else {
@@ -212,6 +327,12 @@ public class MoneyJarApi extends BaseServlet {
             expense.setJarId(jarId);
             expAffectedRows = expenseDao.save(expense);
             dto.setExpense(expense);
+            
+            MoneyJarExpenseRel moneyJarExpenseRel = new MoneyJarExpenseRel();
+            moneyJarExpenseRel.setExpenseId(expenseId);
+            moneyJarExpenseRel.setJarId(jarId);
+            
+            moneyJarExpenseDao.save(moneyJarExpenseRel);
         }
 
         String uri = req.getRequestURI();
@@ -272,27 +393,43 @@ public class MoneyJarApi extends BaseServlet {
         // get household
         Report report;
         UserHouseholdRel userHouseholdRel = userHouseholdDao.get(userId);
+        
         if (userHouseholdRel != null) {
-            String householdId = userHouseholdRel.getHouseId();
+            List<JarScheduleDateRel> jarScheduleDateRelList = moneyJarScheduleDao.getAll(userHouseholdRel.getHouseId());
             
-            // get jars
-            List<MoneyJar> jars = jarDao.getAll(householdId);
-
-            // loop through each jar to get grocery or expense related
-            for (MoneyJar jar : jars) {
+            assert jarScheduleDateRelList != null;
+            jarScheduleDateRelList.forEach(jarScheduleDateRel -> {
+                
+                // get jars
+                MoneyJar jar = jarDao.get(jarScheduleDateRel.getJarId());
+                jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
+                jar.setJarStatus(jarScheduleDateRel.isJarStatus());
+                jar.setPaymentStatus(jarScheduleDateRel.isPaymentStatus());
+                
                 MoneyJarDto jarDto = new MoneyJarDto();
                 jarDto.setJar(jar);
 
                 String jarId = jar.getMoneyJarId();
-                if (GROCERY_CATEGORY.equals(jar.getCategory())) {
-                    List<Grocery> groceries = groceryDao.getAll(jarId);
+                if (JarType.LIST_EXPENSE_TYPE.equals(jar.getCategory())) {
+
+                    // get all grocery ids from moneyjarlistrel table to get all groceries
+                    List<String> ids = moneyJarListDao.getIdByJarId(jarId);
+                    List<Grocery> groceries = new ArrayList<>();
+                    ids.forEach((id) -> {
+                        Grocery grocery = groceryDao.get(id);
+                        groceries.add(grocery);
+                    });
+
                     jarDto.setGroceries(groceries);
                 } else {
-                    Expense expenses = expenseDao.get(jarId);
+                    
+                    String id = moneyJarExpenseDao.getIdByJarId(jarId);
+                    Expense expenses = expenseDao.get(id);
                     jarDto.setExpense(expenses);
                 }
+                
                 jarDtoList.add(jarDto);
-            }
+            });
 
             jarsDto.setJarDto(jarDtoList);
 

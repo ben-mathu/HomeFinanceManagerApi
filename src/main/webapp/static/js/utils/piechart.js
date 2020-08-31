@@ -59,8 +59,9 @@ class PieChart {
                 let li = document.createElement("li");
 
                 li.style.listStyle = "none";
-                li.style.borderLeft = "20px solid " + this.colors[colorIndex % this.colors.length];
+                li.style.borderLeft = "15px solid " + this.colors[colorIndex % this.colors.length];
                 li.style.padding = "5px";
+                li.style.marginBottom = "5px";
                 li.textContent = jar.expense_type;
                 ul.appendChild(li);
                 colorIndex++;

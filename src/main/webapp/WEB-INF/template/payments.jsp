@@ -7,7 +7,18 @@
         </div>
         <div id="liabilitySection" class="liability-section" hidden>
             <div id="paymentGrocery">
-                <%@ include file = "groceries.jsp" %>
+                <table id="paymentGroceryItems">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Description</th>
+                            <th>Remaining</th>
+                            <th>Required</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
             <div id="paymentExpense">
                 <%@ include file = "expense.jsp" %>

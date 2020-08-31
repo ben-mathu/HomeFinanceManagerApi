@@ -5,7 +5,7 @@ import com.miiguar.hfms.data.budget.model.Budget;
 import com.miiguar.hfms.data.household.model.Household;
 import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.status.AccountStatus;
-import com.miiguar.hfms.data.tablerelationships.UserHouseholdRel;
+import com.miiguar.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.miiguar.hfms.data.transactions.model.Transaction;
 import com.miiguar.hfms.data.user.model.User;
 

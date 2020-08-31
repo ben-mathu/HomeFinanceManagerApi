@@ -170,4 +170,27 @@ public class DbEnvironment {
     // household id, budget saved for a household not individual
     // created at field.
     public static final String FK_BUDGETS_HOUSEHOLD_ID = "fk_budgets_household_id_ref_households";
+    
+    /**
+     * Money Jar Grocery Rel
+     */
+    // ref: jarId from moneyJar table
+    // ref: groceryId from grocery table
+    public static final String MONEY_JAR_LIST_REL_TB_NAME = "jar_grocery_ref";
+    public static final String FK_JAR_GROCERY_REL_JAR_ID = "fk_jar_grocery_rel_jar_id_ref_money_jars";
+    public static final String FK_JAR_GROCERY_REL_GROCERY_ID = "fk_jar_grocery_rel_grocery_id_ref_groceries";
+    
+    /**
+     * Schedule money jar Rel
+     */
+    public static final String MONEY_JAR_SCHEDULE_REL_TB = "jar_schedule_rel";
+    public static final String JAR_SCHEDULE_DATE = "jar_schedule";
+    public static final String FK_MONEY_JAR_SCHEDULE_JAR_ID = "fk_jar_schedule_jar_id_ref_money_jars";
+    
+    /**
+     * Expense Money Jar Rel
+     */
+    public static final String MONEY_JAR_EXPENSE_REL_TB = "jar_expenses_rel";
+    public static final String FK_JAR_EXPENSE_REL_EXPENSE_ID = "fk_jar_expense_jar_id_ref_money_jars";
+    public static final String FK_JAR_EXPENSE_REL_JAR_ID = "fk_jar_expense_expense_id_ref_expenses";
 }

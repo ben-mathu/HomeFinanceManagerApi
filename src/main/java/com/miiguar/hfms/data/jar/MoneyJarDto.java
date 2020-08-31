@@ -1,7 +1,6 @@
 package com.miiguar.hfms.data.jar;
 
 import com.google.gson.annotations.SerializedName;
-import com.miiguar.hfms.data.expense.ExpenseDto;
 import com.miiguar.hfms.data.expense.model.Expense;
 import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.grocery.model.Grocery;

@@ -91,7 +91,7 @@ public class Constants {
     }
 
     public static class JarType {
-        public static final String GROCERY_CATEGORY = "Groceries";
-        public static final String EXPENSE_CATEGORY = "Expenses";
+        public static final String LIST_EXPENSE_TYPE = "List";
+        public static final String SINGLE_EXPENSE_TYPE = "Single Item";
     }
 }

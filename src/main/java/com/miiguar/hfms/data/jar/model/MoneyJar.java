@@ -20,8 +20,8 @@ import static com.miiguar.hfms.data.utils.DbEnvironment.*;
         )}
 )
 public class MoneyJar {
-    @PrimaryKey(columnName = MONEY_JAR_ID)
     @SerializedName(MONEY_JAR_ID)
+    @PrimaryKey(columnName = MONEY_JAR_ID)
     private String moneyJarId = "";
 
     @SerializedName(MONEY_EXPENSE_TYPE)
@@ -50,7 +50,7 @@ public class MoneyJar {
 
     @SerializedName(HOUSEHOLD_ID)
     @Column(columnName = HOUSEHOLD_ID)
-    private String householdId;
+    private String householdId = "";
 
     @SerializedName(JAR_STATUS)
     @Column(columnName = JAR_STATUS)

@@ -139,7 +139,7 @@ public class ExpenseDao implements Dao<Expense> {
     @Override
     public Expense get(String id) {
         String query = "SELECT * FROM " + EXPENSES_TB_NAME +
-                " WHERE " + MONEY_JAR_ID + "=?";
+                " WHERE " + EXPENSE_ID + "=?";
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -157,8 +157,6 @@ public class ExpenseDao implements Dao<Expense> {
                 expense.setExpenseId(resultSet.getString(EXPENSE_ID));
                 expense.setAmount(resultSet.getDouble(AMOUNT));
                 expense.setBusinessNumber(resultSet.getString(BUSINESS_NUMBER));
-//                expense.setDescription(resultSet.getString(EXPENSE_DESCRIPTION));
-//                expense.setName(resultSet.getString(EXPENSE_NAME));
                 expense.setPayee(resultSet.getString(PAYEE_NAME));
                 expense.setAccountNumber(resultSet.getString(ACCOUNT_NUMBER));
                 expense.setJarId(resultSet.getString(MONEY_JAR_ID));

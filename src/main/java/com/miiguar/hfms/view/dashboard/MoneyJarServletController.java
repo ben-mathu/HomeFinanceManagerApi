@@ -21,8 +21,6 @@ import java.io.IOException;
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.*;
 import static com.miiguar.hfms.utils.Constants.*;
-import static com.miiguar.hfms.utils.Constants.JarType.EXPENSE_CATEGORY;
-import static com.miiguar.hfms.utils.Constants.JarType.GROCERY_CATEGORY;
 
 /**
  * @author bernard
@@ -64,13 +62,14 @@ public class MoneyJarServletController extends BaseServlet {
 
         String token = req.getParameter(TOKEN);
         String category = req.getParameter(CATEGORY);
+        String name = req.getParameter(MONEY_EXPENSE_TYPE);
 
         MoneyJarDto jarDto = new MoneyJarDto();
 
         MoneyJar jar = new MoneyJar();
         jar.setMoneyJarId(req.getParameter(MONEY_JAR_ID));
         jar.setCategory(category);
-        jar.setName(req.getParameter(MONEY_EXPENSE_TYPE));
+        jar.setName(name);
         jar.setScheduledFor(req.getParameter(SCHEDULED_FOR));
         String amount = req.getParameter(TOTAL_AMOUNT);
         jar.setTotalAmount(Double.parseDouble(amount));
@@ -84,7 +83,7 @@ public class MoneyJarServletController extends BaseServlet {
 
         GroceriesDto groceriesDto;
         Expense expense = null;
-        if (category.equals(GROCERY_CATEGORY)) {
+        if (category.equals(JarType.LIST_EXPENSE_TYPE)) {
             String groceries = req.getParameter(LIABILITIES);
             groceriesDto = gson.fromJson(groceries, GroceriesDto.class);
             jarDto.setGroceries(groceriesDto.getGroceries());
@@ -99,9 +98,9 @@ public class MoneyJarServletController extends BaseServlet {
         InitUrlConnection<MoneyJarDto> conn = new InitUrlConnection<>();
         BufferedReader streamReader;
         if (jar.getMoneyJarId().isEmpty()) {
-            if (EXPENSE_CATEGORY.equals(jarDto.getJar().getCategory()))
-                jarDto.getExpense().setJarId(jarDto.getJar().getMoneyJarId());
-            if (GROCERY_CATEGORY.equals(jarDto.getJar().getCategory()))
+            if (JarType.LIST_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))
+                jarDto.getGroceries().forEach(grocery -> grocery.setJarId(jarDto.getJar().getMoneyJarId()));
+            if (JarType.SINGLE_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))
                 jarDto.getExpense().setJarId(jarDto.getJar().getMoneyJarId());
             streamReader = conn.getReader(jarDto, ADD_MONEY_JAR, token, "PUT");
         } else {

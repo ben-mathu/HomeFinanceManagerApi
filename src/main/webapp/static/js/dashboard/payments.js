@@ -77,7 +77,7 @@ function showNotificationDialog(jarId, jarDto) {
 
     templateClone.querySelector("#moneyJarId").id += count;
     moneyJarId = templateClone.querySelector("#moneyJarId" + count);
-    moneyJarId.value = jarId;
+    moneyJarId.value = jarId + "_" + jarDto.jar.scheduled_for;
 
     templateClone.querySelector("#liabilitySection").id += count;
     liabilitySection = templateClone.querySelector("#liabilitySection" + count);
@@ -92,9 +92,13 @@ function showNotificationDialog(jarId, jarDto) {
     } else {
         let groceries = jarDto.groceries;
 
+        templateClone.querySelector("#paymentGroceryItems").id += count;
+        let body = templateClone.querySelector("#paymentGroceryItems" + count);
+        
+        setGroceriesForNotification(groceries, body);
         templateClone.querySelector("#paymentGrocery").id += count;
         paymentGorcerySection = templateClone.querySelector("#paymentGrocery" + count);
-        paymentGorcerySection.appendChild(setGroceries(groceries));
+        paymentGorcerySection.hidden = false;
         liabilitySection.appendChild(paymentGorcerySection);
     }
 
@@ -211,7 +215,7 @@ function addNotification(jarId) {
     if (!jar.jar_status) {
         jar.jar_status = true;
         jarDto.jar = jar;
-        jars.setJar(jarId, jarDto);
+        jars.setJar(jarId + "_" + jar.scheduled_for, jarDto);
         updateMoneyJarJson(jarId);
     }
 }
@@ -232,11 +236,21 @@ function populateNotificationSection(jarId) {
     
     templateClone.querySelector("#notificationId").id += notificationCount;
     let notificationId = templateClone.querySelector("#notificationId" + notificationCount);
-    notificationId.value = jarId;
+    notificationId.value = jarId + "_" + jar.scheduled_for;
 
     templateClone.querySelector("#notificationTitle").id += notificationCount;
     let notificationTitle = templateClone.querySelector("#notificationTitle" + notificationCount);
     notificationTitle.innerHTML = jar.expense_type;
+    
+    templateClone.querySelector("#paymentStatus").id += notificationCount;
+    let paymentStatus = templateClone.querySelector("#paymentStatus" + notificationCount);
+    if (jar.payment_status) {
+        paymentStatus.innerHTML = "paid";
+        paymentStatus.style.color = "#0EB117";
+    } else {
+        paymentStatus.innerHTML = "unpaid";
+        paymentStatus.style.color = "#AA002E";
+    }
 
     templateClone.querySelector("#notificationMessage").id += notificationCount;
     let notificationMessage = templateClone.querySelector("#notificationMessage" + notificationCount);
@@ -288,7 +302,7 @@ function makePayments(jarId) {
 
     request.onreadystatechange = function() {
         if (request.readyState === 4) {
-            if (request.status === 200) {
+            if (request.status < 400) {
                 let responseData = request.responseText;
                 showSuccessNotification(responseData, jarId);
                 
@@ -305,17 +319,17 @@ function makePayments(jarId) {
 }
 
 function showSuccessNotification(data, notificationId) {
-    let report = JSON.parse(data);
-
-    let request = getXmlHttpRequest();
-
-    request.onload = function() {
-        if (request.status === 200) {
-            updateNoitification(notificationId);
-        }
-    };
-
-    request.open("POST", ctx + "/mpesa/lnmo-url");
+//    let report = JSON.parse(data);
+//
+//    let request = getXmlHttpRequest();
+//
+//    request.onload = function() {
+//        if (request.status === 200) {
+////            updateNoitification(notificationId);
+//        }
+//    };
+//
+//    request.open("POST", ctx + "/mpesa/lnmo-url");
 }
 
 /**
@@ -326,7 +340,7 @@ function showSuccessNotification(data, notificationId) {
 function updateNoitification(notificationId) {
     let paymentStatus = paymentTemplate.content.querySelector("#paymentStatus");
     paymentStatus.innerHTML = "paid";
-    paymentStatus.style.color = "white";
+    paymentStatus.style.color = "green";
 
     let notification = notifications.getNotification(notificationId);
 }

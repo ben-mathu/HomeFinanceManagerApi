@@ -1,4 +1,4 @@
-package com.miiguar.hfms.data.tablerelationships;
+package com.miiguar.hfms.data.tablerelationships.userhouse;
 
 import com.google.gson.annotations.SerializedName;
 import com.miiguar.hfms.init.Column;
