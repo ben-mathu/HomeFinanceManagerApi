@@ -236,7 +236,7 @@ function populateNotificationSection(jarId) {
     
     templateClone.querySelector("#notificationId").id += notificationCount;
     let notificationId = templateClone.querySelector("#notificationId" + notificationCount);
-    notificationId.value = jarId + "_" + jar.scheduled_for;
+    notificationId.value = jarId;
 
     templateClone.querySelector("#notificationTitle").id += notificationCount;
     let notificationTitle = templateClone.querySelector("#notificationTitle" + notificationCount);
@@ -368,7 +368,7 @@ function serializePaymentData(jarId) {
         data += paybillFields.PHONE_NUMBER + "=" + escape(expenseItem.account_number) + "&";
         data += paybillFields.ACCOUNT_REF + "=" + escape("account") + "&";
         data += paybillFields.TRANSACTION_DESC + "=" + escape("First transaction from code") + "&";
-        data += jarFields.JAR_ID + "=" + escape(jarId);
+        data += jarFields.JAR_ID + "=" + escape(jar.jar_id);
     }
     return data;
 }

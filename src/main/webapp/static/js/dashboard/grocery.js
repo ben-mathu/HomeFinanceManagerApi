@@ -68,6 +68,7 @@ function setGroceries(groceries) {
     }
 
     groceryListTBody = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
+    groceryListTBody.innerHTML = "";
     
     for (let i = 0; i < groceries.length; i++) {
         // get number of rows

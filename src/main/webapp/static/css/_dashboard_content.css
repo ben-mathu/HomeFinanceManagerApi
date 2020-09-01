@@ -79,8 +79,11 @@
 }
 
 .jar-list-container {
-    max-height: 300px;
     width: 250px;
+}
+
+.jar-list {
+    max-height: 300px;
     overflow-y: scroll;
     overflow-x: hidden;
 }

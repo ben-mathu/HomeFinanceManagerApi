@@ -360,7 +360,6 @@ function openJarModal(callback) {
  */
 let btnDeleteExpense;
 function openJarModalForEdit(jarId) {
-    jarId = jarId.split("_")[0];
     
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
@@ -373,7 +372,7 @@ function openJarModalForEdit(jarId) {
     let jarDto = jars.getJar(jarId);
     let jar = jarDto.jar;
     
-    moneyJarIdModal.value = jarId + "_" + jar.scheduled_for;
+    moneyJarIdModal.value = jarId;
     
     // Set inputs to be changed
     let expenseOptions = expenseTypeElem.options;
@@ -436,7 +435,6 @@ function openJarModalForEdit(jarId) {
  * @param {type} jarId allows users delete or update the expense
  */
 function openJarModalForPay(jarId) {
-    jarId = jarId.split("_")[0];
     
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
@@ -449,8 +447,7 @@ function openJarModalForPay(jarId) {
     let jarDto = jars.getJar(jarId);
     let jar = jarDto.jar;
     
-    
-    moneyJarIdModal.value = jarId + "_" + jar.scheduled_for;
+    moneyJarIdModal.value = jarId;
     
     // Set inputs to be changed
     let expenseOptions = expenseTypeElem.options;
@@ -530,6 +527,7 @@ function deleteExpense(jarId) {
         }
     };
 
+    jarId = jars.getJar(jarId).jar.jar_id;
     let token = window.localStorage.getItem(userFields.TOKEN);
     let data = jarFields.JAR_ID + "=" + jarId;
 
@@ -764,16 +762,17 @@ function addJarToList(moneyJarDto) {
     let beforeLen = Object.keys(jars.getJarList()).length;
 
 //    add to global list
-    jars.setJar(jar.jar_id + "_" + jar.scheduled_for, moneyJarDto);
+    let jarId = jar.jar_id + "_" + jar.scheduled_for;
+    jars.setJar(jarId, moneyJarDto);
     
     // start a timer for the jar schedule
-    activateTimer(jar.jar_id);
+    activateTimer(jarId);
 
     // check length after adding item
     let afterLen = Object.keys(jars.getJarList()).length;
 
     if (afterLen > beforeLen) {
-        setJars(jar.jar_id);
+        setJars(jarId);
     }
     
     emptyExpenseList.hidden = true;
@@ -926,10 +925,12 @@ function serializeData() {
         jarModalError.innerHTML = "Your item list is empty";
         return;
     }
+    
+    let jarId = moneyJarIdModal.value.split("_")[0];
 
     let data = userFields.TOKEN + "=" + token + "&";
     data += userFields.USER_ID + "=" + userId + "&";
-    data += jarFields.JAR_ID + "=" + escape(moneyJarIdModal.value) + "&";
+    data += jarFields.JAR_ID + "=" + escape(jarId) + "&";
     data += jarFields.EXPENSE_TYPE + "=" + escape(expenseTypeElem.options[expenseTypeElem.selectedIndex].value) + "&";
     data += jarFields.CATEGORY + "=" + escape(selectedMoneyJarType) + "&";
     data += jarFields.TOTAL_AMOUNT + "=" + escape(amountElem.innerHTML) + "&";
