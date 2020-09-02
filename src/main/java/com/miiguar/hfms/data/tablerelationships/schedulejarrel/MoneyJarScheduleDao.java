@@ -226,4 +226,63 @@ public class MoneyJarScheduleDao extends BaseDao<JarScheduleDateRel> {
         }
         return jarScheduleDateRel;
     }
+
+    public List<JarScheduleDateRel> getAllByJarId(String moneyJarId) {
+        String query = "SELECT * FROM " + DbEnvironment.MONEY_JAR_SCHEDULE_REL_TB +
+                " WHERE " + DbEnvironment.MONEY_JAR_ID + "=?";
+        List<JarScheduleDateRel> list = new ArrayList<>();
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+            
+            preparedStatement.setString(1, moneyJarId);
+            
+            resultSet = preparedStatement.executeQuery();
+            while(resultSet.next()) {
+                JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
+                jarScheduleDateRel.setHouseholdId(resultSet.getString(DbEnvironment.HOUSEHOLD_ID));
+                jarScheduleDateRel.setJarId(resultSet.getString(DbEnvironment.MONEY_JAR_ID));
+                jarScheduleDateRel.setScheduleDate(resultSet.getString(DbEnvironment.JAR_SCHEDULE_DATE));
+                jarScheduleDateRel.setJarStatus(resultSet.getBoolean(DbEnvironment.JAR_STATUS));
+                jarScheduleDateRel.setPaymentStatus(resultSet.getBoolean(DbEnvironment.PAYMENT_STATUS));
+                list.add(jarScheduleDateRel);
+            }
+
+            resultSet.close();
+            resultSet = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing users query", throwables);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
+
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+            }
+
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */}
+            }
+        }
+        return list;
+    }
 }

@@ -9,6 +9,8 @@ import com.miiguar.hfms.data.transactions.model.Transaction;
 import com.miiguar.hfms.data.jar.MoneyJarsDao;
 import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.status.Report;
+import com.miiguar.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
+import com.miiguar.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -26,10 +28,14 @@ import java.io.OutputStream;
 import java.net.BindException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -74,9 +80,11 @@ public class MpesaResponseListener implements StopServerListener {
 
         private StopServerListener listener;
         private final TransactionDao transactionDao;
-        private final MoneyJar jar;
         private final MoneyJarsDao moneyJarsDao;
+        private final MoneyJarScheduleDao moneyJarScheduleDao;
+        
         private final String transactionId;
+        private final MoneyJar jar;
 
         public ConfirmHandler(StopServerListener listener, MoneyJar jar, String transactionId) {
             this.listener = listener;
@@ -84,6 +92,7 @@ public class MpesaResponseListener implements StopServerListener {
             this.jar = jar;
             
             moneyJarsDao = new MoneyJarsDao();
+            moneyJarScheduleDao = new MoneyJarScheduleDao();
             this.transactionId = transactionId;
         }
 
@@ -141,6 +150,21 @@ public class MpesaResponseListener implements StopServerListener {
                 
                 jar.setPaymentStatus(true);
                 moneyJarsDao.update(jar);
+                
+//                List<JarScheduleDateRel> list = moneyJarScheduleDao.getAllByJarId(jar.getMoneyJarId());
+//                JarScheduleDateRel jarScheduleDateRel;
+//                list.forEach(jarSchedule -> {
+//                    try {
+//                        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jarSchedule.getScheduleDate());
+//                        Date now = new Date();
+//                        
+//                        if (now.getTime() > date.getTime() && !jarSchedule.isPaymentStatus()) {
+//                            
+//                        }
+//                    } catch (ParseException ex) {
+//                        Logger.getLogger(MpesaResponseListener.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                });
 
                 final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url");
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();

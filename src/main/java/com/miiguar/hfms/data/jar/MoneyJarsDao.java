@@ -105,11 +105,11 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
             preparedStatement.setString(2, item.getCategory());
             preparedStatement.setDouble(3, item.getTotalAmount());
             preparedStatement.setString(4, item.getCreatedAt());
-            preparedStatement.setString(7, item.getScheduleType());
-            preparedStatement.setString(8, item.getHouseholdId());
-            preparedStatement.setBoolean(9, item.isJarStatus());
-            preparedStatement.setBoolean(10, item.isPaymentStatus());
-            preparedStatement.setString(11, item.getMoneyJarId());
+            preparedStatement.setString(5, item.getScheduleType());
+            preparedStatement.setString(6, item.getHouseholdId());
+            preparedStatement.setBoolean(7, item.isJarStatus());
+            preparedStatement.setBoolean(8, item.isPaymentStatus());
+            preparedStatement.setString(9, item.getMoneyJarId());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
