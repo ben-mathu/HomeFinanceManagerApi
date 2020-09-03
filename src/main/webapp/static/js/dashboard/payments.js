@@ -77,7 +77,7 @@ function showNotificationDialog(jarId, jarDto) {
 
     templateClone.querySelector("#moneyJarId").id += count;
     moneyJarId = templateClone.querySelector("#moneyJarId" + count);
-    moneyJarId.value = jarId + "_" + jarDto.jar.scheduled_for;
+    moneyJarId.value = jarId;
 
     templateClone.querySelector("#liabilitySection").id += count;
     liabilitySection = templateClone.querySelector("#liabilitySection" + count);
@@ -215,7 +215,7 @@ function addNotification(jarId) {
     if (!jar.jar_status) {
         jar.jar_status = true;
         jarDto.jar = jar;
-        jars.setJar(jarId + "_" + jar.scheduled_for, jarDto);
+        jars.setJar(jarId, jarDto);
         updateMoneyJarJson(jarId);
     }
 }
@@ -261,7 +261,12 @@ function populateNotificationSection(jarId) {
     notificationItem.addEventListener("click", function (event) {
         let itemIndex = event.target.id[event.target.id.length - 1];
         let id = document.getElementById("notificationId" + itemIndex);
-        openJarModalForPay(id.value);
+        let payStatus = document.getElementById("paymentStatus" + itemIndex);
+        if (paymentStatus.innerHTML === "paid") {
+            openJarModalForPay(id.value, true);
+        } else {
+            openJarModalForPay(id.value, false);
+        }
     });
     
     let id = jarId + "-" + dateNow;
@@ -307,6 +312,8 @@ function makePayments(jarId) {
                 showSuccessNotification(responseData, jarId);
                 
                 jarModal.style.display = "none";
+                
+                getAllMoneyJars();
             }
         }
     };
@@ -368,7 +375,9 @@ function serializePaymentData(jarId) {
         data += paybillFields.PHONE_NUMBER + "=" + escape(expenseItem.account_number) + "&";
         data += paybillFields.ACCOUNT_REF + "=" + escape("account") + "&";
         data += paybillFields.TRANSACTION_DESC + "=" + escape("First transaction from code") + "&";
-        data += jarFields.JAR_ID + "=" + escape(jar.jar_id);
+        data += jarFields.JAR_ID + "=" + escape(jarId);
+    } else if (jar.category === categoryOption.LIST) {
+        data += jarFields.JAR_ID + "=" + escape(jarId);
     }
     return data;
 }

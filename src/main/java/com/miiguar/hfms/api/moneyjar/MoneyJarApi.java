@@ -137,7 +137,7 @@ public class MoneyJarApi extends BaseServlet {
     
     public void updateJar(MoneyJarDto jarDto, HttpServletRequest request, HttpServletResponse response) throws IOException {
         MoneyJar jar = jarDto.getJar();
-        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.getWithStatusFalse(jar.getMoneyJarId());
+        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.getWithStatusFalse(jarDto.getId());
         
         jarScheduleDateRel.setJarStatus(true);
         
@@ -166,9 +166,11 @@ public class MoneyJarApi extends BaseServlet {
         MoneyJar jar = jarDto.getJar();
         
         JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
+        jarScheduleDateRel.setId(randomString.nextString());
         jarScheduleDateRel.setHouseholdId(jar.getHouseholdId());
         jarScheduleDateRel.setJarId(jar.getMoneyJarId());
         jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
+        jarScheduleDateRel.setAmount(jar.getTotalAmount());
         
         int affected = moneyJarScheduleDao.save(jarScheduleDateRel);
         
@@ -191,6 +193,13 @@ public class MoneyJarApi extends BaseServlet {
         }
     }
 
+    /**
+     * Update expenses when user edits it
+     * @param dto stores expense details and data to be updated
+     * @param req HTTP request from the client side.
+     * @param resp HTTP response to be sent to the client once data has been processed
+     * @throws IOException thrown whenever there is an error performing I/O operations.
+     */
     public void updateDatabase(MoneyJarDto dto, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MoneyJar jar = dto.getJar();
 
@@ -210,6 +219,7 @@ public class MoneyJarApi extends BaseServlet {
         jarScheduleDateRel.setJarId(jar.getMoneyJarId());
         jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
         jarScheduleDateRel.setJarStatus(true);
+        jarScheduleDateRel.setAmount(jar.getTotalAmount());
         
         envAffectedRows = moneyJarScheduleDao.update(jarScheduleDateRel);
         
@@ -292,13 +302,16 @@ public class MoneyJarApi extends BaseServlet {
         envAffectedRows = jarDao.save(jar);
         
         JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
+        jarScheduleDateRel.setId(randomString.nextString());
         jarScheduleDateRel.setHouseholdId(householdRel.getHouseId());
         jarScheduleDateRel.setJarId(jarId);
         jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
+        jarScheduleDateRel.setAmount(jar.getTotalAmount());
         
         moneyJarScheduleDao.save(jarScheduleDateRel);
         
         dto.setJar(jar);
+        dto.setId(jarScheduleDateRel.getId());
 
         List<Grocery> groceries = dto.getGroceries();
         if (JarType.LIST_EXPENSE_TYPE.equals(dto.getJar().getCategory())) {
@@ -408,6 +421,7 @@ public class MoneyJarApi extends BaseServlet {
                 
                 MoneyJarDto jarDto = new MoneyJarDto();
                 jarDto.setJar(jar);
+                jarDto.setId(jarScheduleDateRel.getId());
 
                 String jarId = jar.getMoneyJarId();
                 if (JarType.LIST_EXPENSE_TYPE.equals(jar.getCategory())) {

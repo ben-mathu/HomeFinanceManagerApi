@@ -3,16 +3,16 @@
         <input id="moneyJarIdModal" type="text" name="jar-id" placeholder="Money Jar ID" hidden>
         <div class="" >
             <h4 class="modal-title">Add Expense(Reminder)</h4>
-            <p id="jarModalError" class="error-text"></p>
+            <p id="jarModalError" class="error-text"></p><span id="removeErrorMessage" style="background-color: #3F3A4B" hidden>x</span>
             <div class="jar-container jar-elements" >
                 <div>
-                    <label for="#expenseType">Expense Type</label></br>
+                    <label for="expenseType">Expense</label></br>
                     <select id="expenseType" class="select-style">
                         <option value="--Select Expense Type--">--Select Expense Type--</option>
                     </select>
                 </div>
                 <div>
-                    <label for="#categorySelector">Expense Category</label></br>
+                    <label for="categorySelector">Expense Type</label></br>
                     <select id="categorySelector" class="select-style">
                         <option value="List">List</option>
                         <option value="Single Item">Single Item</option>
@@ -79,7 +79,7 @@
                         <input id="expenseAmount" class="input-style" type="number" name="expense_amount" placeholder="300" />
                     </div>
                     <div>
-                        <label for="#payeeName">Payee Name</label></br>
+                        <label for="payeeName">Payee Name</label></br>
                         <select id="payeeName" class="select-style">
                             <option value="--Select Expense Type--">--Select Expense Type--</option>
                         </select>

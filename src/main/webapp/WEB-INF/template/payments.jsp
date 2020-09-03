@@ -28,7 +28,6 @@
         <div>
             <input id="btnEditDetails" class="btn2" type="button" name="editFields" value="Edit">
             <input id="btnPay" class="btn2" type="button" name="Accept" value="Accept">
-            <input id="btnDelegate" class="btn2" type="button" name="delegate" value="Delegate">
         </div>
     </div>
 </template>

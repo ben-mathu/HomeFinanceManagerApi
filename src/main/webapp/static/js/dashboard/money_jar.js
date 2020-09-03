@@ -14,6 +14,8 @@ let expenseItemsSection;
 
 let dayOfWeek;
 
+let errorMessage;
+
 const expenseTypes = {
     'Rent': 'Fixed',
     'Taxes': 'Fixed',
@@ -25,7 +27,8 @@ const expenseTypes = {
     'Health': 'Saving',
     'Personal': 'Saving',
     'Entertainment': 'Saving',
-    'Vehicle Maintenance': 'Saving'
+    'Vehicle Maintenance': 'Saving',
+    'Employee': 'Fixed'
 };
 
 let jars = {
@@ -43,6 +46,9 @@ let jars = {
     },
     getJarList: function() {
         return this.moneyJarList;
+    },
+    removeAll: function() {
+        this.moneyJarList = {};
     },
     registerListener: function(listener) {
         this.moneyJarListListener = listener;
@@ -89,6 +95,12 @@ let date;
 let moneyJarIdModal;
 
 function configureMoneyJar() {
+    errorMessage = document.getElementById("jarModalError");
+    errorMessageRemover = document.getElementById("removeErrorMessage");
+    errorMessageRemover.addEventListener("click", function(event) {
+        errorMessage.hidden = true;
+    });
+    
     let expenseType = document.getElementById("expenseType");
     let expenseTypeKeys = Object.keys(expenseTypes);
     expenseTypeKeys.forEach(expense => {
@@ -154,9 +166,36 @@ function configureMoneyJar() {
         if (selectedMoneyJarType === categoryOption.LIST) {
             grocerySection.hidden = false;
             expenseSection.hidden = true;
+            
+            let type = expenseTypeElem.options[expenseTypeElem.selectedIndex].value;
+            if (type !== "Groceries") {
+                errorMessage = document.getElementById("jarModalError");
+                error.innerHTML = "Only Groceries and Personal expense types are allowed to have lists";
+                categorySelector.options[1].selected = true;
+                
+                grocerySection.hidden = true;
+                expenseSection.hidden = false;
+            } else if (type !== "Personal") {
+                var error = document.getElementById("jarModalError");
+                error.innerHTML = "Only Groceries and Personal expense types are allowed to have lists";
+                categorySelector.options[1].selected = true;
+                
+                grocerySection.hidden = true;
+                expenseSection.hidden = false;
+            }
         } else if (selectedMoneyJarType === categoryOption.SINGLE) {
             grocerySection.hidden = true;
             expenseSection.hidden = false;
+            
+            let type = expenseTypeElem.options[expenseTypeElem.selectedIndex].value;
+            if (type === "Groceries") {
+                var error = document.getElementById("jarModalError");
+                error.innerHTML = "Groceries should not have single item expense type";
+                categorySelector.options[0].selected = true;
+                
+                grocerySection.hidden = false;
+                expenseSection.hidden = true;
+            }
         }
     });
 
@@ -225,6 +264,8 @@ function getAllMoneyJars() {
                 
                 jarList.innerHTML = "";
                 jarList.appendChild(jarTemplate);
+                
+                jars.removeAll();
 
                 // update the global list; list is empty
                 for (let i = 0; i < jarDtoList.length; i++) {
@@ -420,9 +461,14 @@ function openJarModalForEdit(jarId) {
         scheduleSelector.options[3].selected = true;
     }
 
+    btnSubmitJar.value = "Submit";
+    btnSubmitJar.classList.add("btn2");
     btnSubmitJar.onclick = function() {
         updateMoneyJar(jarId);
     };
+    
+    var btnOpenGroceryModal = document.getElementById("btnOpenGroceryModal");
+    btnOpenGroceryModal.hidden = false;
     
     cancelJarModal.addEventListener("click", function (event) {
         btnDeleteExpense.hidden = true;
@@ -434,7 +480,7 @@ function openJarModalForEdit(jarId) {
  * Open expense dialog box
  * @param {type} jarId allows users delete or update the expense
  */
-function openJarModalForPay(jarId) {
+function openJarModalForPay(jarId, isPaid) {
     
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
@@ -494,11 +540,19 @@ function openJarModalForPay(jarId) {
     } else if (jar.scheduled_type === "Monthly") {
         scheduleSelector.options[3].selected = true;
     }
+    
+    var btnOpenGroceryModal = document.getElementById("btnOpenGroceryModal");
+    btnOpenGroceryModal.hidden = true;
 
     btnSubmitJar.value = "Pay";
     btnSubmitJar.onclick = function() {
-        makePayments(jarId);
+        makePayments(moneyJarIdModal.value);
     };
+    
+    if (isPaid) {
+        btnSubmitJar.onclick = function() {};
+        btnSubmitJar.style.backgroundColor = "#00b3ff";
+    }
     
     cancelJarModal.addEventListener("click", function (event) {
         btnDeleteExpense.hidden = true;
@@ -602,10 +656,11 @@ function sendJarRequestJson(jarDto, date) {
             if (request.status === 200) {
                 var json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
-                addJarToList(moneyJarDto);
-//                getAllMoneyJars();
+//                addJarToList(moneyJarDto);
 
                 jarModal.style.display = "none";
+
+                getAllMoneyJars();
             } else {
                 showError();
             }
@@ -695,7 +750,7 @@ function updateMoneyJar(jarId) {
             if (request.status === 200) {
                 let json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
-                addJarToList(moneyJarDto);
+//                addJarToList(moneyJarDto);
 
                 jarModal.style.display = "none";
                 
@@ -729,9 +784,9 @@ function updateMoneyJarJson(jarId) {
                 let json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
                 
-                jars.setJar(moneyJarDto.jar.jar_id + "-" + moneyJarDto.jar.scheduled_for, moneyJarDto);
+//                jars.setJar(moneyJarDto.schedule_id, moneyJarDto);
 //                addJarToList(moneyJarDto);
-                getAllMoneyJars();
+//                getAllMoneyJars();
             } else {
                 showError();
             }
@@ -739,11 +794,8 @@ function updateMoneyJarJson(jarId) {
     };
 
     let jarDto = jars.getJar(jarId);
-    if (jarDto.jar.jar_id === '') {
-        jarDto.jar.jar_id = jarId;
-    }
     
-    let data = JSON.stringify(jars.getJar(jarId));
+    let data = JSON.stringify(jarDto);
     let token = window.localStorage.getItem(userFields.TOKEN);
 
     request.open("PUT", ctx + "/api/jars/update-jar", true);
@@ -762,7 +814,7 @@ function addJarToList(moneyJarDto) {
     let beforeLen = Object.keys(jars.getJarList()).length;
 
 //    add to global list
-    let jarId = jar.jar_id + "_" + jar.scheduled_for;
+    let jarId = moneyJarDto.schedule_id;
     jars.setJar(jarId, moneyJarDto);
     
     // start a timer for the jar schedule
@@ -795,7 +847,7 @@ function setJars(jarId) {
             let jarDto = jars.getJar(key);
             let jar = jarDto.jar;
             if (!jar.jar_status) {
-                updateJarTable(jar);
+                updateJarTable(jarDto);
             }
         });
     } else {
@@ -803,7 +855,7 @@ function setJars(jarId) {
         let jarDto = jars.getJar(jarId);
         let jar = jarDto.jar;
         if (!jar.jar_status) {
-            addToJarTable(jar);
+            addToJarTable(jarDto);
         }
     }
     // update the table with new item
@@ -811,16 +863,17 @@ function setJars(jarId) {
 
 /**
  * reload the jar table with the name of the jar and scheduled date
- * @param {Jar} jar contains all items of the jar
+ * @param {MoneyJarDto} jarDto contains all items of the jar
  * @param {Integer} index represents the row to update
  */
 let jarCount = 0;
-function updateJarTable(jar) {
+function updateJarTable(jarDto) {
+    let jar = jarDto.jar;
     let clone = jarTemplate.content.cloneNode(true);
 
     clone.querySelector("#jarId").id += jarCount;
     let idTemplate = clone.querySelector("#jarId" + jarCount);
-    idTemplate.value = jar.jar_id + "_" + jar.scheduled_for;
+    idTemplate.value = jarDto.schedule_id;
     
     clone.querySelector("#expType").id += jarCount;
     let type = clone.querySelector("#expType" + jarCount);
@@ -856,12 +909,14 @@ function updateJarTable(jar) {
  * @param {Jar} jar contains all items of the jar
  * @param {Integer} index represents the row to update
  */
-function addToJarTable(jar) {
+function addToJarTable(jarDto) {
+    let jar = jarDto.jar;
+    
     let clone = jarTemplate.content.cloneNode(true);
 
     clone.querySelector("#jarId").id += jarCount;
     let idTemplate = clone.querySelector("#jarId" + jarCount);
-    idTemplate.value = jar.jar_id + "_" + jar.scheduled_for;
+    idTemplate.value = jarDto.schedule_id;
     
     clone.querySelector("#expType").id += jarCount;
     let type = clone.querySelector("#expType" + jarCount);
@@ -926,7 +981,7 @@ function serializeData() {
         return;
     }
     
-    let jarId = moneyJarIdModal.value.split("_")[0];
+    let jarId = moneyJarIdModal.value;
 
     let data = userFields.TOKEN + "=" + token + "&";
     data += userFields.USER_ID + "=" + userId + "&";

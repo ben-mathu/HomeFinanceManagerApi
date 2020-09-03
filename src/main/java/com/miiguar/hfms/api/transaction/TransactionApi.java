@@ -1,7 +1,7 @@
-package com.miiguar.hfms.api.mpesa;
+package com.miiguar.hfms.api.transaction;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.api.mpesa.threadrunner.SendTransactionRunnable;
+import com.miiguar.hfms.api.transaction.threadrunner.SendTransactionRunnable;
 import com.miiguar.hfms.config.ConfigureApp;
 import com.miiguar.hfms.data.budget.BudgetDao;
 import com.miiguar.hfms.data.daraja.LnmoErrorResponse;
@@ -12,6 +12,8 @@ import com.miiguar.hfms.data.income.model.Income;
 import com.miiguar.hfms.data.jar.MoneyJarsDao;
 import com.miiguar.hfms.data.jar.model.MoneyJar;
 import com.miiguar.hfms.data.status.Report;
+import com.miiguar.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
+import com.miiguar.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
 import com.miiguar.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
 import com.miiguar.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.miiguar.hfms.data.transactions.TransactionDao;
@@ -55,6 +57,7 @@ public class TransactionApi extends BaseServlet {
     private final BudgetDao budgetDao;
     private final UserHouseholdDao userHouseholdDao;
     private final IncomeDao incomeDao;
+    private final MoneyJarScheduleDao moneyJarScheduleDao;
     
     public TransactionApi() {
         transactionDao = new TransactionDao();
@@ -62,6 +65,7 @@ public class TransactionApi extends BaseServlet {
         budgetDao = new BudgetDao();
         userHouseholdDao = new UserHouseholdDao();
         incomeDao = new IncomeDao();
+        moneyJarScheduleDao = new MoneyJarScheduleDao();
     }
 
     /**
@@ -92,8 +96,10 @@ public class TransactionApi extends BaseServlet {
         String requestStr = BufferRequestReader.bufferRequest(httpServletRequest);
 
         LnmoRequest request = gson.fromJson(requestStr, LnmoRequest.class);
+        
+        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.get(request.getJarId());
 
-        MoneyJar jar = moneyJarsDao.get(request.getJarId());
+        MoneyJar jar = moneyJarsDao.get(jarScheduleDateRel.getJarId());
 
         UserHouseholdRel rel = userHouseholdDao.get(request.getUserId());
 
@@ -169,12 +175,12 @@ public class TransactionApi extends BaseServlet {
 
             int affected = transactionDao.save(transaction);
 
-            if (!jar.isJarStatus()) {
-                jar.setJarStatus(true);
+            if (!jarScheduleDateRel.isJarStatus()) {
+                jarScheduleDateRel.setJarStatus(true);
             }
             
-            jar.setPaymentStatus(true);
-            moneyJarsDao.update(jar);
+            jarScheduleDateRel.setPaymentStatus(true);
+            moneyJarScheduleDao.update(jarScheduleDateRel);
             sendNotification(affected, httpServletResponse, response);
         } else {
             LnmoErrorResponse error = gson.fromJson(builder.toString(), LnmoErrorResponse.class);

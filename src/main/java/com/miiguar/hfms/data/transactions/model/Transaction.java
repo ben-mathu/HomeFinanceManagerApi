@@ -24,7 +24,7 @@ public class Transaction {
     private String id;
     
     @SerializedName(TRANSACTION_DESCRIPTION)
-    @Column(columnName = TRANSACTION_DESCRIPTION)
+    @Column(columnName = TRANSACTION_DESCRIPTION, characterLength = 1024)
     private String transactionDesc;
     
     @SerializedName(PAYMENT_DETAILS)

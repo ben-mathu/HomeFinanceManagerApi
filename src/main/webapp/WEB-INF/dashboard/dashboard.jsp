@@ -16,6 +16,7 @@
     pageContext.setAttribute("payments", "static/js/dashboard/payments.js");
     pageContext.setAttribute("budgets", "static/js/dashboard/budgets.js");
     pageContext.setAttribute("transactions", "static/js/dashboard/transactions.js");
+    pageContext.setAttribute("linegraph", "static/js/utils/line_graph.js");
 %>
 <%@ include file = "../page_setting_top.jsp" %>
     <div class="container">

@@ -1,4 +1,4 @@
-package com.miiguar.hfms.api.mpesa;
+package com.miiguar.hfms.api.transaction;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.config.ConfigureApp;

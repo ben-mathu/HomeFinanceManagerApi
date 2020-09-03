@@ -1,4 +1,4 @@
-package com.miiguar.hfms.api.mpesa.threadrunner;
+package com.miiguar.hfms.api.transaction.threadrunner;
 
 import com.google.gson.Gson;
 import com.miiguar.hfms.data.transactions.TransactionDao;
@@ -151,20 +151,20 @@ public class MpesaResponseListener implements StopServerListener {
                 jar.setPaymentStatus(true);
                 moneyJarsDao.update(jar);
                 
-//                List<JarScheduleDateRel> list = moneyJarScheduleDao.getAllByJarId(jar.getMoneyJarId());
-//                JarScheduleDateRel jarScheduleDateRel;
-//                list.forEach(jarSchedule -> {
-//                    try {
-//                        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jarSchedule.getScheduleDate());
-//                        Date now = new Date();
-//                        
-//                        if (now.getTime() > date.getTime() && !jarSchedule.isPaymentStatus()) {
-//                            
-//                        }
-//                    } catch (ParseException ex) {
-//                        Logger.getLogger(MpesaResponseListener.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-//                });
+                List<JarScheduleDateRel> list = moneyJarScheduleDao.getAllByJarId(jar.getMoneyJarId());
+                JarScheduleDateRel jarScheduleDateRel;
+                list.forEach(jarSchedule -> {
+                    try {
+                        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jarSchedule.getScheduleDate());
+                        Date now = new Date();
+                        
+                        if (now.getTime() > date.getTime() && !jarSchedule.isPaymentStatus()) {
+                            
+                        }
+                    } catch (ParseException ex) {
+                        Logger.getLogger(MpesaResponseListener.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
 
                 final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url");
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();

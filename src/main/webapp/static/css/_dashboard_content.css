@@ -29,6 +29,10 @@
     margin-left: 5px;
 }
 
+.line-graph-canvas {
+    display: block;
+}
+
 /*
     Notification
 */

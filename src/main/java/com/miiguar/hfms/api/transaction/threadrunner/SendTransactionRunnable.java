@@ -1,4 +1,4 @@
-package com.miiguar.hfms.api.mpesa.threadrunner;
+package com.miiguar.hfms.api.transaction.threadrunner;
 
 import com.miiguar.hfms.data.jar.model.MoneyJar;
 

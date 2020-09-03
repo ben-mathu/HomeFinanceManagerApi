@@ -185,6 +185,7 @@ public class DbEnvironment {
      */
     public static final String MONEY_JAR_SCHEDULE_REL_TB = "jar_schedule_rel";
     public static final String JAR_SCHEDULE_DATE = "jar_schedule";
+    public static final String JAR_SCHEDULE_ID = "id";
     public static final String FK_MONEY_JAR_SCHEDULE_JAR_ID = "fk_jar_schedule_jar_id_ref_money_jars";
     
     /**

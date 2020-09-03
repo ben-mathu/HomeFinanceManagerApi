@@ -1,4 +1,4 @@
-package com.miiguar.hfms.api.mpesa;
+package com.miiguar.hfms.api.transaction;
 
 /**
  * @author bernard

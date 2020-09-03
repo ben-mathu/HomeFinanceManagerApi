@@ -9,9 +9,9 @@ let householdMembers;
 const Status = {
     COMPLETE: 'Complete',
     PARTIAL: 'Partial'
-}
+};
 
-var timeInterval = setInterval(function() {myTimer()}, 1000);
+var timeInterval = setInterval(function() {myTimer();}, 1000);
 var navClickOpen = false;
 var ctx;
 var urlMap = {};
@@ -119,7 +119,8 @@ const jarFields = {
     TOTAL_AMOUNT: "amount",
     LIABILITIES: "liabilities",
     SCHEDULE: "scheduled_for",
-    SCHEDULED_TYPE: "scheduled_type"
+    SCHEDULED_TYPE: "scheduled_type",
+    SCHEDULE_ID: "schedule_id"
 };
 
 window.onload = function() {
@@ -223,11 +224,6 @@ window.onload = function() {
     configureTransactions();
 //    configureBudget();
 };
-
-//window.setInterval(function() {
-//    getUserDetails();
-//    getAllMoneyJars();
-//}, 5000);
 
 /**
  * set income when reeived.
