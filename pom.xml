@@ -78,6 +78,7 @@
             <groupId>com.miiguar</groupId>
             <artifactId>token-generation</artifactId>
             <version>1.0.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
