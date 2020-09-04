@@ -116,6 +116,14 @@ function configureMoneyJar() {
     
     expenseTypeElem = document.getElementById("expenseType");
     expenseTypeElem.addEventListener("change", function(event) {
+        let spanType = document.querySelector("span[for='expenseType']");
+        spanType.textContent = "";
+        spanType.style.display = "none";
+        
+        let spanAmount = document.querySelector("span[for='expenseAmount']");
+        spanAmount.textContent = "";
+        spanAmount.style.display = "block";
+        
         let cat = expenseTypeElem.options[expenseTypeElem.selectedIndex].value;
         if (cat === "Groceries") {
             categorySelector.options[0].selected = true;
@@ -134,7 +142,17 @@ function configureMoneyJar() {
     
     amountElem = document.getElementById("totalAmount");
     time = document.getElementById("scheduledHour");
+    time.addEventListener("input", function (event) {
+        let spanHour = document.querySelector("span[for='scheduledHour']");
+        spanHour.textContent = "";
+        spanHour.style.display = "none";
+    });
     date = document.getElementById("scheduledDate");
+    date.addEventListener("input", function() {
+        let spanDate = document.querySelector("span[for='scheduledDate']");
+        spanDate.textContent = "";
+        spanDate.style.display = "none";
+    });
     
     btnOpenJarModal = document.getElementById("btnOpenJarModal");
     btnOpenJarModal.onclick = function() {
@@ -371,11 +389,11 @@ function isInExpenseTypeMap(expenseType, map) {
  */
 function validateInput() {
     let validAmount = true;
-    if (expenseAmount.value === '') {
+    if (expenseAmount.value === '' || expenseAmount.value < 5) {
         let spanAmount = document.querySelector("span[for='expenseAmount']");
         spanAmount.style.color = "#AA002E";
         spanAmount.style.fontSize = "12px";
-        spanAmount.textContent = "Expense amount field must not be empty";
+        spanAmount.textContent = "Expense amount field must not be empty or less than 5";
         spanAmount.style.display = "block";
         validAmount = false;
     } else {
@@ -387,13 +405,13 @@ function validateInput() {
         let spanHour = document.querySelector("span[for='scheduledHour']");
         spanHour.style.color = "#AA002E";
         spanHour.style.fontSize = "12px";
-        spanHour.textContent = "Time input field is invalid";
+        spanHour.textContent = "Time input field is empty";
         spanHour.style.display = "block";
         validHour = false;
     } else {
-        let date = new Date().addMinutes(new Date(), 1);
+        let timeNow = new Date().addMinutes(new Date().toLocaleDateString(), 1);
         
-        if (new Date(time.value).getDate() < date.getDate()) {
+        if (new Date(time.value).getDate() < timeNow.getDate()) {
             let spanHour = document.querySelector("span[for='scheduledHour']");
             spanHour.style.color = "#AA002E";
             spanHour.style.fontSize = "12px";
@@ -405,7 +423,52 @@ function validateInput() {
         }
     }
     
-    return validAmount && validHour;
+    
+    let validDate = true;
+    let dPicker = document.getElementById("datePicker");
+    if (date.value === '' && !dPicker.hidden) {
+        let spanDate = document.querySelector("span[for='scheduledDate']");
+        spanDate.style.color = "#AA002E";
+        spanDate.style.fontSize = "12px";
+        spanDate.textContent = "Date input field is empty";
+        spanDate.style.display = "block";
+        validHour = false;
+    } else {
+        let dateNow  = new Date();
+        if (!dPicker.hidden && new Date(date.value).getDate() < dateNow.getDate()) {
+            let spanDate = document.querySelector("span[for='scheduledHour']");
+            spanDate.style.color = "#AA002E";
+            spanDate.style.fontSize = "12px";
+            spanDate.textContent = "Invalid date input (Requires date set to be today or in future)";
+            spanDate.style.display = "block";
+            validDate = false;
+        } else if (dPicker.hidden) {
+            date.value = "";
+            validDate = true;
+        } else {
+            validDate = true;
+        }
+    }
+    
+    let expenseTypeSelected = true;
+    if (expenseTypeElem.selectedIndex === 0) {
+        let spanType = document.querySelector("span[for='expenseType']");
+        spanType.style.color = "#AA002E";
+        spanType.style.fontSize = "12px";
+        spanType.textContent = "You have not selected expense type";
+        spanType.style.display = "block";
+        expenseTypeSelected = false;
+    } else {
+        expenseTypeSelected = true;
+    }
+    
+    let payeeNameSelected = true;
+    if (expenseTypeElem.selectedIndex === 0) {
+        payeeName.options[1].selected = true;
+        payeeNameSelected = true;
+    }
+    
+    return validAmount && validHour && validDate && expenseTypeSelected && payeeNameSelected;
 }
 
 function openJarModal(callback) {

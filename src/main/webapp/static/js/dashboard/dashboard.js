@@ -155,6 +155,10 @@ window.onload = function() {
     document.getElementById("settings").onclick = function() {
         getPage("settings-title:root");
     };
+    
+    document.getElementById("messages").onclick = function() {
+        getPage("messages-title");
+    };
 
     document.getElementById("members").onclick = function() {
         getPage("members-title");
@@ -451,6 +455,23 @@ function closeOptionsMenu() {
     }
 }
 
+function removeOtherFolders(key) {
+    let keys = Object.keys(urlMap);
+    let keyVisited = false;
+    for (let i = 0; i < keys.length; i++) {
+        let item = keys[i];
+        if (key === item) {
+            keyVisited = true;
+            document.getElementById(key).hidden = false;
+            continue;
+        }
+        
+        if (keyVisited) {
+            document.getElementById(item).hidden = true;
+        }
+    }
+}
+
 /**
  * gets the page to display/server
  * 
@@ -493,9 +514,10 @@ function getPage(id) {
     
     var key = id === "refresh" ? id : document.getElementById(id).value;
     if (isTitleInUrlMap(key)) {
+        
+        removeOtherFolders(key);
         var url = getUrl(key);
         window.history.pushState(key, key, url);
-        document.getElementById(key).hidden = false;
     } else {
         var title = "title=" + escape(key);
         var data = title;

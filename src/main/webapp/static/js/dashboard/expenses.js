@@ -31,10 +31,10 @@ let expenseGlobal = {
 };
 
 let payeeNames = {
+    'Other': '',
     'KPLC': '888888',
     'Kiambu Water and sewage Company': '885100',
-    'Testing': '174379',
-    'Other': ''
+    'Testing': '174379'
 };
 
 function configureExpenses() {
