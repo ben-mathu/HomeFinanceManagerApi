@@ -18,6 +18,14 @@ class LineGraph {
         this.maxAmount = 8000;
         this.monthlyAmount = {};
         
+        this.getFormatDate = function (date) {
+            const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false});
+            const [{ value: month },,{ value: day },,{ value: year },,{value: hour},,{value: minute}] = dateTimeFormat .formatToParts(date );
+
+            let dateStr = `${year}-${month}-${day} ${hour}:${minute}`;
+            return dateStr;
+        };
+        
         this.getScale = function () {
             let value = this.maxAmount;
             if (value > 9999999 && value < 1000000000) {
@@ -65,9 +73,10 @@ class LineGraph {
                 return this.getPlaceValue(this.monthlyAmount[keys[0]]);
             } else {
                 let temp = 0;
-                this.transactions.forEach(transaction => {
-                    if (temp < transaction.amount) {
-                        temp = transaction.amount;
+                let keys = Object.keys(this.monthlyAmount);
+                keys.forEach(key => {
+                    if (temp < this.monthlyAmount[key]) {
+                        temp = this.monthlyAmount[key];
                     }
                 });
 
@@ -223,22 +232,27 @@ class LineGraph {
             
             let height = this.y - 0 + this.xPadding;
             
-            let y1 = this.monthlyAmount[keys[0]] / this.scale / 100;
-            
-            let y2 = this.monthlyAmount[keys[1]] / this.scale / 100;
-            let startY = height / y1 - y1;
-            
+            let y = this.monthlyAmount[keys[0]] / this.scale / 100;
+            let startY = height / y - y;
             
             let endX = (this.width - this.xPadding) / 12 * keys[1];
-            let endY;
+            let endY = 0;
             
-            if (this.transactions[1].amount > this.transactions[0].amount) {
-                endY -= height / y2 - y2;
-            } else {
-                endY += height / y2 - y2;
-            }
+            y = this.monthlyAmount[keys[1]] / this.scale / 100;
             
-            for (var i = 0; i < keys.length; i++) {
+            endY = height / y - y;
+            
+            drawCircle(this.context,
+                startX,
+                startY,
+                3,
+                0,
+                2 * Math.PI,
+                this.colors[0]
+            );
+            
+            for (var i = 1; i < keys.length; i++) {
+                console.log(keys.length);
                 if (i === keys.length) {
                     break;
                 }
@@ -249,29 +263,27 @@ class LineGraph {
                     startY,
                     endX,
                     endY,
-                    this.colors[colorIndex % this.colors.length]
+                    this.colors[0]
                 );
-        
-                drawCircle(this.context,
-                    startX,
-                    startY,
-                    5,
-                    0,
-                    2 * Math.PI,
-                    "#FFFFFF"
-                );
-                
-                y2 = this.monthlyAmount[keys[i + 1]] / this.scale / 100;
+                       
+                y = this.monthlyAmount[keys[i - 1]] / this.scale / 100;
                 
                 startX = endX;
                 startY = endY;
                 
                 endX += (this.width - this.xPadding) / 12;
-                if (this.monthlyAmount[keys[i + 1]] > this.monthlyAmount[keys[i]]) {
-                    endY -= height / y2 - y2;
-                } else {
-                    endY += height / y2 - y2;
-                }
+                y = this.monthlyAmount[keys[i]] / this.scale / 100;
+                
+                endY += height / y - y;
+                
+                drawCircle(this.context,
+                    startX,
+                    startY,
+                    3,
+                    0,
+                    2 * Math.PI,
+                    this.colors[0]
+                );
             }
             
 //            add legends
@@ -301,12 +313,13 @@ class LineGraph {
  * @param {string} color stroke color
  */
 function drawLine(ctx, xFrom, yFrom, xTo, yTo, color) {
-    ctx.fillStyle = color;
+    ctx.save();
     ctx.beginPath();
     ctx.moveTo(xFrom, yFrom);
     ctx.lineTo(xTo, yTo);
-    ctx.closePath();
-    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.stroke();
 }
 
 function drawCircle(ctx, centerX, centerY, radius, startAngle, endAngle, color) {

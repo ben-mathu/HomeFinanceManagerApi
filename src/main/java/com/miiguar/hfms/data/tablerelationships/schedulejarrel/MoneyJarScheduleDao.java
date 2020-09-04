@@ -139,6 +139,7 @@ public class MoneyJarScheduleDao extends BaseDao<JarScheduleDateRel> {
                 jarScheduleDateRel.setScheduleDate(resultSet.getString(DbEnvironment.JAR_SCHEDULE_DATE));
                 jarScheduleDateRel.setJarStatus(resultSet.getBoolean(DbEnvironment.JAR_STATUS));
                 jarScheduleDateRel.setPaymentStatus(resultSet.getBoolean(DbEnvironment.PAYMENT_STATUS));
+                jarScheduleDateRel.setAmount(resultSet.getDouble(DbEnvironment.AMOUNT));
                 list.add(jarScheduleDateRel);
             }
 

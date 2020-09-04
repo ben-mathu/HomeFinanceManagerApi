@@ -194,13 +194,17 @@ function addNotification(jarId) {
     // update date depending on schedule
     let date;
     if (jar.scheduled_type === scheduleType.DAILY) {
-        date = new Date().addDays()(jar.scheduled_for, 1);
+        date = new Date().addDays(jar.scheduled_for, 1);
     } else if (jar.scheduled_type === scheduleType.WEEKLY) {
         date = new Date().addDays(jar.scheduled_for, 7);
     } else if (jar.scheduled_type === scheduleType.MONTHLY) {
         date = new Date().addMonths(jar.scheduled_for, 1);
     } else if (jar.scheduled_type === scheduleType.SCHEDULED) {
-        date = new Date(jar.scheduled_for);
+        jar.jar_status = true;
+        jarDto.jar = jar;
+        jars.setJar(jarId, jarDto);
+        updateMoneyJarJson(jarId);
+        return;
     }
     
 //    format date
@@ -272,6 +276,18 @@ function populateNotificationSection(jarId) {
     let id = jarId + "-" + dateNow;
     notifications.setNotification(id, jarDto, templateClone);
 }
+
+Date.prototype.addHours = function(scheduled, seconds) {
+    let date = new Date(scheduled);
+    date.setSeconds(date.getSeconds() + seconds);
+    return date;
+};
+
+Date.prototype.addMinutes = function(scheduled, minutes) {
+    let date = new Date(scheduled);
+    date.setMinutes(date.getMinutes() + minutes);
+    return date;
+};
 
 Date.prototype.addHours = function(scheduled, hours) {
     let date = new Date(scheduled);

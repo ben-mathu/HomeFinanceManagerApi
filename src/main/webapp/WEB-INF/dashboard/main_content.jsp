@@ -3,8 +3,10 @@
     <div class="chart-chat-section section-style" >
         <div id="chartContainer" class="chart-container rounded-corner shadow-1pt subsection-background" >
             <label for="lineGraphCanvas"><i style="font-size: 16px; margin-bottom: 5px">Profit and Expenditure Line Graph</i></label>
-            <canvas id="lineGraphCanvas" class="line-graph-canvas"></canvas>
-            <legend for="lineGraphCanvas" class="legends-for-piechart"></legend>
+            <div class="chart-element">
+                <canvas id="lineGraphCanvas" class="line-graph-canvas"></canvas>
+                <legend for="lineGraphCanvas" class="legends-for-linegraph"></legend>
+            </div>
         </div>
         <div class="chat-container rounded-corner shadow-1pt subsection-background" >
             <label for="memberList"><i style="font-size: 16px; margin-bottom: 5px">Group Members</i></label>

@@ -211,17 +211,15 @@ public class MoneyJarApi extends BaseServlet {
         User user = dto.getUser();
         UserHouseholdRel householdRel = userHouseholdDao.get(user.getUserId());
 
-        jar.setHouseholdId(householdRel.getHouseId());
+//        jar.setHouseholdId(householdRel.getHouseId());
 //        envAffectedRows = jarDao.update(jar);
 
-        JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
-        jarScheduleDateRel.setHouseholdId(householdRel.getHouseId());
-        jarScheduleDateRel.setJarId(jar.getMoneyJarId());
-        jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
-        jarScheduleDateRel.setJarStatus(true);
+        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.get(dto.getId());
         jarScheduleDateRel.setAmount(jar.getTotalAmount());
+        jar.setMoneyJarId(jarScheduleDateRel.getJarId());
         
         envAffectedRows = moneyJarScheduleDao.update(jarScheduleDateRel);
+        jarDao.update(jar);
         
         if (envAffectedRows > 0) {
             jar.setJarStatus(true);
@@ -241,7 +239,7 @@ public class MoneyJarApi extends BaseServlet {
                 moneyJarListRel.setGroceryId(grocery.getGroceryId());
                 moneyJarListRel.setJarId(jar.getMoneyJarId());
                 
-                moneyJarListDao.save(moneyJarListRel);
+                groceryDao.save(grocery);
             }
             dto.setGroceries(groceries);
         } else {
@@ -255,7 +253,7 @@ public class MoneyJarApi extends BaseServlet {
             moneyJarExpenseRel.setExpenseId(expense.getExpenseId());
             moneyJarExpenseRel.setJarId(jar.getMoneyJarId());
             
-            moneyJarExpenseDao.save(moneyJarExpenseRel);
+            expenseDao.update(expense);
         }
 
         String uri = req.getRequestURI();
@@ -418,6 +416,7 @@ public class MoneyJarApi extends BaseServlet {
                 jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
                 jar.setJarStatus(jarScheduleDateRel.isJarStatus());
                 jar.setPaymentStatus(jarScheduleDateRel.isPaymentStatus());
+                jar.setTotalAmount(jarScheduleDateRel.getAmount());
                 
                 MoneyJarDto jarDto = new MoneyJarDto();
                 jarDto.setJar(jar);

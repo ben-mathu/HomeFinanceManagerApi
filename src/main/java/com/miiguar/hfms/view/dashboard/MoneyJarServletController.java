@@ -65,9 +65,9 @@ public class MoneyJarServletController extends BaseServlet {
         String name = req.getParameter(MONEY_EXPENSE_TYPE);
 
         MoneyJarDto jarDto = new MoneyJarDto();
+        jarDto.setId(req.getParameter(MONEY_JAR_ID));
 
         MoneyJar jar = new MoneyJar();
-        jar.setMoneyJarId(req.getParameter(MONEY_JAR_ID));
         jar.setCategory(category);
         jar.setName(name);
         jar.setScheduledFor(req.getParameter(SCHEDULED_FOR));
@@ -97,7 +97,7 @@ public class MoneyJarServletController extends BaseServlet {
 
         InitUrlConnection<MoneyJarDto> conn = new InitUrlConnection<>();
         BufferedReader streamReader;
-        if (jar.getMoneyJarId().isEmpty()) {
+        if (jarDto.getId().isEmpty()) {
             if (JarType.LIST_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))
                 jarDto.getGroceries().forEach(grocery -> grocery.setJarId(jarDto.getJar().getMoneyJarId()));
             if (JarType.SINGLE_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))

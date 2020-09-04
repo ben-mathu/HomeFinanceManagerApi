@@ -43,6 +43,10 @@ function configureExpenses() {
     expenseId = document.getElementById("expenseId");
     expenseAmount = document.getElementById("expenseAmount");
     expenseAmount.addEventListener("input", function(event) {
+        let spanAmount = document.querySelector("span[for='expenseAmount']");
+        spanAmount.textContent = "";
+        spanAmount.style.display = "none";
+        
         expenseGlobal.amount = event.target.value;
         onRowLoadedExpenses(expenseGlobal.amount);
     });

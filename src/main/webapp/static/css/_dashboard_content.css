@@ -24,13 +24,13 @@
     margin-right: 5px;
 }
 
+.chart-element {
+    display: flex;
+}
+
 .chat-container {
     width: 25%;
     margin-left: 5px;
-}
-
-.line-graph-canvas {
-    display: block;
 }
 
 /*
@@ -129,6 +129,14 @@
     border-bottom: none;
     border-right: none;
     border-width: 1px;
+}
+
+.expense-amount {
+    display: block;
+}
+
+.label-block-style {
+    display: flex;
 }
 
 .jars-pie-chart {

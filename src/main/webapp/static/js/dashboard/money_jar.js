@@ -366,7 +366,55 @@ function isInExpenseTypeMap(expenseType, map) {
     return false;
 }
 
+/**
+ * Validates input from the user
+ */
+function validateInput() {
+    let validAmount = true;
+    if (expenseAmount.value === '') {
+        let spanAmount = document.querySelector("span[for='expenseAmount']");
+        spanAmount.style.color = "#AA002E";
+        spanAmount.style.fontSize = "12px";
+        spanAmount.textContent = "Expense amount field must not be empty";
+        spanAmount.style.display = "block";
+        validAmount = false;
+    } else {
+        validAmount = true;
+    }
+    
+    let validHour = true;
+    if (time.value === '') {
+        let spanHour = document.querySelector("span[for='scheduledHour']");
+        spanHour.style.color = "#AA002E";
+        spanHour.style.fontSize = "12px";
+        spanHour.textContent = "Time input field is invalid";
+        spanHour.style.display = "block";
+        validHour = false;
+    } else {
+        let date = new Date().addMinutes(new Date(), 1);
+        
+        if (new Date(time.value).getDate() < date.getDate()) {
+            let spanHour = document.querySelector("span[for='scheduledHour']");
+            spanHour.style.color = "#AA002E";
+            spanHour.style.fontSize = "12px";
+            spanHour.textContent = "Invalid time input (Requires time set to be in the future)";
+            spanHour.style.display = "block";
+            validHour = false;
+        } else {
+            validHour = true;
+        }
+    }
+    
+    return validAmount && validHour;
+}
+
 function openJarModal(callback) {
+    let spanAmount = document.querySelector("span[for='expenseAmount']");
+    spanAmount.textContent = "";
+    spanAmount.style.display = "none";
+    
+    let modalTitle = document.getElementById("modalTitle");
+    modalTitle.innerHTML = "Add Expenses (Reminder)";
     
     jarModal.style.display = "block";
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
@@ -390,7 +438,11 @@ function openJarModal(callback) {
         jarModal.style.display = "none";
     });
 
+    btnSubmitJar.value = "Submit";
     btnSubmitJar.onclick = function() {
+        if (!validateInput()) {
+            return;
+        }
         updateJar(callback);
     };
 }
@@ -401,6 +453,12 @@ function openJarModal(callback) {
  */
 let btnDeleteExpense;
 function openJarModalForEdit(jarId) {
+    let spanAmount = document.querySelector("span[for='expenseAmount']");
+    spanAmount.textContent = "";
+    spanAmount.style.display = "none";
+    
+    let modalTitle = document.getElementById("modalTitle");
+    modalTitle.innerHTML = "Edit Expense";
     
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
@@ -464,6 +522,9 @@ function openJarModalForEdit(jarId) {
     btnSubmitJar.value = "Submit";
     btnSubmitJar.classList.add("btn2");
     btnSubmitJar.onclick = function() {
+        if (!validateInput()) {
+            return;
+        }
         updateMoneyJar(jarId);
     };
     
@@ -481,6 +542,12 @@ function openJarModalForEdit(jarId) {
  * @param {type} jarId allows users delete or update the expense
  */
 function openJarModalForPay(jarId, isPaid) {
+    let spanAmount = document.querySelector("span[for='expenseAmount']");
+    spanAmount.textContent = "";
+    spanAmount.style.display = "none";
+    
+    let modalTitle = document.getElementById("modalTitle");
+    modalTitle.innerHTML = "Pay for Expense";
     
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
@@ -546,6 +613,9 @@ function openJarModalForPay(jarId, isPaid) {
 
     btnSubmitJar.value = "Pay";
     btnSubmitJar.onclick = function() {
+        if (!validateInput()) {
+            return;
+        }
         makePayments(moneyJarIdModal.value);
     };
     
@@ -730,7 +800,7 @@ function updateJar(callback) {
 
     var data = serializeData();
 
-    request.open("PUT", ctx + "/dashboard/jars-controller?" + data, true);
+    request.open("PUT", ctx + "/dashboard/jars-controller/add-money-jar?" + data, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     request.send();
 }
@@ -763,7 +833,7 @@ function updateMoneyJar(jarId) {
 
     let data = serializeData();
 
-    request.open("PUT", ctx + "/dashboard/jars-controller?" + data, true);
+    request.open("PUT", ctx + "/dashboard/jars-controller/update-money-jar?" + data, true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
     request.send();
 }
