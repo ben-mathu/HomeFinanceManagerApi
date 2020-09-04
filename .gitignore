@@ -1,1 +1,7 @@
 .idea
+target
+.bashing
+.classpath
+.project
+.settings
+.vscode
