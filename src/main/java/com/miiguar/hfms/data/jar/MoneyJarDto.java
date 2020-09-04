@@ -15,6 +15,8 @@ import static com.miiguar.hfms.utils.Constants.*;
  * @author bernard
  */
 public class MoneyJarDto {
+    @SerializedName(JAR_SCHEDULE_ID)
+    private String id = "";
     @SerializedName(JAR)
     private MoneyJar jar;
     @SerializedName(GROCERIES_TB_NAME)
@@ -23,6 +25,14 @@ public class MoneyJarDto {
     private Expense expense;
     @SerializedName(USER)
     private User user;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public void setJar(MoneyJar jar) {
         this.jar = jar;

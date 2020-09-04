@@ -47,6 +47,7 @@ public class Constants {
     public static final String JAR_ELEMENTS = "jar_elements";
     public static final String RELATION = "relations";
     public static final String HOUSEHOLD_MEMBERS = "members";
+    public static final String JAR_SCHEDULE_ID = "schedule_id";
 
     // Daraja
     public static final String ACCESS_TOKEN = "access_token";

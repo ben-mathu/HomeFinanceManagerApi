@@ -180,7 +180,57 @@ public class GroceryDao implements Dao<Grocery> {
 
     @Override
     public Grocery get(String id) {
-        return null;
+        String query = "SELECT * FROM " + GROCERIES_TB_NAME +
+                " WHERE " + GROCERY_ID + "=?";
+        Grocery grocery = new Grocery();
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet result = null;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, id);
+            result = preparedStatement.executeQuery();
+            while (result.next()) {
+                grocery.setGroceryId(result.getString(GROCERY_ID));
+                grocery.setName(result.getString(GROCERY_NAME));
+                grocery.setDescription(result.getString(GROCERY_DESCRIPTION));
+                grocery.setPrice(result.getDouble(GROCERY_PRICE));
+                grocery.setRequired(result.getInt(REQUIRED_QUANTITY));
+                grocery.setRemaining(result.getInt(REMAINING_QUANTITY));
+                grocery.setJarId(result.getString(MONEY_JAR_ID));
+            }
+
+            result.close();
+            result = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error whilst getting groceries.", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (result != null)
+                try {
+                    result.close();
+                    result = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return grocery;
     }
 
     @Override

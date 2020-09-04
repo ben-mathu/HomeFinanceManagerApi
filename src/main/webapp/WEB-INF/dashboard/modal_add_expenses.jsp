@@ -18,15 +18,15 @@
             </div>
             <div class="radio-container">
                 <input id="personal" class="radio-style" type="radio" name="payee_entity" value="Personal" />
-                <label for="#personal">Personal Expense</label>
+                <label for="personal">Personal Expense</label>
             </div>
             <div class="radio-container" >
                 <input id="householdExpense" class="radio-style" type="radio" name="payee_entity" value="Household" />
-                <label for="#householdExpense">Household Expense</label>
+                <label for="householdExpense">Household Expense</label>
             </div>
             <div class="radio-container" >
                 <input id="employee" class="radio-style" type="radio" name="payee_entity" value="Employee" />
-                <label for="#employee">Employee</label>
+                <label for="employee">Employee</label>
             </div>
             <div id="businessNumber">
                 <input id="payeeBusinessNumber" class="input-style" type="text" name="business_number" placeholder="Business Number" />

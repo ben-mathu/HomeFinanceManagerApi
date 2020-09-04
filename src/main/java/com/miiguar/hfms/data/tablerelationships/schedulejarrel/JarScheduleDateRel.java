@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import com.miiguar.hfms.init.Column;
 import com.miiguar.hfms.init.Constraint;
+import com.miiguar.hfms.init.PrimaryKey;
 import com.miiguar.hfms.init.Table;
 
 /**
@@ -18,6 +19,9 @@ import com.miiguar.hfms.init.Table;
         )}
 )
 public class JarScheduleDateRel {
+    @PrimaryKey(columnName = JAR_SCHEDULE_ID)
+    private String id = "";
+    
     @Column(columnName = HOUSEHOLD_ID)
     private String householdId = "";
     
@@ -32,6 +36,17 @@ public class JarScheduleDateRel {
     
     @Column(columnName = PAYMENT_STATUS)
     private boolean paymentStatus = false;
+    
+    @Column(columnName = AMOUNT)
+    private double amount;
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public void setHouseholdId(String householdId) {
         this.householdId = householdId;
@@ -71,5 +86,13 @@ public class JarScheduleDateRel {
 
     public boolean isPaymentStatus() {
         return paymentStatus;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public double getAmount() {
+        return amount;
     }
 }

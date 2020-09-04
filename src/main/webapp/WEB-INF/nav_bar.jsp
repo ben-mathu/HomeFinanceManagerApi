@@ -27,7 +27,7 @@
                     Dashboard
                 </div>
             </div>
-            <div class="menu-item">
+            <div id="messages" class="menu-item">
                 <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/messages.png" alt="image_1">
                 <div class="menu-title" >
                     Messages

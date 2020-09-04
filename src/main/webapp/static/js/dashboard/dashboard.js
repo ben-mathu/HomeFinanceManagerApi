@@ -9,9 +9,9 @@ let householdMembers;
 const Status = {
     COMPLETE: 'Complete',
     PARTIAL: 'Partial'
-}
+};
 
-var timeInterval = setInterval(function() {myTimer()}, 1000);
+var timeInterval = setInterval(function() {myTimer();}, 1000);
 var navClickOpen = false;
 var ctx;
 var urlMap = {};
@@ -119,7 +119,8 @@ const jarFields = {
     TOTAL_AMOUNT: "amount",
     LIABILITIES: "liabilities",
     SCHEDULE: "scheduled_for",
-    SCHEDULED_TYPE: "scheduled_type"
+    SCHEDULED_TYPE: "scheduled_type",
+    SCHEDULE_ID: "schedule_id"
 };
 
 window.onload = function() {
@@ -153,6 +154,10 @@ window.onload = function() {
 
     document.getElementById("settings").onclick = function() {
         getPage("settings-title:root");
+    };
+    
+    document.getElementById("messages").onclick = function() {
+        getPage("messages-title");
     };
 
     document.getElementById("members").onclick = function() {
@@ -223,11 +228,6 @@ window.onload = function() {
     configureTransactions();
 //    configureBudget();
 };
-
-//window.setInterval(function() {
-//    getUserDetails();
-//    getAllMoneyJars();
-//}, 5000);
 
 /**
  * set income when reeived.
@@ -455,6 +455,23 @@ function closeOptionsMenu() {
     }
 }
 
+function removeOtherFolders(key) {
+    let keys = Object.keys(urlMap);
+    let keyVisited = false;
+    for (let i = 0; i < keys.length; i++) {
+        let item = keys[i];
+        if (key === item) {
+            keyVisited = true;
+            document.getElementById(key).hidden = false;
+            continue;
+        }
+        
+        if (keyVisited) {
+            document.getElementById(item).hidden = true;
+        }
+    }
+}
+
 /**
  * gets the page to display/server
  * 
@@ -497,9 +514,10 @@ function getPage(id) {
     
     var key = id === "refresh" ? id : document.getElementById(id).value;
     if (isTitleInUrlMap(key)) {
+        
+        removeOtherFolders(key);
         var url = getUrl(key);
         window.history.pushState(key, key, url);
-        document.getElementById(key).hidden = false;
     } else {
         var title = "title=" + escape(key);
         var data = title;

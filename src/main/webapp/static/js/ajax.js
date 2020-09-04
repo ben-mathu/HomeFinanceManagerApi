@@ -154,7 +154,8 @@ function registerUser() {
 
                     document.getElementById("result").innerHTML = "<span style=\"color: green;\">Success. Please wait while you are redirected...</span>";
                     document.getElementById("progress").hidden = true;
-                    window.location.href = path + "/registration/confirm-user";
+                    let str = path + "/dashboard";
+                    window.location.href = str;
                 }
             }
         };

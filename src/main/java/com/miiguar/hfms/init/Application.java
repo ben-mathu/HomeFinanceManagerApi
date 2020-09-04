@@ -12,7 +12,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.*;
 
-import com.miiguar.hfms.api.mpesa.GetAccessTokenTask;
+import com.miiguar.hfms.api.transaction.GetAccessTokenTask;
 import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.utils.*;
@@ -292,7 +292,7 @@ public class Application implements IntervalChangeListener {
                     .append(" INTEGER").append(column.notNull()? " NOT NULL" : "");
         } else if (type.equalsIgnoreCase("double")) {
             str.append(column.columnName())
-                    .append(" NUMERIC(8,2)").append(column.notNull()? " NOT NULL" : "");
+                    .append(" NUMERIC(15,2)").append(column.notNull()? " NOT NULL" : "");
         } else if (type.equalsIgnoreCase("boolean")) {
             str.append(column.columnName())
                     .append(" BOOLEAN");

@@ -2,17 +2,18 @@
     <div class="modal-content elements-modal-inline" >
         <input id="moneyJarIdModal" type="text" name="jar-id" placeholder="Money Jar ID" hidden>
         <div class="" >
-            <h4 class="modal-title">Add Expense(Reminder)</h4>
-            <p id="jarModalError" class="error-text"></p>
+            <h4 id="modalTitle" class="modal-title">Add Expense(Reminder)</h4>
+            <p id="jarModalError" class="error-text"></p><span id="removeErrorMessage" style="background-color: #3F3A4B" hidden>x</span>
             <div class="jar-container jar-elements" >
                 <div>
-                    <label for="#expenseType">Expense Type</label></br>
+                    <span for="expenseType"></span>
+                    <label for="expenseType">Expense</label></br>
                     <select id="expenseType" class="select-style">
                         <option value="--Select Expense Type--">--Select Expense Type--</option>
                     </select>
                 </div>
                 <div>
-                    <label for="#categorySelector">Expense Category</label></br>
+                    <label for="categorySelector">Expense Type</label></br>
                     <select id="categorySelector" class="select-style">
                         <option value="List">List</option>
                         <option value="Single Item">Single Item</option>
@@ -47,9 +48,11 @@
                     </div>
                 </div>
                 <div id="timePicker" class="number-input">
+                    <span for="scheduledHour"></span>
                     Time: <input id="scheduledHour" class=" date-time-input" type="time" placeholder="00" max="23" />
                 </div>
                 <div id="datePicker" class="number-input">
+                    <span for="scheduledDate"></span>
                     Date: <input id="scheduledDate" class="date-time-input" type="date" name="date" placeholder="00" />
                 </div>
             </div>
@@ -75,11 +78,13 @@
                     <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
                 </div>
                 <div id="expense" class="expense-container">
-                    <div>
-                        <input id="expenseAmount" class="input-style" type="number" name="expense_amount" placeholder="300" />
+                    <div class="expense-amount">
+                        <span for="expenseAmount"></span>
+                        <input id="expenseAmount" class="input-style label-block-style" type="number" name="expense_amount" placeholder="300" />
                     </div>
                     <div>
-                        <label for="#payeeName">Payee Name</label></br>
+                        <span for="payeeName"></span>
+                        <label for="payeeName">Payee Name</label></br>
                         <select id="payeeName" class="select-style">
                             <option value="--Select Expense Type--">--Select Expense Type--</option>
                         </select>

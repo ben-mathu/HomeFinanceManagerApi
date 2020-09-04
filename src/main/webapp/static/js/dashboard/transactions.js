@@ -24,11 +24,36 @@ let transactions = {
     registerRemoveListener: function (listener) {
         this.onRemoveTransactionListener = listener;
     }
-}
+};
 /**
  * Encapsulates the settings for transactions requirements
  */
 function configureTransactions() {
+    let chartContainer = document.getElementById("chartContainer");
+    
+    transactionCanvas = document.getElementById("lineGraphCanvas");
+    
+    let width = window.innerWidth;
+    let chartContainerWidth = 75 * width / 100 / 2;
+    
+    transactionCanvas.width = chartContainerWidth;
+    transactionCanvas.height = 250;
+    
+    window.addEventListener("resize", function (event) {
+        chartContainerWidth = 75 * width / 100 / 2;
+        transactionCanvas.width = chartContainerWidth;
+        transactionCanvas.height = 250;
+        
+        let properties = {
+            canvas: transactionCanvas,
+            transactions: Object.values(transactions.getAll()),
+            colors: ["#008FB4"]
+        };
+
+        let lineGraph = new LineGraph(properties);
+        lineGraph.draw();
+    });
+    
     transactionTBody = document.getElementById("transactionTable").getElementsByTagName("tbody")[0];
     
     transactions.registerAddListener(function (index, transaction) {
@@ -57,7 +82,7 @@ function configureTransactions() {
         // remove transaction from table
     });
     
-    getAllTransactions();
+//    getAllTransactions();
 }
 
 function getAllTransactions() {
@@ -74,6 +99,15 @@ function getAllTransactions() {
                     transactions.addTransaction(count, transaction);
                     count++;
                 });
+                
+                let properties = {
+                    canvas: transactionCanvas,
+                    transactions: Object.values(transactions.getAll()),
+                    colors: ["#008FB4"]
+                };
+
+                let lineGraph = new LineGraph(properties);
+                lineGraph.draw();
             }
         }
     };

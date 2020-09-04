@@ -31,10 +31,10 @@ let expenseGlobal = {
 };
 
 let payeeNames = {
+    'Other': '',
     'KPLC': '888888',
     'Kiambu Water and sewage Company': '885100',
-    'Testing': '174379',
-    'Other': ''
+    'Testing': '174379'
 };
 
 function configureExpenses() {
@@ -43,6 +43,10 @@ function configureExpenses() {
     expenseId = document.getElementById("expenseId");
     expenseAmount = document.getElementById("expenseAmount");
     expenseAmount.addEventListener("input", function(event) {
+        let spanAmount = document.querySelector("span[for='expenseAmount']");
+        spanAmount.textContent = "";
+        spanAmount.style.display = "none";
+        
         expenseGlobal.amount = event.target.value;
         onRowLoadedExpenses(expenseGlobal.amount);
     });

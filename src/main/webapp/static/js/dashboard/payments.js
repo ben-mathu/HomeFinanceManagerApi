@@ -77,7 +77,7 @@ function showNotificationDialog(jarId, jarDto) {
 
     templateClone.querySelector("#moneyJarId").id += count;
     moneyJarId = templateClone.querySelector("#moneyJarId" + count);
-    moneyJarId.value = jarId + "_" + jarDto.jar.scheduled_for;
+    moneyJarId.value = jarId;
 
     templateClone.querySelector("#liabilitySection").id += count;
     liabilitySection = templateClone.querySelector("#liabilitySection" + count);
@@ -194,13 +194,17 @@ function addNotification(jarId) {
     // update date depending on schedule
     let date;
     if (jar.scheduled_type === scheduleType.DAILY) {
-        date = new Date().addDays()(jar.scheduled_for, 1);
+        date = new Date().addDays(jar.scheduled_for, 1);
     } else if (jar.scheduled_type === scheduleType.WEEKLY) {
         date = new Date().addDays(jar.scheduled_for, 7);
     } else if (jar.scheduled_type === scheduleType.MONTHLY) {
         date = new Date().addMonths(jar.scheduled_for, 1);
     } else if (jar.scheduled_type === scheduleType.SCHEDULED) {
-        date = new Date(jar.scheduled_for);
+        jar.jar_status = true;
+        jarDto.jar = jar;
+        jars.setJar(jarId, jarDto);
+        updateMoneyJarJson(jarId);
+        return;
     }
     
 //    format date
@@ -215,7 +219,7 @@ function addNotification(jarId) {
     if (!jar.jar_status) {
         jar.jar_status = true;
         jarDto.jar = jar;
-        jars.setJar(jarId + "_" + jar.scheduled_for, jarDto);
+        jars.setJar(jarId, jarDto);
         updateMoneyJarJson(jarId);
     }
 }
@@ -236,7 +240,7 @@ function populateNotificationSection(jarId) {
     
     templateClone.querySelector("#notificationId").id += notificationCount;
     let notificationId = templateClone.querySelector("#notificationId" + notificationCount);
-    notificationId.value = jarId + "_" + jar.scheduled_for;
+    notificationId.value = jarId;
 
     templateClone.querySelector("#notificationTitle").id += notificationCount;
     let notificationTitle = templateClone.querySelector("#notificationTitle" + notificationCount);
@@ -261,12 +265,29 @@ function populateNotificationSection(jarId) {
     notificationItem.addEventListener("click", function (event) {
         let itemIndex = event.target.id[event.target.id.length - 1];
         let id = document.getElementById("notificationId" + itemIndex);
-        openJarModalForPay(id.value);
+        let payStatus = document.getElementById("paymentStatus" + itemIndex);
+        if (paymentStatus.innerHTML === "paid") {
+            openJarModalForPay(id.value, true);
+        } else {
+            openJarModalForPay(id.value, false);
+        }
     });
     
     let id = jarId + "-" + dateNow;
     notifications.setNotification(id, jarDto, templateClone);
 }
+
+Date.prototype.addHours = function(scheduled, seconds) {
+    let date = new Date(scheduled);
+    date.setSeconds(date.getSeconds() + seconds);
+    return date;
+};
+
+Date.prototype.addMinutes = function(scheduled, minutes) {
+    let date = new Date(scheduled);
+    date.setMinutes(date.getMinutes() + minutes);
+    return date;
+};
 
 Date.prototype.addHours = function(scheduled, hours) {
     let date = new Date(scheduled);
@@ -307,6 +328,8 @@ function makePayments(jarId) {
                 showSuccessNotification(responseData, jarId);
                 
                 jarModal.style.display = "none";
+                
+                getAllMoneyJars();
             }
         }
     };
@@ -368,6 +391,8 @@ function serializePaymentData(jarId) {
         data += paybillFields.PHONE_NUMBER + "=" + escape(expenseItem.account_number) + "&";
         data += paybillFields.ACCOUNT_REF + "=" + escape("account") + "&";
         data += paybillFields.TRANSACTION_DESC + "=" + escape("First transaction from code") + "&";
+        data += jarFields.JAR_ID + "=" + escape(jarId);
+    } else if (jar.category === categoryOption.LIST) {
         data += jarFields.JAR_ID + "=" + escape(jarId);
     }
     return data;

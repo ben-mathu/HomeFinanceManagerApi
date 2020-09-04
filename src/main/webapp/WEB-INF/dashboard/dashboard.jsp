@@ -16,6 +16,7 @@
     pageContext.setAttribute("payments", "static/js/dashboard/payments.js");
     pageContext.setAttribute("budgets", "static/js/dashboard/budgets.js");
     pageContext.setAttribute("transactions", "static/js/dashboard/transactions.js");
+    pageContext.setAttribute("linegraph", "static/js/utils/line_graph.js");
 %>
 <%@ include file = "../page_setting_top.jsp" %>
     <div class="container">
@@ -23,6 +24,8 @@
         <%@ include file = "../nav_bar.jsp" %>
         <%@ include file = "main_content.jsp" %>
         <%@ include file = "settings.jsp" %>
+        <%@ include file = "messages.jsp" %>
+        <%@ include file = "members.jsp" %>
         <%@ include file = "modal_add_jar.jsp" %>
         <%@ include file = "modal_add_grocery.jsp" %>
         <%@ include file = "modal_add_schedule.jsp" %>
