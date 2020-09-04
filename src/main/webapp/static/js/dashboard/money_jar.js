@@ -120,10 +120,6 @@ function configureMoneyJar() {
         spanType.textContent = "";
         spanType.style.display = "none";
         
-        let spanAmount = document.querySelector("span[for='expenseAmount']");
-        spanAmount.textContent = "";
-        spanAmount.style.display = "block";
-        
         let cat = expenseTypeElem.options[expenseTypeElem.selectedIndex].value;
         if (cat === "Groceries") {
             categorySelector.options[0].selected = true;
