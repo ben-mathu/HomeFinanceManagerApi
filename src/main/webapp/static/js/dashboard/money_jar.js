@@ -94,7 +94,11 @@ let date;
 
 let moneyJarIdModal;
 
+let fldPaybill;
+
 function configureMoneyJar() {
+    fldPaybill = document.getElementById("fldPaybill");
+    
     errorMessage = document.getElementById("jarModalError");
     errorMessageRemover = document.getElementById("removeErrorMessage");
     errorMessageRemover.addEventListener("click", function(event) {
@@ -259,10 +263,15 @@ function configureMoneyJar() {
 }
 
 function getAllMoneyJars() {
+    if (document.getElementById("progress").hidden) {
+        document.getElementById("progress").hidden = false;
+    }
     let request = getXmlHttpRequest();
 
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
+            
+            document.getElementById("progress").hidden = true;
             if (request.status === 200) {
 
                 let json = request.responseText;
@@ -304,7 +313,16 @@ function getAllMoneyJars() {
                 transactionTBody.innerHTML = "";
                 getAllTransactions();
             } else if (request.status === 404) {
+                notificationContainer.innerHTML = "";
+                notificationContainer.appendChild(notificationTemplate);
+                
+                jarList.innerHTML = "";
+                jarList.appendChild(jarTemplate);
+                
                 emptyExpenseList.hidden = false;
+                
+                transactionTBody.innerHTML = "";
+                getAllTransactions();
             } else {
                 console.log("Server could not find what you are looking for.")
             }
@@ -383,19 +401,7 @@ function isInExpenseTypeMap(expenseType, map) {
 /**
  * Validates input from the user
  */
-function validateInput() {
-    let validAmount = true;
-    if (expenseAmount.value === '' || expenseAmount.value < 5) {
-        let spanAmount = document.querySelector("span[for='expenseAmount']");
-        spanAmount.style.color = "#AA002E";
-        spanAmount.style.fontSize = "12px";
-        spanAmount.textContent = "Expense amount field must not be empty or less than 5";
-        spanAmount.style.display = "block";
-        validAmount = false;
-    } else {
-        validAmount = true;
-    }
-    
+function validateInput() {    
     let validHour = true;
     if (time.value === '') {
         let spanHour = document.querySelector("span[for='scheduledHour']");
@@ -405,13 +411,13 @@ function validateInput() {
         spanHour.style.display = "block";
         validHour = false;
     } else {
-        let timeNow = new Date().addMinutes(new Date().toLocaleDateString(), 1);
-        
-        if (new Date(time.value).getDate() < timeNow.getDate()) {
+        let timeNow = new Date().subtractMinutes(new Date(), 1);
+        let timeSet = new Date(date.value + " " + time.value);
+        if (timeSet < timeNow) {
             let spanHour = document.querySelector("span[for='scheduledHour']");
             spanHour.style.color = "#AA002E";
             spanHour.style.fontSize = "12px";
-            spanHour.textContent = "Invalid time input (Requires time set to be in the future)";
+            spanHour.textContent = "Invalid time(allowed time: one minute behind or a time in future)";
             spanHour.style.display = "block";
             validHour = false;
         } else {
@@ -458,16 +464,62 @@ function validateInput() {
         expenseTypeSelected = true;
     }
     
-    let payeeNameSelected = true;
-    if (expenseTypeElem.selectedIndex === 0) {
-        payeeName.options[1].selected = true;
-        payeeNameSelected = true;
+    if (categorySelector.options[0].selected) {
+        // list of expenses section
+        let validList = true;
+        expenseAmount.value = "";
+        let groceryKeys = Object.keys(groceryListObj);
+        if (groceryKeys.length < 1) {
+            let listSpan = document.querySelector("span[for='groceryContainer']");
+            listSpan.style.color = "#AA002E";
+            listSpan.style.fontSize = "12px";
+            listSpan.textContent = "This list should not be empty";
+            listSpan.style.display = "block";
+            validList = false;
+        } else {
+            validList = true;
+        }
+        
+        let validPayBill = true;
+        if (fldPaybill.value === '') {
+            validPayBill = true;
+        } else {
+            let payBill = fldPaybill.value;
+            if (payBill.length <= 4 || payBill.length >= 7) {
+                validPayBill = false;
+            } else {
+                validPayBill = true;
+            }
+        }
+        
+        return validHour && validDate && expenseTypeSelected && validList && validPayBill;
+    } else {
+        // Single expense section
+        let validAmount = true;
+        if (expenseAmount.value === '' || expenseAmount.value < 5) {
+            let spanAmount = document.querySelector("span[for='expenseAmount']");
+            spanAmount.style.color = "#AA002E";
+            spanAmount.style.fontSize = "12px";
+            spanAmount.textContent = "Expense amount field must not be empty or less than 5";
+            spanAmount.style.display = "block";
+            validAmount = false;
+        } else {
+            validAmount = true;
+        }
+
+        let payeeNameSelected = true;
+        if (expenseTypeElem.selectedIndex === 0) {
+            payeeName.options[1].selected = true;
+            payeeNameSelected = true;
+        }
+        
+        return validAmount && validHour && validDate && expenseTypeSelected && payeeNameSelected;
     }
-    
-    return validAmount && validHour && validDate && expenseTypeSelected && payeeNameSelected;
 }
 
 function openJarModal(callback) {
+    groceryListTBody.innerHTML = "";
+    
     let spanAmount = document.querySelector("span[for='expenseAmount']");
     spanAmount.textContent = "";
     spanAmount.style.display = "none";
@@ -476,22 +528,45 @@ function openJarModal(callback) {
     modalTitle.innerHTML = "Add Expenses (Reminder)";
     
     jarModal.style.display = "block";
+    
+    btnEditExpense = document.getElementById("btnEditExpense");
+    btnEditExpense.hidden = true;
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = true;
     
+    var btnOpenGroceryModal = document.getElementById("btnOpenGroceryModal");
+    btnOpenGroceryModal.hidden = false;
+    
     expenseTypeElem.options[0].selected = true;
+    expenseTypeElem.disabled = false;
+    
     amountElem.innerHTML = "0";
     time.value = "";
+    time.disabled = false;
+    
     date.value = "";
+    date.disabled = false;
     
     categorySelector.options[1].selected = true;
+    categorySelector.disabled = false;
+    
     scheduleSelector.options[0].selected = true;
+    scheduleSelector.disabled = false;
+    
     daySelector.options[0].selected = true;
+    daySelector.disabled = false;
     
     businessNumber.value = "";
+    businessNumber.disabled = false;
+    
     payeeAccountNumber.value = "";
+    payeeAccountNumber.disabled = false;
+    
     payeeName.options[0].selected = true;
+    payeeName.disabled = false;
+    
     expenseAmount.value = "";
+    expenseAmount.disabled = false;
     
     cancelJarModal.addEventListener("click", function (event) {
         jarModal.style.display = "none";
@@ -512,12 +587,17 @@ function openJarModal(callback) {
  */
 let btnDeleteExpense;
 function openJarModalForEdit(jarId) {
+    groceryListTBody.innerHTML = "";
+    
     let spanAmount = document.querySelector("span[for='expenseAmount']");
     spanAmount.textContent = "";
     spanAmount.style.display = "none";
     
     let modalTitle = document.getElementById("modalTitle");
     modalTitle.innerHTML = "Edit Expense";
+    
+    btnEditExpense = document.getElementById("btnEditExpense");
+    btnEditExpense.hidden = true;
     
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
@@ -539,14 +619,22 @@ function openJarModalForEdit(jarId) {
         let option = expenseOptions[i];
         if (jar.expense_type === option.value) {
             expenseTypeElem.options[i].selected = true;
+            expenseTypeElem.disabled= false;
             break;
         }
     }
     
     amountElem.innerHTML = jar.amount;
     let dateArr = jar.scheduled_for.split(" ");
+    let dateSet = new Date();
     date.value = dateArr[0];
+    date.disabled = false;
+    
     time.value = dateArr[1];
+    time.disabled = false;
+    
+    var btnOpenGroceryModal = document.getElementById("btnOpenGroceryModal");
+    btnOpenGroceryModal.hidden = false;
 
     amountElem.innerHTML = jar.amount;
 
@@ -562,10 +650,15 @@ function openJarModalForEdit(jarId) {
         categorySelector.options[1].selected = true;
 
         setExpenseFields(jarId);
+        expenseAmount.disabled = false;
+        payeeName.disabled = false;
+        businessNumber.disabled = false;
+        payeeAccountNumber.disabled = false;
 
         expenseSection.hidden = false;
         grocerySection.hidden = true;
     }
+    categorySelector.disabled = false;
 
     if (jar.scheduled_type === "scheduled") {
         scheduleSelector.options[0].selected = true;
@@ -577,6 +670,7 @@ function openJarModalForEdit(jarId) {
     } else if (jar.scheduled_type === "Monthly") {
         scheduleSelector.options[3].selected = true;
     }
+    scheduleSelector.disabled = false;
 
     btnSubmitJar.value = "Submit";
     btnSubmitJar.classList.add("btn2");
@@ -600,13 +694,23 @@ function openJarModalForEdit(jarId) {
  * Open expense dialog box
  * @param {type} jarId allows users delete or update the expense
  */
+let btnEditExpense;
 function openJarModalForPay(jarId, isPaid) {
+    groceryListTBody.innerHTML = "";
+    
     let spanAmount = document.querySelector("span[for='expenseAmount']");
     spanAmount.textContent = "";
     spanAmount.style.display = "none";
     
     let modalTitle = document.getElementById("modalTitle");
     modalTitle.innerHTML = "Pay for Expense";
+    
+    btnEditExpense = document.getElementById("btnEditExpense");
+    btnEditExpense.hidden = false;
+    btnEditExpense.addEventListener("click", function (event) {
+        jarModal.style.display = "none";
+        openJarModalForEdit(jarId);
+    });
     
     btnDeleteExpense = document.getElementById("btnDeleteExpense");
     btnDeleteExpense.hidden = false;
@@ -628,6 +732,7 @@ function openJarModalForPay(jarId, isPaid) {
         let option = expenseOptions[i];
         if (jar.expense_type === option.value) {
             expenseTypeElem.options[i].selected = true;
+            expenseTypeElem.disabled = true;
             break;
         }
     }
@@ -635,7 +740,10 @@ function openJarModalForPay(jarId, isPaid) {
     amountElem.innerHTML = jar.amount;
     let dateArr = jar.scheduled_for.split(" ");
     date.value = dateArr[0];
+    date.disabled = true;
+    
     time.value = dateArr[1];
+    time.disabled = true;
 
     amountElem.innerHTML = jar.amount;
 
@@ -651,10 +759,15 @@ function openJarModalForPay(jarId, isPaid) {
         categorySelector.options[1].selected = true;
 
         setExpenseFields(jarId);
+        expenseAmount.disabled = true;
+        payeeName.disabled = true;
+        businessNumber.disabled = true;
+        payeeAccountNumber.disabled = true;
 
         expenseSection.hidden = false;
         grocerySection.hidden = true;
     }
+    categorySelector.disabled = true;
 
     if (jar.scheduled_type === "scheduled") {
         scheduleSelector.options[0].selected = true;
@@ -666,6 +779,7 @@ function openJarModalForPay(jarId, isPaid) {
     } else if (jar.scheduled_type === "Monthly") {
         scheduleSelector.options[3].selected = true;
     }
+    scheduleSelector.disabled = true;
     
     var btnOpenGroceryModal = document.getElementById("btnOpenGroceryModal");
     btnOpenGroceryModal.hidden = true;
@@ -1132,8 +1246,13 @@ function serializeData() {
         dateTime += " " + (time.value === "" ? "" : time.value);
         scheduledType = scheduleType.SCHEDULED;
     } else if (selected === scheduleType.MONTHLY) {
-        dateTime = date.value === "" ? "" : date.value;
-        dateTime += " " + (time.value === "" ? "" : time.value);
+        let newDate = new Date(date.value);
+        let timeStr = formatDate(newDate) + " " + time.value;
+        let newTime = new Date(timeStr);
+        
+        dateTime = formatDate(newDate);
+        dateTime += " " + formatTime(newTime);
+        
         scheduledType = scheduleType.MONTHLY;
     } else {
         dateTime = time.value;

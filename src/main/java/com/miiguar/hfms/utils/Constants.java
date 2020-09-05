@@ -32,7 +32,7 @@ public class Constants {
         public static final String DATE = "date";
     }
 
-    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
+    public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 
     /**
      * JSON Field Names
@@ -48,6 +48,7 @@ public class Constants {
     public static final String RELATION = "relations";
     public static final String HOUSEHOLD_MEMBERS = "members";
     public static final String JAR_SCHEDULE_ID = "schedule_id";
+    public static final String PAYBILL = "paybill";
 
     // Daraja
     public static final String ACCESS_TOKEN = "access_token";

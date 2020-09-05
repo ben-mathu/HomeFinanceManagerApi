@@ -126,6 +126,9 @@ function showNotificationDialog(jarId, jarDto) {
     btnPay.addEventListener("click", function(event) {
         let elementIndex = event.target.id[event.target.id.length - 1];
         let mJarId = document.getElementById("moneyJarId" + elementIndex);
+        let paymentDialog = document.getElementById("paymentDetailsContainer" + elementIndex);
+        paymentDialog.style.display = "none";
+        
         makePayments(mJarId.value);
     }, false);
 
@@ -179,6 +182,31 @@ let notifications = {
     }
 };
 
+/*
+ * Format date to yyyy-mm-dd
+ * @param {Date} date
+ * @returns {String} format date to a string 
+ */
+function formatDate(date) {
+    let dd = String(date.getDate()).padStart(2, '0');
+    let mm = String(date.getMonth() + 1).padStart(2, '0');
+    let year = String(date.getFullYear());
+    
+    return year + "-" + mm + "-" + dd;
+}
+
+/*
+ * Format time to HH:mm
+ * @param {Date} date
+ * @returns {String} format date to a string 
+ */
+function formatTime(date) {
+    let hh = String(date.getHours()).padStart(2, '0');
+    let min = String(date.getMinutes()).padStart(2, '0');
+    
+    return hh + ':' + min;
+}
+
 /**
  * add to a list of notifications
  * 
@@ -212,7 +240,9 @@ function addNotification(jarId) {
         const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false});
         const [{ value: month },,{ value: day },,{ value: year },,{value: hour},,{value: minute}] = dateTimeFormat .formatToParts(date );
         
-        let dateStr = `${year}-${month}-${day} ${hour}:${minute}`;
+//        let dateStr = `${year}-${month}-${day} ${hour}:${minute}`;
+        let dateStr = formatDate(date);
+        dateStr += " " + formatTime(date);
         sendJarRequestJson(jarDto, dateStr);
     }
     
@@ -289,6 +319,12 @@ Date.prototype.addMinutes = function(scheduled, minutes) {
     return date;
 };
 
+Date.prototype.subtractMinutes = function(scheduled, minutes) {
+    let date = new Date(scheduled);
+    date.setMinutes(date.getMinutes() - minutes);
+    return date;
+};
+
 Date.prototype.addHours = function(scheduled, hours) {
     let date = new Date(scheduled);
     date.setHours(date.getHours() + hours);
@@ -319,6 +355,7 @@ Date.prototype.addMonths = function(scheduled, months) {
  * @param {String} jarId represents a money jar element in the moneyJarList field
  */
 function makePayments(jarId) {
+    document.getElementById("progress").hidden = false;
     let request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {

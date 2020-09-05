@@ -58,13 +58,14 @@
             </div>
             <div class="jar-items jar-elements" >
                 <div id="groceries" class="grocery-list" hidden>
-                    <div id="empty" hidden>
-                        Your grocery list is empty.
+                    <div id="empty">
+                        <span for="groceryContainer"></span>
                     </div>
                     <div id="groceryContainer" >
                         <table id="groceryItems">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>Name</th>
                                     <th>Price</th>
                                     <th>Description</th>
@@ -76,6 +77,10 @@
                         </table>
                     </div>
                     <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
+                    <div id="Paybill" class="payee-paybill">
+                        <span for="fldPaybill"></span>
+                        <input id="fldPaybill" class="input-style" type="number" placeholder="Paybill (Optional)" />
+                    </div>
                 </div>
                 <div id="expense" class="expense-container">
                     <div class="expense-amount">
@@ -90,10 +95,10 @@
                         </select>
                     </div>
                     <div id="businessNumber">
-                        <input id="payeeBusinessNumber" class="input-style" type="text" name="business_number" placeholder="Business Number (Optional)" />
+                        <input id="payeeBusinessNumber" class="input-style" type="number" name="business_number" placeholder="Business Number (Optional)" />
                     </div>
                     <div id="account">
-                        <input id="payerAccountNumber" class="input-style" type="text" name="account_number" placeholder="Payer Account Number (Optional)" />
+                        <input id="payerAccountNumber" class="input-style" type="number" name="account_number" placeholder="Payer Account Number (Optional)" />
                     </div>
                     <div id="expenseContainer" >
                         <%@ include file = "../template/expense.jsp" %>
@@ -104,7 +109,10 @@
         <div class="btn-submit">
             <input id="btnSaveJar" class="btn2" type="button" value="Submit">
             <input id="cancelJarModal" class="btn4-caution" type="button" value="Cancel">
-            <input id="btnDeleteExpense" class="btn3-warn btn-right" type="button" value="Delete" hidden/>
+            <div class="expense-editors btn-right">
+                <input id="btnEditExpense" class="btn2" type="button" value="Edit" hidden/>
+                <input id="btnDeleteExpense" class="btn3-warn" type="button" value="Delete" hidden/>
+            </div>
         </div>
     </div>
 </div>
