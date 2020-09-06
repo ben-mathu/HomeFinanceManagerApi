@@ -152,6 +152,10 @@ window.onload = function() {
     //     }
     // };
 
+    document.getElementById("guide").onclick = function() {
+        getPage("guide-title");
+    };
+    
     document.getElementById("settings").onclick = function() {
         getPage("settings-title:root");
     };

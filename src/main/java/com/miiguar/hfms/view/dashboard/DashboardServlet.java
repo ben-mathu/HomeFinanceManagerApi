@@ -13,7 +13,7 @@ import static com.miiguar.hfms.utils.Constants.REFRESH;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/controller")
+@WebServlet("/dashboard/controller/*")
 public class DashboardServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 

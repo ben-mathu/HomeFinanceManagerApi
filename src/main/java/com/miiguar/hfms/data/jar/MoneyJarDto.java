@@ -25,6 +25,8 @@ public class MoneyJarDto {
     private Expense expense;
     @SerializedName(USER)
     private User user;
+    @SerializedName(PAYBILL)
+    private String paybill;
 
     public void setId(String id) {
         this.id = id;
@@ -64,5 +66,13 @@ public class MoneyJarDto {
 
     public void setExpense(Expense expense) {
         this.expense = expense;
+    }
+
+    public void setPaybill(String paybill) {
+        this.paybill = paybill;
+    }
+
+    public String getPaybill() {
+        return paybill;
     }
 }

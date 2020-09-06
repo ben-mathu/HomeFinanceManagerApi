@@ -55,6 +55,7 @@ public class UserDao implements Dao<User> {
                 user.setPassword("");
                 user.setAdmin(resultSet.getBoolean(IS_ADMIN));
                 user.setOnline(resultSet.getBoolean(IS_ONLINE));
+                user.setSalt(resultSet.getString(SALT));
             }
 
             resultSet.close();
@@ -87,41 +88,11 @@ public class UserDao implements Dao<User> {
         return user;
     }
 
-//    public static void createUserTable(Connection connection) throws SQLException {
-//        PreparedStatement users = connection.prepareStatement(
-//                "CREATE TABLE " + USERS_TB_NAME + " ("+
-//                        USER_ID + " varchar(12),"+
-//                        USERNAME + " varchar(25) NOT NULL UNIQUE,"+
-//                        EMAIL + " text NOT NULL UNIQUE,"+
-//                        PASSWORD + " varchar(255) NOT NULL,"+
-//                        IS_ADMIN + " BOOLEAN NOT NULL," +
-//                        IS_ONLINE + " BOOLEAN NOT NULL," +
-//                        "CONSTRAINT " + PRIV_KEY_USERS + " PRIMARY KEY (" + USER_ID + "))"
-//        );
-//        users.execute();
-
-//        // Create table for code
-//        PreparedStatement code = connection.prepareStatement(
-//                "CREATE TABLE " + CODE_TB_NAME + " ("+
-//                        CODE + " text," +
-//                        USER_ID + " varchar(12) UNIQUE," +
-//                        EMAIL_CONFIRMED + " BOOLEAN DEFAULT false," +
-//                        "CONSTRAINT " + PRIV_KEY_CODE + " PRIMARY KEY (" + CODE + ")," +
-//                        "CONSTRAINT " + FK_TB_CODE_USER_ID + " FOREIGN KEY (" + USER_ID + ") REFERENCES " + USERS_TB_NAME + "(" + USER_ID + "))"
-//        );
-//        code.execute();
-//    }
-
-    public int insert(User user, String userId) {
+    @Override
+    public int save(User user) {
         String query = "INSERT INTO " + USERS_TB_NAME + " (" +
-                USER_ID + "," + USERNAME + "," + EMAIL + "," + PASSWORD + "," + IS_ADMIN + "," + IS_ONLINE + ") " +
-                "VALUES ('" +
-                userId + "','" +
-                user.getUsername() + "','" +
-                user.getEmail() + "','" +
-                user.getPassword() + "'," +
-                user.isAdmin() + "," +
-                user.isOnline() + ")";
+                USER_ID + "," + USERNAME + "," + EMAIL + "," + PASSWORD + "," + IS_ADMIN + "," + IS_ONLINE + "," + SALT + ") " +
+                "VALUES (?,?,?,?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -129,8 +100,18 @@ public class UserDao implements Dao<User> {
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
+            
+            preparedStatement.setString(1, user.getUserId());
+            preparedStatement.setString(2, user.getUsername());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setBoolean(5, user.isAdmin());
+            preparedStatement.setBoolean(6, user.isOnline());
+            preparedStatement.setString(7, user.getSalt());
 
             affectedRows = preparedStatement.executeUpdate();
+            
+            Log.d(TAG, "Rows Affected:" + affectedRows);
 
             conn.close();
             conn = null;
@@ -153,11 +134,6 @@ public class UserDao implements Dao<User> {
         }
 
         return affectedRows;
-    }
-
-    @Override
-    public int save(User item) {
-        return 0;
     }
 
     @Override
@@ -229,6 +205,7 @@ public class UserDao implements Dao<User> {
                 user.setPassword("");
                 user.setAdmin(resultSet.getBoolean(IS_ADMIN));
                 user.setOnline(resultSet.getBoolean(IS_ONLINE));
+                user.setSalt(resultSet.getString(SALT));
             }
 
             resultSet.close();
@@ -285,6 +262,7 @@ public class UserDao implements Dao<User> {
                 user.setPassword("");
                 user.setAdmin(resultSet.getBoolean(IS_ADMIN));
                 user.setOnline(resultSet.getBoolean(IS_ONLINE));
+                user.setSalt(resultSet.getString(SALT));
                 list.add(user);
             }
 
@@ -345,14 +323,13 @@ public class UserDao implements Dao<User> {
             preparedStatement.setString(1, username);
             result = preparedStatement.executeQuery();
             while (result.next()) {
-                if (username.equals(result.getString(DbEnvironment.USERNAME)) && password.equals(result.getString(DbEnvironment.PASSWORD))) {
-                    user = new User();
-                    user.setUsername(result.getString(DbEnvironment.USERNAME));
-                    user.setPassword(result.getString(DbEnvironment.PASSWORD));
-                    user.setEmail(result.getString(DbEnvironment.EMAIL));
-                    user.setAdmin(result.getBoolean(IS_ADMIN));
-                    user.setUserId(result.getString(DbEnvironment.USER_ID));
-                }
+                user = new User();
+                user.setUsername(result.getString(DbEnvironment.USERNAME));
+                user.setPassword(result.getString(DbEnvironment.PASSWORD));
+                user.setEmail(result.getString(DbEnvironment.EMAIL));
+                user.setAdmin(result.getBoolean(IS_ADMIN));
+                user.setUserId(result.getString(DbEnvironment.USER_ID));
+                user.setSalt(result.getString(SALT));
             }
 
             result.close();

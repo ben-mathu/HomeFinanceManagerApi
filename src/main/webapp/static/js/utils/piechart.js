@@ -7,6 +7,8 @@ class PieChart {
         this.colors = arg.colors;
 
         this.draw = function () {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
             let totalAmount = 0;
             let colorIndex = 0;
             

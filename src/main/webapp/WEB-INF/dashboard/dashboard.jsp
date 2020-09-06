@@ -26,6 +26,7 @@
         <%@ include file = "settings.jsp" %>
         <%@ include file = "messages.jsp" %>
         <%@ include file = "members.jsp" %>
+        <%@ include file = "guide.jsp" %>
         <%@ include file = "modal_add_jar.jsp" %>
         <%@ include file = "modal_add_grocery.jsp" %>
         <%@ include file = "modal_add_schedule.jsp" %>

@@ -40,6 +40,7 @@ import static com.miiguar.hfms.data.utils.URL.API;
 import static com.miiguar.hfms.data.utils.URL.REGISTRATION;
 import static com.miiguar.hfms.utils.Constants.*;
 import static com.miiguar.hfms.utils.Constants.COMPLETE;
+import com.miiguar.hfms.utils.PasswordUtil;
 
 /**
  * @author bernard
@@ -99,8 +100,21 @@ public class Register extends BaseServlet {
                     new SecureRandom(), GenerateRandomString.getAlphaNumeric()
             );
             String userId = randomString.nextString();
-            addUser(user, household, userId);
+            
+            // encrypt password
+            GenerateRandomString generateSalt = new GenerateRandomString(30,
+                    new SecureRandom(),
+                    GenerateRandomString.getAlphaNumeric()
+            );
+            
+            String salt = generateSalt.nextString();
+            String securePassword = PasswordUtil.securePassword(user.getPassword(), salt);
+            
+            user.setPassword(securePassword);
+            user.setSalt(salt);
             user.setUserId(userId);
+            
+            int rowsAffected = userDao.save(user);
 
             AccountStatus accountStatus = new AccountStatus();
             accountStatus.setUserId(user.getUserId());
@@ -109,7 +123,7 @@ public class Register extends BaseServlet {
             Log.d(TAG, "Affected Rows: " + affectedRows);
 
             UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
-            if (isJoinHouseHold) {
+            if (isJoinHouseHold && !household.getId().isEmpty()) {
                 userHouseholdRel.setHouseId(household.getId());
                 userHouseholdRel.setUserId(user.getUserId());
 
@@ -195,14 +209,5 @@ public class Register extends BaseServlet {
                 return true;
         }
         return false;
-    }
-
-    private void addUser(User user, Household household, String userId) {
-        int rowsAffected = userDao.insert(user, userId);
-        Log.d(TAG, "Rows Affected:" + rowsAffected);
-    }
-
-    private User getUser(String username, Connection connection) throws SQLException {
-        return userDao.getUserDetails(username);
     }
 }

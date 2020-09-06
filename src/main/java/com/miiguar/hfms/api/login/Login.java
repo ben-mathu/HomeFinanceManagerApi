@@ -3,17 +3,14 @@ package com.miiguar.hfms.api.login;
 import com.miiguar.hfms.api.base.BaseServlet;
 import com.miiguar.hfms.config.ConfigureApp;
 import com.miiguar.hfms.config.ConfigureDb;
-import com.miiguar.hfms.config.EmailEnv;
 import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.data.user.UserDao;
 import com.miiguar.hfms.data.user.UserRequest;
 import com.miiguar.hfms.data.user.UserResponse;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.data.status.Report;
-import com.miiguar.hfms.data.utils.DbEnvironment;
 import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
-import com.miiguar.hfms.utils.Log;
 import com.miiguar.tokengeneration.JwtTokenUtil;
 
 import javax.servlet.ServletException;
@@ -23,19 +20,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static com.miiguar.hfms.data.utils.DbEnvironment.*;
 import static com.miiguar.hfms.data.utils.URL.API;
 import static com.miiguar.hfms.data.utils.URL.LOGIN;
 import static com.miiguar.hfms.utils.Constants.*;
+import com.miiguar.hfms.utils.PasswordUtil;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -70,7 +63,7 @@ public class Login extends BaseServlet {
 
         // validate credentials
         User u = userDao.validateCredentials(username, password);
-        if (u != null) {
+        if (PasswordUtil.verifyPassword(password, u.getPassword(), u.getSalt())) {
             JwtTokenUtil tokenUtil = new JwtTokenUtil();
             Calendar calendar = Calendar.getInstance();
             Date date = new Date(calendar.getTimeInMillis() + TimeUnit.DAYS.toMillis(2));

@@ -122,9 +122,13 @@ function registerUser() {
     
     document.getElementById("progress").hidden = false;
     document.getElementById("emailError").innerHTML = "";
+    document.getElementById("emailError").hidden = true;
     document.getElementById("usernameError").innerHTML = "";
+    document.getElementById("usernameError").hidden = true;
     document.getElementById("passwordError").innerHTML = "";
+    document.getElementById("passwordError").hidden = true;
     document.getElementById("result").innerHTML = "";
+    document.getElementById("result").hidden = true;
 
     var request = getXmlHttpRequest();
     try {
@@ -135,14 +139,20 @@ function registerUser() {
 
                     var obj = JSON.parse(request.responseText);
                     document.getElementById("emailError").innerHTML = obj.email_error;
+                    document.getElementById("emailError").hidden = false;
                     document.getElementById("usernameError").innerHTML = obj.username_error;
+                    document.getElementById("usernameError").hidden = false;
                     document.getElementById("passwordError").innerHTML = obj.password_error;
+                    document.getElementById("passwordError").hidden = false;
                     document.getElementById("householdIdError").innerHTML = obj.household_id_error;
+                    document.getElementById("householdIdError").hidden = false;
                     document.getElementById("progress").hidden = true;
                 } else if (request.status === 409) {
 
                     var error = JSON.parse(request.responseText);
                     document.getElementById("result").innerHTML = error.message;
+                    document.getElementById("result").hidden = false;
+                    document.getElementById("result").style.display = "block";
                     document.getElementById("progress").hidden = true;
                 } else if(request.status === 200) {
 
@@ -175,7 +185,7 @@ function registerUser() {
         var householdId = escape(document.getElementById("householdId").value);
 
         var data = "";
-        if ((householdId === "" || householdId === undefined) || !checkbox.checked) {
+        if (householdId === "" && !checkbox.checked) {
             data = email + "&" + username + "&" + password + "&" + householdName + "&joinHousehold=false";
         } else {
 
@@ -187,6 +197,6 @@ function registerUser() {
         request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         request.send(data);
     } catch(e) {
-        console("Unable to connect to server");
+        console.log("Unable to connect to server");
     }
 }

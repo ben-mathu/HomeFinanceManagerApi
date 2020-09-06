@@ -30,6 +30,7 @@
             <div id="messages" class="menu-item">
                 <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/messages.png" alt="image_1">
                 <div class="menu-title" >
+                    <input type="hidden" id="messages-title" name="settings" value="Messages">
                     Messages
                 </div>
             </div>
@@ -45,6 +46,13 @@
                 <div class="menu-title" >
                     <input type="hidden" id="settings-title" name="settings" value="Settings">
                     Settings
+                </div>
+            </div>
+            <div id="guide" class="menu-item">
+                <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/guide.png" alt="image_1">
+                <div class="menu-title" >
+                    <input type="hidden" id="guide-title" name="guide" value="Guide">
+                    Guide
                 </div>
             </div>
         </div>

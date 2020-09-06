@@ -29,6 +29,8 @@ let grocery = {
 };
 
 function configureGrocery() {
+    groceryListTBody = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
+    
     // add table of groceries when modal is opened
     groceryTemplate = document.getElementById("groceryTemplate");
     
@@ -66,34 +68,71 @@ function setGroceries(groceries) {
     if (groceries === undefined) {
         return;
     }
+    
+    groceryListObj = {};
 
     groceryListTBody = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
     groceryListTBody.innerHTML = "";
     
     for (let i = 0; i < groceries.length; i++) {
+        groceryListObj[i] = groceries;
+        
         // get number of rows
         var row = groceryListTBody.insertRow(i);
         if (i%2 === 0 || i === 0) {
             row.style.backgroundColor = "#534c63d2";
+            row.style.color = "#FFFFFF";
         }
         row.style.cursor = "pointer";
-
-        row.onclick = (function() {
-            var currentIndex = i;
+        
+        var indexCell = row.insertCell(0);
+        var name = row.insertCell(1);
+        var price = row.insertCell(2);
+        var quantity = row.insertCell(3);
+        var required = row.insertCell(4);
+        var cancel = row.insertCell(5);
+        
+        indexCell.innerHTML = 1;
+        indexCell.onclick = (function() {
             return function() {
-                onItemClick(groceries[currentIndex].grocery_id);
+                onItemClick(i);
             };
         })();
         
-        var name = row.insertCell(0);
-        var price = row.insertCell(1);
-        var quantity = row.insertCell(2);
-        var required = row.insertCell(3);
-        
         name.innerHTML = groceries[i].grocery_name;
+        name.onclick = (function() {
+            return function() {
+                onItemClick(i);
+            };
+        })();
+        
         price.innerHTML = groceries[i].grocery_price;
+        price.onclick = (function() {
+            return function() {
+                onItemClick(i);
+            };
+        })();
+        
         quantity.innerHTML = groceries[i].remaining_quantity;
+        quantity.onclick = (function() {
+            return function() {
+                onItemClick(i);
+            };
+        })();
+        
         required.innerHTML = groceries[i].required_quantity;
+        required.onclick = (function() {
+            return function() {
+                onItemClick(i);
+            };
+        })();
+        
+        cancel.innerHTML = "x";
+        cancel.onclick = (function() {
+            return function() {
+                onItemRemoved(i);
+            };
+        })();
 
         groceryListObj[groceries[i].grocery_id] = groceries[i];
     }
@@ -112,15 +151,9 @@ function setGroceriesForNotification(groceries, body) {
         var row = groceryListTBody.insertRow(i);
         if (i%2 === 0 || i === 0) {
             row.style.backgroundColor = "#534c63d2";
+            row.style.color = "#FFFFFF";
         }
         row.style.cursor = "pointer";
-
-        row.onclick = (function() {
-            var currentIndex = i;
-            return function() {
-                onItemClick(groceries[currentIndex].grocery_id);
-            };
-        })();
         
         var name = row.insertCell(0);
         var price = row.insertCell(1);
@@ -135,23 +168,6 @@ function setGroceriesForNotification(groceries, body) {
         groceryListObj[groceries[i].grocery_id] = groceries[i];
     }
 }
-
-/**
- * 
- * @param {Callback} modalDetails Callback when window first loads
- */
-// function openGroceryModal() {
-//     groceryModal.style.display = "block";
-//     groceryDesc.value = "";
-//     groceryName.value = "";
-//     groceryPrice.value = "";
-//     groceryRequired.value = "";
-//     groceryRemaining.value = "";
-
-//     btnAddGrocery.onclick = function() {
-//         addGrocery();
-//     }
-// }
 
 /**
  * shows error for grocery modal
@@ -187,13 +203,15 @@ function addGrocery() {
     // get number of rows
     var row;
     row = groceryListTBody.insertRow(index);
-    var nameCell = row.insertCell(0);
-    var priceCell = row.insertCell(1);
-    var descCell = row.insertCell(2);
-    var quantityCell = row.insertCell(3);
-    var requiredCell = row.insertCell(4);
-    var cancel = row.insertCell(5);
+    var indexCell = row.insertCell(0);
+    var nameCell = row.insertCell(1);
+    var priceCell = row.insertCell(2);
+    var descCell = row.insertCell(3);
+    var quantityCell = row.insertCell(4);
+    var requiredCell = row.insertCell(5);
+    var cancel = row.insertCell(6);
 
+    indexCell.innerHTML = index;
     nameCell.innerHTML = name;
     priceCell.innerHTML = price;
     descCell.innerHTML = desc;
@@ -205,6 +223,12 @@ function addGrocery() {
 
     let obj = groceryListObj[index];
 
+    indexCell.onclick = (function() {
+        return function() {
+            onItemClick(index);
+        };
+    })();
+    
     nameCell.onclick = (function() {
         return function() {
             onItemClick(index);
@@ -258,26 +282,31 @@ function addGrocery() {
  */
 function updateGrocery(index) {
     // updates a row when user edit an item in the list
-    let groceryClone = groceryTemplate.content.cloneNode(true);
     
-    groceryListTBody = groceryClone.querySelector("#groceryItems").getElementsByTagName("tbody")[0];
+    groceryListTBody = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
     let row = groceryListTBody.rows[index];
     var cells = row.cells;
+    
+    var name = groceryName.value;
+    var desc = groceryDesc.value;
+    var price = (parseFloat(groceryPrice.value) * parseFloat(groceryRequired.value)).toString();
+    var required = groceryRequired.value;
+    var remaining = groceryRemaining.value;
 
-    var previousAmount = cells[1].innerHTML;
-    cells[0].innerHTML = name;
-    cells[1].innerHTML = price;
-    cells[2].innerHTML = desc;
-    cells[3].innerHTML = remaining;
-    cells[4].innerHTML = required;
+    var previousAmount = cells[2].innerHTML;
+    cells[1].innerHTML = name;
+    cells[2].innerHTML = price;
+    cells[3].innerHTML = desc;
+    cells[4].innerHTML = remaining;
+    cells[5].innerHTML = required;
     
     updateTotalAmount(previousAmount, price);
 
-    let templateClone = document.importNode(template.content, true);
-
-    groceriesList.innerHTML = "";
-    groceriesList.appendChild(groceryTemplate);
-    groceriesList.appendChild(templateClone);
+//    let templateClone = document.importNode(template.content, true);
+//
+//    groceriesList.innerHTML = "";
+//    groceriesList.appendChild(groceryTemplate);
+//    groceriesList.appendChild(templateClone);
 }
 
 function getGroceryItemIndex(sample) {
@@ -316,6 +345,17 @@ function onItemClick(row) {
     groceryRemaining.value = remaining;
 
     isGroceryUpdate = true;
+    
+    btnAddGrocery.onclick = function() {
+        if (!validGroceryInput()) {
+            return;
+        }
+        updateGrocery(row);
+    };
+}
+
+function validGroceryInput() {
+    
 }
 
 /**
@@ -326,18 +366,19 @@ function onItemClick(row) {
 function onItemRemoved(rowIndex) {
     groceryListTBody = document.querySelector("#groceryItems").getElementsByTagName("tbody")[0];
     
-    let keys = Object.keys(groceryListObj);
-    let index;
-    keys.forEach(key => {
-        if (parseInt(key) === rowIndex) {
-            index = key;
-        }
-    });
-    
-    groceryListTBody.deleteRow(index);
+    let rows = groceryListTBody.rows;
+    for (let i = 0; i < rows.length; i++) {
+        let row = rows[i];
+        let indexCell = row.cells[0];
+        let index = indexCell.innerHTML;
+        
+        if (parseInt(index) === rowIndex) {
+            groceryListTBody.deleteRow(i);
+            let amount = groceryListObj[rowIndex].grocery_price;
+            onRowRemoved(amount);
 
-    let amount = groceryListObj[rowIndex].grocery_price;
-    onRowRemoved(amount);
-    
-    delete groceryListObj[rowIndex];
+            delete groceryListObj[rowIndex];
+            break;
+        }
+    }
 }

@@ -1,28 +1,21 @@
 package com.miiguar.hfms.api.register;
 
 import com.miiguar.hfms.api.base.BaseServlet;
-import com.miiguar.hfms.config.ConfigureDb;
 import com.miiguar.hfms.data.code.CodeDao;
 import com.miiguar.hfms.data.code.model.Code;
-import com.miiguar.hfms.data.jdbc.JdbcConnection;
 import com.miiguar.hfms.data.user.Identification;
 import com.miiguar.hfms.data.status.Report;
 import com.miiguar.hfms.data.user.model.User;
 import com.miiguar.hfms.utils.BufferRequestReader;
 import com.miiguar.hfms.utils.GenerateRandomString;
 import com.miiguar.hfms.utils.Log;
-import com.miiguar.hfms.utils.sender.EmailSession;
 
-import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
 import java.util.Random;
 
 import static com.miiguar.hfms.data.utils.URL.API;

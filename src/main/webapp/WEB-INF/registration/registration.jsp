@@ -19,34 +19,37 @@
             <div class="sections vertical-line"></div>
             <div class="sections second-half">
             	<div>
-            		<span id="result" class="resp">${error.usernameError}</span>
+                    <span id="result" class="resp">${error.usernameError}</span>
             	</div>
-                <div>
+                <div class="form-control">
                     <form class="form-container" method="POST" onsubmit="return false;">
                         <input type="hidden" id="contextPath" name="path" value="${pageContext.request.contextPath}">
 
                         <%-- Enter email --%>
                     	<div class="input-container">
                             <div>
-                            	<input class="input-style" id="email" type="text" name="email" placeholder="Email" value="${email}">
+                                <span id="emailError" class="resp" hidden>${emailError.emailError}</span>
+                            	<input class="input-style span-block" id="email" type="text" name="email" placeholder="Email" value="${email}">
                             </div>
-                            <span id="emailError" class="resp">${emailError.emailError}</span>
                         </div>
 
                         <%-- User's username --%>
                         <div class="input-container">
                             <div>
-                            	<input class="input-style" id="username" type="text" name="username" placeholder="Username" value="${username}">
+                                <span id="usernameError" class="resp" hidden>${usernameError.usernameError}</span>
+                            	<input class="input-style span-block" id="username" type="text" name="username" placeholder="Username" value="${username}">
                             </div>
-                            <span id="usernameError" class="resp">${usernameError.usernameError}</span>
                         </div>
 
                         <%-- User password --%>
                         <div class="input-container">
                             <div>
-                            	<input class="input-style" id="password" type="password" name="password" placeholder="Password">
+                                <span id="passwordError" class="resp" hidden>${passwordError.passwordError}</span>
+                                <div class="span-block">
+                                    <input class="input-style" id="password" type="password" name="password" placeholder="Password">
+                                    <span for="password" style="height: fit-content; margin-top: 20px;" hidden>show</span>
+                                </div>
                             </div>
-                            <span id="passwordError" class="resp">${passwordError.passwordError}</span>
                         </div>
 
                         <%-- join household checkbox --%>
@@ -58,34 +61,25 @@
                         </div>
                         
                         <%-- Household name --%>
-                        <span id="householdFields" style="margin-top: 3px; font-size: 13px; color: #FEC800">You would be able to create a house once you have registered.</br>It is okay to leave this fields blank</span>
                         <div class="input-container">
                             <div>
-                            	<input class="input-style" id="householdName" type="text" name="household" placeholder="Household Name">
+                            	<input class="input-style" id="householdName" type="text" name="household" placeholder="Household Name (Optional)">
                             </div>
-                            <span id="householdNameError" class="resp">${householdNameError.householdNameError}</span>
+                            <span id="householdNameError" class="resp" hidden>${householdNameError.householdNameError}</span>
                         </div>
-<!--
-                        <%-- Household Description --%>
-                        <div class="input-container">
-                            <div>
-                            	<input class="input-style" id="householdDesc" type="text" name="householdDesc" placeholder="Household Description">
-                            </div>
-                            <span id="householdDescError" class="resp">${householdDescError.householdDescError}</span>
-                        </div>-->
                         
                         <%-- Household Unique id field --%>
                         <div class="input-container">
                             <div>
-                            	<input class="input-style" id="householdId" type="text" placeholder="Household Unique Id" hidden>
+                            	<input class="input-style" id="householdId" type="text" placeholder="Household Unique Id (Optional)" hidden>
                             </div>
-                            <span id="householdIdError" class="resp">${householdIdError.householdIdError}</span>
+                            <span id="householdIdError" class="resp" hidden>${householdIdError.householdIdError}</span>
                         </div>
                         <div class="submit-area">
                             <button class="btn2 submit" onclick="registerUser()" id="submit">Submit</button>
                         </div>
                     </form>
-                    <a class="link register-link" href="login">Already have an account?</a>
+                    <a class="link register-link" href="login">Already have an account? Login.</a>
                 </div>
                 <%-- <div class="login-using-socials">
                     <a href="https://facebook.com"><div class="image-size">
