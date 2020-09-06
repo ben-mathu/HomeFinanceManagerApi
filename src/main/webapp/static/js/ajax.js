@@ -151,6 +151,8 @@ function registerUser() {
 
                     var error = JSON.parse(request.responseText);
                     document.getElementById("result").innerHTML = error.message;
+                    document.getElementById("result").hidden = false;
+                    document.getElementById("result").style.display = "block";
                     document.getElementById("progress").hidden = true;
                 } else if(request.status === 200) {
 

@@ -65,14 +65,18 @@ function configureExpenses() {
         expenseGlobal.payee_name = event.target.value;
         businessNumber.value = payeeNames[event.target.value];
         expenseGlobal.business_number = payeeNames[event.target.value];
+        let spanBusNumber = document.querySelector("span[for='payeeBusinessNumber']");
+        spanBusNumber.textContent = "";
     });
     
     businessNumber.addEventListener("input", function(event) {
-        expenseGlobal.business_number = event.target.value;
-    });
-    
-    businessNumber.addEventListener("change", function(event) {
-        expenseGlobal.business_number = event.target.value;
+        if (isBusinessNumberValid(event.target.value)) {
+            expenseGlobal.business_number = event.target.value;
+            let spanBusNumber = document.querySelector("span[for='payeeBusinessNumber']");
+            spanBusNumber.textContent = "";
+        } else {
+            return;
+        }
     });
     
     payeeAccountNumber = document.getElementById("payerAccountNumber");
@@ -82,6 +86,25 @@ function configureExpenses() {
 
     let businessNumberContainer = document.getElementById("businessNumber");
     let accountNumberContainer = document.getElementsByName("account_number");
+}
+
+/**
+ * Validate business number
+ * @param {string} businessNumber
+ * @returns {boolean}
+ */
+function isBusinessNumberValid(businessNumber) {
+    let spanBusNumber = document.querySelector("span[for='payeeBusinessNumber']");
+    
+    if (businessNumber.length > 4 && businessNumber.length <= 6) {
+        return true;
+    } else {
+        spanBusNumber.style.color = "#AA002E";
+        spanBusNumber.style.fontSize = "12px";
+        spanBusNumber.textContent = "The number you input is invalid";
+        spanBusNumber.style.display = "block";
+        return false;
+    }
 }
 
 function setExpenseFields(jarId) {

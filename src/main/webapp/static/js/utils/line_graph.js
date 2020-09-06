@@ -202,6 +202,8 @@ class LineGraph {
         };
         
         this.draw = function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
             this.drawXAxis();
             this.addXLabels();
             this.drawYAxis();

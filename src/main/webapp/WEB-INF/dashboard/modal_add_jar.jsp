@@ -35,15 +35,16 @@
 
                 <%-- Select day of the week --%>
                 <div id="dayOfWeek" hidden>
+                    <label for="daySelector">Get notified every:</label>
                     <div >
-                        Get notified every? <select id="daySelector" class="select-style">
-                            <option value="Mon">Monday</option>
+                        <select id="daySelector" class="select-style">
+                            <option value="Sunday">Sunday</option>
+                            <option value="Monday">Monday</option>
                             <option value="Tuesday">Tuesday</option>
                             <option value="Wednesday">Wednesday</option>
                             <option value="Thursday">Thursday</option>
                             <option value="Friday">Friday</option>
                             <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
                         </select>
                     </div>
                 </div>
@@ -89,15 +90,17 @@
                     </div>
                     <div>
                         <span for="payeeName"></span>
-                        <label for="payeeName">Payee Name</label></br>
+                        <label for="payeeName">Payee Name (Section only supported in Kenya)</label></br>
                         <select id="payeeName" class="select-style">
                             <option value="--Select Expense Type--">--Select Expense Type--</option>
                         </select>
                     </div>
                     <div id="businessNumber">
+                        <span for="payerAccountNumber"></span>
                         <input id="payeeBusinessNumber" class="input-style" type="number" name="business_number" placeholder="Business Number (Optional)" />
                     </div>
                     <div id="account">
+                        <span for="payerAccountNumber"></span>
                         <input id="payerAccountNumber" class="input-style" type="number" name="account_number" placeholder="Payer Account Number (Optional)" />
                     </div>
                     <div id="expenseContainer" >

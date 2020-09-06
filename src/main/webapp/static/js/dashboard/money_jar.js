@@ -1235,7 +1235,17 @@ function serializeData() {
     let scheduledType = "";
     let selected = scheduleSelector.options[scheduleSelector.selectedIndex].value;
     if (selected === scheduleType.WEEKLY) {
-        dateTime = daySelector.options[daySelector.selectedIndex].value;
+        if (daySelector.selectedIndex === new Date().getDay()) {
+            dateTime = formatDate(new Date());
+        } else if (daySelector.selectedIndex > new Date().getDay()) {
+            let dayDiff = daySelector.selectedIndex - new Date().getDay();
+            let date = new Date().addDays(new Date().toDateString(), dayDiff);
+            dateTime = formatDate(date);
+        } else if (daySelector.selectedIndex < new Date().getDay()) {
+            let dayDiff = 7 - new Date().getDay() + daySelector.selectedIndex;
+            let date = new Date().addDays(new Date().toDateString(), dayDiff);
+            dateTime = formatDate(date);
+        }
         dateTime += " " + time.value;
         scheduledType = scheduleType.WEEKLY;
     } else if (selected === scheduleType.SCHEDULED) {
@@ -1252,7 +1262,7 @@ function serializeData() {
         
         scheduledType = scheduleType.MONTHLY;
     } else {
-        dateTime = time.value;
+        dateTime = formatDate(new Date()) + " " + time.value;
         scheduledType = scheduleType.DAILY;
     }
 
