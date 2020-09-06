@@ -22,6 +22,8 @@ public class Constants {
     public static final String URL_MEMBERS = "/dashboard/members";
     public static final String SETTINGS = "Settings";
     public static final String URL_SETTINGS = "/dashboard/settings";
+    public static final String GUIDE = "Guide";
+    public static final String URL_GUIDE = "/dashboard/guide";
     public static final String REFRESH = "refresh";
 
 
@@ -32,7 +34,7 @@ public class Constants {
         public static final String DATE = "date";
     }
 
-    public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     /**
      * JSON Field Names

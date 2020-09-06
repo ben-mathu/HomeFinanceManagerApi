@@ -786,9 +786,6 @@ function openJarModalForPay(jarId, isPaid) {
 
     btnSubmitJar.value = "Pay";
     btnSubmitJar.onclick = function() {
-        if (!validateInput()) {
-            return;
-        }
         makePayments(moneyJarIdModal.value);
     };
     

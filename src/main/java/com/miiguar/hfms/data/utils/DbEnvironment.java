@@ -23,6 +23,7 @@ public class DbEnvironment {
     public static final String PASSWORD = "password";
     public static final String IS_ADMIN = "is_admin";
     public static final String IS_ONLINE = "is_online";
+    public static final String SALT = "salt";
 
     /**
      * User-Household table relationship

@@ -73,11 +73,6 @@ public class RegistrationServlet extends BaseServlet {
             isParamsValid = false;
         }
 
-        if ((houseHoldId.isEmpty() || request.getParameter(HOUSEHOLD_ID) == null) && joinHousehold) {
-            results.setHouseholdIdError("");
-            isParamsValid = false;
-        }
-
         if (isParamsValid) {
 
             final String usernameValidity = Patterns.isUsernameValid(username);

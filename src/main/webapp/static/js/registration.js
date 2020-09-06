@@ -1,10 +1,32 @@
 let householdDesc;
 let householdName;
 let householdId;
-let infoHouseholdFields;
 let checkbox;
 
 window.onload = function() {
+    let isShowingPassword = false;
+    let inputPassword = document.getElementById("password");
+    let spanPassword = document.querySelector("span[for='password']");
+    spanPassword.style.cursor = "pointer";
+    spanPassword.addEventListener("click", function (event) {
+        if (!isShowingPassword) {
+            inputPassword.type = "text";
+            isShowingPassword = true;
+        } else {
+            inputPassword.type = "password";
+            isShowingPassword = false;
+        }
+    });
+    
+    inputPassword.addEventListener("input", function (event) {
+        if (event.target.value === "") {
+            spanPassword.hidden = true;
+        } else {
+            spanPassword.hidden = false;
+        }
+    });
+    
+    
     
     let checkboxholder = document.getElementById("checkboxItem");
     checkbox = document.getElementById("checkbox");
@@ -12,7 +34,6 @@ window.onload = function() {
     householdName = document.getElementById("householdName");
 //    householdDesc = document.getElementById("householdDesc");
     householdId = document.getElementById("householdId");
-    infoHouseholdFields = document.getElementById("householdFields");
 
     checkbox.onclick = function () {
         if (checkbox.checked) {
@@ -41,14 +62,12 @@ window.onload = function() {
  */
 function showHouseholdIdField(joinHouseholdChecked) {
     if (joinHouseholdChecked) {
-        infoHouseholdFields.innerHTML = "However, this field is required";
         householdId.hidden = false;
-//        householdDesc.hidden = true;
         householdName.hidden = true;
+        householdName.value = "";
     } else {
-        infoHouseholdFields.innerHTML = "You would be able to create a house once you have registered. It is okay to leave this fields blank";
         householdId.hidden = true;
-//        householdDesc.hidden = false;
+        householdId.value = "";
         householdName.hidden = false;
     }
 }

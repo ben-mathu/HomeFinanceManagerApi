@@ -13,9 +13,9 @@ public class ErrorResults {
     @SerializedName("password_error")
     private String passwordError = "";
     @SerializedName("code_error")
-    private String codeError;
+    private String codeError = "";
     @SerializedName("household_id_error")
-    private String householdIdError;
+    private String householdIdError = "";
 
     public String getUsernameError() {
         return usernameError;

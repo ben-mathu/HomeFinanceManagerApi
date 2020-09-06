@@ -33,6 +33,7 @@ public abstract class BaseServlet extends HttpServlet {
             map.put(MESSAGES, URL_MESSAGES);
             map.put(MEMBERS, URL_MEMBERS);
             map.put(SETTINGS, URL_SETTINGS);
+            map.put(GUIDE, URL_GUIDE);
         }
 
         return map;

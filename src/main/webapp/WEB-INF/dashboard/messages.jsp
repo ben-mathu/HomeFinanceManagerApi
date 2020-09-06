@@ -1,3 +1,3 @@
-<div id="Messages">
+<div id="Messages" hidden>
     
 </div>

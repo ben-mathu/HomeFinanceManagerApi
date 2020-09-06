@@ -42,6 +42,10 @@ public class User {
     @SerializedName(IS_ONLINE)
     @Column(columnName = IS_ONLINE)
     private boolean isOnline = false;
+    
+    @SerializedName(SALT)
+    @Column(columnName = SALT, characterLength = 30)
+    private String salt = "";
 
     public String getUserId() {
         return userId;
@@ -97,5 +101,13 @@ public class User {
 
     public void setOnline(boolean online) {
         isOnline = online;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getSalt() {
+        return salt;
     }
 }

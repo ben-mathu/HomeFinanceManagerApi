@@ -117,7 +117,12 @@ public class MoneyJarApi extends BaseServlet {
         
         if (dto.getUser() == null) {
             String houseId = dto.getJar().getHouseholdId();
-            String userId = householdDao.getUserId(houseId).get(0);
+            String userId = "";
+            try {
+                userId = householdDao.getUserId(houseId).get(0);
+            } catch (Exception e) {
+                Log.e(TAG, "I have found you, you cannot hide forever.", e);
+            }
             
             User user = userDao.get(userId);
             
