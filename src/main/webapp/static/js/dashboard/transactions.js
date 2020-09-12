@@ -34,13 +34,14 @@ function configureTransactions() {
     transactionCanvas = document.getElementById("lineGraphCanvas");
     
     let width = window.innerWidth;
-    let chartContainerWidth = 75 * width / 100 / 2;
+    let chartContainerWidth = 75 / 100 * width / 2;
     
     transactionCanvas.width = chartContainerWidth;
     transactionCanvas.height = 250;
     
     window.addEventListener("resize", function (event) {
-        chartContainerWidth = 75 * width / 100 / 2;
+        width = event.target.innerWidth;
+        chartContainerWidth = 75 / 100 * width / 2;
         transactionCanvas.width = chartContainerWidth;
         transactionCanvas.height = 250;
         
