@@ -377,9 +377,8 @@ public class MoneyJarScheduleDao extends BaseDao<JarScheduleDateRel> {
             preparedStatement = conn.prepareStatement(query);
             
             preparedStatement.setString(1, householdId);
-            preparedStatement.setBoolean(1, true);
-            preparedStatement.setString(1, from);
-            preparedStatement.setString(1, to);
+            preparedStatement.setString(2, from);
+            preparedStatement.setString(3, to);
             
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {

@@ -103,6 +103,8 @@ function updateIncome(income) {
                 closeIncomeModal();
 
                 getUserDetails();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };
@@ -126,7 +128,6 @@ function updateIncome(income) {
     request.send(data);
 }
 
-let incomeStatus = false;
 function activateIncomeTimer(income, lastIncome) {
     
     (function(income, scheduledIncome) {
@@ -134,9 +135,8 @@ function activateIncomeTimer(income, lastIncome) {
         let timeScheduled = new Date(income.scheduled_for);
 
         let isTimeReached = timeScheduled.getTime() < today.getTime();
-        if (isTimeReached && scheduledIncome.amount !== 0 && incomeStatus) {
+        if (isTimeReached && !scheduledIncome.on_income_changed_status) {
             addScheduledIncome(income, scheduledIncome);
-            incomeStatus = true;
             return;
         }
 
@@ -184,14 +184,17 @@ function addIncome() {
     var request = getXmlHttpRequest();
     request.onreadystatechanged = function() {
         if (request.readyState === 4) {
-            if (reaquest.status === 200) {
+            if (request.status === 200) {
                 // close modal
                 closeIncomeModal();
                 
                 setIncome(JSON.parse(request.responseText));
 
                 showIncome(JSON.parse(request.responseText).income);
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
+
         }
     };
 
@@ -223,8 +226,7 @@ function showIncome(income, lastIncome) {
     if (income !== undefined) {
         if (income.amount > 0) {
             incomeSpan.hidden = false;
-            var text = incomeSpan.innerHTML + income.amount;
-            incomeSpan.innerHTML = text;
+            incomeSpan.textContent = incomeSpan.innerHTML.split(":")[0] + ": " + income.amount;
             
             btnOpenIncomeModal.hidden = true;
             

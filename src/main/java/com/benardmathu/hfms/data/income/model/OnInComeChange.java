@@ -5,6 +5,7 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.CREATED_AT;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.FK_INCOME_CHANGE_INCOME_ID;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.INCOME_ID;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.INCOME_TB_NAME;
+import static com.benardmathu.hfms.data.utils.DbEnvironment.ON_CHANGE_INCOME_STATUS;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.ON_UPDATE_INCOME;
 import com.benardmathu.hfms.init.Column;
 import com.benardmathu.hfms.init.Constraint;
@@ -32,6 +33,9 @@ public class OnInComeChange {
     @SerializedName(CREATED_AT)
     @Column(columnName = CREATED_AT, characterLength = 255)
     private String createdAt;
+    @SerializedName(ON_CHANGE_INCOME_STATUS)
+    @Column(columnName = ON_CHANGE_INCOME_STATUS)
+    private boolean onChangeStatus = false;
 
     public void setAmount(double amount) {
         this.amount = amount;
@@ -55,5 +59,13 @@ public class OnInComeChange {
 
     public String getIncomeId() {
         return incomeId;
+    }
+
+    public void setOnChangeStatus(boolean onChangeStatus) {
+        this.onChangeStatus = onChangeStatus;
+    }
+
+    public boolean isOnChangeStatus() {
+        return onChangeStatus;
     }
 }

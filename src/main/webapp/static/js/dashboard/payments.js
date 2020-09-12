@@ -58,8 +58,6 @@ function configurePayments() {
     notifications.registerListener(function(val, clone) {
 
         notificationContainer.appendChild(clone);
-
-        notificationCount++;
     });
 }
 
@@ -120,6 +118,12 @@ function showNotificationDialog(jarId, jarDto) {
     btnEditDetails.onclick = function () {
         openJarModalForEdit(moneyJarId.value);
     };
+    
+    let setTimer = setTimeout(function() {
+        paymentDialog.style.display = "none";
+
+        addNotification(jarId);
+    }, 10000);
 
     templateClone.querySelector("#btnPay").id += count;
     btnPay = templateClone.querySelector("#btnPay" + count);
@@ -130,6 +134,9 @@ function showNotificationDialog(jarId, jarDto) {
         paymentDialog.style.display = "none";
         
         makePayments(mJarId.value);
+        
+        clearTimeout(setTimer);
+        addNotification(mJarId.value);
     }, false);
 
     templateClone.querySelector("#expandButton").id += count;
@@ -149,12 +156,6 @@ function showNotificationDialog(jarId, jarDto) {
     
     templateClone.querySelector("#paymentDetailsContainer").id += count;
     let paymentDialog = templateClone.querySelector("#paymentDetailsContainer" + count);
-
-    window.setTimeout(function() {
-        paymentDialog.style.display = "none";
-
-        addNotification(jarId);
-    }, 10000);
 
     paymentDetails.appendChild(templateClone);
 
@@ -212,7 +213,6 @@ function formatTime(date) {
  * 
  * @param {string} jarId references a jar
  */
-let notificationCount = 0;
 function addNotification(jarId) {
     let jarDto = jars.getJar(jarId);
     let jar = jarDto.jar;
@@ -224,7 +224,7 @@ function addNotification(jarId) {
     if (jar.scheduled_type === scheduleType.DAILY) {
         date = new Date().addDays(jar.scheduled_for, 1);
     } else if (jar.scheduled_type === scheduleType.WEEKLY) {
-        date = new Date().addDays(jar.scheduled_for, 7);
+        date = new Date().addWeeks(jar.scheduled_for, 1);
     } else if (jar.scheduled_type === scheduleType.MONTHLY) {
         date = new Date().addMonths(jar.scheduled_for, 1);
     } else if (jar.scheduled_type === scheduleType.SCHEDULED) {
@@ -258,6 +258,7 @@ function addNotification(jarId) {
  * update the notification section
  * @param {string} jarId identifies a jar object
  */
+let notificationCount = 0;
 function populateNotificationSection(jarId) {
     let jarDto = jars.getJar(jarId);
     
@@ -305,6 +306,8 @@ function populateNotificationSection(jarId) {
     
     let id = jarId + "-" + dateNow;
     notifications.setNotification(id, jarDto, templateClone);
+    
+    notificationCount++;
 }
 
 Date.prototype.addHours = function(scheduled, seconds) {

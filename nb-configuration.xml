@@ -22,10 +22,14 @@ Any value defined here will override the pom.xml file value but is only applicab
         <word>Daraja</word>
         <word>HFMS</word>
         <word>jamaa</word>
+        <word>jdbc</word>
         <word>Ksh</word>
+        <word>localhost</word>
         <word>mathu</word>
         <word>Mpesa</word>
         <word>na</word>
+        <word>postgres</word>
+        <word>postgresql</word>
         <word>Servlet</word>
         <word>yako</word>
     </spellchecker-wordlist>

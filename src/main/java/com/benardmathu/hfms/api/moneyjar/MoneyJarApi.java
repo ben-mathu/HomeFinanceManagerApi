@@ -43,6 +43,13 @@ import java.util.List;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.URL.*;
 import static com.benardmathu.hfms.utils.Constants.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author bernard
@@ -50,6 +57,8 @@ import static com.benardmathu.hfms.utils.Constants.*;
 @WebServlet(API + MONEY_JARS)
 public class MoneyJarApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
+    
+    private SimpleDateFormat sp = new SimpleDateFormat(DATE_FORMAT);
 
     private final AccountStatusDao accountStatusDao;
     private final HouseholdDao householdDao;
@@ -421,6 +430,10 @@ public class MoneyJarApi extends BaseServlet {
         // get household
         Report report;
         UserHouseholdRel userHouseholdRel = userHouseholdDao.get(userId);
+        Calendar now = new GregorianCalendar();
+        now.setTime(new Date());
+        
+        Calendar scheduled = new GregorianCalendar();
         
         if (userHouseholdRel != null) {
             List<JarScheduleDateRel> jarScheduleDateRelList = moneyJarScheduleDao.getAll(userHouseholdRel.getHouseId());
@@ -428,37 +441,93 @@ public class MoneyJarApi extends BaseServlet {
             assert jarScheduleDateRelList != null;
             jarScheduleDateRelList.forEach(jarScheduleDateRel -> {
                 
-                // get jars
-                MoneyJar jar = jarDao.get(jarScheduleDateRel.getJarId());
-                jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
-                jar.setJarStatus(jarScheduleDateRel.isJarStatus());
-                jar.setPaymentStatus(jarScheduleDateRel.isPaymentStatus());
-                jar.setTotalAmount(jarScheduleDateRel.getAmount());
-                
-                MoneyJarDto jarDto = new MoneyJarDto();
-                jarDto.setJar(jar);
-                jarDto.setId(jarScheduleDateRel.getId());
-
-                String jarId = jar.getMoneyJarId();
-                if (JarType.LIST_EXPENSE_TYPE.equals(jar.getCategory())) {
-
-                    // get all grocery ids from moneyjarlistrel table to get all groceries
-                    List<String> ids = moneyJarListDao.getIdByJarId(jarId);
-                    List<Grocery> groceries = new ArrayList<>();
-                    ids.forEach((id) -> {
-                        Grocery grocery = groceryDao.get(id);
-                        groceries.add(grocery);
-                    });
-
-                    jarDto.setGroceries(groceries);
-                } else {
+                try {
+                    // get jars
+                    MoneyJar jar = jarDao.get(jarScheduleDateRel.getJarId());
                     
-                    String id = moneyJarExpenseDao.getIdByJarId(jarId);
-                    Expense expenses = expenseDao.get(id);
-                    jarDto.setExpense(expenses);
+                    MoneyJarDto jarDto = new MoneyJarDto();
+                    if (jar.getScheduleType().equals(ScheduleType.DAILY)) {
+                        scheduled.setTime(sp.parse(jarScheduleDateRel.getScheduleDate()));
+                        
+                        int daysDiff = now.get(Calendar.DAY_OF_YEAR) - scheduled.get(Calendar.DAY_OF_YEAR);
+                        jarDto.setDiff(daysDiff);
+                        if (daysDiff > 1) {
+                            scheduled.add(Calendar.DAY_OF_YEAR, daysDiff-1);
+                            jar.setScheduledFor(sp.format(scheduled.getTime()));
+                            
+                            jarScheduleDateRel.setJarStatus(true);
+                            jarScheduleDateRel.setScheduleDate(sp.format(scheduled.getTime()));
+                            
+                            moneyJarScheduleDao.update(jarScheduleDateRel);
+                        } else {
+                            jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
+                        }
+                    } else if (jar.getScheduleType().equals(ScheduleType.MONTHLY)) {
+                        scheduled.setTime(sp.parse(jarScheduleDateRel.getScheduleDate()));
+                        
+                        int monthsDiff = now.get(Calendar.MONTH) - scheduled.get(Calendar.MONTH);
+                        jarDto.setDiff(monthsDiff);
+                        if (monthsDiff > 1) {
+                            scheduled.add(Calendar.MONTH, monthsDiff-1);
+                            jar.setScheduledFor(sp.format(scheduled.getTime()));
+                            
+                            jarScheduleDateRel.setJarStatus(true);
+                            jarScheduleDateRel.setScheduleDate(sp.format(scheduled.getTime()));
+                            
+                            moneyJarScheduleDao.update(jarScheduleDateRel);
+                        } else {
+                            jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
+                        }
+                    } else if (jar.getScheduleType().equals(ScheduleType.WEEKLY)) {
+                        scheduled.setTime(sp.parse(jarScheduleDateRel.getScheduleDate()));
+                        
+                        int weeksDiff = now.get(Calendar.WEEK_OF_YEAR) - scheduled.get(Calendar.WEEK_OF_YEAR);
+                        jarDto.setDiff(weeksDiff);
+                        if (weeksDiff > 1) {
+                            scheduled.add(Calendar.WEEK_OF_YEAR, weeksDiff-1);
+                            jar.setScheduledFor(sp.format(scheduled.getTime()));
+                            
+                            jarScheduleDateRel.setJarStatus(true);
+                            jarScheduleDateRel.setScheduleDate(sp.format(scheduled.getTime()));
+                            
+                            moneyJarScheduleDao.update(jarScheduleDateRel);
+                        } else {
+                            jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
+                        }
+                    } else if (jar.getScheduleType().equals(ScheduleType.SCHEDULED)) {
+                        jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
+                    }
+                    
+                    jar.setJarStatus(jarScheduleDateRel.isJarStatus());
+                    jar.setPaymentStatus(jarScheduleDateRel.isPaymentStatus());
+                    jar.setTotalAmount(jarScheduleDateRel.getAmount());
+                    
+                    jarDto.setJar(jar);
+                    jarDto.setId(jarScheduleDateRel.getId());
+                    
+                    String jarId = jar.getMoneyJarId();
+                    if (JarType.LIST_EXPENSE_TYPE.equals(jar.getCategory())) {
+                        
+                        // get all grocery ids from moneyjarlistrel table to get all groceries
+                        List<String> ids = moneyJarListDao.getIdByJarId(jarId);
+                        List<Grocery> groceries = new ArrayList<>();
+                        ids.forEach((id) -> {
+                            Grocery grocery = groceryDao.get(id);
+                            groceries.add(grocery);
+                        });
+                        
+                        jarDto.setGroceries(groceries);
+                    } else {
+
+                        String id = moneyJarExpenseDao.getIdByJarId(jarId);
+                        Expense expenses = expenseDao.get(id);
+                        jarDto.setExpense(expenses);
+                    }
+                    
+                    jarDtoList.add(jarDto);
+                } catch (ParseException ex) {
+                    Log.e(TAG, "Error: ", ex);
                 }
-                
-                jarDtoList.add(jarDto);
             });
 
             jarsDto.setJarDto(jarDtoList);

@@ -4,6 +4,7 @@ import com.benardmathu.hfms.data.BaseDao;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.AMOUNT;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.CREATED_AT;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.INCOME_ID;
+import static com.benardmathu.hfms.data.utils.DbEnvironment.ON_CHANGE_INCOME_STATUS;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.ON_UPDATE_INCOME;
 import com.benardmathu.hfms.utils.Log;
 import java.sql.Connection;
@@ -40,6 +41,7 @@ public class IncomeChangeDao extends BaseDao<OnInComeChange> {
                 income.setAmount(resultSet.getDouble(AMOUNT));
                 income.setCreatedAt(resultSet.getString(CREATED_AT));
                 income.setIncomeId(resultSet.getString(INCOME_ID));
+                income.setOnChangeStatus(resultSet.getBoolean(ON_CHANGE_INCOME_STATUS));
             }
 
             resultSet.close();
@@ -98,6 +100,7 @@ public class IncomeChangeDao extends BaseDao<OnInComeChange> {
                 income.setAmount(resultSet.getDouble(AMOUNT));
                 income.setCreatedAt(resultSet.getString(CREATED_AT));
                 income.setIncomeId(resultSet.getString(INCOME_ID));
+                income.setOnChangeStatus(resultSet.getBoolean(ON_CHANGE_INCOME_STATUS));
                 list.add(income);
             }
 
@@ -134,8 +137,8 @@ public class IncomeChangeDao extends BaseDao<OnInComeChange> {
     @Override
     public int save(OnInComeChange item) {
         String query = "INSERT INTO " + ON_UPDATE_INCOME + "("
-                + AMOUNT + "," + INCOME_ID + "," + CREATED_AT + ")" +
-                " VALUES (?,?,?)";
+                + AMOUNT + "," + INCOME_ID + "," + CREATED_AT + "," + ON_CHANGE_INCOME_STATUS + ")" +
+                " VALUES (?,?,?,?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -147,6 +150,7 @@ public class IncomeChangeDao extends BaseDao<OnInComeChange> {
             preparedStatement.setDouble(1, item.getAmount());
             preparedStatement.setString(2, item.getIncomeId());
             preparedStatement.setString(3, item.getCreatedAt());
+            preparedStatement.setBoolean(4, false);
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();

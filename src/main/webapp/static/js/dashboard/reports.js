@@ -33,8 +33,8 @@ function openReportModal() {
         return;
     }
     
-    let fromDate = "from" + "=" + escape(fldDateFrom.value);
-    let toDate = "to=" + escape(fldDateTo.value);
+    let fromDate = "from" + "=" + escape(formatDate(new Date(fldDateFrom.value)) + " 00:00");
+    let toDate = "to=" + escape(formatDate(new Date(fldDateTo.value)) + " " + formatTime(new Date()));
     
     let data = fromDate + "&" + toDate + "&" + userFields.USER_ID + "=" + userId + "&" + userFields.TOKEN + "=" + token;
     

@@ -147,6 +147,8 @@ class LineGraph {
             if (max < 500) {
                 max = 500;
                 this.graphMaxAmount = 500 * this.scale;
+            } else if (max > 500) {
+                this.graphMaxAmount = max;
             }
             
             for (var i = 0; i <= max; i += 100) {

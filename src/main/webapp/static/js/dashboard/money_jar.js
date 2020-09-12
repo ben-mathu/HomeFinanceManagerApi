@@ -273,6 +273,8 @@ function getAllMoneyJars() {
             
             document.getElementById("progress").hidden = true;
             if (request.status === 200) {
+                jarCount = 0;
+                notificationCount = 0;
 
                 let json = request.responseText;
                 let jarsDto = JSON.parse(json);
@@ -307,8 +309,6 @@ function getAllMoneyJars() {
 //                
 //                jarsCanvas.width = 300;
 //                jarsCanvas.height = 300;
-                
-                jarCount = 0;
                 
                 transactionTBody.innerHTML = "";
                 getAllTransactions();
@@ -365,6 +365,25 @@ function activateTimer(jarId) {
 
         window.setTimeout(arguments.callee, 1000, key, dayScheduled, jarStatus);
     })(jarId, jar.scheduled_for, jar.jar_status);
+}
+
+/**
+ * Updates the expense based on the last time they had logged in
+ * 
+ * @param {type} jarId identifies the expense in question
+ * @param {int} time time difference since the last the last schedule of the expense.
+ * @param {Date} newDate the date to which the expense should be updated to
+ */
+function updatePayments(jarId, time, newDate) {
+    let moneyJarDto = jars.getJar(jarId);
+    let jar = moneyJarDto.jar;
+    
+    let totalAmount = jar.amount * time;
+    for (var i = 0; i < time; i++) {
+        updateMoneyJarJson(jarId);
+    }
+    
+    sendJarRequestJson(moneyJarDto, newDate);
 }
 
 function drawPieChart(jarElements) {
@@ -527,6 +546,7 @@ function validateInput(isExpenseEdit) {
 }
 
 function openJarModal(callback) {
+    moneyJarIdModal.textContent = "";
 //    clear the grocery list
     groceryListObj = {};
     

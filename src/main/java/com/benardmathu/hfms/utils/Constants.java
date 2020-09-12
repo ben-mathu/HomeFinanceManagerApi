@@ -51,6 +51,7 @@ public class Constants {
     public static final String HOUSEHOLD_MEMBERS = "members";
     public static final String JAR_SCHEDULE_ID = "schedule_id";
     public static final String PAYBILL = "paybill";
+    public static final String TIME_DIFF = "time_difference";
 
     // Daraja
     public static final String ACCESS_TOKEN = "access_token";

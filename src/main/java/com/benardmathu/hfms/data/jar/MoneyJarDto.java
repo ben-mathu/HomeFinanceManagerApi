@@ -27,6 +27,8 @@ public class MoneyJarDto {
     private User user;
     @SerializedName(PAYBILL)
     private String paybill;
+    @SerializedName(TIME_DIFF)
+    private int diff;
 
     public void setId(String id) {
         this.id = id;
@@ -74,5 +76,13 @@ public class MoneyJarDto {
 
     public String getPaybill() {
         return paybill;
+    }
+
+    public void setDiff(int diff) {
+        this.diff = diff;
+    }
+
+    public int getDiff() {
+        return diff;
     }
 }

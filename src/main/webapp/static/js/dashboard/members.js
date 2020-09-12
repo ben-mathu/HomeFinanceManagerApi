@@ -6,6 +6,7 @@ function setMembers() {
     let template = document.getElementById("myMemberTemplate");
 
     let memberList = document.getElementById("memberList");
+    memberList.innerHTML = "";
     
     householdMembers.forEach(member => {
 

@@ -96,6 +96,7 @@ public class DbEnvironment {
     // income amount
 //    income id
     // created_at
+    public static final String ON_CHANGE_INCOME_STATUS = "on_income_changed_status";
     public static final String FK_INCOME_CHANGE_INCOME_ID = "fk_income_change_income_id_ref_incomes";
 
     /**

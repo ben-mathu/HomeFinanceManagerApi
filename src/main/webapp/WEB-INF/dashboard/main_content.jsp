@@ -12,9 +12,7 @@
         </div>
         <div class="chat-container rounded-corner shadow-1pt subsection-background" >
             <label for="memberList"><i style="font-size: 16px; margin-bottom: 5px">Group Members</i></label>
-            <div id="memberList" class="members" >
-                <%@ include file = "../template/member.jsp" %>
-            </div>
+            <div id="memberList" class="members" ></div>
         </div>
     </div>
     
@@ -76,3 +74,4 @@
         </div>
     </div>
 </div>
+<%@ include file = "../template/member.jsp" %>
