@@ -341,6 +341,15 @@ function activateTimer(jarId) {
     let jarDto = jars.getJar(jarId);
     let jar = jarDto.jar;
     let type = jar.expense_type;
+    
+    let scheduled = new Date(jar.scheduled_for);
+    let now = new Date();
+    let timeReached = scheduled.getTime() <= now.getTime();
+    if (timeReached && jar.jar_status) {
+        populateNotificationSection(jarId);
+        return;
+    }
+    
     (function(key, dayScheduled, jarStatus) {
         let today = new Date();
         let timeScheduled = new Date(dayScheduled);
@@ -401,7 +410,7 @@ function isInExpenseTypeMap(expenseType, map) {
 /**
  * Validates input from the user
  */
-function validateInput() {    
+function validateInput(isExpenseEdit) {    
     let validHour = true;
     if (time.value === '') {
         let spanHour = document.querySelector("span[for='scheduledHour']");
@@ -410,7 +419,7 @@ function validateInput() {
         spanHour.textContent = "Time input field is empty";
         spanHour.style.display = "block";
         validHour = false;
-    } else {
+    } else if (time.value !== '' && !isExpenseEdit) {
         let timeNow = new Date().subtractMinutes(new Date(), 1);
         let timeSet = new Date(date.value + " " + time.value);
         if (timeSet < timeNow) {
@@ -435,7 +444,7 @@ function validateInput() {
         spanDate.textContent = "Date input field is empty";
         spanDate.style.display = "block";
         validHour = false;
-    } else {
+    } else if (date.value !== '' && !isExpenseEdit) {
         let dateNow  = new Date();
         if (!dPicker.hidden && new Date(date.value).getDate() < dateNow.getDate()) {
             let spanDate = document.querySelector("span[for='scheduledHour']");
@@ -518,6 +527,9 @@ function validateInput() {
 }
 
 function openJarModal(callback) {
+//    clear the grocery list
+    groceryListObj = {};
+    
     groceryListTBody.innerHTML = "";
     
     let spanAmount = document.querySelector("span[for='expenseAmount']");
@@ -587,6 +599,9 @@ function openJarModal(callback) {
  */
 let btnDeleteExpense;
 function openJarModalForEdit(jarId) {
+    //    clear the grocery list
+    groceryListObj = {};
+    
     groceryListTBody.innerHTML = "";
     
     let spanAmount = document.querySelector("span[for='expenseAmount']");
@@ -675,7 +690,7 @@ function openJarModalForEdit(jarId) {
     btnSubmitJar.value = "Submit";
     btnSubmitJar.classList.add("btn2");
     btnSubmitJar.onclick = function() {
-        if (!validateInput()) {
+        if (!validateInput(true)) {
             return;
         }
         updateMoneyJar(jarId);
@@ -696,6 +711,8 @@ function openJarModalForEdit(jarId) {
  */
 let btnEditExpense;
 function openJarModalForPay(jarId, isPaid) {
+    //    clear the grocery list
+    groceryListObj = {};
     groceryListTBody.innerHTML = "";
     
     let spanAmount = document.querySelector("span[for='expenseAmount']");
@@ -945,7 +962,8 @@ function updateJar(callback) {
                 var json = request.responseText;
                 let moneyJarDto = JSON.parse(json);
 
-                addJarToList(moneyJarDto);
+//                addJarToList(moneyJarDto);
+                getAllMoneyJars();
                 
                 if (callback !== null) {
                     delete incomplete[callback.key];

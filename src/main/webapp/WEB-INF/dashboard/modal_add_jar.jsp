@@ -96,7 +96,7 @@
                         </select>
                     </div>
                     <div id="businessNumber">
-                        <span for="payerAccountNumber"></span>
+                        <span for="payeeBusinessNumber"></span>
                         <input id="payeeBusinessNumber" class="input-style" type="number" name="business_number" placeholder="Business Number (Optional)" />
                     </div>
                     <div id="account">

@@ -17,12 +17,14 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>1.8-web</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_j2eeVersion>
     </properties>
     <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>benardmathu</word>
         <word>beniemathu</word>
         <word>Daraja</word>
         <word>HFMS</word>
         <word>jamaa</word>
         <word>Ksh</word>
         <word>mathu</word>
+        <word>Mpesa</word>
         <word>na</word>
         <word>Servlet</word>
         <word>yako</word>

@@ -27,20 +27,20 @@
                     Dashboard
                 </div>
             </div>
-            <div id="messages" class="menu-item">
+<!--            <div id="messages" class="menu-item">
                 <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/messages.png" alt="image_1">
                 <div class="menu-title" >
                     <input type="hidden" id="messages-title" name="settings" value="Messages">
                     Messages
                 </div>
-            </div>
-            <div id="members" class="menu-item">
+            </div>-->
+<!--            <div id="members" class="menu-item">
                 <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/members.png" alt="image_1">
                 <div class="menu-title" >
                     <input type="hidden" id="members-title" name="settings" value="Members">
                     Members
                 </div>
-            </div>
+            </div>-->
             <div id="settings" class="menu-item">
                 <img  class="menu-item-icon" src="${pageContext.request.contextPath}/static/images/settings.png" alt="image_1">
                 <div class="menu-title" >

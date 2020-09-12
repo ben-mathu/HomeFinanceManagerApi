@@ -1,3 +1,5 @@
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <div id="mainContent" class="content-container">
     <input type="hidden" id="contextPath" name="context_path" value="<%= request.getContextPath() %>">
     <div class="chart-chat-section section-style" >
@@ -37,7 +39,7 @@
                         <%@ include file = "../template/jar.jsp" %>
                     </div>
 
-                    <input id="btnOpenJarModal" class="btn2" type="button" value="+ Add Schedule">
+                    <input id="btnOpenJarModal" class="btn2" type="button" value="Add Expense Schedule">
                 </div>
                 <div class="jars-pie-chart" >
                     <canvas id="jarsCanvas"></canvas>
@@ -52,13 +54,16 @@
             
             <!-- This section displays transactions -->
             <div class="rounded-corner shadow-1pt subsection-background" >
-                <label for="transactionTable"><i style="font-size: 16px; margin-bottom: 5px">Transaction Log</i></label>
+                <label for="transactionTable" style="margin-right: 30%"><i style="font-size: 16px; margin-bottom: 5px">Transaction Log</i></label>
+                From: <input id="dateFrom" class="input-style2" type="date" max="<%= new SimpleDateFormat("yyyy-MM-dd").format(new Date()) %>" required/>
+                To: <input id="dateTo" class="input-style2" type="date" max="<%= new SimpleDateFormat("yyyy-MM-dd").format(new Date()) %>" required/>
+                <input id="btnReport" class="btn2" type="button" value="Submit"/>
                 <div class="transaction transactions-table">
                     <table id="transactionTable">
                         <thead>
                             <tr>
                                 <th>Index</th>
-                                <th>Transaction Description</th>
+                                <th>Expense</th>
                                 <th>Amount</th>
                                 <th>Payment Status</th>
                                 <th>Payment Timestamp</th>

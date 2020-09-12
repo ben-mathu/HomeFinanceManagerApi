@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.miiguar</groupId>
-    <artifactId>hfms-webapp</artifactId>
+    <groupId>com.benardmathu</groupId>
+    <artifactId>hfms</artifactId>
     <version>1.0.0</version>
 
     <packaging>war</packaging>
@@ -75,7 +75,7 @@
             <version>0.9.12</version>
         </dependency>
         <dependency>
-            <groupId>com.miiguar</groupId>
+            <groupId>com.benardmathu</groupId>
             <artifactId>token-generation</artifactId>
             <version>1.0.0</version>
             <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/token-generation.jar</systemPath>
@@ -83,7 +83,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>hfms-webapp</finalName>
+        <finalName>hfms</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>

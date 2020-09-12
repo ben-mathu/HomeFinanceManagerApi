@@ -30,6 +30,10 @@
     color: #3F3A4B;
 }
 
+.report-modal-container {
+    width: 500px;
+}
+
 .modal-title {
     color: #3F3A4B;
     font-style: normal;

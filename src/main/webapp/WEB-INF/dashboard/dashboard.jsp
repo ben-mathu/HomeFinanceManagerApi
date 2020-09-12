@@ -17,6 +17,10 @@
     pageContext.setAttribute("budgets", "static/js/dashboard/budgets.js");
     pageContext.setAttribute("transactions", "static/js/dashboard/transactions.js");
     pageContext.setAttribute("linegraph", "static/js/utils/line_graph.js");
+    pageContext.setAttribute("reports", "static/js/dashboard/reports.js");
+    pageContext.setAttribute("chart", "static/dist/Chart.js");
+    pageContext.setAttribute("jquery", "static/dist/jquery.js");
+    pageContext.setAttribute("jason2html", "static/dist/json2html.js");
 %>
 <%@ include file = "../page_setting_top.jsp" %>
     <div class="container">
@@ -33,6 +37,7 @@
         <%@ include file = "modal_add_income.jsp" %>
         <%@ include file = "modal_add_expenses.jsp" %>
         <%@ include file = "modal_add_budget.jsp" %>
+        <%@ include file = "modal_report.jsp" %>
 
         <%-- Dialogs --%>
         <%@ include file = "dialogs/payment_due_dialog.jsp" %>

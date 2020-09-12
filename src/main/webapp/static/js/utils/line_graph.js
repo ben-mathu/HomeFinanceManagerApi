@@ -12,10 +12,12 @@ class LineGraph {
         this.width = this.canvas.width;
         this.height = this.canvas.height;
         this.x = this.xPadding;
-        this.y = this.height - this.xPadding;
+        this.y = this.height - this.yPadding;
         this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         this.scale = 800;
         this.maxAmount = 8000;
+        this.actualMaxAmount = 0;
+        this.graphMaxAmount = 0;
         this.monthlyAmount = {};
         
         this.getFormatDate = function (date) {
@@ -80,6 +82,7 @@ class LineGraph {
                     }
                 });
 
+                this.actualMaxAmount = temp;
                 return this.getPlaceValue(temp);
             }
         };
@@ -121,7 +124,7 @@ class LineGraph {
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(this.x, this.y);
-            ctx.lineTo(this.x, 0 + this.xPadding);
+            ctx.lineTo(this.x, this.yPadding);
             ctx.strokeStyle = "#F8FFE1";
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -134,15 +137,16 @@ class LineGraph {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             
-            let height = this.y - 0 + this.xPadding;
+            let height = this.y - this.yPadding;
             
             let count = 0;
-            let labelx = this.x - this.yPadding;
+            let labelx = this.x - 15;
             let labely = this.y;
-            let max = this.maxAmount / scale;
+            let max = this.maxAmount / this.scale;
             
             if (max < 500) {
                 max = 500;
+                this.graphMaxAmount = 500 * this.scale;
             }
             
             for (var i = 0; i <= max; i += 100) {
@@ -151,8 +155,8 @@ class LineGraph {
                 ctx.fillText(i, 0, 0);
                 ctx.restore();
 
-                labelx = this.x - this.yPadding;
-                labely -= height / (max / 100) - (max / 100);
+                labelx = this.x - 15;
+                labely -= height / max * 100;
             }
         };
         
@@ -232,17 +236,16 @@ class LineGraph {
                 startX = (this.width - this.xPadding) / 12 * keys[0];
             }
             
-            let height = this.y - 0 + this.xPadding;
+            let height = this.y - this.yPadding;
             
-            let y = this.monthlyAmount[keys[0]] / this.scale / 100;
-            let startY = height / y - y;
+            let firstAmount = this.monthlyAmount[keys[0]];
+            let actualScale = this.graphMaxAmount;
+            let startY = this.y - (height * firstAmount / actualScale);
             
             let endX = (this.width - this.xPadding) / 12 * keys[1];
-            let endY = 0;
             
-            y = this.monthlyAmount[keys[1]] / this.scale / 100;
-            
-            endY = height / y - y;
+            let secondAmount = this.monthlyAmount[keys[1]];
+            let endY = this.y - (height * secondAmount / actualScale);
             
             drawCircle(this.context,
                 startX,
@@ -267,16 +270,20 @@ class LineGraph {
                     endY,
                     this.colors[0]
                 );
-                       
-                y = this.monthlyAmount[keys[i - 1]] / this.scale / 100;
                 
                 startX = endX;
                 startY = endY;
                 
                 endX += (this.width - this.xPadding) / 12;
-                y = this.monthlyAmount[keys[i]] / this.scale / 100;
+//                y = this.monthlyAmount[keys[i + 1]] / this.scale / 100;
                 
-                endY += height / y - y;
+                if (this.monthlyAmount[keys[i]] > this.monthlyAmount[keys[i + 1]]) {
+                    endY += this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
+                } else if (this.monthlyAmount[keys[i]] === this.monthlyAmount[keys[i + 1]]) {
+                    
+                } else if (this.monthlyAmount[keys[i]] < this.monthlyAmount[keys[i + 1]]) {
+                    endY -= this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
+                }
                 
                 drawCircle(this.context,
                     startX,

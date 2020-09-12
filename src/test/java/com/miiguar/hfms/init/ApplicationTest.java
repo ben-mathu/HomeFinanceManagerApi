@@ -1,6 +1,7 @@
 package com.miiguar.hfms.init;
 
-import com.miiguar.hfms.data.daraja.models.AccessToken;
+import com.benardmathu.hfms.init.Application;
+import com.benardmathu.hfms.data.daraja.models.AccessToken;
 import org.junit.Test;
 
 /**

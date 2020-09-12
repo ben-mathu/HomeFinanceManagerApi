@@ -1,5 +1,6 @@
 package com.miiguar.hfms.utils;
 
+import com.benardmathu.hfms.utils.Patterns;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

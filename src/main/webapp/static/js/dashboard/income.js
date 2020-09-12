@@ -40,7 +40,7 @@ function openIncomeModal(modalDetails) {
     incomeModal.style.display = "block";
 
     btnAddIncome.onclick = function() {
-        updateIncome(modalDetails);
+        updateIncomeWithCallback(modalDetails);
     };
 }
 
@@ -48,7 +48,7 @@ function closeIncomeModal() {
     incomeModal.style.display = "none";
 }
 
-function updateIncome(callback) {
+function updateIncomeWithCallback(callback) {
     var request = getXmlHttpRequest();
     request.onreadystatechange = function() {
         if (request.readyState === 4) {
@@ -58,7 +58,7 @@ function updateIncome(callback) {
 
                 setIncome(JSON.parse(request.responseText));
 
-                showIncome(user);
+                showIncome(JSON.parse(request.responseText).income);
 
                 delete incomplete[callback.key];
 
@@ -80,15 +80,102 @@ function updateIncome(callback) {
 
 
     let incomeType = incomeTypeSelector.options[incomeTypeSelector.selectedIndex].value;
-    incomeType = incomeFields.ACCOUNT_TYPE + "=" + escape(incomeType);
-//    var incomeDesc = incomeFields.INCOME_DESC + "=" + escape(document.getElementById("incomeDescription").value);
+    incomeType = incomeFields.INCOME_TYPE + "=" + escape(incomeType);
     var incomeValue = incomeFields.AMOUNT + "=" + escape(document.getElementById("incomeValue").value);
+    
+    let incomeDate = document.getElementById("incomeDate").value;
+    
+    let iDate = "date=" + formatDate(new Date(incomeDate));
 
-    var data = userId + "&" + incomeType + "&" + incomeValue + "&" + token;
+    var data = userId + "&" + incomeType + "&" + incomeValue + "&" + iDate + "&" + token;
 
     request.open("POST", ctx + "/dashboard/user-controller/add-income", true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
     request.send(data);
+}
+
+function updateIncome(income) {
+    var request = getXmlHttpRequest();
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                // close modal
+                closeIncomeModal();
+
+                getUserDetails();
+            }
+        }
+    };
+
+    var token = escape(window.localStorage.getItem(userFields.TOKEN));
+    var userId = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID));
+    
+    let date = new Date().addMonths(income.scheduled_for, 1);
+    income.amount = document.getElementById("incomeValue").value;
+    income.scheduled_for = formatDate(date);
+
+    let incomeDto = {
+        income: income
+    };
+    
+    var data = JSON.stringify(incomeDto);
+
+    request.open("PUT", ctx + "/api/income/update-income?" + userId, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.APPLICATION_JSON);
+    request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
+    request.send(data);
+}
+
+let incomeStatus = false;
+function activateIncomeTimer(income, lastIncome) {
+    
+    (function(income, scheduledIncome) {
+        let today = new Date();
+        let timeScheduled = new Date(income.scheduled_for);
+
+        let isTimeReached = timeScheduled.getTime() < today.getTime();
+        if (isTimeReached && scheduledIncome.amount !== 0 && incomeStatus) {
+            addScheduledIncome(income, scheduledIncome);
+            incomeStatus = true;
+            return;
+        }
+
+        window.setTimeout(arguments.callee, 1000, income, scheduledIncome);
+    })(income, lastIncome);
+}
+
+/**
+ * add income to database
+ * @param {Income} income add income to database
+ */
+function addScheduledIncome(income, lastIncome) {
+    let incomeTypes = document.getElementById("incomeType").options;
+    
+    let count = 0;
+    for (let i = 0; i < incomeTypes.length; i++) {
+        if (incomeType[i].innerHTML === income.income_type) {
+            document.getElementById("incomeType").options[count].selected = true;
+            break;
+        }
+        count++;
+    }
+    
+    if (lastIncome.amount === 0) {
+        document.getElementById("incomeValue").value = income.amount;
+    } else {
+        document.getElementById("incomeValue").value = lastIncome.amount;
+    }
+    let newDate = formatDate(new Date().addMonths(income.scheduled_for, 1));
+    document.getElementById("incomeDate").value = newDate;
+    document.getElementById("incomeDate").disabled = true;
+    document.getElementById("incomeModalTitle").innerHTML = "Confirm Payments";
+    
+    btnAddIncome.value = "Confirm";
+    incomeModal.style.display = "block";
+
+    btnAddIncome.onclick = function() {
+        updateIncome(income);
+    };
 }
 
 function addIncome() {
@@ -103,7 +190,7 @@ function addIncome() {
                 
                 setIncome(JSON.parse(request.responseText));
 
-                showIncome(user);
+                showIncome(JSON.parse(request.responseText).income);
             }
         }
     };
@@ -113,10 +200,14 @@ function addIncome() {
 
 //    var incomeDescription = incomeFields.ACCOUNT_TYPE + "=" + escape(document.getElementById("incomeDescription").value);
     var incomeType = incomeTypeSelector.options[incomeTypeSelector.selectedIndex].value;
-    incomeType = incomeFields.ACCOUNT_TYPE + "=" + escape(incomeType);
+    incomeType = incomeFields.INCOME_TYPE + "=" + escape(incomeType);
     var value = incomeFields.AMOUNT + "=" + escape(document.getElementById("incomeValue").value);
 
-    var data = userId + "&" + incomeType + "&" + value + "&" + token;
+    let incomeDate = document.getElementById("incomeDate").value;
+    
+    let iDate = "date=" + formatDate(new Date(incomeDate));
+    
+    var data = userId + "&" + incomeType + "&" + value + "&" + iDate + "&" + token;
 
     request.open("POST", ctx + "/dashboard/user-controller/add-income", true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
@@ -128,7 +219,7 @@ function addIncome() {
  * 
  * @param {Income} income Contain income details
  */
-function showIncome(income) {
+function showIncome(income, lastIncome) {
     if (income !== undefined) {
         if (income.amount > 0) {
             incomeSpan.hidden = false;
@@ -136,6 +227,8 @@ function showIncome(income) {
             incomeSpan.innerHTML = text;
             
             btnOpenIncomeModal.hidden = true;
+            
+            activateIncomeTimer(income, lastIncome);
         }
     }
 }

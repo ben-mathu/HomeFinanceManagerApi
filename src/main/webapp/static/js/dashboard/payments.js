@@ -154,7 +154,7 @@ function showNotificationDialog(jarId, jarDto) {
         paymentDialog.style.display = "none";
 
         addNotification(jarId);
-    }, 20000);
+    }, 10000);
 
     paymentDetails.appendChild(templateClone);
 

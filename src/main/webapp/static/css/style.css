@@ -176,7 +176,6 @@ a.link {
     border-color: #FEC800;
 }
 
-
 .input-style {
     width: 260px;
     background-color: rgb(54, 50, 61);
@@ -192,6 +191,32 @@ a.link {
     border-top-right-radius: 5px;
     padding: 10px;
     margin: 10px;
+}
+
+.input-style2:focus {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-color: #FEC800;
+}
+
+.input-style2 {
+    width: 150px;
+    height: 15px;
+    font-size: 14px;
+    background-color: rgb(54, 50, 61);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-color: #0093D6;
+    border-top: none;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 10px;
+    margin: 3px;
 }
 
 .input-container {
@@ -354,6 +379,13 @@ td {
     padding: 20px;
 }
 
+.message-style {
+    width: 150px;
+    background-color: rgb(42, 39, 49);
+    border-radius: 5px;
+    padding: 20px;
+}
+
 .expand-button {
     color: #015780;
     cursor: pointer;
@@ -400,6 +432,20 @@ table {
 }
 
 td {
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+td.td-report-left {
+    width: 1.5em;
+    height: 1.5em;
+    text-align: left;
+    vertical-align: middle;
+}
+
+td.td-report-center {
     width: 1.5em;
     height: 1.5em;
     text-align: center;

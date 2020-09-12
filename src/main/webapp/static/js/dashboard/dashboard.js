@@ -31,6 +31,7 @@ var jarModal;
 var groceryModal;
 var expensesModal;
 let budgetModal;
+let reportModal;
 
 /**
  * Required settings in account
@@ -64,7 +65,7 @@ const userFields = {
 
 const incomeFields = {
     INCOME_ID: 'income_id',
-    ACCOUNT_TYPE: 'account_type',
+    INCOME_TYPE: 'income_type',
     AMOUNT: 'amount',
     CREATED_AT: 'created_at'
 };
@@ -160,13 +161,13 @@ window.onload = function() {
         getPage("settings-title:root");
     };
     
-    document.getElementById("messages").onclick = function() {
-        getPage("messages-title");
-    };
-
-    document.getElementById("members").onclick = function() {
-        getPage("members-title");
-    };
+//    document.getElementById("messages").onclick = function() {
+//        getPage("messages-title");
+//    };
+//
+//    document.getElementById("members").onclick = function() {
+//        getPage("members-title");
+//    };
     
     document.getElementById("home").onclick = function() {
         getPage("home-title");
@@ -214,6 +215,8 @@ window.onload = function() {
             expensesModal.style.display = "none";
         } else if (event.target === budgetModal) {
             budgetModal.style.display = "none";
+        } else if (event.target === reportModal) {
+            reportModal.style.display = "none";
         }
     };
 
@@ -230,6 +233,7 @@ window.onload = function() {
     configureMembers();
     configurePayments();
     configureTransactions();
+    configureReport();
 //    configureBudget();
 };
 
@@ -240,7 +244,7 @@ window.onload = function() {
  */
 function setIncome(obj) {
     income = obj;
-    user.income = income.amount;
+    user.income = income.income;
 }
 
 /**
@@ -276,7 +280,7 @@ function getUserDetails() {
                 var usernameEle = document.getElementById("username");
                 usernameEle.innerHTML = user.username;
 
-                showIncome(income);
+                showIncome(income, obj.on_update_income);
 
 //                showBudgetAmount(budget);
             }
@@ -421,7 +425,7 @@ function myTimer() {
     }
 
     var time = hours + ":" + min + ":" + seconds;
-    document.getElementById("timeNow").innerHTML = time;
+    document.getElementById("timeNow").innerHTML = "" + time;
 }
 
 /**

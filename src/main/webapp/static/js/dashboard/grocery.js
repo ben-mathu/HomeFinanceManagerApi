@@ -28,6 +28,15 @@ let grocery = {
     required_quantity: ""
 };
 
+let groceryFields = {
+    GROCERY_ID: "grocery_id",
+    GROCERY_NAME: "grocery_name",
+    GROCERY_DESC: "grocery_description",
+    GROCERY_PRICE: "grocery_price",
+    REMAINING_QT: "remaining_quantity",
+    REQUIRED_QT: "required_quantity"
+};
+
 function configureGrocery() {
     groceryListTBody = document.getElementById("groceryItems").getElementsByTagName("tbody")[0];
     
@@ -75,7 +84,7 @@ function setGroceries(groceries) {
     groceryListTBody.innerHTML = "";
     
     for (let i = 0; i < groceries.length; i++) {
-        groceryListObj[i] = groceries;
+        groceryListObj[i] = groceries[i];
         
         // get number of rows
         var row = groceryListTBody.insertRow(i);
@@ -92,7 +101,7 @@ function setGroceries(groceries) {
         var required = row.insertCell(4);
         var cancel = row.insertCell(5);
         
-        indexCell.innerHTML = 1;
+        indexCell.innerHTML = i;
         indexCell.onclick = (function() {
             return function() {
                 onItemClick(i);
@@ -133,8 +142,6 @@ function setGroceries(groceries) {
                 onItemRemoved(i);
             };
         })();
-
-        groceryListObj[groceries[i].grocery_id] = groceries[i];
     }
 }
 
@@ -376,9 +383,35 @@ function onItemRemoved(rowIndex) {
             groceryListTBody.deleteRow(i);
             let amount = groceryListObj[rowIndex].grocery_price;
             onRowRemoved(amount);
-
+            
+            deleteGroceries(groceryListObj[rowIndex]);
             delete groceryListObj[rowIndex];
             break;
         }
     }
+}
+
+/**
+ * Delete grocery from database
+ * @param {Grocery} grocery
+ */
+function deleteGroceries(grocery) {
+    let request = getXmlHttpRequest();
+    
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                getAllMoneyJars();
+            }
+        }
+    };
+    
+    let groceryId = grocery.grocery_id;
+    let token = window.localStorage.getItem(userFields.TOKEN);
+    let data = groceryFields.GROCERY_ID + "=" + groceryId;
+    
+    request.open("DELETE", ctx + "/api/groceries/delete-grocery?" + data, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
+    request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
+    request.send();
 }
