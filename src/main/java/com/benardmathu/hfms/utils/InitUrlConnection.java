@@ -4,6 +4,7 @@ package com.benardmathu.hfms.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.benardmathu.hfms.config.ConfigureApp;
+import com.benardmathu.hfms.data.status.Report;
 
 import javax.ws.rs.core.MediaType;
 import java.io.*;
@@ -11,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import static javax.ws.rs.core.HttpHeaders.*;
@@ -174,6 +176,8 @@ public class InitUrlConnection<T> {
             Log.d(TAG, "Request: " + requestBody);
 
             writer.write(requestBody.getBytes());
+        } catch (UnknownHostException e) {
+            Log.d(TAG, "Error, Connection problem.");
         }
         
         InputStreamReader inputStreamReader = null;

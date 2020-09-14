@@ -127,9 +127,36 @@ public class TransactionApi extends BaseServlet {
 //        budget.setBudgetAmount(request.getAmount());
 //        budget.setBudgetId(rand.nextString());
 
+        
+        
+        Income income = incomeDao.get(request.getUserId());
+        income.setAmount(income.getAmount() - jar.getTotalAmount());
+
+        incomeDao.update(income);
+
         // create transaction id
         GenerateRandomString rand = new GenerateRandomString(12);
         String tId = rand.nextString();
+        
+        Transaction transaction = new Transaction();
+        transaction.setId(tId);
+        transaction.setTransactionDesc(jar.getName());
+        transaction.setPaymentDetails(gson.toJson(jar));
+        transaction.setAmount(jar.getTotalAmount());
+        transaction.setUserId(request.getUserId());
+        transaction.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
+        transaction.setPaymentStatus(true);
+        transaction.setPaymentTimestamp(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
+
+        int affected = transactionDao.save(transaction);
+
+        if (!jarScheduleDateRel.isJarStatus()) {
+            jarScheduleDateRel.setJarStatus(true);
+        }
+
+        jarScheduleDateRel.setPaymentStatus(true);
+        moneyJarScheduleDao.update(jarScheduleDateRel);
+        sendNotification(affected, httpServletResponse);
         
         // Start server to listen for mpesa callbacks for this request
         ExecutorService service = Executors.newSingleThreadExecutor();
@@ -143,52 +170,31 @@ public class TransactionApi extends BaseServlet {
 
         Log.d(TAG, httpServletRequest.getContextPath() + "\n\tRequest body" + request.toString());
 
-        InitUrlConnection<LnmoRequest> connection = new InitUrlConnection<>();
-        BufferedReader streamReader = connection.getReaderForDarajaApi(
-                request, LNMO, properties.getProperty(ACCESS_TOKEN), "POST"
-        );
+        // sends an mpesa request if a business number has been specified
+        if (request.getBusinessShortCode().isEmpty()) {
+            InitUrlConnection<LnmoRequest> connection = new InitUrlConnection<>();
+            BufferedReader streamReader = connection.getReaderForDarajaApi(
+                    request, LNMO, properties.getProperty(ACCESS_TOKEN), "POST"
+            );
 
-        String line = "";
-        StringBuilder builder = new StringBuilder();
-        while ((line = streamReader.readLine()) != null) {
-            builder.append(line);
-        }
-
-        Log.d(TAG, builder.toString());
-
-        LnmoResponse response = gson.fromJson(builder.toString(), LnmoResponse.class);
-
-        if ("0".equals(response.getRespCode()) || true) {
-            
-            Income income = incomeDao.get(request.getUserId());
-            income.setAmount(income.getAmount() - jar.getTotalAmount());
-            
-            incomeDao.update(income);
-
-            Transaction transaction = new Transaction();
-            transaction.setId(tId);
-            transaction.setTransactionDesc(jar.getName());
-            transaction.setPaymentDetails(response.getCustomerMessage());
-            transaction.setAmount(jar.getTotalAmount());
-            transaction.setUserId(request.getUserId());
-            transaction.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
-            transaction.setPaymentStatus(true);
-            transaction.setPaymentTimestamp(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
-
-            int affected = transactionDao.save(transaction);
-
-            if (!jarScheduleDateRel.isJarStatus()) {
-                jarScheduleDateRel.setJarStatus(true);
+            String line = "";
+            StringBuilder builder = new StringBuilder();
+            while ((line = streamReader.readLine()) != null) {
+                builder.append(line);
             }
-            
-            jarScheduleDateRel.setPaymentStatus(true);
-            moneyJarScheduleDao.update(jarScheduleDateRel);
-            sendNotification(affected, httpServletResponse, response);
-        } else {
-            LnmoErrorResponse error = gson.fromJson(builder.toString(), LnmoErrorResponse.class);
-            Log.d(TAG, "Error/" + error.getErrorMessage() + ": " + error.getErrorMessage());
 
-            sendErrorNotification(httpServletResponse);
+            Log.d(TAG, builder.toString());
+
+            LnmoResponse response = gson.fromJson(builder.toString(), LnmoResponse.class);
+
+            if ("0".equals(response.getRespCode())) {
+
+            } else {
+                LnmoErrorResponse error = gson.fromJson(builder.toString(), LnmoErrorResponse.class);
+                Log.d(TAG, "Error/" + error.getErrorMessage() + ": " + error.getErrorMessage());
+
+                sendErrorNotification(httpServletResponse);
+            }
         }
     }
 
@@ -201,16 +207,21 @@ public class TransactionApi extends BaseServlet {
         writer.write(gson.toJson(report));
     }
 
-    private void sendNotification(int affected, HttpServletResponse httpServletResponse, LnmoResponse response) throws IOException {
+    private void sendNotification(int affected, HttpServletResponse httpServletResponse) throws IOException {
         if (affected > 0) {
             Report report = new Report();
-            report.setMessage(response.getCustomerMessage());
+            report.setMessage("Transaction updated successfully.");
             report.setStatus(HttpServletResponse.SC_ACCEPTED);
 
             writer = httpServletResponse.getWriter();
             writer.write(gson.toJson(report));
         } else {
-            // TODO: Handle SQL errors
+            Report report = new Report();
+            report.setMessage("Transaction not successfully.");
+            report.setStatus(HttpServletResponse.SC_ACCEPTED);
+
+            writer = httpServletResponse.getWriter();
+            writer.write(gson.toJson(report));
         }
     }
 }

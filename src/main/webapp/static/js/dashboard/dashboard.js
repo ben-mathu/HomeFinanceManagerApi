@@ -283,6 +283,8 @@ function getUserDetails() {
                 showIncome(income, obj.on_update_income);
 
 //                showBudgetAmount(budget);
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };
@@ -509,6 +511,8 @@ function getPage(id) {
                     urlMap[obj.title] = obj.url;
                     document.getElementById(lastKey === "" ? "mainContent" : lastKey).hidden = true;
                     document.getElementById(obj.title).hidden = false;
+                } else if (request.status === 403) {
+                    window.location.href = ctx + "/login";
                 } else {
                     var lastKey = getLastHistoryKey();
                     document.getElementById(lastKey === "" ? "mainContent" : lastKey).hidden = false;

@@ -7,7 +7,7 @@
     <div class="container text-center">
         <div class="row text-center">
             <div class="sections first-half">
-                <img src="static/images/logo.png" alt="HFMS Logo" height="150px" width="150px" />
+                <a href="<%= request.getContextPath() %>"><img src="static/images/logo.png" alt="HFMS Logo" height="150px" width="150px" /></a>
                 <div class="tagline">
                     <p>Manage your finances na jamaa yako.</p>
                 </div>

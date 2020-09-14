@@ -103,4 +103,26 @@ public class ChangeAccountDetailsApi extends BaseServlet {
         return userDao.update(user);
     }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String requestStr = BufferRequestReader.bufferRequest(req);
+        
+        User user = gson.fromJson(requestStr, User.class);
+        
+        if (userDao.delete(user) > 0) {
+             Report report = new Report();
+             report.setMessage("User already deleted");
+             report.setStatus(HttpServletResponse.SC_ACCEPTED);
+             
+             writer = resp.getWriter();
+             writer.write(gson.toJson(report));
+        } else {
+            Report report = new Report();
+            report.setMessage("Not deleted");
+            report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+
+            writer = resp.getWriter();
+            writer.write(gson.toJson(report));
+        }
+    }
 }

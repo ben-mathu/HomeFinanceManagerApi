@@ -23,6 +23,8 @@ function sendCode(isCodeSent){
                     document.getElementById("code-error").innerHTML = obj.message;
                     document.getElementById("code-sender").hidden = false;
                     document.getElementById("progress").hidden = true;
+                } else if (request.status === 403) {
+                    window.location.href = ctx + "/login";
                 } else {
                     console.log("Nothing to do, code has been sent.");
                     document.getElementById("progress").hidden = true;

@@ -29,6 +29,8 @@ import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.INCOME_ENDPOINT;
 import static com.benardmathu.hfms.utils.Constants.COMPLETE;
 import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -69,8 +71,16 @@ public class IncomeApi extends BaseServlet {
         income.setIncomeId(incomeId);
         income.setCreatedAt(today);
         income.setSchedule(income.getSchedule());
+        
+        if (incomeDao.save(income) > 0) {
+            OnInComeChange onInComeChange = new OnInComeChange();
+            onInComeChange.setAmount(income.getAmount());
+            onInComeChange.setCreatedAt(today);
+            onInComeChange.setIncomeId(incomeId);
+            onInComeChange.setOnChangeStatus(true);
 
-        incomeDao.save(income);
+            incomeChangeDao.save(onInComeChange);
+        }
 
         incomeDto.setIncome(income);
 

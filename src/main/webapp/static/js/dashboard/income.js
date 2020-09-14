@@ -71,6 +71,8 @@ function updateIncomeWithCallback(callback) {
                 } else {
                     callback.onComplete();
                 }
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };
@@ -102,7 +104,7 @@ function updateIncome(income) {
                 // close modal
                 closeIncomeModal();
 
-                getUserDetails();
+//                getUserDetails();
             } else if (request.status === 403) {
                 window.location.href = ctx + "/login";
             }
@@ -134,10 +136,13 @@ function activateIncomeTimer(income, lastIncome) {
         let today = new Date();
         let timeScheduled = new Date(income.scheduled_for);
 
-        let isTimeReached = timeScheduled.getTime() < today.getTime();
-        if (isTimeReached && !scheduledIncome.on_income_changed_status) {
-            addScheduledIncome(income, scheduledIncome);
-            return;
+        let timeDiff = today.getMonth() - timeScheduled.getMonth();
+        let isTimeReached =  timeDiff === 1;
+        if (isTimeReached && scheduledIncome !== null) {
+            if (!scheduledIncome.on_income_changed_status) {
+                addScheduledIncome(income, scheduledIncome);
+                return;
+            }
         }
 
         window.setTimeout(arguments.callee, 1000, income, scheduledIncome);

@@ -108,67 +108,11 @@ function getAllTransactions() {
                     transactions: Object.values(transactions.getAll()),
                     colors: ["#008FB4"]
                 };
-                
-//                let transactionList = Object.values(transactions.getAll());
-//                let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-//                let monthlyIndex = sortedTransactionByDate(transactionList);
-//                let keys = Object.keys(monthlyIndex);
-//                let data = [];
-//                let maxAmount = getMaxAmount(monthlyIndex);
-//                let scale = getScale(maxAmount);
-//                
-//                count = 0;
-//                keys.forEach(key => {
-//                    let coord = {
-//                        x: months[key - 1],
-//                        y: monthlyIndex[key] / scale
-//                    };
-//                    
-//                    data[count] = coord;
-//                    count++;
-//                });
-//                
-//                let ctx = transactionCanvas.getContext('2d');
-//                
-////                let itemsData = {
-////                    labels: months,
-////                    datasets: [
-////                        {
-////                            fillColor: "#FFF",
-////                            strokeColor: "",
-////                            pointColor: "#008FB4",
-////                            pointStrokeColor: "",
-////                            data: data
-////                        }
-////                    ]
-////                };
-//                let chart = new Chart(ctx, {
-//                    type: 'line',
-//                    data: {
-//                        labels: months,
-//                        datasets: [{
-//                                label: 'Monthly Paid Amount',
-//                                data: data,
-//                                backgroundColor: [
-//                                    'rgba(0,0,0,0.0)'
-//                                ],
-//                                borderColor: "#008FB4"
-//                        }]
-//                    },
-//                    options: {
-//                        scales: {
-//                            yAxes: [{
-//                                ticks: {
-//                                    beginAtZero: true
-//                                },
-//                                color: "#FFF"
-//                            }]
-//                        }
-//                    }
-//                });
 
                 let lineGraph = new LineGraph(properties);
                 lineGraph.draw();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };

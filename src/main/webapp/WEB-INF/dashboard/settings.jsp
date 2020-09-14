@@ -11,9 +11,9 @@
                     <span>Household</span>
                 </div>
                 
-                <div id="preferencesSettings" class="setting-option-style" >
+<!--                <div id="preferencesSettings" class="setting-option-style" >
                     <span>Preferences</span>
-                </div>
+                </div>-->
                 
                 <div class="save-settings" >
                     <input id="btnSaveAccountDetails" class="btn2 save-button" type="button" name="submit" value="Save">

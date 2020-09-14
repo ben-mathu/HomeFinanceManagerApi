@@ -10,7 +10,7 @@
     <div class="container text-center">
         <div class="row">
             <div class="sections first-half">
-                <img src="${pageContext.request.contextPath}/static/images/logo.png" alt="HFMS Logo" height="150px" width="150px" />
+                <a href="<%= request.getContextPath() %>"><img src="${pageContext.request.contextPath}/static/images/logo.png" alt="HFMS Logo" height="150px" width="150px" /></a>
                 <div>
                     <p>Manage your Home na jamaa yako.</p>
                 </div>

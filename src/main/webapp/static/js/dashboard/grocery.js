@@ -402,6 +402,8 @@ function deleteGroceries(grocery) {
         if (request.readyState === 4) {
             if (request.status === 200) {
                 getAllMoneyJars();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };

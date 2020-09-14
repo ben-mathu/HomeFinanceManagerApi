@@ -240,7 +240,7 @@ class LineGraph {
             
             let height = this.y - this.yPadding;
             
-            let firstAmount = this.monthlyAmount[keys[0]];
+            let firstAmount = this.monthlyAmount[keys[0]]/this.scale;
             let actualScale = this.graphMaxAmount;
             let startY = this.y - (height * firstAmount / actualScale);
             
@@ -258,7 +258,7 @@ class LineGraph {
                 this.colors[0]
             );
             
-            for (var i = 1; i < keys.length; i++) {
+            for (var i = 2; i < keys.length; i++) {
                 console.log(keys.length);
                 if (i === keys.length) {
                     break;
@@ -280,11 +280,11 @@ class LineGraph {
 //                y = this.monthlyAmount[keys[i + 1]] / this.scale / 100;
                 
                 if (this.monthlyAmount[keys[i]] > this.monthlyAmount[keys[i + 1]]) {
-                    endY += this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
+                    endY = this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
                 } else if (this.monthlyAmount[keys[i]] === this.monthlyAmount[keys[i + 1]]) {
                     
                 } else if (this.monthlyAmount[keys[i]] < this.monthlyAmount[keys[i + 1]]) {
-                    endY -= this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
+                    endY = this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
                 }
                 
                 drawCircle(this.context,
@@ -308,7 +308,7 @@ class LineGraph {
             li.style.listStyle = "none";
             li.style.padding = "5px";
             li.style.marginBottom = "5px";
-            li.textContent = "Scale: 1:" + this.scale;
+            li.textContent = "Scale: 1:" + (this.scale === undefined ? " No transactions completed" : this.scale);
             ul.appendChild(li);
         };
     }

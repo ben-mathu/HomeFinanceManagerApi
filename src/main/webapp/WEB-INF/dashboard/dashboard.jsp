@@ -18,9 +18,6 @@
     pageContext.setAttribute("transactions", "static/js/dashboard/transactions.js");
     pageContext.setAttribute("linegraph", "static/js/utils/line_graph.js");
     pageContext.setAttribute("reports", "static/js/dashboard/reports.js");
-    pageContext.setAttribute("chart", "static/dist/Chart.js");
-    pageContext.setAttribute("jquery", "static/dist/jquery.js");
-    pageContext.setAttribute("jason2html", "static/dist/json2html.js");
 %>
 <%@ include file = "../page_setting_top.jsp" %>
     <div class="container">

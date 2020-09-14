@@ -45,10 +45,10 @@
                 </div>
             </div>
 
-            <div class="expenses rounded-corner shadow-1pt subsection-background" >
+<!--            <div class="expenses rounded-corner shadow-1pt subsection-background" >
                 <label for="otherExpenditures"><i style="font-size: 16px; margin-bottom: 5px">Other Expenditures</i></label>
                 <div id="otherExpenditures"></div>
-            </div>
+            </div>-->
             
             <!-- This section displays transactions -->
             <div class="rounded-corner shadow-1pt subsection-background" >

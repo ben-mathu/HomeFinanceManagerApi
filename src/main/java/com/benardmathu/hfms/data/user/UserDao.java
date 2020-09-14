@@ -139,7 +139,9 @@ public class UserDao implements Dao<User> {
     @Override
     public int update(User item) {
         String query = "UPDATE " + USERS_TB_NAME +
-                "SET " + EMAIL + "=?" +
+                " SET " + EMAIL + "=?,"
+                + USERNAME + "=?,"
+                + PASSWORD + "=?" +
                 " WHERE " + USER_ID + "=?";
 
         int affectedRows = 0;
@@ -151,7 +153,9 @@ public class UserDao implements Dao<User> {
             preparedStatement = conn.prepareStatement(query);
 
             preparedStatement.setString(1, item.getEmail());
-            preparedStatement.setString(2, item.getUserId());
+            preparedStatement.setString(2, item.getUsername());
+            preparedStatement.setString(3, item.getPassword());
+            preparedStatement.setString(4, item.getUserId());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -179,7 +183,41 @@ public class UserDao implements Dao<User> {
 
     @Override
     public int delete(User item) {
-        return 0;
+        String query = "DELETE FROM " + USERS_TB_NAME +
+                " WHERE " + USER_ID + "=?";
+
+        int affectedRows = 0;
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, item.getUserId());
+            affectedRows = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing user update", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (SQLException throwables) { /* Intentionally blank. */ }
+        }
+
+        return affectedRows;
     }
 
     @Override

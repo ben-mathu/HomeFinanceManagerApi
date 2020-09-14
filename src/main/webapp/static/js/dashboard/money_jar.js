@@ -97,7 +97,7 @@ let moneyJarIdModal;
 let fldPaybill;
 
 function configureMoneyJar() {
-    fldPaybill = document.getElementById("fldPaybill");
+//    fldPaybill = document.getElementById("fldPaybill");
     
     errorMessage = document.getElementById("jarModalError");
     errorMessageRemover = document.getElementById("removeErrorMessage");
@@ -323,6 +323,8 @@ function getAllMoneyJars() {
                 
                 transactionTBody.innerHTML = "";
                 getAllTransactions();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             } else {
                 console.log("Server could not find what you are looking for.")
             }
@@ -345,7 +347,7 @@ function activateTimer(jarId) {
     let scheduled = new Date(jar.scheduled_for);
     let now = new Date();
     let timeReached = scheduled.getTime() <= now.getTime();
-    if (timeReached && jar.jar_status) {
+    if (jar.jar_status) {
         populateNotificationSection(jarId);
         return;
     }
@@ -508,19 +510,19 @@ function validateInput(isExpenseEdit) {
             validList = true;
         }
         
-        let validPayBill = true;
-        if (fldPaybill.value === '') {
-            validPayBill = true;
-        } else {
-            let payBill = fldPaybill.value;
-            if (payBill.length <= 4 || payBill.length >= 7) {
-                validPayBill = false;
-            } else {
-                validPayBill = true;
-            }
-        }
+//        let validPayBill = true;
+//        if (fldPaybill.value === '') {
+//            validPayBill = true;
+//        } else {
+//            let payBill = fldPaybill.value;
+//            if (payBill.length <= 4 || payBill.length >= 7) {
+//                validPayBill = false;
+//            } else {
+//                validPayBill = true;
+//            }
+//        }
         
-        return validHour && validDate && expenseTypeSelected && validList && validPayBill;
+        return validHour && validDate && expenseTypeSelected && validList;
     } else {
         // Single expense section
         let validAmount = true;
@@ -852,6 +854,8 @@ function deleteExpense(jarId) {
                 jarModal.style.display = "none";
                 
                 getAllMoneyJars();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             } else {
                 showError();
             }
@@ -938,6 +942,8 @@ function sendJarRequestJson(jarDto, date) {
                 jarModal.style.display = "none";
 
                 getAllMoneyJars();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             } else {
                 showError();
             }
@@ -1000,6 +1006,8 @@ function updateJar(callback) {
                 }
                 
                 jarModal.style.display = "none";
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             } else {
                 showError();
             }
@@ -1033,6 +1041,8 @@ function updateMoneyJar(jarId) {
                 jarModal.style.display = "none";
                 
                 getAllMoneyJars();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             } else {
                 showError();
             }
@@ -1065,6 +1075,8 @@ function updateMoneyJarJson(jarId) {
 //                jars.setJar(moneyJarDto.schedule_id, moneyJarDto);
 //                addJarToList(moneyJarDto);
 //                getAllMoneyJars();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             } else {
                 showError();
             }

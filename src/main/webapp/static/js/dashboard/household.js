@@ -74,6 +74,8 @@ function updateHousehold(incompleteKey) {
                 } else {
                     callback.onComplete();
                 }
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };

@@ -370,6 +370,8 @@ function makePayments(jarId) {
                 jarModal.style.display = "none";
                 
                 getAllMoneyJars();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };

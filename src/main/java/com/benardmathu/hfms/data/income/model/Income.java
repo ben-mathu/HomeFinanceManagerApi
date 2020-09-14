@@ -27,7 +27,7 @@ public class Income {
     private double amount = 0;
 
     @SerializedName(INCOME_TYPE)
-    @Column(columnName = INCOME_TYPE, unique = true)
+    @Column(columnName = INCOME_TYPE)
     private String accountType = "";
 
     @SerializedName(USER_ID)

@@ -78,10 +78,10 @@
                         </table>
                     </div>
                     <input id="btnOpenGroceryModal" class="btn2" type="button" value="+ Add Item">
-                    <div id="Paybill" class="payee-paybill">
+<!--                    <div id="Paybill" class="payee-paybill">
                         <span for="fldPaybill"></span>
                         <input id="fldPaybill" class="input-style" type="number" placeholder="Paybill (Optional)" />
-                    </div>
+                    </div>-->
                 </div>
                 <div id="expense" class="expense-container">
                     <div class="expense-amount">

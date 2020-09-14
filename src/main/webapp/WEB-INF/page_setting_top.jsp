@@ -27,8 +27,5 @@
         <script src="<%= request.getContextPath() %>/${transactions}"></script>
         <script src="<%= request.getContextPath() %>/${linegraph}"></script>
         <script src="<%= request.getContextPath() %>/${reports}"></script>
-        <script src="<%= request.getContextPath() %>/${chart}"></script>
-        <script src="<%= request.getContextPath() %>/${jason2html}"></script>
-        <script src="<%= request.getContextPath() %>/${jquery}"></script>
     </head>
     <body>

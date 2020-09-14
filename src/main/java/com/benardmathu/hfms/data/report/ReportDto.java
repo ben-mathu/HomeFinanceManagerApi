@@ -19,18 +19,22 @@ public class ReportDto {
     private double income = 0;
     @SerializedName("expenses")
     private List<MoneyJar> moneyJars = new ArrayList<>();
-    @SerializedName("expense-total-amount")
+    @SerializedName("expense_total_amount")
     private double totalExpenseAmount = 0;
-    @SerializedName("net-income")
+    @SerializedName("net_income")
     private double netIncome;
     @SerializedName("tax")
     private double tax = 0;
-    @SerializedName("net-income-after-tax")
-    private double netIncomeAfterTax = 0;
-    @SerializedName("months-difference")
+    @SerializedName("months_difference")
     private int monthsRange;
-    @SerializedName("years-range")
+    @SerializedName("date_ending")
+    private String dateEnding = "";
+    @SerializedName("years_range")
     private String yearRange;
+    @SerializedName("income_after_tax")
+    private double incomeAfterTax;
+    @SerializedName("personal_relief")
+    private double personalRelief;
 
     public void setIncome(double income) {
         this.income = income;
@@ -64,14 +68,6 @@ public class ReportDto {
         return netIncome;
     }
 
-    public void setNetIncomeAfterTax(double netIncomeAfterTax) {
-        this.netIncomeAfterTax = netIncomeAfterTax;
-    }
-
-    public double getNetIncomeAfterTax() {
-        return netIncomeAfterTax;
-    }
-
     public void setTax(double tax) {
         this.tax = tax;
     }
@@ -88,11 +84,35 @@ public class ReportDto {
         this.monthsRange = monthsRange;
     }
 
+    public void setDateEnding(String dateEnding) {
+        this.dateEnding = dateEnding;
+    }
+
+    public String getDateEnding() {
+        return dateEnding;
+    }
+
     public void setYearRange(String yearRange) {
         this.yearRange = yearRange;
     }
 
     public String getYearRange() {
         return yearRange;
+    }
+
+    public void setIncomeAfterTax(double incomeAfterTax) {
+        this.incomeAfterTax = incomeAfterTax;
+    }
+
+    public double getIncomeAfterTax() {
+        return incomeAfterTax;
+    }
+
+    public void setPersonalRelief(double personalRelief) {
+        this.personalRelief = personalRelief;
+    }
+
+    public double getPersonalRelief() {
+        return personalRelief;
     }
 }

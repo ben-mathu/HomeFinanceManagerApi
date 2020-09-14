@@ -59,6 +59,8 @@ function scheduleTask() {
         if (request.readyState === 4) {
             if (request.status === 200) {
                 
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
             }
         }
     };

@@ -8,7 +8,7 @@
                 <thead>
                     <tr>
                         <td></td>
-                        <td>Three Month Ending</td>
+                        <td id="numMonths">Three Month Ending</td>
                     </tr>
                     <tr>
                         <td></td>
@@ -16,50 +16,64 @@
                     </tr>
                     <tr>
                         <td></td>
-                        <td><strong><%= new SimpleDateFormat("yyyy").format(new Date()) %></strong></td>
+                        <td id="reportYear"><strong><%= new SimpleDateFormat("yyyy").format(new Date()) %></strong></td>
                     </tr>
                 </thead>
                 <tbody style="text-align: right;">
                     <tr>
-                        <td class="td-report-left">Revenue/Income</td>
+                        <td class="td-report-left"><strong>Revenue/Income</strong></td>
                     </tr>
                     <tr>
-                        <td class="td-report-center">Income</td>
-                        <td id="income">0</td>
+                        <td class="td-report-left">Income</td>
+                        <td id="reportIncome" class="td-report-left">0</td>
                     </tr>
                     <tr>
-                        <td class="td-report-center">Total</td>
-                        <td id="incomeTotal">0</td>
+                        <td class="td-report-left">Total</td>
+                        <td id="incomeTotal" class="td-report-left">0</td>
                     </tr>
                 </tbody>
                 <tbody>
                     <tr>
-                        <td class="td-report-left">Cost and deductions</td>
+                        <td> </td>
                     </tr>
-                    <tr id="exepenses">
-                        <td class="td-report-center">Total cost and deductions</td>
-                        <td id="expenseTotal">0</td>
+                </tbody>
+                <tbody id="expenseBody">
+                    <tr>
+                        <td class="td-report-left"><strong>Cost and deductions</strong></td>
                     </tr>
                 </tbody>
                 <tbody>
                     <tr>
-                        <td class="td-report-left">Income before tax</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td class="td-report-center">Tax</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td class="td-report-center">Income after tax</td>
-                        <td>0</td>
+                        <td> </td>
                     </tr>
                 </tbody>
                 <tbody>
                     <tr>
-                        <td class="td-report-left">Net income</td>
-                        <td>0</td>
-                        <td></td>
+                        <td class="td-report-left"><strong>Income before tax</strong></td>
+                        <td id="incomeBeforeTax" class="td-report-left">0</td>
+                    </tr>
+                    <tr>
+                        <td class="td-report-left">Tax</td>
+                        <td id="incomeTax" class="td-report-left">0</td>
+                    </tr>
+                    <tr>
+                        <td class="td-report-left">Personal Relief</td>
+                        <td id="personalRelief" class="td-report-left">0</td>
+                    </tr>
+                    <tr>
+                        <td class="td-report-left"><strong>Income after tax</strong></td>
+                        <td id="incomeAfterTax" class="td-report-left">0</td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td> </td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td class="td-report-left"><strong>Net income</strong></td>
+                        <td id="netIncome" class="td-report-left">0</td>
                     </tr>
                 </tbody>
             </table>

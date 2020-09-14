@@ -14,6 +14,8 @@ import java.util.Properties;
 
 import static com.benardmathu.hfms.utils.Constants.*;
 import com.benardmathu.tokengeneration.JwtTokenUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 
 /**
  * @author bernard
@@ -66,18 +68,24 @@ public class ApiFilters implements Filter {
                     Log.e(TAG, "Error normalizing token.", e);
                 }
 
-                if (jwtTokenUtil.verifyToken(ISSUER, subject, token)) {
-                    filterChain.doFilter(servletRequest, servletResponse);
-                } else {
+                try {
+                    if (jwtTokenUtil.verifyToken(ISSUER, subject, token)) {
+                        filterChain.doFilter(servletRequest, servletResponse);
+                    } else {
+                        resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        PrintWriter writer = resp.getWriter();
+
+                        Report report = new Report();
+                        report.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        report.setMessage("Invalid token");
+
+                        Gson gson = new Gson();
+                        writer.write(gson.toJson(report));
+                    }
+                } catch(MalformedJwtException | ExpiredJwtException e) {
                     resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    PrintWriter writer = resp.getWriter();
-
-                    Report report = new Report();
-                    report.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    report.setMessage("Invalid token");
-
-                    Gson gson = new Gson();
-                    writer.write(gson.toJson(report));
+                    PrintWriter printWriter = resp.getWriter();
+                    printWriter.write("Token expired");
                 }
             }
         } else {

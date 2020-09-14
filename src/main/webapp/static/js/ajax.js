@@ -47,6 +47,8 @@ function sendRequest() {
                         document.getElementById("code-error").innerHTML = obj.message;
                         document.getElementById("code-sender").hidden = false;
                         document.getElementById("progress").hidden = true;
+                    } else if (request.status === 403) {
+                        window.location.href = ctx + "/login";
                     } else {
 
                         obj = JSON.parse(request.responseText);
@@ -90,6 +92,8 @@ function sendRequest() {
 
                         document.getElementById("email-error").innerHTML = request.responseText;
                         document.getElementById("progress").hidden = true;
+                    } else if (request.status === 403) {
+                        window.location.href = ctx + "/login";
                     } else {
 
                         document.getElementById("email-error").innerHTML = "Please stand by...";
@@ -166,6 +170,8 @@ function registerUser() {
                     document.getElementById("progress").hidden = true;
                     let str = path + "/dashboard";
                     window.location.href = str;
+                } else if (request.status === 403) {
+                    window.location.href = ctx + "/login";
                 }
             }
         };

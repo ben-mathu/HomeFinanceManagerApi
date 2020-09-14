@@ -2,7 +2,7 @@
     <div id="navIcon" class="nav-icon-container" >
         <img id="navBarIcon" class="nav-icon" src="${pageContext.request.contextPath}/static/images/nav_menu_bar.png" alt="nav-icon" onclick="openOrCloseNav()">
     </div>
-    <div id="details" class="user-details-container" >
+<!--    <div id="details" class="user-details-container" >
         <div class="nav-avatar-container" >
             <span id="statusIndicatorAvatar" class="status-indicator"></span>
             <img id="avatar" class="nav-avatar avatar" src="${pageContext.request.contextPath}/static/images/person_no_avatar.png" alt="img">
@@ -16,7 +16,7 @@
                 <span class="status-text" id="status" style="color: #3F3A4B;" hidden>Online</span>
             </div>
         </div>
-    </div>
+    </div>-->
     <div class="horizontal-separator"></div>
     <div class="menu-container" >
         <div id="menu" class="menu">

@@ -20,6 +20,7 @@ import static com.benardmathu.hfms.data.utils.URL.GET_TRANSACTIONS;
 import static com.benardmathu.hfms.data.utils.URL.SEND_TRANSACTION;
 import static com.benardmathu.hfms.utils.Constants.LnmoRequestFields.*;
 import static com.benardmathu.hfms.utils.Constants.TOKEN;
+import com.google.gson.stream.MalformedJsonException;
 
 /**
  * @author bernard
@@ -91,8 +92,14 @@ public class TransactionServletController extends BaseServlet {
         }
 
         Log.d(TAG, "Response body" + builder.toString());
-
-        Report report = gson.fromJson(builder.toString(), Report.class);
+        
+        Report report = new Report();
+        report.setMessage("This is important");
+        report.setStatus(200);
+        
+        resp.setStatus(200);
+//        report = gson.fromJson(builder.toString(), Report.class);
+        
         if (report.getStatus() > 400) {
             resp.setStatus(HttpServletResponse.SC_OK);
             

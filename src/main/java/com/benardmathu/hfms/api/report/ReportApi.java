@@ -13,6 +13,8 @@ import com.benardmathu.hfms.data.report.ReportDto;
 import com.benardmathu.hfms.data.report.ReportRequest;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
+import com.benardmathu.hfms.data.transactions.TransactionDao;
+import com.benardmathu.hfms.data.transactions.model.Transaction;
 import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.REPORTS;
 import com.benardmathu.hfms.utils.BufferRequestReader;
@@ -24,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -45,6 +48,7 @@ public class ReportApi extends BaseServlet {
     private MoneyJarScheduleDao moneyJarScheduleDao;
     private HouseholdDao householdDao;
     private MoneyJarsDao moneyJarsDao;
+    private TransactionDao transactionDao;
 
     public ReportApi() {
         incomeDao = new IncomeDao();
@@ -65,6 +69,8 @@ public class ReportApi extends BaseServlet {
         Income income = incomeDao.get(reportRequest.getUserId());
         
         SimpleDateFormat sp = new SimpleDateFormat(Constants.DATE_FORMAT);
+        SimpleDateFormat spDateOnly = new SimpleDateFormat("yyyy-MM-dd");
+        
         Calendar from = new GregorianCalendar();
         Calendar to = new GregorianCalendar();
         try {
@@ -78,6 +84,7 @@ public class ReportApi extends BaseServlet {
         int yearFrom = from.get(Calendar.YEAR);
         
         ReportDto reportDto = new ReportDto();
+        reportDto.setDateEnding(spDateOnly.format(to.getTime()));
         
         if (yearFrom < yearTo) {
             reportDto.setYearRange(yearFrom + "/" + yearTo);
@@ -97,6 +104,13 @@ public class ReportApi extends BaseServlet {
             totalIncome += incomeChangeList.get(i).getAmount();
         }
         
+//        List<Transaction> transactions = transactionDao.getAllByUserId(reportRequest.getUserId());
+//        HashMap<String, Double> amountMap = new HashMap<>();
+//        for (Transaction transaction : transactions) {
+//            double previousAmount = amountMap.get(transaction.getTransactionDesc()) == null ? 0 : amountMap.get(transaction.getTransactionDesc());
+//            amountMap.put(transaction.getTransactionDesc(), previousAmount + transaction.getAmount());
+//        }
+        
         List<JarScheduleDateRel> paid = moneyJarScheduleDao.getAllPaid(
                 householdId,
                 reportRequest.getFrom(),
@@ -115,9 +129,6 @@ public class ReportApi extends BaseServlet {
         reportDto.setIncome(totalIncome);
         reportDto.setMoneyJars(moneyJars);
         reportDto.setTotalExpenseAmount(totalExpenseAmount);
-//        this is total income over period specified without tax
-        double netIncome = totalIncome - totalExpenseAmount;
-        reportDto.setNetIncome(netIncome);
         
         ConfigureApp app = new ConfigureApp();
         Properties properties = app.getProperties();
@@ -137,7 +148,12 @@ public class ReportApi extends BaseServlet {
         
         double tax = rate * totalIncome / 100;
         reportDto.setTax(tax);
-        reportDto.setNetIncomeAfterTax(netIncome - tax + personalRelief);
+        reportDto.setPersonalRelief(personalRelief);
+        reportDto.setIncomeAfterTax(totalIncome - tax + personalRelief);
+        
+        double netIncome = reportDto.getIncomeAfterTax() - totalExpenseAmount;
+        reportDto.setNetIncome(netIncome);
+        
         reportDto.setMonthsRange(monthsDiff);
         
         resp.setStatus(HttpServletResponse.SC_OK);

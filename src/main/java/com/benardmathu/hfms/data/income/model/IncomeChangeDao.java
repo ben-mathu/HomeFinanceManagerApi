@@ -174,5 +174,47 @@ public class IncomeChangeDao extends BaseDao<OnInComeChange> {
         }
         return affectedRows;
     }
-    
+
+    @Override
+    public int update(OnInComeChange item) {
+        String query = "UPDATE " + ON_UPDATE_INCOME
+                + " SET " + AMOUNT + "=?,"
+                + CREATED_AT + "=?,"
+                + ON_CHANGE_INCOME_STATUS + "=?"
+                + " WHERE " + INCOME_ID + "=?,";
+        int affectedRows = 0;
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setDouble(1, item.getAmount());
+            preparedStatement.setString(2, item.getCreatedAt());
+            preparedStatement.setBoolean(3, false);
+            preparedStatement.setString(4, item.getIncomeId());
+            affectedRows = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error adding income: ", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return affectedRows;
+    }
 }
