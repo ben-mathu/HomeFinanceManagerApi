@@ -410,10 +410,10 @@ function deleteGroceries(grocery) {
     
     let groceryId = grocery.grocery_id;
     let token = window.localStorage.getItem(userFields.TOKEN);
-    let data = groceryFields.GROCERY_ID + "=" + groceryId;
+    let data = groceryFields.GROCERY_ID + "=" + groceryId + "&";
+    data += userFields.TOKEN + "=" + token;
     
-    request.open("DELETE", ctx + "/api/groceries/delete-grocery?" + data, true);
+    request.open("DELETE", ctx + "/dashboard/grocery-controller/delete-grocery?" + data, true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
-    request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
     request.send();
 }

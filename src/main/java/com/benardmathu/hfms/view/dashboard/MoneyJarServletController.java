@@ -59,6 +59,8 @@ public class MoneyJarServletController extends BaseServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPut(req, resp);
+        
+        String uri = req.getRequestURI();
 
         String token = req.getParameter(TOKEN);
         String category = req.getParameter(CATEGORY);
@@ -97,7 +99,7 @@ public class MoneyJarServletController extends BaseServlet {
 
         InitUrlConnection<MoneyJarDto> conn = new InitUrlConnection<>();
         BufferedReader streamReader;
-        if (jarDto.getId().isEmpty()) {
+        if (uri.endsWith("add-money-jar")) {
             if (JarType.LIST_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))
                 jarDto.getGroceries().forEach(grocery -> grocery.setJarId(jarDto.getJar().getMoneyJarId()));
             if (JarType.SINGLE_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))

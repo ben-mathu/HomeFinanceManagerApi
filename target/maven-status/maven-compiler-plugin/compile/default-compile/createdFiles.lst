@@ -38,6 +38,7 @@ com/benardmathu/hfms/data/daraja/callback/CallbackMetadata.class
 com/benardmathu/hfms/utils/IntervalChangeListener.class
 com/benardmathu/hfms/utils/Log.class
 com/benardmathu/hfms/data/household/HouseholdDto.class
+com/benardmathu/hfms/view/dashboard/GroceryServletController.class
 com/benardmathu/hfms/data/jdbc/JdbcConnection.class
 com/benardmathu/hfms/api/users/ChangeAccountDetailsApi.class
 com/benardmathu/hfms/view/login/LoginServlet.class

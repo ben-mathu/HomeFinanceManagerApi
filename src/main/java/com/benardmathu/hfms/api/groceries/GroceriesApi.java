@@ -43,6 +43,15 @@ public class GroceriesApi extends BaseServlet {
             resp.setStatus(report.getStatus());
             writer = resp.getWriter();
             writer.write(gson.toJson(report));
+        } else {
+            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            
+            Report report = new Report();
+            report.setMessage("Grocery could not be deleted, please try again.");
+            report.setStatus(resp.getStatus());
+            
+            writer = resp.getWriter();
+            writer.write(gson.toJson(report));
         }
     }
 }

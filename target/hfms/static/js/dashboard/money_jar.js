@@ -611,7 +611,7 @@ function openJarModal(callback) {
         if (!validateInput()) {
             return;
         }
-        updateJar(callback);
+        addExpense(callback);
     };
 }
 
@@ -979,7 +979,7 @@ function sendJarRequestJson(jarDto, date) {
  * send new jar elements
  * @param {modal} callback to call required modals subsequently
  */
-function updateJar(callback) {
+function addExpense(callback) {
     var request = getXmlHttpRequest();
 
     request.onreadystatechange = function() {

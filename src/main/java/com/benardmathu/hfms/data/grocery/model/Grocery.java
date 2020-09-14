@@ -23,7 +23,7 @@ public class Grocery {
     private String groceryId = "";
 
     @SerializedName(GROCERY_NAME)
-    @Column(columnName = GROCERY_NAME, characterLength = 255, unique = true)
+    @Column(columnName = GROCERY_NAME, characterLength = 255)
     private String name = "";
 
     @SerializedName(GROCERY_DESCRIPTION)
