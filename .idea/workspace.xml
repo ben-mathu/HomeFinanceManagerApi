@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="71d19d5d-0704-47f2-8db5-50cb618bb9fb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/base/BaseServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/base/BaseServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/income/IncomeApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/income/IncomeApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/login/Login.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/login/Login.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/moneyjar/MoneyJarApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/moneyjar/MoneyJarApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/register/ChangeEmail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/register/ChangeEmail.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/register/Confirm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/register/Confirm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/register/GenerateConfirmationCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/register/GenerateConfirmationCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/register/Register.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/register/Register.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/transaction/GenerateToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/transaction/GenerateToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/transaction/GetAccessTokenTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/transaction/GetAccessTokenTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/transaction/TransactionApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/transaction/TransactionApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/transaction/threadrunner/MpesaResponseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/transaction/threadrunner/MpesaResponseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/transaction/threadrunner/SendTransactionRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/transaction/threadrunner/SendTransactionRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/transaction/threadrunner/StopServerListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/transaction/threadrunner/StopServerListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/users/ChangeAccountDetailsApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/users/ChangeAccountDetailsApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/api/users/UserApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/api/users/UserApi.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/config/ApiFilters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/config/ApiFilters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/config/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/config/Configuration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/config/ConfigureApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/config/ConfigureApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/config/ConfigureDb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/config/ConfigureDb.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/config/EmailEnv.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/config/EmailEnv.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/BaseDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/BaseDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/Dao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/Dao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/budget/BudgetDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/budget/BudgetDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/budget/BudgetDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/budget/BudgetDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/budget/model/Budget.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/budget/model/Budget.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/code/CodeDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/code/CodeDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/code/CodeDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/code/CodeDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/code/model/Code.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/code/model/Code.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/LnmoErrorResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/LnmoErrorResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/LnmoRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/LnmoRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/LnmoResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/LnmoResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/callback/CallbackMetadata.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/callback/CallbackMetadata.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/callback/CallbackResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/callback/CallbackResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/callback/CallbackResponseBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/callback/CallbackResponseBody.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/callback/ItemList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/callback/ItemList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/callback/StkCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/callback/StkCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/daraja/models/AccessToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/daraja/models/AccessToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/expense/ExpenseDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/expense/ExpenseDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/expense/ExpenseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/expense/ExpenseDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/expense/model/Expense.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/expense/model/Expense.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/grocery/GroceriesDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/grocery/GroceriesDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/grocery/GroceryDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/grocery/GroceryDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/grocery/GroceryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/grocery/GroceryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/grocery/model/Grocery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/grocery/model/Grocery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/household/HouseholdDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/household/HouseholdDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/household/HouseholdDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/household/HouseholdDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/household/model/Household.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/household/model/Household.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/income/IncomeDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/income/IncomeDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/income/IncomeDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/income/IncomeDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/income/IncomeListDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/income/IncomeListDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/income/model/Income.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/income/model/Income.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/jar/MoneyJarDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/jar/MoneyJarDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/jar/MoneyJarsDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/jar/MoneyJarsDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/jar/MoneyJarsDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/jar/MoneyJarsDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/jar/model/MoneyJar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/jar/model/MoneyJar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/jdbc/JdbcConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/jdbc/JdbcConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/jdbc/PostgresConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/jdbc/PostgresConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/status/AccountStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/status/AccountStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/status/AccountStatusDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/status/AccountStatusDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/status/AccountStatusDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/status/AccountStatusDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/status/Report.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/status/Report.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/status/Status.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/status/Status.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/jarexpenserel/MoneyJarExpenseDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/jarexpenserel/MoneyJarExpenseDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/jarexpenserel/MoneyJarExpenseRel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/jarexpenserel/MoneyJarExpenseRel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/jargroceryrel/MoneyJarGroceriesDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/jargroceryrel/MoneyJarGroceriesDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/jargroceryrel/MoneyJarGroceriesRel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/jargroceryrel/MoneyJarGroceriesRel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/schedulejarrel/JarScheduleDateRel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/schedulejarrel/JarScheduleDateRel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/schedulejarrel/MoneyJarScheduleDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/schedulejarrel/MoneyJarScheduleDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/userhouse/UserHouseholdDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/userhouse/UserHouseholdDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/tablerelationships/userhouse/UserHouseholdRel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/tablerelationships/userhouse/UserHouseholdRel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/transactions/TransactionDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/transactions/TransactionDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/transactions/TransactionDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/transactions/TransactionDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/transactions/model/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/transactions/model/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/user/ConfirmationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/user/ConfirmationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/user/Identification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/user/Identification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/user/UserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/user/UserDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/user/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/user/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/user/UserRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/user/UserRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/user/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/user/UserResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/user/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/user/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/utils/DbEnvironment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/utils/DbEnvironment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/data/utils/URL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/data/utils/URL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/init/AppContextListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/init/AppContextListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/init/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/init/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/init/Column.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/init/Column.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/init/Constraint.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/init/Constraint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/init/PrimaryKey.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/init/PrimaryKey.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/init/Table.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/init/Table.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/Base64EncoderDecoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/Base64EncoderDecoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/BufferRequestReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/BufferRequestReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/GenerateCipher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/GenerateCipher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/GenerateRandomString.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/GenerateRandomString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/InitUrlConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/InitUrlConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/IntervalChangeListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/IntervalChangeListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/Log.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/Log.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/PasswordUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/Patterns.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/Patterns.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/sender/EmailSession.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/sender/EmailSession.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/sender/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/sender/Protocol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/utils/typetoken/CustomTypeToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/utils/typetoken/CustomTypeToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/base/BaseServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/base/BaseServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/config/DashboardTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/config/DashboardTokenFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/config/LoginTokenFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/config/LoginTokenFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/config/RootFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/config/RootFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/dashboard/ChangeAccountDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/dashboard/ChangeAccountDetailsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/dashboard/DashboardServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/dashboard/DashboardServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/dashboard/MoneyJarServletController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/dashboard/MoneyJarServletController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/dashboard/SettingsServletController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/dashboard/SettingsServletController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/dashboard/TransactionServletController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/dashboard/TransactionServletController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/dashboard/UserServletController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/dashboard/UserServletController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/login/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/login/LoginServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/registration/ChangeEmailServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/registration/ChangeEmailServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/registration/ConfirmEmailServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/registration/ConfirmEmailServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/registration/GetCodeServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/registration/GetCodeServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/registration/RegistrationServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/registration/RegistrationServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/miiguar/hfms/view/result/ErrorResults.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/benardmathu/hfms/view/result/ErrorResults.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/META-INF/context.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/META-INF/context.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/token-generation.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/miiguar/hfms/init/ApplicationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/miiguar/hfms/init/ApplicationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/miiguar/hfms/utils/ConstantsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/miiguar/hfms/utils/ConstantsTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1hAzN30VQzAMNfdomwuoBpCC4Kc" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RunManager">
+    <configuration name="hfms [tomcat7:run]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="tomcat7:run" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="71d19d5d-0704-47f2-8db5-50cb618bb9fb" name="Default Changelist" comment="" />
+      <created>1599468647392</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1599468647392</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="141" y="42" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599470765397">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="141" y="42" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.768/1366.0.1360.768@0.0.1366.768" timestamp="1599470765397" />
+    <state x="167" y="290" width="1021" height="186" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1599468718082">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="167" y="290" width="1021" height="186" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.1366.768/1366.0.1360.768@0.0.1366.768" timestamp="1599468718082" />
+    <state x="469" y="260" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages" timestamp="1599468728701">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="469" y="260" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.packages/0.0.1366.768/1366.0.1360.768@0.0.1366.768" timestamp="1599468728701" />
+    <state width="1324" height="186" key="GridCell.Tab.0.bottom" timestamp="1599471184570">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1324" height="186" key="GridCell.Tab.0.bottom/0.0.1366.768/1366.0.1360.768@0.0.1366.768" timestamp="1599471184570" />
+    <state width="1324" height="186" key="GridCell.Tab.0.center" timestamp="1599471184570">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1324" height="186" key="GridCell.Tab.0.center/0.0.1366.768/1366.0.1360.768@0.0.1366.768" timestamp="1599471184570" />
+    <state width="1324" height="186" key="GridCell.Tab.0.left" timestamp="1599471184570">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1324" height="186" key="GridCell.Tab.0.left/0.0.1366.768/1366.0.1360.768@0.0.1366.768" timestamp="1599471184570" />
+    <state width="1324" height="186" key="GridCell.Tab.0.right" timestamp="1599471184570">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="1324" height="186" key="GridCell.Tab.0.right/0.0.1366.768/1366.0.1360.768@0.0.1366.768" timestamp="1599471184570" />
+  </component>
+</project>
