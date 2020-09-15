@@ -101,6 +101,22 @@ function updateIncome(income) {
     request.onreadystatechange = function() {
         if (request.readyState === 4) {
             if (request.status === 200) {
+                let obj = JSON.parse(request.responseText);
+                let report = obj.report;
+                
+                document.getElementById("messageReport").textContent = report.message;
+                document.getElementById("messageDialog").style.display = "block";
+                
+                setTimeout(function() {
+                    document.getElementById("messageDialog").style.display = "none";
+                }, 5000);
+                
+                let income = obj.income;
+                setIncome(income);
+                
+                let lastIncome = obj.last_income;
+                showIncome(income, lastIncome);
+                
                 // close modal
                 closeIncomeModal();
 
@@ -111,7 +127,7 @@ function updateIncome(income) {
         }
     };
 
-    var token = escape(window.localStorage.getItem(userFields.TOKEN));
+    var token = userFields.TOKEN + "=" +  escape(window.localStorage.getItem(userFields.TOKEN));
     var userId = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID));
     
     let date = new Date().addMonths(income.scheduled_for, 1);
@@ -124,9 +140,8 @@ function updateIncome(income) {
     
     var data = JSON.stringify(incomeDto);
 
-    request.open("PUT", ctx + "/api/income/update-income?" + userId, true);
-    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.APPLICATION_JSON);
-    request.setRequestHeader(requestHeader.AUTHORIZATION, "Bearer " + token);
+    request.open("PUT", ctx + "/dashboard/income-controller/update-income?" + userId + "&" + token, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
     request.send(data);
 }
 
@@ -190,12 +205,13 @@ function addIncome() {
     request.onreadystatechanged = function() {
         if (request.readyState === 4) {
             if (request.status === 200) {
+                let obj = JSON.parse(request.responseText);
                 // close modal
                 closeIncomeModal();
                 
-                setIncome(JSON.parse(request.responseText));
+                setIncome(obj.income);
 
-                showIncome(JSON.parse(request.responseText).income);
+                showIncome(obj.income, obj.last_income);
             } else if (request.status === 403) {
                 window.location.href = ctx + "/login";
             }
@@ -235,7 +251,9 @@ function showIncome(income, lastIncome) {
             
             btnOpenIncomeModal.hidden = true;
             
-            activateIncomeTimer(income, lastIncome);
-        }
+            if (lastIncome !== null) {
+                activateIncomeTimer(income, lastIncome);
+            }
+        };
     }
 }

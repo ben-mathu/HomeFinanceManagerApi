@@ -45,6 +45,7 @@
 .user-section {
     right: 0px;
     position: absolute;
+    margin-left: 50px;
 }
 
 .avatar-container {

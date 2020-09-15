@@ -61,4 +61,9 @@ public class URL {
     // Report
     public static final String REPORTS = "/reports/*";
     public static final String GET_REPORTS = "/reports/get-reports";
+    
+    // Households
+    public static final String HOUSEHOLDS_URL = "/household/*";
+    public static final String GET_HOUSEHOLD_MEMBERS = "/household/get-members";
+    public static final String UPDATE_USER_HOUSEHOLD_REL = "/household/update-household";
 }

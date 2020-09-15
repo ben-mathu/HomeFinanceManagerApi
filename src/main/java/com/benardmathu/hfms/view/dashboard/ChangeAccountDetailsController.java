@@ -1,5 +1,6 @@
 package com.benardmathu.hfms.view.dashboard;
 
+import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.user.model.User;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import com.benardmathu.hfms.data.utils.URL;
@@ -79,5 +80,18 @@ public class ChangeAccountDetailsController extends BaseServlet {
         
         InitUrlConnection<User> conn = new InitUrlConnection<>();
         BufferedReader streamReader = conn.getReader(user, URL.CHANGE_ACCOUNT_DETAILS, token, "PUT");
+        
+        String line;
+        StringBuilder stringBuilder = new StringBuilder();
+        
+        while ((line = streamReader.readLine()) != null) {            
+            stringBuilder.append(line);
+        }
+        
+        Report report = gson.fromJson(stringBuilder.toString(), Report.class);
+        resp.setStatus(report.getStatus());
+        
+        writer = resp.getWriter();
+        writer.write(stringBuilder.toString());
     }
 }

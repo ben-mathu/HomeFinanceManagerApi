@@ -240,7 +240,7 @@ class LineGraph {
             
             let height = this.y - this.yPadding;
             
-            let firstAmount = this.monthlyAmount[keys[0]]/this.scale;
+            let firstAmount = this.monthlyAmount[keys[0]];
             let actualScale = this.graphMaxAmount;
             let startY = this.y - (height * firstAmount / actualScale);
             
@@ -259,10 +259,11 @@ class LineGraph {
             );
             
             for (var i = 2; i < keys.length; i++) {
+                let key = keys[i];
                 console.log(keys.length);
-                if (i === keys.length) {
-                    break;
-                }
+//                if (i === keys.length) {
+//                    break;
+//                }
 
                 drawLine(
                     this.context,
@@ -279,12 +280,8 @@ class LineGraph {
                 endX += (this.width - this.xPadding) / 12;
 //                y = this.monthlyAmount[keys[i + 1]] / this.scale / 100;
                 
-                if (this.monthlyAmount[keys[i]] > this.monthlyAmount[keys[i + 1]]) {
-                    endY = this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
-                } else if (this.monthlyAmount[keys[i]] === this.monthlyAmount[keys[i + 1]]) {
-                    
-                } else if (this.monthlyAmount[keys[i]] < this.monthlyAmount[keys[i + 1]]) {
-                    endY = this.y - (height * this.monthlyAmount[keys[0]] / actualScale);
+                if (this.monthlyAmount[keys[i]] !== this.monthlyAmount[keys[i + 1]]) {
+                    endY = this.y - (height * this.monthlyAmount[keys[i]] / actualScale);
                 }
                 
                 drawCircle(this.context,
@@ -296,6 +293,24 @@ class LineGraph {
                     this.colors[0]
                 );
             }
+            
+            drawLine(
+                this.context,
+                startX,
+                startY,
+                endX,
+                endY,
+                this.colors[0]
+            );
+            
+            drawCircle(this.context,
+                endX,
+                endY,
+                3,
+                0,
+                2 * Math.PI,
+                this.colors[0]
+            );
             
 //            add legends
             let legend = document.querySelector("legend[for='lineGraphCanvas']");

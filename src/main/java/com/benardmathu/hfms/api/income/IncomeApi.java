@@ -72,8 +72,8 @@ public class IncomeApi extends BaseServlet {
         income.setCreatedAt(today);
         income.setSchedule(income.getSchedule());
         
+        OnInComeChange onInComeChange = new OnInComeChange();
         if (incomeDao.save(income) > 0) {
-            OnInComeChange onInComeChange = new OnInComeChange();
             onInComeChange.setAmount(income.getAmount());
             onInComeChange.setCreatedAt(today);
             onInComeChange.setIncomeId(incomeId);
@@ -83,18 +83,17 @@ public class IncomeApi extends BaseServlet {
         }
 
         incomeDto.setIncome(income);
+        incomeDto.setOnIncomeChange(onInComeChange);
 
-        String response = gson.toJson(incomeDto);
-
-        httpServletResponse.setContentType(APPLICATION_JSON);
-        writer = httpServletResponse.getWriter();
-        writer.write(response);
+        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
         Report report = updateIncomeStatus(userId);
+        incomeDto.setReport(report);
         
-//        httpServletResponse.setStatus(report.getStatus());
-//        writer = httpServletResponse.getWriter();
-//        writer.write(gson.toJson(report));
+        String response = gson.toJson(incomeDto);
+        
+        writer = httpServletResponse.getWriter();
+        writer.write(response);
     }
 
     private Report updateIncomeStatus(String userId) {
@@ -140,7 +139,10 @@ public class IncomeApi extends BaseServlet {
         
         onInComeChange.setIncomeId(income.getIncomeId());
         
-        incomeChangeDao.save(onInComeChange);
+        int affectedChange = incomeChangeDao.save(onInComeChange);
+        if (affectedChange > 0) {
+            incomeDto.setOnIncomeChange(onInComeChange);
+        }
         
         int affected = incomeDao.update(incomeDto.getIncome());
         
@@ -149,9 +151,11 @@ public class IncomeApi extends BaseServlet {
             report.setStatus(HttpServletResponse.SC_OK);
             report.setMessage("Successfully Updated");
             
+            incomeDto.setReport(report);
+            
             resp.setStatus(report.getStatus());
             writer = resp.getWriter();
-            writer.write(gson.toJson(report));
+            writer.write(gson.toJson(incomeDto));
         }
     }
 }

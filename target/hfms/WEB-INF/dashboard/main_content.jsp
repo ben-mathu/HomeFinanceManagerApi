@@ -4,7 +4,7 @@
     <input type="hidden" id="contextPath" name="context_path" value="<%= request.getContextPath() %>">
     <div class="chart-chat-section section-style" >
         <div id="chartContainer" class="chart-container rounded-corner shadow-1pt subsection-background" >
-            <label for="lineGraphCanvas"><i style="font-size: 16px; margin-bottom: 5px">Profit and Expenditure Line Graph</i></label>
+            <label for="lineGraphCanvas"><i style="font-size: 16px; margin-bottom: 5px">Expenditure Line Graph</i></label>
             <div class="chart-element">
                 <canvas id="lineGraphCanvas" class="line-graph-canvas"></canvas>
                 <legend for="lineGraphCanvas" class="legends-for-linegraph"></legend>

@@ -142,10 +142,147 @@ function configureSettings() {
     
     let btnDeleteAccount = document.getElementById("btnDeleteAccount");
     btnDeleteAccount.addEventListener("click", function(event) {
-        deleteUser();
+//        deleteUser();
+        checkHouseholdOwnership();
     });
 }
 
+/**
+ * During account deletion check owership, transfer ownership or delete household
+ */
+function checkHouseholdOwnership() {
+    let request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                let message = request.responseText;
+                
+                document.getElementById("messageReport").innerHTML = message;
+                document.getElementById("messageDialog").style.display = "block";
+                
+                let btnChangeOwner = document.getElementById("btnChangeOwner");
+                if (btnChangeOwner !== null) {
+                    btnChangeOwner.addEventListener("click", function (event) {
+                        changeOwnership();
+                    });
+                }
+                
+                let btnCancelDeletion = document.getElementById("btnCancelDeletion");
+                if (btnCancelDeletion !== null)
+                    btnCancelDeletion.addEventListener("click", function (event) {
+                        cancelAccountDeletion();
+                    });
+
+                let btnDeleteHouseHld = document.getElementById("btnDeleteHouseHld");
+                btnDeleteHouseHld.addEventListener("click", function (event) {
+                    deleteHousehold();
+                });
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
+            } else if (request.status === 203) {
+                deleteUser();
+            }
+        }
+    };
+
+    let data = userFields.USER_ID + "=" + escape(window.localStorage.getItem(userFields.USER_ID)) + "&";
+    data += userFields.TOKEN + "=" + escape(window.localStorage.getItem(userFields.TOKEN));
+
+    request.open("GET", ctx + "/dashboard/household-controller/check-onwership?" + data, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
+    request.send();
+}
+
+function changeOwnership() {
+    
+    setTimeout(function () {
+        document.getElementById("messageDialog").style.display = "none";
+    }, 5000);
+    
+    let request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                deleteUser();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
+            } else if (request.status === 304) {
+                let report = JSON.parse(request.responseText);
+                document.getElementById("messageReport").textContent = report.message;
+                
+                setTimeout(function () {
+                    document.getElementById("messageDialog").style.display = "none";
+                }, 5000);
+            }
+        }
+    };
+    
+    let newOwner = document.getElementById("selectNewOwner");
+    let ownerId = newOwner.options[newOwner.selectedIndex].value;
+    
+    let householdId = document.getElementById("householdIdForMessage").value;
+
+    let data = userFields.TOKEN + "=" + escape(window.localStorage.getItem(userFields.TOKEN)) + "&";
+    data += userFields.USER_ID + "=" + escape(ownerId);
+    data += userFields.HOUSEHOLD_ID + "=" + escape(householdId);
+
+    request.open("PUT", ctx + "/dashboard/household-controller/change-onwership?" + data, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
+    request.send();
+}
+
+/**
+ * Delete household or change ownership
+ */
+function deleteHousehold() {
+    setTimeout(function () {
+        document.getElementById("messageDialog").style.display = "none";
+    }, 5000);
+    
+    let request = getXmlHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                deleteUser();
+            } else if (request.status === 403) {
+                window.location.href = ctx + "/login";
+            } else if (request.status === 304) {
+                let spanDeleteResponse = document.querySelector("span[for='btnDeleteAccount']");
+                spanDeleteResponse.style.color = "#AA002E";
+                spanDeleteResponse.style.fontSize = "12px";
+                spanDeleteResponse.textContent = JSON.parse(request.responseText).message;
+                spanDeleteResponse.style.display = "block";
+                
+                window.setTimeout(function() {
+                    spanDeleteResponse.textContent = "";
+                }, 5000);
+            }
+        }
+    };
+    
+    let data = userFields.TOKEN + "=" + escape(window.localStorage.getItem(userFields.TOKEN)) + "&";
+    data += userFields.HOUSEHOLD_ID + "=" + escape(document.getElementById("householdIdForMessage").value);
+
+    request.open("DELETE", ctx + "/dashboard/household-controller/delete-household?" + data, true);
+    request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
+    request.send();
+}
+
+function cancelAccountDeletion() {
+    document.getElementById("messageDialog").style.display = "none";
+    document.getElementById("messageReport").textContent = "Account deletion was cancelled";
+    document.getElementById("messageDialog").style.display = "block";
+    setTimeout(function() {
+        document.getElementById("messageDialog").style.display = "none";
+    }, 5000);
+}
+
+/**
+ * Delete user data from the database
+ */
 function deleteUser() {
     
     let request = getXmlHttpRequest();
@@ -166,7 +303,7 @@ function deleteUser() {
                 
                 window.setTimeout(function() {
                     spanDeleteResponse.textContent = "";
-                });
+                }, 5000);
             }
         }
     };

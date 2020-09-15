@@ -1,7 +1,9 @@
 package com.benardmathu.hfms.data.jar;
 
+import com.benardmathu.hfms.data.income.model.Income;
 import com.google.gson.annotations.SerializedName;
 import com.benardmathu.hfms.data.status.Report;
+import static com.benardmathu.hfms.utils.Constants.INCOME;
 
 import java.util.ArrayList;
 
@@ -15,6 +17,8 @@ public class MoneyJarsDto {
     private ArrayList<MoneyJarDto> jarDto;
     @SerializedName("report")
     private Report report;
+    @SerializedName(INCOME)
+    private Income income;
 
     public ArrayList<MoneyJarDto> getJarDto() {
         return jarDto;
@@ -30,5 +34,13 @@ public class MoneyJarsDto {
 
     public void setReport(Report report) {
         this.report = report;
+    }
+
+    public void setIncome(Income income) {
+        this.income = income;
+    }
+
+    public Income getIncome() {
+        return income;
     }
 }

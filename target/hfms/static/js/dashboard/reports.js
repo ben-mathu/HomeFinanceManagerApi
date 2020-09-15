@@ -24,7 +24,11 @@ function openReportModal() {
                 let numMonths = document.getElementById("numMonths");
                 
                 // add number of months
-                numMonths.textContent = obj.months_difference + " month(s) ending:";
+                if (obj.months_difference > 1) {
+                    numMonths.textContent = obj.months_difference + " month(s) ending:";
+                } else {
+                    numMonths.textContent = "";
+                }
                 
                 // add "to" date
                 let reportdate = document.getElementById("reportdate");
@@ -41,6 +45,7 @@ function openReportModal() {
                 incomeTotal.textContent = obj.income;
                 
                 let expenseBody = document.getElementById("expenseBody");
+                expenseBody.innerHTML = "";
                 
                 let expenseList = obj.expenses;
                 expenseList.forEach(expense => {
@@ -71,17 +76,17 @@ function openReportModal() {
                 trTotal.appendChild(tdValue);
                 expenseBody.appendChild(trTotal);
                 
-                let incomeBeforeTax = document.getElementById("incomeBeforeTax");
-                incomeBeforeTax.textContent = obj.income;
-                
-                let incomeTax = document.getElementById("incomeTax");
-                incomeTax.textContent = obj.tax;
-                
-                let personalRelief = document.getElementById("personalRelief");
-                personalRelief.textContent = obj.personal_relief;
-                
-                let incomeAfterTax = document.getElementById("incomeAfterTax");
-                incomeAfterTax.textContent = obj.income_after_tax;
+//                let incomeBeforeTax = document.getElementById("incomeBeforeTax");
+//                incomeBeforeTax.textContent = obj.income;
+//                
+//                let incomeTax = document.getElementById("incomeTax");
+//                incomeTax.textContent = obj.tax;
+//                
+//                let personalRelief = document.getElementById("personalRelief");
+//                personalRelief.textContent = obj.personal_relief;
+//                
+//                let incomeAfterTax = document.getElementById("incomeAfterTax");
+//                incomeAfterTax.textContent = obj.income_after_tax;
                 
                 let netIncome = document.getElementById("netIncome");
                 netIncome.textContent = obj.net_income;

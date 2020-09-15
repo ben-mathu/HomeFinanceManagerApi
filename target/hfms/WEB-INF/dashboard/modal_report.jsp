@@ -47,7 +47,7 @@
                         <td> </td>
                     </tr>
                 </tbody>
-                <tbody>
+<!--                <tbody>
                     <tr>
                         <td class="td-report-left"><strong>Income before tax</strong></td>
                         <td id="incomeBeforeTax" class="td-report-left">0</td>
@@ -64,7 +64,7 @@
                         <td class="td-report-left"><strong>Income after tax</strong></td>
                         <td id="incomeAfterTax" class="td-report-left">0</td>
                     </tr>
-                </tbody>
+                </tbody>-->
                 <tbody>
                     <tr>
                         <td> </td>
@@ -79,9 +79,6 @@
             </table>
             <canvas id="reportCanvas"></canvas>
             <legend for="reportCanvas"></legend>
-        </div>
-        <div>
-            <input id="btnDownloadPdf" class="btn2 float-right" type="button" value="Download"/>
         </div>
     </div>
 </div>

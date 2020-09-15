@@ -124,7 +124,39 @@ public class HouseholdDao implements Dao<Household> {
 
     @Override
     public int delete(Household item) {
-        return 0;
+        String query = "DELETE FROM " + HOUSEHOLD_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        
+        int affectedRows = 0;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, item.getId());
+            affectedRows = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing household query", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return affectedRows;
     }
 
     @Override

@@ -38,6 +38,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,6 +84,8 @@ public class TransactionApi extends BaseServlet {
         
         TransactionDto dto = new TransactionDto();
         dto.setTransactions(transactionDao.getAllByUserId(userId));
+        
+//        List<JarScheduleDateRel> paid = moneyJarScheduleDao.getAllPaid(householdId);
         
         if (dto.getTransactions() != null) {
             writer = response.getWriter();

@@ -56,7 +56,7 @@ public class UserApi extends BaseServlet {
         String userId = req.getParameter(USER_ID);
         User user = userDao.get(userId);
         Income income = incomeDao.get(user.getUserId());
-        List<UserHouseholdRel> list = userHouseholdDao.getAll(user.getUserId());
+        List<UserHouseholdRel> list = userHouseholdDao.getAllByUserId(user.getUserId());
 
         ArrayList<Household> households = new ArrayList<>();
         ArrayList<User> members = new ArrayList<>();

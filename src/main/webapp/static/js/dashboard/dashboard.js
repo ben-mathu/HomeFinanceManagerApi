@@ -60,7 +60,8 @@ const userFields = {
     IS_ADMIN: 'is_admin',
     INCOME: 'income',
     TOKEN: 'token',
-    PHONE_NUMBER: 'mob_number'
+    PHONE_NUMBER: 'mob_number',
+    HOUSEHOLD_ID: 'household_id'
 };
 
 const incomeFields = {
@@ -243,8 +244,7 @@ window.onload = function() {
  * @param {income} obj rep the income values
  */
 function setIncome(obj) {
-    income = obj;
-    user.income = income.income;
+    user.income = obj;
 }
 
 /**
@@ -279,6 +279,8 @@ function getUserDetails() {
                 
                 var usernameEle = document.getElementById("username");
                 usernameEle.innerHTML = user.username;
+                
+                setIncome(income);
 
                 showIncome(income, obj.on_update_income);
 

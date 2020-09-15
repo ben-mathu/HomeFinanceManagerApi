@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -93,10 +94,13 @@ public class ReportApi extends BaseServlet {
         }
         int monthsDiff = to.get(Calendar.MONTH) - from.get(Calendar.MONTH);
         
+        String formatFrom = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(from.getTime());
+        String formatTo = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(to.getTime());
+        
         List<OnInComeChange> incomeChangeList = incomeChangeDao.getAll(
                 income.getIncomeId(),
-                reportRequest.getFrom(),
-                reportRequest.getTo()
+                formatFrom,
+                formatTo
         );
         
         double totalIncome = 0;
@@ -130,28 +134,28 @@ public class ReportApi extends BaseServlet {
         reportDto.setMoneyJars(moneyJars);
         reportDto.setTotalExpenseAmount(totalExpenseAmount);
         
-        ConfigureApp app = new ConfigureApp();
-        Properties properties = app.getProperties();
+//        ConfigureApp app = new ConfigureApp();
+//        Properties properties = app.getProperties();
+//        
+//        float rate = 1;
+//        double incomeRange = 16666.67;
+//        double personalRelief = Double.parseDouble(properties.getProperty("gov.tax.relief"));
+//        if (totalIncome <= 24000) {
+//            rate = Float.parseFloat(properties.getProperty("gov.tax.first"));
+//        } else if (totalIncome > 24000 && totalIncome <= 40666.67) {
+//            rate = Float.parseFloat(properties.getProperty("gov.tax.second"));
+//        } else if (totalIncome > 40666.67 && totalIncome <= 57333.34) {
+//            rate = Float.parseFloat(properties.getProperty("gov.tax.third"));
+//        } else if (totalIncome > 57333.34) {
+//            rate = Float.parseFloat(properties.getProperty("gov.tax.forth"));
+//        }
+//        
+//        double tax = rate * totalIncome / 100;
+//        reportDto.setTax(tax);
+//        reportDto.setPersonalRelief(personalRelief);
+//        reportDto.setIncomeAfterTax(totalIncome - tax + personalRelief);
         
-        float rate = 1;
-        double incomeRange = 16666.67;
-        double personalRelief = Double.parseDouble(properties.getProperty("gov.tax.relief"));
-        if (totalIncome <= 24000) {
-            rate = Float.parseFloat(properties.getProperty("gov.tax.first"));
-        } else if (totalIncome > 24000 && totalIncome <= 40666.67) {
-            rate = Float.parseFloat(properties.getProperty("gov.tax.second"));
-        } else if (totalIncome > 40666.67 && totalIncome <= 57333.34) {
-            rate = Float.parseFloat(properties.getProperty("gov.tax.third"));
-        } else if (totalIncome > 57333.34) {
-            rate = Float.parseFloat(properties.getProperty("gov.tax.forth"));
-        }
-        
-        double tax = rate * totalIncome / 100;
-        reportDto.setTax(tax);
-        reportDto.setPersonalRelief(personalRelief);
-        reportDto.setIncomeAfterTax(totalIncome - tax + personalRelief);
-        
-        double netIncome = reportDto.getIncomeAfterTax() - totalExpenseAmount;
+        double netIncome = totalIncome - totalExpenseAmount;
         reportDto.setNetIncome(netIncome);
         
         reportDto.setMonthsRange(monthsDiff);

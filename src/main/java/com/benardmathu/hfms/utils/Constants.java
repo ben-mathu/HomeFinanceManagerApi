@@ -41,6 +41,8 @@ public class Constants {
      */
     public static final String USER = "user";
     public static final String INCOME = "income";
+    public static final String REPORT = "report";
+    public static final String LAST_INCOME = "last_income";
     public static final String ACCOUNT_STATUS_UPDATE = "account_status_update";
     public static final String GROCERY = "grocery";
     public static final String LIABILITIES = "liabilities";

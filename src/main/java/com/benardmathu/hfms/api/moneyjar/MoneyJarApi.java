@@ -10,6 +10,8 @@ import com.benardmathu.hfms.data.expense.model.Expense;
 import com.benardmathu.hfms.data.grocery.model.Grocery;
 import com.benardmathu.hfms.data.grocery.GroceryDao;
 import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.status.AccountStatus;
 import com.benardmathu.hfms.data.status.AccountStatusDao;
 import com.benardmathu.hfms.data.status.Status;
@@ -70,6 +72,7 @@ public class MoneyJarApi extends BaseServlet {
     private final MoneyJarGroceriesDao moneyJarListDao;
     private final MoneyJarExpenseDao moneyJarExpenseDao;
     private final MoneyJarScheduleDao moneyJarScheduleDao;
+    private final IncomeDao incomeDao;
 
     private final GenerateRandomString randomString;
 
@@ -86,6 +89,7 @@ public class MoneyJarApi extends BaseServlet {
         moneyJarListDao = new MoneyJarGroceriesDao();
         moneyJarExpenseDao = new MoneyJarExpenseDao();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
+        incomeDao = new IncomeDao();
 
         randomString = new GenerateRandomString(
                 12,
@@ -543,7 +547,11 @@ public class MoneyJarApi extends BaseServlet {
                 report.setMessage("Success");
 
             }
+            
+            Income income = incomeDao.get(userId);
+            
             jarsDto.setReport(report);
+            jarsDto.setIncome(income);
             response = gson.toJson(jarsDto);
             writer = resp.getWriter();
             writer.write(response);

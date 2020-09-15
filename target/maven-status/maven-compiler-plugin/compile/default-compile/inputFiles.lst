@@ -4,7 +4,9 @@
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/code/model/Code.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/view/dashboard/UserServletController.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/status/Report.java
+/home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/user/Members.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/api/transaction/GetAccessTokenTask.java
+/home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/view/dashboard/IncomeServletController.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/tablerelationships/jarexpenserel/MoneyJarExpenseRel.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/expense/ExpenseDao.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/user/UserDto.java
@@ -73,6 +75,7 @@
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/budget/BudgetDto.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/user/UserResponse.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/user/ConfirmationResponse.java
+/home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/view/dashboard/HouseholdServletController.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/api/users/UserApi.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/view/dashboard/TransactionServletController.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/tablerelationships/jargroceryrel/MoneyJarGroceriesRel.java
@@ -83,6 +86,7 @@
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/code/CodeDao.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/view/dashboard/MoneyJarServletController.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/income/IncomeListDto.java
+/home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/api/household/HouseholdApi.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/view/dashboard/GroceryServletController.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/code/CodeDto.java
 /home/bernard/Projects/MyProjects/HomeFinancialSystem/sourceCode/HomeFinanceManagerApi/src/main/java/com/benardmathu/hfms/data/daraja/LnmoResponse.java

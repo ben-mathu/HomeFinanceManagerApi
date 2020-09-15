@@ -380,7 +380,7 @@ td {
 }
 
 .message-style {
-    width: 150px;
+    width: 250px;
     background-color: rgb(42, 39, 49);
     border-radius: 5px;
     padding: 20px;
@@ -451,3 +451,28 @@ td.td-report-center {
     text-align: center;
     vertical-align: middle;
 }
+
+.guide-container {
+    margin: 50px;
+    height: fit-content;
+    background-color: white;
+    color: #3F3A4B;
+}
+
+.image-instr-style-right {
+    float: right;
+    margin: 10px;
+}
+
+.image-instr-style-left {
+    float: left;
+    margin: 10px;
+}
+
+.instructions-style {
+    margin: 30px;
+    width: 1200px;
+    height: 200px;
+}
+
+.guide-content {}

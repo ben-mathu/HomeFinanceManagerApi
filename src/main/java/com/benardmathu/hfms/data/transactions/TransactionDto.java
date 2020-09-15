@@ -12,6 +12,8 @@ import java.util.List;
 public class TransactionDto {
     @SerializedName(TRANSACTION_TB_NAME)
     private List<Transaction> transactions;
+    @SerializedName("income_monthly")
+    private List<Double> amounts;
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
@@ -19,5 +21,13 @@ public class TransactionDto {
 
     public List<Transaction> getTransactions() {
         return transactions;
+    }
+
+    public List<Double> getAmounts() {
+        return amounts;
+    }
+
+    public void setAmounts(List<Double> amounts) {
+        this.amounts = amounts;
     }
 }

@@ -23,6 +23,7 @@ com/benardmathu/hfms/utils/GenerateRandomString.class
 com/benardmathu/hfms/view/dashboard/ChangeAccountDetailsController.class
 com/benardmathu/hfms/api/transaction/GetAccessTokenTask.class
 com/benardmathu/hfms/data/income/model/IncomeChangeDao.class
+com/benardmathu/hfms/api/household/HouseholdApi.class
 com/benardmathu/hfms/init/Column.class
 com/benardmathu/hfms/data/transactions/TransactionDao.class
 com/benardmathu/hfms/api/report/ReportApi.class
@@ -58,6 +59,7 @@ com/benardmathu/hfms/data/report/ReportDto.class
 com/benardmathu/hfms/data/income/IncomeListDto.class
 com/benardmathu/hfms/data/tablerelationships/userhouse/UserHouseholdRel.class
 com/benardmathu/hfms/view/dashboard/DashboardServlet.class
+com/benardmathu/hfms/data/user/Members.class
 com/benardmathu/hfms/utils/Constants$ScheduleType.class
 com/benardmathu/hfms/init/Table.class
 com/benardmathu/hfms/data/transactions/TransactionDto.class
@@ -65,6 +67,7 @@ com/benardmathu/hfms/data/daraja/LnmoRequest.class
 com/benardmathu/hfms/api/login/Login.class
 com/benardmathu/hfms/init/Constraint.class
 com/benardmathu/hfms/data/utils/DbEnvironment.class
+com/benardmathu/hfms/view/dashboard/HouseholdServletController.class
 com/benardmathu/hfms/data/tablerelationships/jargroceryrel/MoneyJarGroceriesDao.class
 com/benardmathu/hfms/data/budget/model/Budget.class
 com/benardmathu/hfms/data/status/AccountStatusDto.class
@@ -74,6 +77,7 @@ com/benardmathu/hfms/data/user/UserRequest.class
 com/benardmathu/hfms/config/Configuration.class
 com/benardmathu/hfms/config/EmailEnv.class
 com/benardmathu/hfms/data/income/model/Income.class
+com/benardmathu/hfms/view/dashboard/IncomeServletController.class
 com/benardmathu/hfms/view/config/LoginTokenFilter.class
 com/benardmathu/hfms/view/dashboard/TransactionServletController.class
 com/benardmathu/hfms/data/daraja/LnmoResponse.class

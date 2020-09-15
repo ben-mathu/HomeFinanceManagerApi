@@ -20,11 +20,11 @@
         </div>
 
         <%-- notification area --%>
-        <div class="notification-container align-inline" >
+<!--        <div class="notification-container align-inline" >
             <div class="notification align-inline" >
                 <img class="notification-item-icon" src="<%= request.getContextPath() %>/static/images/ic_notification.png" alt="Notifications">
             </div>
-        </div>
+        </div>-->
 
         <div id="optionsMenu" class="menu-options">
             <div class="income-menu" >

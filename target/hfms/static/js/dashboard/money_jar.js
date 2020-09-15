@@ -18,7 +18,6 @@ let errorMessage;
 
 const expenseTypes = {
     'Rent': 'Fixed',
-    'Taxes': 'Fixed',
     'Loan': 'Fixed',
     'Insurance': 'Fixed',
     'Electricity': 'Saving',
@@ -262,6 +261,8 @@ function configureMoneyJar() {
     });
 }
 
+let totalExpenseAmount = 0;
+
 function getAllMoneyJars() {
     if (document.getElementById("progress").hidden) {
         document.getElementById("progress").hidden = false;
@@ -293,9 +294,14 @@ function getAllMoneyJars() {
                 jars.removeAll();
 
                 // update the global list; list is empty
+                totalExpenseAmount = 0;
                 for (let i = 0; i < jarDtoList.length; i++) {
                     let moneyJarDto = jarDtoList[i];
                     let jar = moneyJarDto.jar;
+                    
+                    if (!jar.payment_status) {
+                        totalExpenseAmount += jar.amount;
+                    }
 
                     addJarToList(moneyJarDto);
                 }
@@ -309,6 +315,9 @@ function getAllMoneyJars() {
 //                
 //                jarsCanvas.width = 300;
 //                jarsCanvas.height = 300;
+                let income = jarsDto.income;
+                setIncome(income);
+                showIncome(income);
                 
                 transactionTBody.innerHTML = "";
                 getAllTransactions();
@@ -1015,6 +1024,18 @@ function addExpense(callback) {
     };
 
     var data = serializeData();
+    
+    let userIncome = user.income.amount;
+    let newIncome = parseFloat(amountElem.innerHTML) + totalExpenseAmount;
+    if (newIncome > userIncome) {
+        document.getElementById("messageDialog").style.display = "block";
+        document.getElementById("messageReport").textContent = "The amount you have entered is more than income: " + user.income.amount;
+        window.setTimeout(function () {
+            document.getElementById("messageDialog").style.display = "none";
+        }, 5000);
+        
+        return;
+    }
 
     request.open("PUT", ctx + "/dashboard/jars-controller/add-money-jar?" + data, true);
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -1050,6 +1071,17 @@ function updateMoneyJar(jarId) {
     };
 
     let data = serializeData();
+    
+    let newIncome = parseFloat(amountElem.innerHTML) + totalExpenseAmount;
+    if (newIncome > income) {
+        document.getElementById("messageDialog").style.display = "block";
+        document.getElementById("messageReport").textContent = "The amount you have entered is more than income: " + user.income;
+        window.setTimeout(function () {
+            document.getElementById("messageDialog").style.display = "none";
+        });
+        
+        return;
+    }
 
     request.open("PUT", ctx + "/dashboard/jars-controller/update-money-jar?" + data, true);
     request.setRequestHeader(requestHeader.CONTENT_TYPE, mediaType.FORM_ENCODED);
