@@ -1,6 +1,6 @@
 <div class="header-container" >
     <div class="header-icon-container align-inline" >
-        <img class="header-icon" src="<%= request.getContextPath() %>/static/images/logo.png" alt="nav-icon">
+        <a href="<%= request.getContextPath() %>"><img class="header-icon" src="<%= request.getContextPath() %>/static/images/logo.png" alt="nav-icon"></a>
     </div>
     <div class="breadcrumb-container align-inline" >
         <span id="breadcrumb" class="breadcrumb"></span>

@@ -25,7 +25,7 @@
     <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.12" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.26.0-GA" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: com.miiguar:token-generation:1.0.0">
+      <library name="Maven: com.benardmathu:token-generation:1.0.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/src/main/webapp/WEB-INF/lib/token-generation.jar!/" />
         </CLASSES>

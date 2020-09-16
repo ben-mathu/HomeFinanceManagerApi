@@ -299,7 +299,7 @@ function getAllMoneyJars() {
                     let moneyJarDto = jarDtoList[i];
                     let jar = moneyJarDto.jar;
                     
-                    if (!jar.payment_status) {
+                    if (jar.payment_status) {
                         totalExpenseAmount += jar.amount;
                     }
 
@@ -1025,9 +1025,8 @@ function addExpense(callback) {
 
     var data = serializeData();
     
-    let userIncome = user.income.amount;
-    let newIncome = parseFloat(amountElem.innerHTML) + totalExpenseAmount;
-    if (newIncome > userIncome) {
+    let userIncome = user.income.amount === null ? 0 : user.income.amount;
+    if (parseFloat(amountElem.innerHTML) > userIncome) {
         document.getElementById("messageDialog").style.display = "block";
         document.getElementById("messageReport").textContent = "The amount you have entered is more than income: " + user.income.amount;
         window.setTimeout(function () {

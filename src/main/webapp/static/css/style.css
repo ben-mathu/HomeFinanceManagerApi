@@ -454,25 +454,25 @@ td.td-report-center {
 
 .guide-container {
     margin: 50px;
+    padding: 20px;
     height: fit-content;
     background-color: white;
     color: #3F3A4B;
 }
 
-.image-instr-style-right {
-    float: right;
-    margin: 10px;
-}
-
-.image-instr-style-left {
-    float: left;
-    margin: 10px;
-}
-
 .instructions-style {
-    margin: 30px;
-    width: 1200px;
-    height: 200px;
+    margin: 20px;
+    display: inline-flex;
 }
 
-.guide-content {}
+.guide-content {
+    max-width: 255px;
+    margin: 20px;
+    padding: 10px;
+}
+
+.introduction-guide {
+    display: block;
+    margin: 20px;
+    text-align: center;
+}
