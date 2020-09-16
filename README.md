@@ -35,17 +35,17 @@ $ /usr/local/pgsql/bin/createdb test
 
 $ /usr/local/pgsql/bin/psql test
 
-Documentation can be found here: https://www.postgresql.org/docs/11/install-short.html
+Documentation can be found here: <https://www.postgresql.org/docs/11/install-short.html>
 
 Method II
 
 import the GPG key for PostgreSQL packages
 
-$ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+$ wget --quiet -O - <https://www.postgresql.org/media/keys/ACCC4CF8.asc> | sudo apt-key add -
 
 add the repository to your system
 
-$ sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+$ sudo sh -c 'echo "deb <http://apt.postgresql.org/pub/repos/apt/> `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
 
 install postgresql on ubuntu
 
