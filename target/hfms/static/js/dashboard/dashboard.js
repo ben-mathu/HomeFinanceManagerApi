@@ -754,18 +754,18 @@ function closeNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status
         menuTitles[i].style = "display: none;";
     }
 
-    statusAvatar.hidden = false;
-    name.classList.remove("unFade");
-    name.classList.add("fade");
-    name.hidden = true;
-
-    status.classList.remove("unFade");
-    status.classList.add("fade");
-    status.hidden = true;
-
-    statusDetails.hidden = true;
-
-    details.style.backgroundImage = "url(\"\")";
+//    statusAvatar.hidden = false;
+//    name.classList.remove("unFade");
+//    name.classList.add("fade");
+//    name.hidden = true;
+//
+//    status.classList.remove("unFade");
+//    status.classList.add("fade");
+//    status.hidden = true;
+//
+//    statusDetails.hidden = true;
+//
+//    details.style.backgroundImage = "url(\"\")";
     
     return false;
 }
@@ -781,18 +781,18 @@ function openNavDrawer(navigationDrawer, menuTitles, statusAvatar, name, status,
         menuTitles[i].style = "display: inline;";
     }
 
-    statusAvatar.hidden = true;
-    name.classList.add("unFade");
-    name.classList.remove("fade");
-    name.hidden = false;
+//    statusAvatar.hidden = true;
+//    name.classList.add("unFade");
+//    name.classList.remove("fade");
+//    name.hidden = false;
     
-    status.classList.add("unFade");
-    status.classList.remove("fade");
-    status.hidden = false;
+//    status.classList.add("unFade");
+//    status.classList.remove("fade");
+//    status.hidden = false;
 
-    statusDetails.hidden = false;
+//    statusDetails.hidden = false;
 
-    details.style.backgroundImage = "url(" + ctx + "/static/images/avatar_bg.png)";
+//    details.style.backgroundImage = "url(" + ctx + "/static/images/avatar_bg.png)";
 
     return true;
 }

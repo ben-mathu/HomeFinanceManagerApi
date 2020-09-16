@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="10" failures="0" name="com.miiguar.hfms.utils.ConstantsTest" time="0.016" errors="0" skipped="0">
+<testsuite tests="10" failures="0" name="com.miiguar.hfms.utils.ConstantsTest" time="0" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.8+10-post-Ubuntu-0ubuntu120.04"/>
@@ -44,7 +44,7 @@
     <property name="java.class.path" value="/snap/netbeans/30/netbeans/java/maven/boot/plexus-classworlds-2.6.0.jar"/>
     <property name="java.vm.specification.version" value="11"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dmaven.ext.class.path=/snap/netbeans/30/netbeans/java/maven-nblib/netbeans-eventspy.jar clean install"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dmaven.ext.class.path=/snap/netbeans/30/netbeans/java/maven-nblib/netbeans-eventspy.jar install"/>
     <property name="java.home" value="/usr/lib/jvm/java-11-openjdk-amd64"/>
     <property name="user.language" value="en"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
@@ -67,9 +67,9 @@
   <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="UsernameValidation_ValidUsername_ReturnsTrue" time="0"/>
   <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="Pattern_ValidEmail_Returns_True" time="0"/>
   <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="UsernameValidation_InvalidUsername_ReturnsFalse" time="0"/>
-  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="test_InvalidParam_ReturnsFalse" time="0.006"/>
-  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="isPasswordValid_ValidPassword_ReturnEmptyString" time="0.001"/>
-  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="Pattern_InvalidEmail_Returns_False" time="0.007"/>
+  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="test_InvalidParam_ReturnsFalse" time="0"/>
+  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="isPasswordValid_ValidPassword_ReturnEmptyString" time="0"/>
+  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="Pattern_InvalidEmail_Returns_False" time="0"/>
   <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="isPasswordValid_EmptyPassword_ReturnError" time="0"/>
-  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="test_ValidParam_ReturnsTrue" time="0.002"/>
+  <testcase classname="com.miiguar.hfms.utils.ConstantsTest" name="test_ValidParam_ReturnsTrue" time="0"/>
 </testsuite>

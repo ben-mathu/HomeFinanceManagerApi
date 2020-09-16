@@ -59,7 +59,7 @@ public class IncomeApi extends BaseServlet {
         Income income = incomeDto.getIncome();
 
         Date date = new Date();
-        SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        SimpleDateFormat sf = new SimpleDateFormat(DATE_FORMAT);
         String today = sf.format(date);
 
         GenerateRandomString randomString = new GenerateRandomString(

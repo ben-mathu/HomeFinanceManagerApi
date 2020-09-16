@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -94,13 +95,13 @@ public class ReportApi extends BaseServlet {
         }
         int monthsDiff = to.get(Calendar.MONTH) - from.get(Calendar.MONTH);
         
-        String formatFrom = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(from.getTime());
-        String formatTo = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(to.getTime());
+//        String formatFrom = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(from.getTime());
+//        String formatTo = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(to.getTime());
         
         List<OnInComeChange> incomeChangeList = incomeChangeDao.getAll(
                 income.getIncomeId(),
-                formatFrom,
-                formatTo
+                reportRequest.getFrom(),
+                reportRequest.getTo()
         );
         
         double totalIncome = 0;
@@ -122,12 +123,28 @@ public class ReportApi extends BaseServlet {
         );
         
         List<MoneyJar> moneyJars = new ArrayList<>();
+        
+        HashMap<String, MoneyJar> map = new HashMap<>();
         double totalExpenseAmount = 0;
         for (JarScheduleDateRel item : paid) {
             MoneyJar jar = moneyJarsDao.get(item.getJarId());
-            jar.setTotalAmount(item.getAmount());
-            totalExpenseAmount += item.getAmount();
-            moneyJars.add(jar);
+            
+            if (isExpenseTypeExists(jar.getName(), map)) {
+                MoneyJar mappedJar = map.get(jar.getName());
+                double amount = map.get(jar.getName()).getTotalAmount() + item.getAmount();
+                mappedJar.setTotalAmount(amount);
+                map.put(jar.getName(), mappedJar);
+            } else {
+                jar.setTotalAmount(item.getAmount());
+                map.put(jar.getName(), jar);
+            }
+        }
+        
+        for (Map.Entry<String, MoneyJar> mapItemEntry : map.entrySet()) {
+            MoneyJar value = mapItemEntry.getValue();
+            
+            totalExpenseAmount += value.getTotalAmount();
+            moneyJars.add(value);
         }
         
         reportDto.setIncome(totalIncome);
@@ -163,5 +180,13 @@ public class ReportApi extends BaseServlet {
         resp.setStatus(HttpServletResponse.SC_OK);
         writer = resp.getWriter();
         writer.write(gson.toJson(reportDto));
+    }
+
+    private boolean isExpenseTypeExists(String name, HashMap<String, MoneyJar> map) {
+        if (map.containsKey(name)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

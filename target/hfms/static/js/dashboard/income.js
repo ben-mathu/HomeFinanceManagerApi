@@ -202,7 +202,7 @@ function addIncome() {
     closeOptionsMenu();
 
     var request = getXmlHttpRequest();
-    request.onreadystatechanged = function() {
+    request.onreadystatechange = function() {
         if (request.readyState === 4) {
             if (request.status === 200) {
                 let obj = JSON.parse(request.responseText);

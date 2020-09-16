@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 
 import static com.benardmathu.hfms.data.utils.URL.*;
 import com.benardmathu.hfms.utils.Constants;
+import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
 import com.benardmathu.hfms.utils.Log;
 import java.io.OutputStream;
 import java.net.BindException;
@@ -155,7 +156,7 @@ public class MpesaResponseListener implements StopServerListener {
                 JarScheduleDateRel jarScheduleDateRel;
                 list.forEach(jarSchedule -> {
                     try {
-                        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jarSchedule.getScheduleDate());
+                        Date date = new SimpleDateFormat(DATE_FORMAT).parse(jarSchedule.getScheduleDate());
                         Date now = new Date();
                         
                         if (now.getTime() > date.getTime() && !jarSchedule.isPaymentStatus()) {

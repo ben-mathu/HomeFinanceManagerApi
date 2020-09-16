@@ -364,6 +364,7 @@ public class MoneyJarScheduleDao extends BaseDao<JarScheduleDateRel> {
     public List<JarScheduleDateRel> getAllPaid(String householdId, String from, String to) {
         String query = "SELECT * FROM " + DbEnvironment.MONEY_JAR_SCHEDULE_REL_TB +
                 " WHERE " + DbEnvironment.HOUSEHOLD_ID + "=? AND "
+                + DbEnvironment.PAYMENT_STATUS + "=? AND "
                 + DbEnvironment.JAR_SCHEDULE_DATE
                 + " BETWEEN SYMMETRIC ? AND ?";
         List<JarScheduleDateRel> list = new ArrayList<>();
@@ -377,8 +378,9 @@ public class MoneyJarScheduleDao extends BaseDao<JarScheduleDateRel> {
             preparedStatement = conn.prepareStatement(query);
             
             preparedStatement.setString(1, householdId);
-            preparedStatement.setString(2, from);
-            preparedStatement.setString(3, to);
+            preparedStatement.setBoolean(2, true);
+            preparedStatement.setString(3, from);
+            preparedStatement.setString(4, to);
             
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()) {
