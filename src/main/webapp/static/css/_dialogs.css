@@ -1,0 +1,28 @@
+.dialog {
+    width: fit-content;
+    height: fit-content;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    display: none;
+    margin-left: auto;
+    margin-right: 30px;
+    margin-bottom: 30px;
+}
+
+.dialog-content {
+    padding: 5px;
+    color: #3F3A4B;
+    width: fit-content;
+    height: fit-content;
+    overflow-y: scroll;
+    margin: 3px;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+}
+
+.liability-section {
+    width: 100%;
+    height: 100px;
+    overflow-y: scroll;
+}

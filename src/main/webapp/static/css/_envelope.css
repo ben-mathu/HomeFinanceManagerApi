@@ -1,0 +1,17 @@
+.btn-submit {
+    width: 100%;
+}
+
+.btn-right {
+    float: right;
+}
+
+.select-style {
+    width: 260px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.options-list {
+    padding: 10px;
+}
