@@ -6,6 +6,7 @@ import com.benardmathu.hfms.init.PrimaryKey;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.Jar;
 
 import javax.persistence.*;
 
@@ -32,31 +33,31 @@ public class Grocery {
     private Long id;
 
     @SerializedName(GROCERY_ID)
-//    @PrimaryKey(columnName = GROCERY_ID)
+    @Column(name = GROCERY_ID)
     private String groceryId = "";
 
     @SerializedName(GROCERY_NAME)
-//    @Column(columnName = GROCERY_NAME, characterLength = 255)
+    @Column(name = GROCERY_NAME)
     private String name = "";
 
     @SerializedName(GROCERY_DESCRIPTION)
-//    @Column(columnName = GROCERY_DESCRIPTION, characterLength = 255)
+    @Column(name = GROCERY_DESCRIPTION)
     private String description = "";
 
     @SerializedName(GROCERY_PRICE)
-//    @Column(columnName = GROCERY_PRICE)
+    @Column(name = GROCERY_PRICE)
     private double price;
 
     @SerializedName(REQUIRED_QUANTITY)
-//    @Column(columnName = REQUIRED_QUANTITY)
+    @Column(name = REQUIRED_QUANTITY)
     private int required;
 
     @SerializedName(REMAINING_QUANTITY)
-//    @Column(columnName = REMAINING_QUANTITY)
+    @Column(name = REMAINING_QUANTITY)
     private int remaining;
 
     @SerializedName(MONEY_JAR_ID)
-    @Column(name = "")
-//    @Column(columnName = MONEY_JAR_ID)
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = Jar.class)
+    @JoinColumn(name = MONEY_JAR_ID)
     private String jarId = "";
 }
