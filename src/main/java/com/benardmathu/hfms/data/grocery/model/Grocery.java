@@ -3,9 +3,7 @@ package com.benardmathu.hfms.data.grocery.model;
 import com.google.gson.annotations.SerializedName;
 import com.benardmathu.hfms.init.Constraint;
 import com.benardmathu.hfms.init.PrimaryKey;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.tomcat.Jar;
 
 import javax.persistence.*;
@@ -15,18 +13,12 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "groceries")
-//@Table(tableName = GROCERIES_TB_NAME,
-//        constraint = {@Constraint(
-//                name = FK_GROCERIES_JAR_ID,
-//                columnName = MONEY_JAR_ID,
-//                tableName = MONEY_JAR_TB_NAME
-//        )}
-//)
+@Table(name = GROCERIES_TB_NAME)
 public class Grocery {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
