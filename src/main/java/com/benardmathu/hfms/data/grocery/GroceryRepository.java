@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Created on 25/03/2021
  */
-public interface GroceryRepository extends JpaRepository<Grocery, > {
+public interface GroceryRepository extends JpaRepository<Grocery, Long> {
 }
