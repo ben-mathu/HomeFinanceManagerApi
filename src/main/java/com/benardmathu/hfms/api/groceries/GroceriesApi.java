@@ -9,6 +9,10 @@ import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.data.grocery.GroceryDao;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.GROCERY_URL;
 import java.io.IOException;
@@ -23,7 +27,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author bernard
  */
-@WebServlet(name = "GroceriesApi", urlPatterns = {API + GROCERY_URL})
+@RestController
+@RequestMapping(name = "GroceriesApi", value = GROCERY_URL)
 public class GroceriesApi extends BaseServlet {
     private GroceryDao groceryDao;
     
@@ -31,7 +36,7 @@ public class GroceriesApi extends BaseServlet {
         groceryDao = new GroceryDao();
     }
 
-    @Override
+    @DeleteMapping
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int affected = groceryDao.deleteGrocery(req.getParameter(DbEnvironment.GROCERY_ID));
         
