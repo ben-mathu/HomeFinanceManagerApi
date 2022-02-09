@@ -4,20 +4,30 @@ import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.data.budget.BudgetDao;
 import com.benardmathu.hfms.data.budget.model.Budget;
 import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
+import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.status.AccountStatus;
 import com.benardmathu.hfms.data.status.AccountStatusDao;
+import com.benardmathu.hfms.data.status.AccountStatusRepository;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
 import com.benardmathu.hfms.data.transactions.TransactionDao;
+import com.benardmathu.hfms.data.transactions.TransactionRepository;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
 import com.benardmathu.hfms.data.user.UserDao;
 import com.benardmathu.hfms.data.user.UserDto;
+import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,9 +44,31 @@ import static com.benardmathu.hfms.data.utils.URL.*;
 /**
  * @author bernard
  */
-@WebServlet(API + USER_DETAILS)
+@RestController
+@RequestMapping(USER_DETAILS)
 public class UserApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
+
+    @Autowired
+    private IncomeRepository incomeRepository;
+
+    @Autowired
+    private HouseholdRepository householdRepository;
+
+    @Autowired
+    private UserHouseholdRepository userHouseholdRepository;
+
+    @Autowired
+    private AccountStatusRepository accountStatusRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private IncomeChangeRepository incomeChangeRepository;
 
     private IncomeDao incomeDao = new IncomeDao();
     private HouseholdDao householdDao = new HouseholdDao();
@@ -55,8 +87,8 @@ public class UserApi extends BaseServlet {
 
         String userId = req.getParameter(USER_ID);
         User user = userDao.get(userId);
-        Income income = incomeDao.get(user.getUserId());
-        List<UserHouseholdRel> list = userHouseholdDao.getAllByUserId(user.getUserId());
+        Income income = incomeDao.get(user.getUserId().toString());
+        List<UserHouseholdRel> list = userHouseholdDao.getAllByUserId(user.getUserId().toString());
 
         ArrayList<Household> households = new ArrayList<>();
         ArrayList<User> members = new ArrayList<>();
@@ -68,13 +100,13 @@ public class UserApi extends BaseServlet {
         ArrayList<Transaction> transactions = (ArrayList<Transaction>) getAllTransactions(userId);
         
         for (Household household : households) {
-            members.addAll(getUser(household.getId()));
+            members.addAll(getUser(household.getId().toString()));
         }
 
         // get account status
-        AccountStatus accountStatus = accountStatusDao.get(user.getUserId());
+        AccountStatus accountStatus = accountStatusDao.get(user.getUserId().toString());
         
-        OnInComeChange onInComeChange = incomeChangeDao.get(income.getIncomeId());
+        OnInComeChange onInComeChange = incomeChangeDao.get(income.getIncomeId().toString());
 
         UserDto dto = new UserDto();
         dto.setUser(user);

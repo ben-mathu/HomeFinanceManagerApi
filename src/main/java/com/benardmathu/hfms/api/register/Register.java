@@ -3,17 +3,18 @@ package com.benardmathu.hfms.api.register;
 import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.config.ConfigureApp;
 import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
-import com.benardmathu.hfms.data.status.AccountStatus;
-import com.benardmathu.hfms.data.status.AccountStatusDao;
+import com.benardmathu.hfms.data.status.*;
 import com.benardmathu.hfms.data.status.Status;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
 import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
 import com.benardmathu.hfms.data.user.model.User;
-import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.Log;
@@ -41,13 +42,29 @@ import static com.benardmathu.hfms.utils.Constants.*;
 import static com.benardmathu.hfms.utils.Constants.COMPLETE;
 import com.benardmathu.hfms.utils.PasswordUtil;
 import com.benardmathu.tokengeneration.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author bernard
  */
-@WebServlet(API + REGISTRATION)
+@RestController
+@RequestMapping(REGISTRATION)
 public class Register extends BaseServlet {
     private static final long serialVersionUID = 1L;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private HouseholdRepository householdRepository;
+
+    @Autowired
+    private UserHouseholdRepository userHouseholdRepository;
+
+    @Autowired
+    private AccountStatusRepository accountStatusRepository;
 
     // Dao
     private UserDao userDao = new UserDao();
@@ -112,36 +129,36 @@ public class Register extends BaseServlet {
             
             user.setPassword(securePassword);
             user.setSalt(salt);
-            user.setUserId(userId);
+            user.setUserId(Long.parseLong(userId));
             
             int rowsAffected = userDao.save(user);
 
             AccountStatus accountStatus = new AccountStatus();
-            accountStatus.setUserId(user.getUserId());
+            accountStatus.setUserId(user.getUserId().toString());
             int affectedRows = accountStatusDao.save(accountStatus);
 
             Log.d(TAG, "Affected Rows: " + affectedRows);
 
             UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
-            if (isJoinHouseHold && !household.getId().isEmpty()) {
-                userHouseholdRel.setHouseId(household.getId());
-                userHouseholdRel.setUserId(user.getUserId());
+            if (isJoinHouseHold) {
+                userHouseholdRel.setHouseId(household.getId().toString());
+                userHouseholdRel.setUserId(user.getUserId().toString());
 
                 addUserToHousehold(userHouseholdRel);
 
-                updateHouseholdStatus(user.getUserId());
+                updateHouseholdStatus(user.getUserId().toString());
             } else if (!household.getName().isEmpty()) {
                 String houseId = randomString.nextString();
-                household.setId(houseId);
+                household.setId(Long.parseLong(houseId));
                 householdDao.save(household);
 
-                userHouseholdRel.setUserId(user.getUserId());
+                userHouseholdRel.setUserId(user.getUserId().toString());
                 userHouseholdRel.setHouseId(houseId);
                 userHouseholdRel.setOwner(true);
 
                 addUserToHousehold(userHouseholdRel);
 
-                updateHouseholdStatus(user.getUserId());
+                updateHouseholdStatus(user.getUserId().toString());
             }
 
             // generate a token
@@ -195,7 +212,7 @@ public class Register extends BaseServlet {
     }
 
     private boolean isHouseholdExists(Household household) {
-        Household house = householdDao.getHousehold(household.getId());
+        Household house = householdDao.getHousehold(household.getId().toString());
         if (house != null) {
             return true;
         }

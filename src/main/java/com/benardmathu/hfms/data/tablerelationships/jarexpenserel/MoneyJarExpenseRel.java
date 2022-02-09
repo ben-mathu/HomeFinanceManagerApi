@@ -31,20 +31,4 @@ public class MoneyJarExpenseRel {
     
     @Column(name = EXPENSE_ID)
     private String expenseId;
-
-    public void setJarId(String jarId) {
-        this.jarId = jarId;
-    }
-
-    public String getJarId() {
-        return jarId;
-    }
-
-    public void setExpenseId(String expenseId) {
-        this.expenseId = expenseId;
-    }
-
-    public String getExpenseId() {
-        return expenseId;
-    }
 }

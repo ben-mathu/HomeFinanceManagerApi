@@ -34,6 +34,9 @@ import com.benardmathu.hfms.utils.GenerateCipher;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.InitUrlConnection;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -51,7 +54,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author bernard
  */
-@WebServlet(name = "TransactionApi", urlPatterns = {API + TRANSACTIONS})
+@RestController
+@RequestMapping(name = "TransactionApi", value = TRANSACTIONS)
 public class TransactionApi extends BaseServlet {
     private final TransactionDao transactionDao;
     private final MoneyJarsDao moneyJarsDao;
@@ -142,7 +146,7 @@ public class TransactionApi extends BaseServlet {
         String tId = rand.nextString();
         
         Transaction transaction = new Transaction();
-        transaction.setId(tId);
+        transaction.setId(Long.parseLong(tId));
         transaction.setTransactionDesc(jar.getName());
         transaction.setPaymentDetails(gson.toJson(jar));
         transaction.setAmount(jar.getTotalAmount());

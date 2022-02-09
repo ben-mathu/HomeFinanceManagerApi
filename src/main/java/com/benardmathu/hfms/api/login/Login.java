@@ -5,6 +5,7 @@ import com.benardmathu.hfms.config.ConfigureApp;
 import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
 import com.benardmathu.hfms.data.user.model.User;
@@ -13,7 +14,6 @@ import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,19 +24,26 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.LOGIN;
 import static com.benardmathu.hfms.utils.Constants.*;
 import com.benardmathu.hfms.utils.PasswordUtil;
 import com.benardmathu.tokengeneration.JwtTokenUtil;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author bernard
  */
-@WebServlet(API + LOGIN)
+@RestController
+@RequestMapping(LOGIN)
 public class Login extends BaseServlet {
     private static final long serialVersionUID = 1L;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private UserDao userDao = new UserDao();
 
@@ -44,7 +51,7 @@ public class Login extends BaseServlet {
     private Properties prop = db.getProperties();
     private JdbcConnection jdbcConnection = new JdbcConnection();
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String jsonRequest = BufferRequestReader.bufferRequest(request);
 
@@ -59,7 +66,7 @@ public class Login extends BaseServlet {
         this.db = new ConfigureDb();
         this.prop = db.getProperties();
         this.jdbcConnection = new JdbcConnection();
-        response.setContentType(APPLICATION_JSON);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         // validate credentials
         User u = userDao.validateCredentials(username, password);

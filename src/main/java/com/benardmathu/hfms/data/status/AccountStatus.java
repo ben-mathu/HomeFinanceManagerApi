@@ -1,44 +1,53 @@
 package com.benardmathu.hfms.data.status;
 
 import com.google.gson.annotations.SerializedName;
-import com.benardmathu.hfms.init.Column;
-import com.benardmathu.hfms.init.Constraint;
-import com.benardmathu.hfms.init.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 
 /**
  * @author bernard
  */
-@Table(tableName = ACCOUNT_STATUS_TB_NAME,
-        constraint = {@Constraint(
-                name = FK_ACCOUNT_STATUS_USER_ID,
-                columnName = USER_ID,
-                tableName = USERS_TB_NAME
-        )}
-)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = ACCOUNT_STATUS_TB_NAME)
 public class AccountStatus {
+    @Id
+    private Long id;
+    
     @SerializedName(USER_ID)
-    @Column(columnName = USER_ID)
+    @Column(name = USER_ID)
     private String userId = "";
 
     @SerializedName(ACCOUNT_STATUS)
-    @Column(columnName = ACCOUNT_STATUS, notNull = false, characterLength = 255)
+    @Column(name = ACCOUNT_STATUS, nullable = false, length = 255)
     private String accountStatus = "";
 
     @SerializedName(INCOME_STATUS)
-    @Column(columnName = INCOME_STATUS, notNull = false, characterLength = 255)
+    @Column(name = INCOME_STATUS, nullable = false, length = 255)
     private String incomeStatus = "";
 
     @SerializedName(JAR_STATUS)
-    @Column(columnName = JAR_STATUS, notNull = false, characterLength = 255)
+    @Column(name = JAR_STATUS, nullable = false, length = 255)
     private String jarStatus = "";
 
     @SerializedName(HOUSEHOLD_STATUS)
-    @Column(columnName = HOUSEHOLD_STATUS, notNull = false, characterLength = 255)
+    @Column(name = HOUSEHOLD_STATUS, nullable = false, length = 255)
     private String householdStatus = "";
 
     @SerializedName(COMPLETE_AT)
-    @Column(columnName = COMPLETE_AT, notNull = false, characterLength = 125)
+    @Column(name = COMPLETE_AT, nullable = false, length = 125)
     private String reminder = "";
 
     public String getUserId() {

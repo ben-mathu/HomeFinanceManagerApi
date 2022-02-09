@@ -3,23 +3,36 @@ package com.benardmathu.hfms.api.report;
 import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.config.ConfigureApp;
 import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.data.household.HouseholdRepository;
+import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
+import com.benardmathu.hfms.data.jar.MoneyJarRepository;
 import com.benardmathu.hfms.data.jar.MoneyJarsDao;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.report.ReportDto;
 import com.benardmathu.hfms.data.report.ReportRequest;
+import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRepository;
+import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesRepository;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
+import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRepository;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
 import com.benardmathu.hfms.data.transactions.TransactionDao;
+import com.benardmathu.hfms.data.transactions.TransactionRepository;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
 import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.REPORTS;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.Constants;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,8 +56,27 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author bernard
  */
-@WebServlet(name = "ReportApi", urlPatterns = {API + REPORTS})
+@RestController
+@RequestMapping(name = "ReportApi", value = REPORTS)
 public class ReportApi extends BaseServlet {
+    @Autowired
+    private IncomeRepository incomeRepository;
+
+    @Autowired
+    private IncomeChangeRepository incomeChangeRepository;
+
+    @Autowired
+    private JarScheduleDateRepository jarScheduleDateRepository;
+
+    @Autowired
+    private HouseholdRepository householdRepository;
+
+    @Autowired
+    private MoneyJarRepository moneyJarRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     private IncomeDao incomeDao;
     private IncomeChangeDao incomeChangeDao;
     private MoneyJarScheduleDao moneyJarScheduleDao;
@@ -60,7 +92,7 @@ public class ReportApi extends BaseServlet {
         moneyJarsDao = new MoneyJarsDao();
     }
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String reportRequestStr = BufferRequestReader.bufferRequest(req);
         
@@ -99,7 +131,7 @@ public class ReportApi extends BaseServlet {
 //        String formatTo = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(to.getTime());
         
         List<OnInComeChange> incomeChangeList = incomeChangeDao.getAll(
-                income.getIncomeId(),
+                income.getIncomeId().toString(),
                 reportRequest.getFrom(),
                 reportRequest.getTo()
         );

@@ -1,8 +1,10 @@
 package com.benardmathu.hfms.api.income;
 
 import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeDao;
 import com.benardmathu.hfms.data.income.IncomeDto;
+import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
@@ -13,11 +15,13 @@ import com.benardmathu.hfms.data.status.Status;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,13 +31,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
-import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.INCOME_ENDPOINT;
 import static com.benardmathu.hfms.utils.Constants.COMPLETE;
 import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * @author bernard
@@ -42,6 +42,12 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @RequestMapping(value = INCOME_ENDPOINT)
 public class IncomeApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
+
+    @Autowired
+    private IncomeRepository incomeRepository;
+
+    @Autowired
+    private IncomeChangeRepository incomeChangeRepository;
 
     private IncomeDao incomeDao;
     private IncomeChangeDao incomeChangeDao;
@@ -53,7 +59,7 @@ public class IncomeApi extends BaseServlet {
         accountStatusDao = new AccountStatusDao();
     }
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
         String userId = httpServletRequest.getParameter(USER_ID);
         String requestStr = BufferRequestReader.bufferRequest(httpServletRequest);
@@ -69,7 +75,7 @@ public class IncomeApi extends BaseServlet {
                 12, new SecureRandom()
         );
 
-        String incomeId = randomString.nextString();
+        Long incomeId = Long.parseLong(randomString.nextString());
 
         income.setIncomeId(incomeId);
         income.setCreatedAt(today);
@@ -127,7 +133,7 @@ public class IncomeApi extends BaseServlet {
         return report;
     }
 
-    @Override
+    @PutMapping
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requestStr = BufferRequestReader.bufferRequest(req);
         

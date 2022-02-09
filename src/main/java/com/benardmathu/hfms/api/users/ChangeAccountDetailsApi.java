@@ -3,10 +3,15 @@ package com.benardmathu.hfms.api.users;
 import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.URL.*;
 import com.benardmathu.hfms.utils.BufferRequestReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -19,8 +24,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author bernard
  */
-@WebServlet(name = "ChangeAccountDetailsApi", urlPatterns = {API + CHANGE_ACCOUNT_URL})
+@RestController
+@RequestMapping(name = "ChangeAccountDetailsApi", value = CHANGE_ACCOUNT_URL)
 public class ChangeAccountDetailsApi extends BaseServlet {
+
+    @Autowired
+    private UserRepository userRepository;
 
     private UserDao userDao;
     
@@ -67,7 +76,7 @@ public class ChangeAccountDetailsApi extends BaseServlet {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId());
+        User user = userDao.get(userRequest.getUserId().toString());
         
         user.setMobNum(userRequest.getMobNum());
         return userDao.update(user);
@@ -77,7 +86,7 @@ public class ChangeAccountDetailsApi extends BaseServlet {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId());
+        User user = userDao.get(userRequest.getUserId().toString());
         
         user.setUsername(userRequest.getUsername());
         return userDao.update(user);
@@ -87,7 +96,7 @@ public class ChangeAccountDetailsApi extends BaseServlet {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId());
+        User user = userDao.get(userRequest.getUserId().toString());
         
         user.setEmail(userRequest.getEmail());
         return userDao.update(user);
@@ -97,7 +106,7 @@ public class ChangeAccountDetailsApi extends BaseServlet {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId());
+        User user = userDao.get(userRequest.getUserId().toString());
         
         user.setPassword(userRequest.getPassword());
         return userDao.update(user);

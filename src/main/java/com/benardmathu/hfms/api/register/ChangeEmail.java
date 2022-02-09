@@ -4,10 +4,15 @@ import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,13 +32,17 @@ import static com.benardmathu.hfms.data.utils.URL.CHANGE_EMAIL;
 /**
  * @author bernard
  */
-@WebServlet(API + CHANGE_EMAIL)
+@RestController
+@RequestMapping(CHANGE_EMAIL)
 public class ChangeEmail extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private UserDao userDao = new UserDao();
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String requestStr = BufferRequestReader.bufferRequest(req);

@@ -9,6 +9,9 @@ import com.benardmathu.hfms.data.user.Identification;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +31,8 @@ import static com.benardmathu.hfms.data.utils.URL.CONFIRM;
 /**
  * @author bernard
  */
-@WebServlet(API + CONFIRM)
+@RestController
+@RequestMapping(API + CONFIRM)
 public class Confirm extends BaseServlet {
     private static final long serialVersionUID = 1L;
     public static final String TAG = Confirm.class.getSimpleName();
@@ -37,7 +41,7 @@ public class Confirm extends BaseServlet {
     private Properties prop;
     private JdbcConnection jdbcConnection;
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String requestStr = BufferRequestReader.bufferRequest(req);
@@ -67,7 +71,7 @@ public class Confirm extends BaseServlet {
 
     private boolean isCodeCorrect(Identification id) {
         CodeDao dao = new CodeDao();
-        Code item = dao.get(id.getUser().getUserId());
+        Code item = dao.get(id.getUser().getUserId().toString());
 
         if (item.getCode().equals(id.getCode())) {
             dao.emailConfirmed(item.getCode());
