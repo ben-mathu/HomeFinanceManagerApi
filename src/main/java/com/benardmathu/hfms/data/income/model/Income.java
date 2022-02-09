@@ -1,92 +1,49 @@
 package com.benardmathu.hfms.data.income.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.benardmathu.hfms.init.Column;
-import com.benardmathu.hfms.init.Constraint;
-import com.benardmathu.hfms.init.PrimaryKey;
-import com.benardmathu.hfms.init.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 
 /**
  * @author bernard
  */
-@Table(tableName = INCOME_TB_NAME,
-        constraint = {@Constraint(
-                tableName = USERS_TB_NAME,
-                name = FK_INCOME_USER_ID,
-                columnName = USER_ID
-        )}
-)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = INCOME_TB_NAME)
 public class Income {
     @SerializedName(INCOME_ID)
-    @PrimaryKey(columnName = INCOME_ID)
-    private String incomeId = "";
+    @Id
+    private Long incomeId;
 
     @SerializedName(AMOUNT)
-    @Column(columnName = AMOUNT)
+    @Column(name = AMOUNT)
     private double amount = 0;
 
     @SerializedName(INCOME_TYPE)
-    @Column(columnName = INCOME_TYPE)
+    @Column(name = INCOME_TYPE)
     private String accountType = "";
 
     @SerializedName(USER_ID)
-    @Column(columnName = USER_ID)
+    @Column(name = USER_ID)
     private String userId = "";
     
     @SerializedName(SCHEDULED_FOR)
-    @Column(columnName = SCHEDULED_FOR, characterLength = 25)
+    @Column(name = SCHEDULED_FOR, length = 25)
     private String schedule = "";
 
     @SerializedName(CREATED_AT)
-    @Column(columnName = CREATED_AT, characterLength = 25)
+    @Column(name = CREATED_AT, length = 25)
     private String createdAt = "";
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(String accountType) {
-        this.accountType = accountType;
-    }
-
-    public String getIncomeId() {
-        return incomeId;
-    }
-
-    public void setIncomeId(String incomeId) {
-        this.incomeId = incomeId;
-    }
-
-    public void setSchedule(String schedule) {
-        this.schedule = schedule;
-    }
-
-    public String getSchedule() {
-        return schedule;
-    }
 }

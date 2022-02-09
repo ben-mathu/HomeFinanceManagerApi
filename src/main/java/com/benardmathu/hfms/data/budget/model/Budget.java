@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.CREATED_AT;
@@ -21,6 +22,7 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.CREATED_AT;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = BUDGET_TB_NAME)
 public class Budget {
     @SerializedName(BUDGET_ID)
     @Id
