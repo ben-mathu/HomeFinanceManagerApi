@@ -13,6 +13,8 @@ import com.benardmathu.hfms.data.status.Status;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,7 +38,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 /**
  * @author bernard
  */
-@WebServlet(API + INCOME_ENDPOINT)
+@RestController
+@RequestMapping(value = INCOME_ENDPOINT)
 public class IncomeApi extends BaseServlet {
     private static final long serialVersionUID = 1L;
 

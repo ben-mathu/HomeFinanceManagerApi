@@ -7,8 +7,10 @@ package com.benardmathu.hfms.api.groceries;
 
 import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.data.grocery.GroceryDao;
+import com.benardmathu.hfms.data.grocery.GroceryRepository;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,33 +32,23 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(name = "GroceriesApi", value = GROCERY_URL)
 public class GroceriesApi extends BaseServlet {
-    private GroceryDao groceryDao;
-    
-    public GroceriesApi() {
-        groceryDao = new GroceryDao();
-    }
+//    private GroceryDao groceryDao;
+    @Autowired
+    private GroceryRepository groceryRepository;
+//    public GroceriesApi() {
+//        groceryDao = new GroceryDao();
+//    }
 
     @DeleteMapping
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int affected = groceryDao.deleteGrocery(req.getParameter(DbEnvironment.GROCERY_ID));
-        
-        if (affected > 0) {
-            Report report = new Report();
-            report.setMessage("Grocery item was successfully deleted.");
-            report.setStatus(HttpServletResponse.SC_OK);
-            
-            resp.setStatus(report.getStatus());
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
-        } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            
-            Report report = new Report();
-            report.setMessage("Grocery could not be deleted, please try again.");
-            report.setStatus(resp.getStatus());
-            
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
-        }
+        groceryRepository.deleteById(Long.parseLong(req.getParameter(DbEnvironment.GROCERY_ID)));
+
+        Report report = new Report();
+        report.setMessage("Grocery item was successfully deleted.");
+        report.setStatus(HttpServletResponse.SC_OK);
+
+        resp.setStatus(report.getStatus());
+        writer = resp.getWriter();
+        writer.write(gson.toJson(report));
     }
 }

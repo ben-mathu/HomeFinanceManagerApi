@@ -2,18 +2,23 @@ package com.benardmathu.hfms.api.household;
 
 import com.benardmathu.hfms.api.base.BaseServlet;
 import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.user.Members;
 import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.USER_ID;
 import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.HOUSEHOLDS_URL;
 import com.benardmathu.hfms.utils.BufferRequestReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +31,16 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author bernard
  */
-@WebServlet(name = "HouseholdApi", urlPatterns = {API + HOUSEHOLDS_URL})
+@RestController
+@RequestMapping(name = "HouseholdApi", value = HOUSEHOLDS_URL)
 public class HouseholdApi extends BaseServlet {
-    
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private HouseholdRepository householdRepository;
+
     private UserHouseholdDao userHouseholdDao;
     private UserDao userDao;
     private HouseholdDao householdDao;
@@ -39,7 +51,7 @@ public class HouseholdApi extends BaseServlet {
         householdDao = new HouseholdDao();
     }
 
-    @Override
+    @PutMapping
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requestStr = BufferRequestReader.bufferRequest(req);
         
@@ -64,7 +76,7 @@ public class HouseholdApi extends BaseServlet {
         }
     }
 
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
         
@@ -127,12 +139,12 @@ public class HouseholdApi extends BaseServlet {
         }
     }
     
-    @Override
+    @DeleteMapping
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requestStr = BufferRequestReader.bufferRequest(req);
         
         String uri = req.getRequestURI();
-        String householdId = req.getParameter(DbEnvironment.HOUSEHOLD_ID);
+        Long householdId = Long.parseLong(req.getParameter(DbEnvironment.HOUSEHOLD_ID));
         Household household = new Household();
         household.setId(householdId);
         
