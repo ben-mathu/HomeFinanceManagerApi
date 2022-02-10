@@ -1,15 +1,15 @@
 package com.benardmathu.hfms.api.income;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
-import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.IncomeDto;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.status.AccountStatus;
-import com.benardmathu.hfms.data.status.AccountStatusDao;
+import com.benardmathu.hfms.data.status.AccountStatusBaseService;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.status.Status;
 import com.benardmathu.hfms.utils.BufferRequestReader;
@@ -40,8 +40,7 @@ import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
  */
 @RestController
 @RequestMapping(value = INCOME_ENDPOINT)
-public class IncomeApi extends BaseServlet {
-    private static final long serialVersionUID = 1L;
+public class IncomeApi extends BaseController {
 
     @Autowired
     private IncomeRepository incomeRepository;
@@ -49,14 +48,14 @@ public class IncomeApi extends BaseServlet {
     @Autowired
     private IncomeChangeRepository incomeChangeRepository;
 
-    private IncomeDao incomeDao;
+    private IncomeBaseService incomeDao;
     private IncomeChangeDao incomeChangeDao;
-    private AccountStatusDao accountStatusDao;
+    private AccountStatusBaseService accountStatusDao;
     
     public IncomeApi() {
-        incomeDao = new IncomeDao();
+        incomeDao = new IncomeBaseService();
         incomeChangeDao = new IncomeChangeDao();
-        accountStatusDao = new AccountStatusDao();
+        accountStatusDao = new AccountStatusBaseService();
     }
 
     @PostMapping

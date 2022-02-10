@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.data.income;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
@@ -20,21 +20,21 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
  * Member methods to create and update the income table
  * @author bernard
  */
-public class IncomeDao implements Dao<Income> {
-    public static final String TAG = IncomeDao.class.getSimpleName();
+public class IncomeBaseService implements BaseService<Income> {
+    public static final String TAG = IncomeBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public IncomeDao() {
+    public IncomeBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
 
     @Override
-    public int save(Income item) {
+    public Income save(Income item) {
         String query = "INSERT INTO " + INCOME_TB_NAME + "(" +
                 INCOME_ID + "," + AMOUNT + "," + INCOME_TYPE + "," +
                 USER_ID + "," + SCHEDULED_FOR + "," + CREATED_AT + ")" +

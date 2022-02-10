@@ -1,15 +1,15 @@
 package com.benardmathu.hfms.data.jar.model;
 
+import com.benardmathu.hfms.data.grocery.model.Grocery;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
+import java.util.List;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 
@@ -62,4 +62,8 @@ public class MoneyJar {
     @SerializedName(PAYMENT_STATUS)
     @Column(name = PAYMENT_STATUS)
     private boolean paymentStatus = false;
+
+    @SerializedName(GROCERIES_TB_NAME)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "jar")
+    private List<Grocery> groceryList;
 }

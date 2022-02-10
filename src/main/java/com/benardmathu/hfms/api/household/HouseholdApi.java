@@ -1,19 +1,18 @@
 package com.benardmathu.hfms.api.household;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
-import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.api.base.BaseController;
+import com.benardmathu.hfms.data.household.HouseholdBaseService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.status.Report;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.user.Members;
-import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserBaseService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.USER_ID;
-import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.HOUSEHOLDS_URL;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping(name = "HouseholdApi", value = HOUSEHOLDS_URL)
-public class HouseholdApi extends BaseServlet {
+public class HouseholdApi extends BaseController {
 
     @Autowired
     private UserRepository userRepository;
@@ -41,14 +39,14 @@ public class HouseholdApi extends BaseServlet {
     @Autowired
     private HouseholdRepository householdRepository;
 
-    private UserHouseholdDao userHouseholdDao;
-    private UserDao userDao;
-    private HouseholdDao householdDao;
+    private UserHouseholdBaseService userHouseholdDao;
+    private UserBaseService userDao;
+    private HouseholdBaseService householdDao;
     
     public HouseholdApi() {
-        userHouseholdDao = new UserHouseholdDao();
-        userDao = new UserDao();
-        householdDao = new HouseholdDao();
+        userHouseholdDao = new UserHouseholdBaseService();
+        userDao = new UserBaseService();
+        householdDao = new HouseholdBaseService();
     }
 
     @PutMapping

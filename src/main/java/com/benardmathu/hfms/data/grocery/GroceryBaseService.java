@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.data.grocery;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.grocery.model.Grocery;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
@@ -19,14 +19,14 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class GroceryDao implements Dao<Grocery> {
-    public static final String TAG = GroceryDao.class.getSimpleName();
+public class GroceryBaseService implements BaseService<Grocery> {
+    public static final String TAG = GroceryBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public GroceryDao() {
+    public GroceryBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
@@ -118,7 +118,7 @@ public class GroceryDao implements Dao<Grocery> {
     }
 
     @Override
-    public int save(Grocery item) {
+    public Grocery save(Grocery item) {
         String query = "INSERT INTO " + GROCERIES_TB_NAME + "(" +
                 GROCERY_ID + "," +
                 GROCERY_NAME + "," +

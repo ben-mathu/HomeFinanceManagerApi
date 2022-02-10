@@ -1,10 +1,8 @@
 package com.benardmathu.hfms.data.grocery.model;
 
+import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.google.gson.annotations.SerializedName;
-import com.benardmathu.hfms.init.Constraint;
-import com.benardmathu.hfms.init.PrimaryKey;
 import lombok.*;
-import org.apache.tomcat.Jar;
 
 import javax.persistence.*;
 
@@ -48,8 +46,8 @@ public class Grocery {
     @Column(name = REMAINING_QUANTITY)
     private int remaining;
 
-    @SerializedName(MONEY_JAR_ID)
-    @ManyToMany(cascade = CascadeType.ALL, targetEntity = Jar.class)
-    @JoinColumn(name = MONEY_JAR_ID)
-    private String jarId = "";
+    @SerializedName(MONEY_JAR_TB_NAME)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = MONEY_JAR_ID, referencedColumnName = MONEY_JAR_ID)
+    private MoneyJar jar;
 }

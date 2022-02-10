@@ -6,8 +6,8 @@ import java.util.List;
 /**
  * @author bernard
  */
-public interface Dao<T> {
-    int save(T item) ;
+public interface BaseService<T> {
+    T save(T item) ;
     int update(T item);
     int delete(T item);
     T get(String id);

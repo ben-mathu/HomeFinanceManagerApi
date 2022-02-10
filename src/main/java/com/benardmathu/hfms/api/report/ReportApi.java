@@ -1,29 +1,25 @@
 package com.benardmathu.hfms.api.report;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
-import com.benardmathu.hfms.config.ConfigureApp;
-import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.api.base.BaseController;
+import com.benardmathu.hfms.data.household.HouseholdBaseService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
-import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.jar.MoneyJarRepository;
-import com.benardmathu.hfms.data.jar.MoneyJarsDao;
+import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.report.ReportDto;
 import com.benardmathu.hfms.data.report.ReportRequest;
-import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRepository;
-import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesRepository;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRepository;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
-import com.benardmathu.hfms.data.transactions.TransactionDao;
+import com.benardmathu.hfms.data.transactions.TransactionBaseService;
 import com.benardmathu.hfms.data.transactions.TransactionRepository;
-import com.benardmathu.hfms.data.transactions.model.Transaction;
-import static com.benardmathu.hfms.data.utils.URL.API;
+
 import static com.benardmathu.hfms.data.utils.URL.REPORTS;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.Constants;
@@ -38,17 +34,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -58,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping(name = "ReportApi", value = REPORTS)
-public class ReportApi extends BaseServlet {
+public class ReportApi extends BaseController {
     @Autowired
     private IncomeRepository incomeRepository;
 
@@ -77,19 +67,19 @@ public class ReportApi extends BaseServlet {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    private IncomeDao incomeDao;
+    private IncomeBaseService incomeDao;
     private IncomeChangeDao incomeChangeDao;
     private MoneyJarScheduleDao moneyJarScheduleDao;
-    private HouseholdDao householdDao;
-    private MoneyJarsDao moneyJarsDao;
-    private TransactionDao transactionDao;
+    private HouseholdBaseService householdDao;
+    private MoneyJarsBaseService moneyJarsDao;
+    private TransactionBaseService transactionDao;
 
     public ReportApi() {
-        incomeDao = new IncomeDao();
+        incomeDao = new IncomeBaseService();
         incomeChangeDao = new IncomeChangeDao();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
-        householdDao = new HouseholdDao();
-        moneyJarsDao = new MoneyJarsDao();
+        householdDao = new HouseholdBaseService();
+        moneyJarsDao = new MoneyJarsBaseService();
     }
 
     @PostMapping

@@ -1,28 +1,28 @@
 package com.benardmathu.hfms.api.moneyjar;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.expense.ExpenseRepository;
 import com.benardmathu.hfms.data.grocery.GroceryRepository;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.jar.MoneyJarRepository;
-import com.benardmathu.hfms.data.jar.MoneyJarsDao;
+import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
 import com.benardmathu.hfms.data.jar.MoneyJarDto;
 import com.benardmathu.hfms.data.jar.MoneyJarsDto;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
-import com.benardmathu.hfms.data.expense.ExpenseDao;
+import com.benardmathu.hfms.data.expense.ExpenseBaseService;
 import com.benardmathu.hfms.data.expense.model.Expense;
 import com.benardmathu.hfms.data.grocery.model.Grocery;
-import com.benardmathu.hfms.data.grocery.GroceryDao;
-import com.benardmathu.hfms.data.household.HouseholdDao;
-import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.grocery.GroceryBaseService;
+import com.benardmathu.hfms.data.household.HouseholdBaseService;
+import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.status.*;
 import com.benardmathu.hfms.data.status.Status;
 import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRepository;
 import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesRepository;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRepository;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
 import com.benardmathu.hfms.data.user.UserRepository;
@@ -33,7 +33,7 @@ import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpens
 import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
-import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserBaseService;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.Log;
@@ -41,7 +41,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,21 +54,17 @@ import java.util.List;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.URL.*;
 import static com.benardmathu.hfms.utils.Constants.*;
-import java.text.DateFormat;
+
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author bernard
  */
 @RestController
 @RequestMapping(MONEY_JARS)
-public class MoneyJarApi extends BaseServlet {
-    private static final long serialVersionUID = 1L;
+public class MoneyJarApi extends BaseController {
     
     private SimpleDateFormat sp = new SimpleDateFormat(DATE_FORMAT);
 
@@ -96,34 +91,34 @@ public class MoneyJarApi extends BaseServlet {
     @Autowired
     private IncomeRepository incomeRepository;
 
-    private final AccountStatusDao accountStatusDao;
-    private final HouseholdDao householdDao;
-    private final UserHouseholdDao userHouseholdDao;
-    private final GroceryDao groceryDao;
-    private final ExpenseDao expenseDao;
-    private final MoneyJarsDao jarDao;
-    private final UserDao userDao;
+    private final AccountStatusBaseService accountStatusDao;
+    private final HouseholdBaseService householdDao;
+    private final UserHouseholdBaseService userHouseholdDao;
+    private final GroceryBaseService groceryDao;
+    private final ExpenseBaseService expenseDao;
+    private final MoneyJarsBaseService jarDao;
+    private final UserBaseService userDao;
     private final MoneyJarGroceriesDao moneyJarListDao;
     private final MoneyJarExpenseDao moneyJarExpenseDao;
     private final MoneyJarScheduleDao moneyJarScheduleDao;
-    private final IncomeDao incomeDao;
+    private final IncomeBaseService incomeDao;
 
     private final GenerateRandomString randomString;
 
     private final String now;
 
     public MoneyJarApi() {
-        accountStatusDao = new AccountStatusDao();
-        householdDao = new HouseholdDao();
-        userHouseholdDao = new UserHouseholdDao();
-        groceryDao = new GroceryDao();
-        expenseDao = new ExpenseDao();
-        jarDao = new MoneyJarsDao();
-        userDao = new UserDao();
+        accountStatusDao = new AccountStatusBaseService();
+        householdDao = new HouseholdBaseService();
+        userHouseholdDao = new UserHouseholdBaseService();
+        groceryDao = new GroceryBaseService();
+        expenseDao = new ExpenseBaseService();
+        jarDao = new MoneyJarsBaseService();
+        userDao = new UserBaseService();
         moneyJarListDao = new MoneyJarGroceriesDao();
         moneyJarExpenseDao = new MoneyJarExpenseDao();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
-        incomeDao = new IncomeDao();
+        incomeDao = new IncomeBaseService();
 
         randomString = new GenerateRandomString(
                 12,

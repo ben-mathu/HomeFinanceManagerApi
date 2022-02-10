@@ -1,16 +1,16 @@
 package com.benardmathu.hfms.api.register;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.config.ConfigureApp;
-import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.data.household.HouseholdBaseService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.status.*;
 import com.benardmathu.hfms.data.status.Status;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
-import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserBaseService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
@@ -20,14 +20,11 @@ import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.Log;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,13 +33,13 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.ACCOUNT_STATUS_TB_NAME;
-import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.REGISTRATION;
 import static com.benardmathu.hfms.utils.Constants.*;
 import static com.benardmathu.hfms.utils.Constants.COMPLETE;
 import com.benardmathu.hfms.utils.PasswordUtil;
 import com.benardmathu.tokengeneration.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,8 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(REGISTRATION)
-public class Register extends BaseServlet {
-    private static final long serialVersionUID = 1L;
+public class Register extends BaseController {
 
     @Autowired
     private UserRepository userRepository;
@@ -67,12 +63,12 @@ public class Register extends BaseServlet {
     private AccountStatusRepository accountStatusRepository;
 
     // Dao
-    private UserDao userDao = new UserDao();
-    private HouseholdDao householdDao = new HouseholdDao();
-    private UserHouseholdDao userHouseDao = new UserHouseholdDao();
-    private AccountStatusDao accountStatusDao = new AccountStatusDao();
+    private UserBaseService userDao = new UserBaseService();
+    private HouseholdBaseService householdDao = new HouseholdBaseService();
+    private UserHouseholdBaseService userHouseDao = new UserHouseholdBaseService();
+    private AccountStatusBaseService accountStatusDao = new AccountStatusBaseService();
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String jsonRequest = BufferRequestReader.bufferRequest(req);

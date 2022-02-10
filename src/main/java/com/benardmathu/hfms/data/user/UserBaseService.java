@@ -1,13 +1,12 @@
 package com.benardmathu.hfms.data.user;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
 import com.benardmathu.hfms.utils.Log;
 
-import javax.naming.PartialResultException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,14 +20,14 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class UserDao implements Dao<User> {
-    public static final String TAG = UserDao.class.getSimpleName();
+public class UserBaseService implements BaseService<User> {
+    public static final String TAG = UserBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public UserDao() {
+    public UserBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
@@ -89,7 +88,7 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public int save(User user) {
+    public User save(User user) {
         String query = "INSERT INTO " + USERS_TB_NAME + " (" +
                 USER_ID + "," + USERNAME + "," + EMAIL + "," + PASSWORD + "," + IS_ADMIN + "," + IS_ONLINE + "," + SALT + ") " +
                 "VALUES (?,?,?,?,?,?,?)";

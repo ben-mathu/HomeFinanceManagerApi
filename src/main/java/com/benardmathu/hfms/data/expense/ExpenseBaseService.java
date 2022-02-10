@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.data.expense;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.expense.model.Expense;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
@@ -19,20 +19,20 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class ExpenseDao implements Dao<Expense> {
-    public static final String TAG = ExpenseDao.class.getSimpleName();
+public class ExpenseBaseService implements BaseService<Expense> {
+    public static final String TAG = ExpenseBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public ExpenseDao() {
+    public ExpenseBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
     @Override
-    public int save(Expense item) {
+    public Expense save(Expense item) {
         String query = "INSERT INTO " + EXPENSES_TB_NAME + "(" +
                 EXPENSE_ID + "," + AMOUNT + "," + MONEY_JAR_ID + "," +
                 PAYEE_NAME + "," + BUSINESS_NUMBER + "," + ACCOUNT_NUMBER + ")" +

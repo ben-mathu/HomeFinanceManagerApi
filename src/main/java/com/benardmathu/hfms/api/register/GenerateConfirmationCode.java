@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.api.register;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
-import com.benardmathu.hfms.data.code.CodeDao;
+import com.benardmathu.hfms.api.base.BaseController;
+import com.benardmathu.hfms.data.code.CodeBaseService;
 import com.benardmathu.hfms.data.code.CodeRepository;
 import com.benardmathu.hfms.data.code.model.Code;
 import com.benardmathu.hfms.data.user.Identification;
@@ -16,14 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.Random;
 
-import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.GENERATE_CODE;
 
 /**
@@ -31,13 +29,12 @@ import static com.benardmathu.hfms.data.utils.URL.GENERATE_CODE;
  */
 @RestController
 @RequestMapping(GENERATE_CODE)
-public class GenerateConfirmationCode extends BaseServlet {
-    private static final long serialVersionUID = 1L;
+public class GenerateConfirmationCode extends BaseController {
 
     @Autowired
     private CodeRepository codeRepository;
 
-    private CodeDao dao = new CodeDao();
+    private CodeBaseService dao = new CodeBaseService();
 
     @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

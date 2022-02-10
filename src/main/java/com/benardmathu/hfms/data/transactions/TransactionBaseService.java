@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.data.transactions;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
@@ -19,21 +19,21 @@ import java.sql.ResultSet;
 /**
  * @author bernard
  */
-public class TransactionDao implements Dao<Transaction> {
-    public static final String TAG = TransactionDao.class.getSimpleName();
+public class TransactionBaseService implements BaseService<Transaction> {
+    public static final String TAG = TransactionBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public TransactionDao() {
+    public TransactionBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
 
     @Override
-    public int save(Transaction item) {
+    public Transaction save(Transaction item) {
         String query = "INSERT INTO " + TRANSACTION_TB_NAME + "(" +
                 TRANSACTION_ID + "," +
                 TRANSACTION_DESCRIPTION + "," +

@@ -8,8 +8,7 @@ import java.io.PrintWriter;
 /**
  * @author bernard
  */
-public abstract class BaseServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+public abstract class BaseController {
     protected final String TAG = this.getClass().getSimpleName();
 
     protected Gson gson = new Gson();

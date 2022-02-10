@@ -5,8 +5,7 @@
  */
 package com.benardmathu.hfms.api.groceries;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
-import com.benardmathu.hfms.data.grocery.GroceryDao;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.grocery.GroceryRepository;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
@@ -15,13 +14,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.GROCERY_URL;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping(name = "GroceriesApi", value = GROCERY_URL)
-public class GroceriesApi extends BaseServlet {
+public class GroceriesApi extends BaseController {
 //    private GroceryDao groceryDao;
     @Autowired
     private GroceryRepository groceryRepository;

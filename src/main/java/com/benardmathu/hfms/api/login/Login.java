@@ -1,10 +1,10 @@
 package com.benardmathu.hfms.api.login;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.config.ConfigureApp;
 import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
-import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserBaseService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
@@ -39,13 +39,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(LOGIN)
-public class Login extends BaseServlet {
-    private static final long serialVersionUID = 1L;
+public class Login extends BaseController {
 
     @Autowired
     private UserRepository userRepository;
 
-    private UserDao userDao = new UserDao();
+    private UserBaseService userDao = new UserBaseService();
 
     private ConfigureDb db = new ConfigureDb();
     private Properties prop = db.getProperties();

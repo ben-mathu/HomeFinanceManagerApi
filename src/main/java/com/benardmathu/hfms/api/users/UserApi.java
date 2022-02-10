@@ -1,36 +1,34 @@
 package com.benardmathu.hfms.api.users;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
-import com.benardmathu.hfms.data.budget.BudgetDao;
-import com.benardmathu.hfms.data.budget.model.Budget;
-import com.benardmathu.hfms.data.household.HouseholdDao;
+import com.benardmathu.hfms.api.base.BaseController;
+import com.benardmathu.hfms.data.household.HouseholdBaseService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
-import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.status.AccountStatus;
-import com.benardmathu.hfms.data.status.AccountStatusDao;
+import com.benardmathu.hfms.data.status.AccountStatusBaseService;
 import com.benardmathu.hfms.data.status.AccountStatusRepository;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
-import com.benardmathu.hfms.data.transactions.TransactionDao;
+import com.benardmathu.hfms.data.transactions.TransactionBaseService;
 import com.benardmathu.hfms.data.transactions.TransactionRepository;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
-import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserBaseService;
 import com.benardmathu.hfms.data.user.UserDto;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,8 +44,7 @@ import static com.benardmathu.hfms.data.utils.URL.*;
  */
 @RestController
 @RequestMapping(USER_DETAILS)
-public class UserApi extends BaseServlet {
-    private static final long serialVersionUID = 1L;
+public class UserApi extends BaseController {
 
     @Autowired
     private IncomeRepository incomeRepository;
@@ -70,15 +67,15 @@ public class UserApi extends BaseServlet {
     @Autowired
     private IncomeChangeRepository incomeChangeRepository;
 
-    private IncomeDao incomeDao = new IncomeDao();
-    private HouseholdDao householdDao = new HouseholdDao();
-    private UserHouseholdDao userHouseholdDao = new UserHouseholdDao();
-    private AccountStatusDao accountStatusDao = new AccountStatusDao();
-    private UserDao userDao = new UserDao();
-    private TransactionDao transactionDao = new TransactionDao();
+    private IncomeBaseService incomeDao = new IncomeBaseService();
+    private HouseholdBaseService householdDao = new HouseholdBaseService();
+    private UserHouseholdBaseService userHouseholdDao = new UserHouseholdBaseService();
+    private AccountStatusBaseService accountStatusDao = new AccountStatusBaseService();
+    private UserBaseService userDao = new UserBaseService();
+    private TransactionBaseService transactionDao = new TransactionBaseService();
     private IncomeChangeDao incomeChangeDao = new IncomeChangeDao();
 
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         //get user details

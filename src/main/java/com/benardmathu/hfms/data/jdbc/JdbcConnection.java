@@ -10,6 +10,7 @@ import java.util.Properties;
 /**
  * @author bernard
  */
+@Deprecated
 public class JdbcConnection implements PostgresConnection {
     private static final String TAG = JdbcConnection.class.getSimpleName();
 

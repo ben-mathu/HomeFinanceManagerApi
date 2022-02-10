@@ -1,12 +1,12 @@
 package com.benardmathu.hfms.api.transaction.threadrunner;
 
 import com.google.gson.Gson;
-import com.benardmathu.hfms.data.transactions.TransactionDao;
+import com.benardmathu.hfms.data.transactions.TransactionBaseService;
 import com.benardmathu.hfms.data.daraja.callback.CallbackMetadata;
 import com.benardmathu.hfms.data.daraja.callback.CallbackResponse;
 import com.benardmathu.hfms.data.daraja.callback.StkCallback;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
-import com.benardmathu.hfms.data.jar.MoneyJarsDao;
+import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
@@ -26,7 +26,6 @@ import com.benardmathu.hfms.utils.Constants;
 import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
 import com.benardmathu.hfms.utils.Log;
 import java.io.OutputStream;
-import java.net.BindException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -80,8 +79,8 @@ public class MpesaResponseListener implements StopServerListener {
     public static class ConfirmHandler implements HttpHandler {
 
         private StopServerListener listener;
-        private final TransactionDao transactionDao;
-        private final MoneyJarsDao moneyJarsDao;
+        private final TransactionBaseService transactionDao;
+        private final MoneyJarsBaseService moneyJarsDao;
         private final MoneyJarScheduleDao moneyJarScheduleDao;
         
         private final String transactionId;
@@ -89,10 +88,10 @@ public class MpesaResponseListener implements StopServerListener {
 
         public ConfirmHandler(StopServerListener listener, MoneyJar jar, String transactionId) {
             this.listener = listener;
-            this.transactionDao = new TransactionDao();
+            this.transactionDao = new TransactionBaseService();
             this.jar = jar;
             
-            moneyJarsDao = new MoneyJarsDao();
+            moneyJarsDao = new MoneyJarsBaseService();
             moneyJarScheduleDao = new MoneyJarScheduleDao();
             this.transactionId = transactionId;
         }

@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.data.code;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.code.model.Code;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.model.User;
@@ -22,14 +22,14 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class CodeDao implements Dao<Code> {
-    public static final String TAG = CodeDao.class.getSimpleName();
+public class CodeBaseService implements BaseService<Code> {
+    public static final String TAG = CodeBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public CodeDao() {
+    public CodeBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
@@ -80,7 +80,7 @@ public class CodeDao implements Dao<Code> {
         return affectedRows;
     }
     @Override
-    public int save(Code item) {
+    public Code save(Code item) {
         return 0;
     }
 

@@ -1,22 +1,21 @@
 package com.benardmathu.hfms.api.users;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.status.Report;
-import com.benardmathu.hfms.data.user.UserDao;
+import com.benardmathu.hfms.data.user.UserBaseService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
-import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
+
 import static com.benardmathu.hfms.data.utils.URL.*;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,15 +25,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping(name = "ChangeAccountDetailsApi", value = CHANGE_ACCOUNT_URL)
-public class ChangeAccountDetailsApi extends BaseServlet {
+public class ChangeAccountDetailsApi extends BaseController {
 
     @Autowired
     private UserRepository userRepository;
 
-    private UserDao userDao;
+    private UserBaseService userDao;
     
     public ChangeAccountDetailsApi() {
-        userDao = new UserDao();
+        userDao = new UserBaseService();
     }
     
     /**
@@ -45,7 +44,7 @@ public class ChangeAccountDetailsApi extends BaseServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String uri = request.getRequestURI();
@@ -112,7 +111,7 @@ public class ChangeAccountDetailsApi extends BaseServlet {
         return userDao.update(user);
     }
 
-    @Override
+    @PutMapping
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requestStr = BufferRequestReader.bufferRequest(req);
         

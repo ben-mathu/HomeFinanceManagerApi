@@ -1,26 +1,26 @@
 package com.benardmathu.hfms.api.transaction;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.api.transaction.threadrunner.SendTransactionRunnable;
 import com.benardmathu.hfms.config.ConfigureApp;
-import com.benardmathu.hfms.data.budget.BudgetDao;
+import com.benardmathu.hfms.data.budget.BudgetService;
 import com.benardmathu.hfms.data.daraja.LnmoErrorResponse;
 import com.benardmathu.hfms.data.daraja.LnmoRequest;
 import com.benardmathu.hfms.data.daraja.LnmoResponse;
-import com.benardmathu.hfms.data.income.IncomeDao;
+import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.model.Income;
-import com.benardmathu.hfms.data.jar.MoneyJarsDao;
+import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdDao;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
-import com.benardmathu.hfms.data.transactions.TransactionDao;
+import com.benardmathu.hfms.data.transactions.TransactionBaseService;
 import com.benardmathu.hfms.data.transactions.TransactionDto;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
-import static com.benardmathu.hfms.data.utils.URL.API;
+
 import static com.benardmathu.hfms.data.utils.URL.BASE_URL;
 import static com.benardmathu.hfms.data.utils.URL.LNMO;
 import static com.benardmathu.hfms.data.utils.URL.LNMO_CALLBACK_URL;
@@ -34,6 +34,9 @@ import com.benardmathu.hfms.utils.GenerateCipher;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.InitUrlConnection;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,12 +44,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,20 +57,22 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping(name = "TransactionApi", value = TRANSACTIONS)
-public class TransactionApi extends BaseServlet {
-    private final TransactionDao transactionDao;
-    private final MoneyJarsDao moneyJarsDao;
-    private final BudgetDao budgetDao;
-    private final UserHouseholdDao userHouseholdDao;
-    private final IncomeDao incomeDao;
+public class TransactionApi extends BaseController {
+    private final TransactionBaseService transactionDao;
+    private final MoneyJarsBaseService moneyJarsDao;
+
+    @Autowired
+    private BudgetService budgetService;
+
+    private final UserHouseholdBaseService userHouseholdDao;
+    private final IncomeBaseService incomeDao;
     private final MoneyJarScheduleDao moneyJarScheduleDao;
     
     public TransactionApi() {
-        transactionDao = new TransactionDao();
-        moneyJarsDao = new MoneyJarsDao();
-        budgetDao = new BudgetDao();
-        userHouseholdDao = new UserHouseholdDao();
-        incomeDao = new IncomeDao();
+        transactionDao = new TransactionBaseService();
+        moneyJarsDao = new MoneyJarsBaseService();
+        userHouseholdDao = new UserHouseholdBaseService();
+        incomeDao = new IncomeBaseService();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
     }
 
@@ -81,7 +84,7 @@ public class TransactionApi extends BaseServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String userId = request.getParameter(DbEnvironment.USER_ID);
@@ -97,7 +100,7 @@ public class TransactionApi extends BaseServlet {
         }
     }
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
         String requestStr = BufferRequestReader.bufferRequest(httpServletRequest);

@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.data.status;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
 
@@ -18,22 +18,22 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class AccountStatusDao implements Dao<AccountStatus> {
-    public static final String TAG = AccountStatusDao.class.getSimpleName();
+public class AccountStatusBaseService implements BaseService<AccountStatus> {
+    public static final String TAG = AccountStatusBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
 
-    public AccountStatusDao() {
+    public AccountStatusBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
 
     @Override
-    public int save(AccountStatus item) {
+    public AccountStatus save(AccountStatus item) {
         String query = "INSERT INTO " + ACCOUNT_STATUS_TB_NAME + "(" +
                 USER_ID + ")" +
                 " VALUES (?)";

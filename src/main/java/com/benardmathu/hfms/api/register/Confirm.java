@@ -1,30 +1,23 @@
 package com.benardmathu.hfms.api.register;
 
-import com.benardmathu.hfms.api.base.BaseServlet;
+import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.code.CodeDao;
+import com.benardmathu.hfms.data.code.CodeBaseService;
 import com.benardmathu.hfms.data.code.model.Code;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.Identification;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.BufferRequestReader;
-import com.benardmathu.hfms.utils.Log;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
 
-import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.URL.API;
 import static com.benardmathu.hfms.data.utils.URL.CONFIRM;
 
@@ -33,8 +26,7 @@ import static com.benardmathu.hfms.data.utils.URL.CONFIRM;
  */
 @RestController
 @RequestMapping(API + CONFIRM)
-public class Confirm extends BaseServlet {
-    private static final long serialVersionUID = 1L;
+public class Confirm extends BaseController {
     public static final String TAG = Confirm.class.getSimpleName();
 
     private ConfigureDb db;
@@ -70,7 +62,7 @@ public class Confirm extends BaseServlet {
     }
 
     private boolean isCodeCorrect(Identification id) {
-        CodeDao dao = new CodeDao();
+        CodeBaseService dao = new CodeBaseService();
         Code item = dao.get(id.getUser().getUserId().toString());
 
         if (item.getCode().equals(id.getCode())) {

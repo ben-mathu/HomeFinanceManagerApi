@@ -1,15 +1,13 @@
 package com.benardmathu.hfms.data.budget.model;
 
+import com.benardmathu.hfms.data.household.model.Household;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.CREATED_AT;
@@ -36,9 +34,10 @@ public class Budget {
     @Column(name = BUDGET_DESC, length = 255, nullable = false)
     private String budgetDesc = "";
 
-    @SerializedName(HOUSEHOLD_ID)
-    @Column(name = HOUSEHOLD_ID, nullable = false)
-    private String householdId = "";
+    @SerializedName("household")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = HOUSEHOLD_ID, referencedColumnName = HOUSEHOLD_ID)
+    private Household household;
 
     @SerializedName(CREATED_AT)
     @Column(name = CREATED_AT, length = 25)

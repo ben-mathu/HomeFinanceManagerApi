@@ -1,8 +1,8 @@
-package com.benardmathu.hfms.data.jar;
+package com.benardmathu.hfms.data.household;
 
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.Dao;
-import com.benardmathu.hfms.data.jar.model.MoneyJar;
+import com.benardmathu.hfms.data.BaseService;
+import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
 
@@ -19,43 +19,80 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class MoneyJarsDao implements Dao<MoneyJar> {
-    public static final String TAG = MoneyJarsDao.class.getSimpleName();
+public class HouseholdBaseService implements BaseService<Household> {
+    public static final String TAG = HouseholdBaseService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public MoneyJarsDao() {
+    public HouseholdBaseService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
-    @Override
-    public int save(MoneyJar item) {
-        String query = "INSERT INTO " + MONEY_JAR_TB_NAME + "(" +
-                MONEY_JAR_ID + "," + MONEY_EXPENSE_TYPE + "," + CATEGORY + "," +
-                TOTAL_AMOUNT + "," + CREATED_AT + "," + SCHEDULED_FOR + "," +
-                SCHEDULED_TYPE + "," + HOUSEHOLD_ID + "," + JAR_STATUS + ")" +
-                " VALUES (?,?,?,?,?,?,?,?,?)";
-        int affectedRows = 0;
 
+    public Household getHousehold(String householdId) {
+        Household household = null;
+        String query = "SELECT * FROM " + HOUSEHOLD_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
+
+        ResultSet resultSet = null;
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, item.getMoneyJarId());
+            preparedStatement.setString(1, householdId);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                household = new Household();
+                household.setId(resultSet.getString(HOUSEHOLD_ID));
+                household.setName(resultSet.getString(HOUSEHOLD_NAME));
+            }
+
+            preparedStatement.close();
+            preparedStatement = null;
+            resultSet.close();
+            resultSet = null;
+            conn.close();
+            conn = null;
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing household query", throwables);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return household;
+    }
+
+    @Override
+    public Household save(Household item) {
+        String query = "INSERT INTO " + HOUSEHOLD_TB_NAME + "(" +
+                HOUSEHOLD_ID + "," + HOUSEHOLD_NAME + ")" +
+                " VALUES (?,?)";
+
+        int affectedRows = 0;
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, item.getId());
             preparedStatement.setString(2, item.getName());
-            preparedStatement.setString(3, item.getCategory());
-            preparedStatement.setDouble(4, item.getTotalAmount());
-            preparedStatement.setString(5, item.getCreatedAt());
-            preparedStatement.setString(6, item.getScheduledFor());
-            preparedStatement.setString(7, item.getScheduleType());
-            preparedStatement.setString(8, item.getHouseholdId());
-            preparedStatement.setBoolean(9, item.isJarStatus());
             affectedRows = preparedStatement.executeUpdate();
 
             preparedStatement.close();
@@ -63,7 +100,7 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
             conn.close();
             conn = null;
         } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing envelope update", throwables);
+            Log.e(TAG, "Error processing income update", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -81,82 +118,31 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
     }
 
     @Override
-    public int update(MoneyJar item) {
-        String query = "UPDATE " + MONEY_JAR_TB_NAME +
-                " SET " + MONEY_EXPENSE_TYPE + "=?," +
-                CATEGORY + "=?," +
-                TOTAL_AMOUNT + "=?," +
-                CREATED_AT + "=?," +
-                SCHEDULED_TYPE + "=?," +
-                HOUSEHOLD_ID + "=?," +
-                JAR_STATUS + "=?," +
-                PAYMENT_STATUS + "=?" +
-                " WHERE " + MONEY_JAR_ID + "=?";
-        int affectedRows = 0;
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, item.getName());
-            preparedStatement.setString(2, item.getCategory());
-            preparedStatement.setDouble(3, item.getTotalAmount());
-            preparedStatement.setString(4, item.getCreatedAt());
-            preparedStatement.setString(5, item.getScheduleType());
-            preparedStatement.setString(6, item.getHouseholdId());
-            preparedStatement.setBoolean(7, item.isJarStatus());
-            preparedStatement.setBoolean(8, item.isPaymentStatus());
-            preparedStatement.setString(9, item.getMoneyJarId());
-            affectedRows = preparedStatement.executeUpdate();
-
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing envelope update", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return affectedRows;
+    public int update(Household item) {
+        return 0;
     }
 
     @Override
-    public int delete(MoneyJar item) {
-        String query = "DELETE FROM " + MONEY_JAR_TB_NAME +
-                " WHERE " + MONEY_JAR_ID + "=?";
+    public int delete(Household item) {
+        String query = "DELETE FROM " + HOUSEHOLD_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
+        
         int affectedRows = 0;
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, item.getMoneyJarId());
-
+            preparedStatement.setString(1, item.getId());
             affectedRows = preparedStatement.executeUpdate();
-            
+
             preparedStatement.close();
             preparedStatement = null;
             conn.close();
             conn = null;
         } catch (SQLException throwables) {
-            Log.e(TAG, "Error deleting expense", throwables);
+            Log.e(TAG, "Error processing household query", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -174,33 +160,33 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
     }
 
     @Override
-    public MoneyJar get(String id) {
-        String query = "SELECT * FROM " + MONEY_JAR_TB_NAME +
-                " WHERE " + MONEY_JAR_ID + "=?";
+    public Household get(String id) {
+        String query = "SELECT * FROM " + HOUSEHOLD_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
+        ResultSet resultSet = null;
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        MoneyJar envelope = new MoneyJar();
+        Household household = new Household();
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
             preparedStatement.setString(1, id);
-
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                envelope.setMoneyJarId(resultSet.getString(MONEY_JAR_ID));
-                envelope.setName(resultSet.getString(MONEY_EXPENSE_TYPE));
-                envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
-                envelope.setCategory(resultSet.getString(CATEGORY));
-                envelope.setScheduleType(resultSet.getString(SCHEDULED_TYPE));
-                envelope.setHouseholdId(resultSet.getString(HOUSEHOLD_ID));
-                envelope.setCreatedAt(resultSet.getString(CREATED_AT));
+                household.setId(id);
+                household.setName(resultSet.getString(HOUSEHOLD_NAME));
             }
+
+            resultSet.close();
+            resultSet = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
         } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing envelope query", throwables);
+            Log.e(TAG, "Error processing household query", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -220,45 +206,51 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
                     resultSet = null;
                 } catch (Exception e) { /* Intentionally blank */ }
         }
-        return envelope;
+        return household;
     }
 
     @Override
-    public List<MoneyJar> getAll() {
+    public List<Household> getAll() {
         return null;
     }
 
     @Override
-    public List<MoneyJar> getAll(String id) {
-        String query = "SELECT * FROM " + MONEY_JAR_TB_NAME +
-                " WHERE " + HOUSEHOLD_ID + "=?";
+    public List<Household> getAll(String id) {
+        return null;
+    }
+
+    @Override
+    public int saveAll(ArrayList<Household> items) {
+        return 0;
+    }
+
+    public String getHouseholdId(String userId) {
+        String householdId = "";
+        String query = "SELECT " + HOUSEHOLD_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
+                " WHERE " + USER_ID + "=?";
+
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-
-        ArrayList<MoneyJar> envelopes = new ArrayList<>();
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, id);
-
+            preparedStatement.setString(1, userId);
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                MoneyJar envelope = new MoneyJar();
-                envelope.setMoneyJarId(resultSet.getString(MONEY_JAR_ID));
-                envelope.setName(resultSet.getString(MONEY_EXPENSE_TYPE));
-                envelope.setTotalAmount(resultSet.getDouble(TOTAL_AMOUNT));
-                envelope.setCategory(resultSet.getString(CATEGORY));
-                envelope.setJarStatus(resultSet.getBoolean(JAR_STATUS));
-                envelope.setScheduleType(resultSet.getString(SCHEDULED_TYPE));
-                envelope.setHouseholdId(resultSet.getString(HOUSEHOLD_ID));
-                envelope.setCreatedAt(resultSet.getString(CREATED_AT));
-                envelopes.add(envelope);
+                householdId = resultSet.getString(HOUSEHOLD_ID);
             }
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing envelope query", throwables);
+
+            resultSet.close();
+            resultSet = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        }catch (SQLException e) {
+            Log.e(TAG, "Error Processing household id", e);
         } finally {
             if (conn != null)
                 try {
@@ -278,11 +270,55 @@ public class MoneyJarsDao implements Dao<MoneyJar> {
                     resultSet = null;
                 } catch (Exception e) { /* Intentionally blank */ }
         }
-        return envelopes;
+        return householdId;
     }
 
-    @Override
-    public int saveAll(ArrayList<MoneyJar> items) {
-        return 0;
+    public List<String> getUserId(String houseId) {
+        List<String> userIdList = new ArrayList<>();
+        String query = "SELECT " + USER_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
+                " WHERE " + HOUSEHOLD_ID + "=?";
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
+            preparedStatement = conn.prepareStatement(query);
+
+            preparedStatement.setString(1, houseId);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                userIdList.add(resultSet.getString(USER_ID));
+            }
+
+            resultSet.close();
+            resultSet = null;
+            preparedStatement.close();
+            preparedStatement = null;
+            conn.close();
+            conn = null;
+        }catch (SQLException e) {
+            Log.e(TAG, "Error Processing household id", e);
+        } finally {
+            if (conn != null)
+                try {
+                    conn.close();
+                    conn = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                    preparedStatement = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+
+            if (resultSet != null)
+                try {
+                    resultSet.close();
+                    resultSet = null;
+                } catch (Exception e) { /* Intentionally blank */ }
+        }
+        return userIdList;
     }
 }
