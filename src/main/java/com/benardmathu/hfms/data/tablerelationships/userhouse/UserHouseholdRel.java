@@ -19,8 +19,6 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.HOUSEHOLD_TB_NAME;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = USER_HOUSEHOLD_TB_NAME)
 public class UserHouseholdRel {
@@ -29,11 +27,11 @@ public class UserHouseholdRel {
 
     @SerializedName(USER_ID)
     @Column(name = USER_ID)
-    private String userId = "";
+    private Long userId;
 
     @SerializedName(HOUSEHOLD_ID)
     @Column(name = HOUSEHOLD_ID)
-    private String houseId = "";
+    private Long houseId;
 
     @SerializedName(IS_OWNER)
     @Column(name = IS_OWNER)

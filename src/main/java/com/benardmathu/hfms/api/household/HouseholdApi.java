@@ -1,10 +1,10 @@
 package com.benardmathu.hfms.api.household;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.household.HouseholdBaseService;
+import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.status.Report;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.user.Members;
 import com.benardmathu.hfms.data.user.UserService;
@@ -36,13 +36,13 @@ import javax.servlet.http.HttpServletResponse;
 public class HouseholdApi extends BaseController {
 
     @Autowired
-    private UserHouseholdBaseService userHouseholdService;
+    private UserHouseholdService userHouseholdService;
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private HouseholdBaseService householdService;
+    private HouseholdService householdService;
     
 //    public HouseholdApi() {
 //        userHouseholdDao = new UserHouseholdBaseService();
@@ -90,7 +90,7 @@ public class HouseholdApi extends BaseController {
         Members members = new Members();
         if (userHousehold.isOwner()) {
             
-            List<UserHouseholdRel> userHouseholdList = userHouseholdService.getAll(userHousehold.getHouseId());
+            List<UserHouseholdRel> userHouseholdList = userHouseholdService.getAll();
             
             List<User> userList = new ArrayList<>();
             for (UserHouseholdRel userHouseholdRel : userHouseholdList) {
@@ -154,21 +154,23 @@ public class HouseholdApi extends BaseController {
         
         Report report = new Report();
         HttpStatus statusCode;
-        if (householdService.delete(household) > 0) {
-            report.setMessage("Successfully deleted, your account will now be deleted.");
-            report.setStatus(SC_OK);
-            
-            resp.setStatus(SC_OK);
+        householdService.delete(household);
+        report.setMessage("Successfully deleted, your account will now be deleted.");
+        report.setStatus(SC_OK);
 
-            statusCode = HttpStatus.OK;
-        } else {
-            report.setMessage("Could not delete household");
-            report.setStatus(SC_NOT_MODIFIED);
-            
-            resp.setStatus(SC_NOT_MODIFIED);
+        resp.setStatus(SC_OK);
 
-            statusCode = HttpStatus.NOT_MODIFIED;
-        }
+        statusCode = HttpStatus.OK;
+//        if ( > 0) {
+//
+//        } else {
+//            report.setMessage("Could not delete household");
+//            report.setStatus(SC_NOT_MODIFIED);
+//
+//            resp.setStatus(SC_NOT_MODIFIED);
+//
+//            statusCode = HttpStatus.NOT_MODIFIED;
+//        }
 
         return new ResponseEntity<>(report, statusCode);
     }

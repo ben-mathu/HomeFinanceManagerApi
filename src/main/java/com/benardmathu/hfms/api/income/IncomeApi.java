@@ -7,10 +7,9 @@ import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeService;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.status.AccountStatus;
-import com.benardmathu.hfms.data.status.AccountStatusBaseService;
+import com.benardmathu.hfms.data.status.AccountStatusService;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.status.Status;
-import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class IncomeApi extends BaseController {
     private IncomeChangeService incomeChangeService;
 
     @Autowired
-    private AccountStatusBaseService accountStatusService;
+    private AccountStatusService accountStatusService;
 
     @PostMapping
     protected ResponseEntity<IncomeDto> addIncome(@RequestParam(USER_ID) String userId, @RequestBody IncomeDto incomeDto,

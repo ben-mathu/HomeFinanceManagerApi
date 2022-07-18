@@ -1,27 +1,22 @@
 package com.benardmathu.hfms.data.grocery;
 
-import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.grocery.model.Grocery;
-import com.benardmathu.hfms.data.jdbc.JdbcConnection;
-import com.benardmathu.hfms.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 
 /**
  * @author bernard
  */
-public class GroceryBaseService implements BaseService<Grocery> {
-    public static final String TAG = GroceryBaseService.class.getSimpleName();
+public class GroceryService implements BaseService<Grocery> {
+    public static final String TAG = GroceryService.class.getSimpleName();
 
     @Autowired
     private GroceryRepository repo;

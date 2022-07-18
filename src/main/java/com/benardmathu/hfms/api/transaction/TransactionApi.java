@@ -14,7 +14,7 @@ import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.transactions.TransactionBaseService;
 import com.benardmathu.hfms.data.transactions.TransactionDto;
@@ -64,14 +64,14 @@ public class TransactionApi extends BaseController {
     @Autowired
     private BudgetService budgetService;
 
-    private final UserHouseholdBaseService userHouseholdDao;
+    private final UserHouseholdService userHouseholdDao;
     private final IncomeBaseService incomeDao;
     private final MoneyJarScheduleDao moneyJarScheduleDao;
     
     public TransactionApi() {
         transactionDao = new TransactionBaseService();
         moneyJarsDao = new MoneyJarsBaseService();
-        userHouseholdDao = new UserHouseholdBaseService();
+        userHouseholdDao = new UserHouseholdService();
         incomeDao = new IncomeBaseService();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
     }

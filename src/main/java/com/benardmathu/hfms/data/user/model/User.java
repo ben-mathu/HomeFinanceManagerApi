@@ -1,15 +1,13 @@
 package com.benardmathu.hfms.data.user.model;
 
+import com.benardmathu.hfms.data.household.model.Household;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 
@@ -19,8 +17,6 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = USERS_TB_NAME)
 public class User {
@@ -55,4 +51,9 @@ public class User {
     @SerializedName(SALT)
     @Column(name = SALT, length = 30)
     private String salt = "";
+
+    @SerializedName("household")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = HOUSEHOLD_ID, referencedColumnName = HOUSEHOLD_ID)
+    private Household household;
 }

@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Members {
     @SerializedName("household_id")
-    private String householdId;
+    private Long householdId;
     
     @SerializedName("household_name")
     private String householdName;
@@ -27,11 +27,11 @@ public class Members {
     @SerializedName("report")
     private Report report;
 
-    public void setHouseholdId(String householdId) {
+    public void setHouseholdId(Long householdId) {
         this.householdId = householdId;
     }
 
-    public String getHouseholdId() {
+    public Long getHouseholdId() {
         return householdId;
     }
     

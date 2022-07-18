@@ -13,8 +13,8 @@ import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.expense.ExpenseService;
 import com.benardmathu.hfms.data.expense.model.Expense;
 import com.benardmathu.hfms.data.grocery.model.Grocery;
-import com.benardmathu.hfms.data.grocery.GroceryBaseService;
-import com.benardmathu.hfms.data.household.HouseholdBaseService;
+import com.benardmathu.hfms.data.grocery.GroceryService;
+import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.status.*;
@@ -22,7 +22,7 @@ import com.benardmathu.hfms.data.status.Status;
 import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRepository;
 import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesRepository;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRepository;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
 import com.benardmathu.hfms.data.user.UserRepository;
@@ -91,10 +91,10 @@ public class MoneyJarApi extends BaseController {
     @Autowired
     private IncomeRepository incomeRepository;
 
-    private final AccountStatusBaseService accountStatusDao;
-    private final HouseholdBaseService householdDao;
-    private final UserHouseholdBaseService userHouseholdDao;
-    private final GroceryBaseService groceryDao;
+    private final AccountStatusService accountStatusDao;
+    private final HouseholdService householdDao;
+    private final UserHouseholdService userHouseholdDao;
+    private final GroceryService groceryDao;
     private final ExpenseService expenseDao;
     private final MoneyJarsBaseService jarDao;
     private final UserService userDao;
@@ -108,10 +108,10 @@ public class MoneyJarApi extends BaseController {
     private final String now;
 
     public MoneyJarApi() {
-        accountStatusDao = new AccountStatusBaseService();
-        householdDao = new HouseholdBaseService();
-        userHouseholdDao = new UserHouseholdBaseService();
-        groceryDao = new GroceryBaseService();
+        accountStatusDao = new AccountStatusService();
+        householdDao = new HouseholdService();
+        userHouseholdDao = new UserHouseholdService();
+        groceryDao = new GroceryService();
         expenseDao = new ExpenseService();
         jarDao = new MoneyJarsBaseService();
         userDao = new UserService();
@@ -432,7 +432,7 @@ public class MoneyJarApi extends BaseController {
     }
 
     private String getHouseId(String userId) {
-        return householdDao.getHouseholdId(userId);
+        return householdDao.getHouseholdByUserId(userId);
     }
 
     private void updateEnvStatus(String userId) {

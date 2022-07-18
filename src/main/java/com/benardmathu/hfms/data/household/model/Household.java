@@ -1,6 +1,7 @@
 package com.benardmathu.hfms.data.household.model;
 
 import com.benardmathu.hfms.data.budget.model.Budget;
+import com.benardmathu.hfms.data.user.model.User;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +19,6 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = HOUSEHOLD_TB_NAME)
 public class Household {
@@ -34,4 +33,8 @@ public class Household {
     @SerializedName(BUDGET_TB_NAME)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "household")
     private List<Budget> budgetList;
+
+    @SerializedName(USER_HOUSEHOLD_TB_NAME)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "household")
+    private List<User> userList;
 }

@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.api.report;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.household.HouseholdBaseService;
+import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeBaseService;
@@ -70,7 +70,7 @@ public class ReportApi extends BaseController {
     private IncomeBaseService incomeDao;
     private IncomeChangeService incomeChangeService;
     private MoneyJarScheduleDao moneyJarScheduleDao;
-    private HouseholdBaseService householdDao;
+    private HouseholdService householdDao;
     private MoneyJarsBaseService moneyJarsDao;
     private TransactionBaseService transactionDao;
 
@@ -78,7 +78,7 @@ public class ReportApi extends BaseController {
         incomeDao = new IncomeBaseService();
         incomeChangeService = new IncomeChangeService();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
-        householdDao = new HouseholdBaseService();
+        householdDao = new HouseholdService();
         moneyJarsDao = new MoneyJarsBaseService();
     }
 
@@ -88,7 +88,7 @@ public class ReportApi extends BaseController {
         
         ReportRequest reportRequest = gson.fromJson(reportRequestStr, ReportRequest.class);
         
-        String householdId = householdDao.getHouseholdId(reportRequest.getUserId());
+        String householdId = householdDao.getHouseholdByUserId(reportRequest.getUserId());
         
         Income income = incomeDao.get(reportRequest.getUserId());
         

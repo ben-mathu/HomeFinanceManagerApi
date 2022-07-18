@@ -1,8 +1,7 @@
-package com.benardmathu.hfms.data.household;
+package com.benardmathu.hfms.data.status;
 
 import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.BaseService;
-import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
@@ -22,73 +22,28 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
  * @author bernard
  */
 @Service
-public class HouseholdBaseService implements BaseService<Household> {
-    public static final String TAG = HouseholdBaseService.class.getSimpleName();
+public class AccountStatusService implements BaseService<AccountStatus> {
+    public static final String TAG = AccountStatusService.class.getSimpleName();
 
     @Autowired
-    private HouseholdRepository repository;
+    private AccountStatusRepository repository;
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public HouseholdBaseService() {
+
+    public AccountStatusService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
     }
 
-    public Household getHousehold(String householdId) {
-        Household household = null;
-        String query = "SELECT * FROM " + HOUSEHOLD_TB_NAME +
-                " WHERE " + HOUSEHOLD_ID + "=?";
-
-        ResultSet resultSet = null;
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, householdId);
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                household = new Household();
-                household.setId(resultSet.getString(HOUSEHOLD_ID));
-                household.setName(resultSet.getString(HOUSEHOLD_NAME));
-            }
-
-            preparedStatement.close();
-            preparedStatement = null;
-            resultSet.close();
-            resultSet = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing household query", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return household;
-    }
-
     @Override
-    public Household save(Household item) {
-        String query = "INSERT INTO " + HOUSEHOLD_TB_NAME + "(" +
-                HOUSEHOLD_ID + "," + HOUSEHOLD_NAME + ")" +
-                " VALUES (?,?)";
-
+    public AccountStatus save(AccountStatus item) {
+        String query = "INSERT INTO " + ACCOUNT_STATUS_TB_NAME + "(" +
+                USER_ID + ")" +
+                " VALUES (?)";
         int affectedRows = 0;
 
         Connection conn = null;
@@ -97,16 +52,16 @@ public class HouseholdBaseService implements BaseService<Household> {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, item.getId());
-            preparedStatement.setString(2, item.getName());
+            preparedStatement.setString(1, item.getUserId());
             affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 1) Log.d(TAG, "Affected Rows: " + affectedRows);
 
             preparedStatement.close();
             preparedStatement = null;
             conn.close();
             conn = null;
         } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing income update", throwables);
+            Log.e(TAG, "Error processing account status", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -120,28 +75,29 @@ public class HouseholdBaseService implements BaseService<Household> {
                     preparedStatement = null;
                 } catch (Exception e) { /* Intentionally blank */ }
         }
+
         return affectedRows;
     }
 
     @Override
-    public int update(Household item) {
+    public int update(AccountStatus item) {
         return 0;
     }
 
     @Override
-    public int delete(Household item) {
-        repository.delete(item);
-        return 1;
+    public int delete(AccountStatus item) {
+        return 0;
     }
 
     @Override
-    public Household get(String id) {
-        String query = "SELECT * FROM " + HOUSEHOLD_TB_NAME +
-                " WHERE " + HOUSEHOLD_ID + "=?";
+    public AccountStatus get(String id) {
+        String query = "SELECT * FROM " + ACCOUNT_STATUS_TB_NAME +
+                " WHERE " + USER_ID + "=?";
         ResultSet resultSet = null;
+        AccountStatus accountStatus = new AccountStatus();
+
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-        Household household = new Household();
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
@@ -150,8 +106,12 @@ public class HouseholdBaseService implements BaseService<Household> {
             resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                household.setId(id);
-                household.setName(resultSet.getString(HOUSEHOLD_NAME));
+                accountStatus.setUserId(id);
+                accountStatus.setIncomeStatus(resultSet.getString(INCOME_STATUS));
+                accountStatus.setJarStatus(resultSet.getString(JAR_STATUS));
+                accountStatus.setAccountStatus(resultSet.getString(ACCOUNT_STATUS));
+                accountStatus.setHouseholdStatus(resultSet.getString(HOUSEHOLD_STATUS));
+                accountStatus.setReminder(resultSet.getString(COMPLETE_AT));
             }
 
             resultSet.close();
@@ -161,7 +121,7 @@ public class HouseholdBaseService implements BaseService<Household> {
             conn.close();
             conn = null;
         } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing household query", throwables);
+            Log.e(TAG, "Error processing account status query", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -181,51 +141,47 @@ public class HouseholdBaseService implements BaseService<Household> {
                     resultSet = null;
                 } catch (Exception e) { /* Intentionally blank */ }
         }
-        return household;
+        return accountStatus;
     }
 
     @Override
-    public List<Household> getAll() {
+    public List<AccountStatus> getAll() {
         return null;
     }
 
     @Override
-    public List<Household> getAll(String id) {
+    public List<AccountStatus> getAll(String id) {
         return null;
     }
 
     @Override
-    public int saveAll(ArrayList<Household> items) {
+    public int saveAll(ArrayList<AccountStatus> items) {
         return 0;
     }
 
-    public String getHouseholdId(String userId) {
-        String householdId = "";
-        String query = "SELECT " + HOUSEHOLD_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
+    public boolean updateJarStatus(AccountStatus accountStatus) {
+        String query = "UPDATE " + ACCOUNT_STATUS_TB_NAME +
+                " SET " + JAR_STATUS + "=?" +
                 " WHERE " + USER_ID + "=?";
+        int affectedRows = 0;
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, userId);
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.setString(1, accountStatus.getJarStatus());
+            preparedStatement.setString(2, accountStatus.getUserId());
+            affectedRows = preparedStatement.executeUpdate();
+            Log.d(TAG, "Affected Rows: " + affectedRows);
 
-            while (resultSet.next()) {
-                householdId = resultSet.getString(HOUSEHOLD_ID);
-            }
-
-            resultSet.close();
-            resultSet = null;
             preparedStatement.close();
             preparedStatement = null;
             conn.close();
             conn = null;
-        }catch (SQLException e) {
-            Log.e(TAG, "Error Processing household id", e);
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error Processing grocery update", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -238,43 +194,42 @@ public class HouseholdBaseService implements BaseService<Household> {
                     preparedStatement.close();
                     preparedStatement = null;
                 } catch (Exception e) { /* Intentionally blank */ }
-
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (Exception e) { /* Intentionally blank */ }
         }
-        return householdId;
+
+        return affectedRows == 1;
     }
 
-    public List<String> getUserId(String houseId) {
-        List<String> userIdList = new ArrayList<>();
-        String query = "SELECT " + USER_ID + " FROM " + USER_HOUSEHOLD_TB_NAME +
-                " WHERE " + HOUSEHOLD_ID + "=?";
+    public boolean updateIncomeStatus(AccountStatus accountStatus) {
+        Optional<AccountStatus> optional = repository.findByUserId(accountStatus.getUserId());
+        AccountStatus status = optional.orElse(null);
+        status.setIncomeStatus(accountStatus.getIncomeStatus());
+        accountStatus = repository.save(accountStatus);
+        return false;
+    }
+
+    public boolean updateHouseholdStatus(AccountStatus accountStatus) {
+        String query = "UPDATE " + ACCOUNT_STATUS_TB_NAME +
+                " SET " + HOUSEHOLD_STATUS + "=?" +
+                " WHERE " + USER_ID + "=?";
+        int affectedRows = 0;
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         try {
             conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
             preparedStatement = conn.prepareStatement(query);
 
-            preparedStatement.setString(1, houseId);
-            resultSet = preparedStatement.executeQuery();
+            preparedStatement.setString(1, accountStatus.getHouseholdStatus());
+            preparedStatement.setString(2, accountStatus.getUserId());
+            affectedRows = preparedStatement.executeUpdate();
+            Log.d(TAG, "Affected Rows: " + affectedRows);
 
-            while (resultSet.next()) {
-                userIdList.add(resultSet.getString(USER_ID));
-            }
-
-            resultSet.close();
-            resultSet = null;
             preparedStatement.close();
             preparedStatement = null;
             conn.close();
             conn = null;
-        }catch (SQLException e) {
-            Log.e(TAG, "Error Processing household id", e);
+        } catch (SQLException throwables) {
+            Log.e(TAG, "Error processing user household rel query", throwables);
         } finally {
             if (conn != null)
                 try {
@@ -287,13 +242,7 @@ public class HouseholdBaseService implements BaseService<Household> {
                     preparedStatement.close();
                     preparedStatement = null;
                 } catch (Exception e) { /* Intentionally blank */ }
-
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (Exception e) { /* Intentionally blank */ }
         }
-        return userIdList;
+        return affectedRows == 1;
     }
 }

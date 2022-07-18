@@ -2,12 +2,12 @@ package com.benardmathu.hfms.api.register;
 
 import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.config.ConfigureApp;
-import com.benardmathu.hfms.data.household.HouseholdBaseService;
+import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.status.*;
 import com.benardmathu.hfms.data.status.Status;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
 import com.benardmathu.hfms.data.user.UserService;
@@ -63,10 +63,10 @@ public class Register extends BaseController {
     private AccountStatusRepository accountStatusRepository;
 
     // Dao
-    private UserService userDao = new UserService();
-    private HouseholdBaseService householdDao = new HouseholdBaseService();
-    private UserHouseholdBaseService userHouseDao = new UserHouseholdBaseService();
-    private AccountStatusBaseService accountStatusDao = new AccountStatusBaseService();
+    private UserService userService = new UserService();
+    private HouseholdService householdService = new HouseholdService();
+    private UserHouseholdService userHouseholdService = new UserHouseholdService();
+    private AccountStatusService statusService = new AccountStatusService();
 
     @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -127,13 +127,11 @@ public class Register extends BaseController {
             user.setSalt(salt);
             user.setUserId(Long.parseLong(userId));
             
-            int rowsAffected = userDao.save(user);
+            User userDto = userService.save(user);
 
             AccountStatus accountStatus = new AccountStatus();
             accountStatus.setUserId(user.getUserId().toString());
-            int affectedRows = accountStatusDao.save(accountStatus);
-
-            Log.d(TAG, "Affected Rows: " + affectedRows);
+            AccountStatus status = statusService.save(accountStatus);
 
             UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
             if (isJoinHouseHold) {
@@ -146,7 +144,7 @@ public class Register extends BaseController {
             } else if (!household.getName().isEmpty()) {
                 String houseId = randomString.nextString();
                 household.setId(Long.parseLong(houseId));
-                householdDao.save(household);
+                householdService.save(household);
 
                 userHouseholdRel.setUserId(user.getUserId().toString());
                 userHouseholdRel.setHouseId(houseId);
@@ -198,17 +196,17 @@ public class Register extends BaseController {
         accountStatus.setHouseholdStatus(statusStr);
         accountStatus.setUserId(userId);
 
-        if (accountStatusDao.updateHouseholdStatus(accountStatus))
+        if (statusService.updateHouseholdStatus(accountStatus))
             Log.d(TAG, "Update table " + ACCOUNT_STATUS_TB_NAME);
     }
 
     private void addUserToHousehold(UserHouseholdRel rel) {
-        int affectedRows = userHouseDao.save(rel);
-        Log.d(TAG, "Affected Rows: " + affectedRows);
+        UserHouseholdRel relDto = userHouseholdService.save(rel);
+        Log.d(TAG, "Affected Rows: " + relDto.toString());
     }
 
     private boolean isHouseholdExists(Household household) {
-        Household house = householdDao.getHousehold(household.getId().toString());
+        Household house = householdService.getHousehold(household.getId());
         if (house != null) {
             return true;
         }
@@ -216,7 +214,7 @@ public class Register extends BaseController {
     }
 
     private boolean isUserExists(String username) {
-        List<User> list = userDao.getAll();
+        List<User> list = userService.getAll();
         for (User user : list) {
             if (user.getUsername().equals(username))
                 return true;

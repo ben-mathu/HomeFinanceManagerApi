@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.api.users;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.household.HouseholdBaseService;
+import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
@@ -11,9 +11,9 @@ import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeService;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.status.AccountStatus;
-import com.benardmathu.hfms.data.status.AccountStatusBaseService;
+import com.benardmathu.hfms.data.status.AccountStatusService;
 import com.benardmathu.hfms.data.status.AccountStatusRepository;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
+import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
 import com.benardmathu.hfms.data.transactions.TransactionBaseService;
@@ -68,9 +68,9 @@ public class UserApi extends BaseController {
     private IncomeChangeRepository incomeChangeRepository;
 
     private IncomeBaseService incomeDao = new IncomeBaseService();
-    private HouseholdBaseService householdDao = new HouseholdBaseService();
-    private UserHouseholdBaseService userHouseholdDao = new UserHouseholdBaseService();
-    private AccountStatusBaseService accountStatusDao = new AccountStatusBaseService();
+    private HouseholdService householdDao = new HouseholdService();
+    private UserHouseholdService userHouseholdDao = new UserHouseholdService();
+    private AccountStatusService accountStatusDao = new AccountStatusService();
     private UserService userDao = new UserService();
     private TransactionBaseService transactionDao = new TransactionBaseService();
     private IncomeChangeService incomeChangeService = new IncomeChangeService();

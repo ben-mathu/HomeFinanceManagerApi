@@ -2,6 +2,7 @@ package com.benardmathu.hfms.data.user;
 
 import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.BaseService;
+import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
@@ -33,6 +34,10 @@ public class UserService implements BaseService<User> {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();
+    }
+
+    public Household getHouseholdByUserId(Long userId) {
+        return repository.findHouseholdByUserId(userId);
     }
 
     public User getUserDetails(String username) {
