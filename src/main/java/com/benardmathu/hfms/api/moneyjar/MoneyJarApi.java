@@ -15,7 +15,7 @@ import com.benardmathu.hfms.data.expense.model.Expense;
 import com.benardmathu.hfms.data.grocery.model.Grocery;
 import com.benardmathu.hfms.data.grocery.GroceryService;
 import com.benardmathu.hfms.data.household.HouseholdService;
-import com.benardmathu.hfms.data.income.IncomeBaseService;
+import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.status.*;
 import com.benardmathu.hfms.data.status.Status;
@@ -101,7 +101,7 @@ public class MoneyJarApi extends BaseController {
     private final MoneyJarGroceriesDao moneyJarListDao;
     private final MoneyJarExpenseDao moneyJarExpenseDao;
     private final MoneyJarScheduleDao moneyJarScheduleDao;
-    private final IncomeBaseService incomeDao;
+    private final IncomeService incomeDao;
 
     private final GenerateRandomString randomString;
 
@@ -118,7 +118,7 @@ public class MoneyJarApi extends BaseController {
         moneyJarListDao = new MoneyJarGroceriesDao();
         moneyJarExpenseDao = new MoneyJarExpenseDao();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
-        incomeDao = new IncomeBaseService();
+        incomeDao = new IncomeService();
 
         randomString = new GenerateRandomString(
                 12,

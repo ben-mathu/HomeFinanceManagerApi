@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.api.income;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.income.IncomeBaseService;
+import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.IncomeDto;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeService;
@@ -39,7 +39,7 @@ import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
 public class IncomeApi extends BaseController {
 
     @Autowired
-    private IncomeBaseService incomeService;
+    private IncomeService incomeService;
 
     @Autowired
     private IncomeChangeService incomeChangeService;

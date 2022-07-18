@@ -18,8 +18,6 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = INCOME_TB_NAME)
 public class Income {

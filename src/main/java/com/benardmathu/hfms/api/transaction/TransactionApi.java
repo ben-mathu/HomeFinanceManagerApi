@@ -7,7 +7,7 @@ import com.benardmathu.hfms.data.budget.BudgetService;
 import com.benardmathu.hfms.data.daraja.LnmoErrorResponse;
 import com.benardmathu.hfms.data.daraja.LnmoRequest;
 import com.benardmathu.hfms.data.daraja.LnmoResponse;
-import com.benardmathu.hfms.data.income.IncomeBaseService;
+import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
@@ -65,14 +65,14 @@ public class TransactionApi extends BaseController {
     private BudgetService budgetService;
 
     private final UserHouseholdService userHouseholdDao;
-    private final IncomeBaseService incomeDao;
+    private final IncomeService incomeDao;
     private final MoneyJarScheduleDao moneyJarScheduleDao;
     
     public TransactionApi() {
         transactionDao = new TransactionBaseService();
         moneyJarsDao = new MoneyJarsBaseService();
         userHouseholdDao = new UserHouseholdService();
-        incomeDao = new IncomeBaseService();
+        incomeDao = new IncomeService();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
     }
 

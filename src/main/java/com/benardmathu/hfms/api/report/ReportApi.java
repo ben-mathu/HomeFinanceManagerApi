@@ -4,7 +4,7 @@ import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
-import com.benardmathu.hfms.data.income.IncomeBaseService;
+import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeService;
@@ -67,7 +67,7 @@ public class ReportApi extends BaseController {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    private IncomeBaseService incomeDao;
+    private IncomeService incomeDao;
     private IncomeChangeService incomeChangeService;
     private MoneyJarScheduleDao moneyJarScheduleDao;
     private HouseholdService householdDao;
@@ -75,7 +75,7 @@ public class ReportApi extends BaseController {
     private TransactionBaseService transactionDao;
 
     public ReportApi() {
-        incomeDao = new IncomeBaseService();
+        incomeDao = new IncomeService();
         incomeChangeService = new IncomeChangeService();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
         householdDao = new HouseholdService();

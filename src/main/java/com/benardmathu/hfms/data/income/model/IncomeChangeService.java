@@ -1,12 +1,12 @@
 package com.benardmathu.hfms.data.income.model;
 
-import com.benardmathu.hfms.data.BaseDao;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.AMOUNT;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.CREATED_AT;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.INCOME_ID;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.ON_CHANGE_INCOME_STATUS;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.ON_UPDATE_INCOME;
 
+import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,123 +24,28 @@ import java.util.List;
  * @author bernard
  */
 @Service
-public class IncomeChangeService extends BaseDao<OnInComeChange> {
+public class IncomeChangeService implements BaseService<OnInComeChange> {
 
     @Autowired
     private IncomeChangeRepository repository;
 
     @Override
-    public OnInComeChange get(String id) {
-        String query = "SELECT * FROM " + ON_UPDATE_INCOME +
-                " WHERE " + INCOME_ID + "=?";
-        OnInComeChange income = new OnInComeChange();
-        
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, id);
-            resultSet = preparedStatement.executeQuery();
-
-            while(resultSet.next()) {
-                income.setAmount(resultSet.getDouble(AMOUNT));
-                income.setCreatedAt(resultSet.getString(CREATED_AT));
-                income.setIncomeId(resultSet.getString(INCOME_ID));
-                income.setOnChangeStatus(resultSet.getBoolean(ON_CHANGE_INCOME_STATUS));
-            }
-
-            resultSet.close();
-            resultSet = null;
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing income query", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return income;
+    public OnInComeChange get(Long id) {
+        return repository.findById(id).orElse(null);
     }
-    
-    
-    
-    public List<OnInComeChange> getAll(String id, String from, String to) {
-        String query = "SELECT * FROM " + ON_UPDATE_INCOME +
-                " WHERE " + INCOME_ID + "=? AND "
-                + CREATED_AT + " BETWEEN SYMMETRIC ? AND ?";
-        List<OnInComeChange> list = new ArrayList<>();
-        
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
 
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
+    @Override
+    public List<OnInComeChange> getAll() {
+        return repository.findAll();
+    }
 
-            preparedStatement.setString(1, id);
-            preparedStatement.setString(2, from);
-            preparedStatement.setString(3, to);
-            resultSet = preparedStatement.executeQuery();
+    @Override
+    public List<OnInComeChange> saveAll(ArrayList<OnInComeChange> items) {
+        return repository.saveAll(items);
+    }
 
-            while(resultSet.next()) {
-                OnInComeChange income = new OnInComeChange();
-                income.setAmount(resultSet.getDouble(AMOUNT));
-                income.setCreatedAt(resultSet.getString(CREATED_AT));
-                income.setIncomeId(resultSet.getString(INCOME_ID));
-                income.setOnChangeStatus(resultSet.getBoolean(ON_CHANGE_INCOME_STATUS));
-                list.add(income);
-            }
-
-            resultSet.close();
-            resultSet = null;
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing income query", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return list;
+    public List<OnInComeChange> getAll(Long id, Date from, Date to) {
+        return repository.findByIdAndCreatedAtGreaterThanEqual(id, from, to);
     }
 
     @Override
@@ -149,45 +54,12 @@ public class IncomeChangeService extends BaseDao<OnInComeChange> {
     }
 
     @Override
-    public int update(OnInComeChange item) {
-        String query = "UPDATE " + ON_UPDATE_INCOME
-                + " SET " + AMOUNT + "=?,"
-                + CREATED_AT + "=?,"
-                + ON_CHANGE_INCOME_STATUS + "=?"
-                + " WHERE " + INCOME_ID + "=?,";
-        int affectedRows = 0;
+    public OnInComeChange update(OnInComeChange item) {
+        return repository.save(item);
+    }
 
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setDouble(1, item.getAmount());
-            preparedStatement.setString(2, item.getCreatedAt());
-            preparedStatement.setBoolean(3, false);
-            preparedStatement.setString(4, item.getIncomeId());
-            affectedRows = preparedStatement.executeUpdate();
-
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error adding income: ", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return affectedRows;
+    @Override
+    public void delete(OnInComeChange item) {
+        repository.delete(item);
     }
 }

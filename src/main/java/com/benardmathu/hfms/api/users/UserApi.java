@@ -5,7 +5,7 @@ import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
-import com.benardmathu.hfms.data.income.IncomeBaseService;
+import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeService;
@@ -67,7 +67,7 @@ public class UserApi extends BaseController {
     @Autowired
     private IncomeChangeRepository incomeChangeRepository;
 
-    private IncomeBaseService incomeDao = new IncomeBaseService();
+    private IncomeService incomeDao = new IncomeService();
     private HouseholdService householdDao = new HouseholdService();
     private UserHouseholdService userHouseholdDao = new UserHouseholdService();
     private AccountStatusService accountStatusDao = new AccountStatusService();
