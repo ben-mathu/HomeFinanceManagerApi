@@ -5,6 +5,7 @@ import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.grocery.model.Grocery;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,81 +23,8 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 public class GroceryBaseService implements BaseService<Grocery> {
     public static final String TAG = GroceryBaseService.class.getSimpleName();
 
-    private JdbcConnection jdbcConnection;
-    private ConfigureDb db;
-    private Properties prop;
-
-    public GroceryBaseService() {
-        jdbcConnection = new JdbcConnection();
-        db = new ConfigureDb();
-        prop = db.getProperties();
-    }
-
-    public int save(Grocery grocery, String groceryId) {
-        String query = "INSERT INTO " + GROCERIES_TB_NAME + "(" +
-                GROCERY_ID + "," +
-                GROCERY_NAME + "," +
-                GROCERY_DESCRIPTION + "," +
-                GROCERY_PRICE + "," +
-                REQUIRED_QUANTITY + "," +
-                REMAINING_QUANTITY + "," +
-                MONEY_JAR_ID + ")" +
-                "VALUES (?,?,?,?,?,?,?)" +
-                " ON CONFLICT (" + GROCERY_ID + ")" +
-                " DO UPDATE" +
-                " SET " + GROCERY_NAME + "=?," +
-                GROCERY_DESCRIPTION + "=?," +
-                GROCERY_PRICE + "=?," +
-                REQUIRED_QUANTITY + "=?," +
-                REMAINING_QUANTITY + "=?," +
-                MONEY_JAR_ID + "=?" +
-                " WHERE " + GROCERIES_TB_NAME + "." + GROCERY_ID + "=?";
-        int affectedRows = 0;
-
-        Connection conn = null;
-        PreparedStatement insert = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            insert = conn.prepareStatement(query);
-
-            insert.setString(1, groceryId);
-            insert.setString(2, grocery.getName());
-            insert.setString(3, grocery.getDescription());
-            insert.setDouble(4, grocery.getPrice());
-            insert.setInt(5, grocery.getRequired());
-            insert.setInt(6, grocery.getRemaining());
-            insert.setString(7, grocery.getJarId());
-            insert.setString(8, grocery.getName());
-            insert.setString(9, grocery.getDescription());
-            insert.setDouble(10, grocery.getPrice());
-            insert.setInt(11, grocery.getRequired());
-            insert.setInt(12, grocery.getRemaining());
-            insert.setString(14, grocery.getJarId());
-            insert.setString(13, groceryId);
-            affectedRows = insert.executeUpdate();
-
-            insert.close();
-            insert = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing adding grocery", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (insert != null)
-                try {
-                    insert.close();
-                    insert = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-
-        return affectedRows;
-    }
+    @Autowired
+    private GroceryRepository repo;
 
     public GroceriesDto getGroceries() {
         return null;
@@ -119,269 +47,31 @@ public class GroceryBaseService implements BaseService<Grocery> {
 
     @Override
     public Grocery save(Grocery item) {
-        String query = "INSERT INTO " + GROCERIES_TB_NAME + "(" +
-                GROCERY_ID + "," +
-                GROCERY_NAME + "," +
-                GROCERY_DESCRIPTION + "," +
-                GROCERY_PRICE + "," +
-                REQUIRED_QUANTITY + "," +
-                REMAINING_QUANTITY + "," +
-                MONEY_JAR_ID + ")" +
-                "VALUES (?,?,?,?,?,?,?)";
-        int affectedRows = 0;
-
-        Connection conn = null;
-        PreparedStatement insert = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            insert = conn.prepareStatement(query);
-
-            insert.setString(1, item.getGroceryId());
-            insert.setString(2, item.getName());
-            insert.setString(3, item.getDescription());
-            insert.setDouble(4, item.getPrice());
-            insert.setInt(5, item.getRequired());
-            insert.setInt(6, item.getRemaining());
-            insert.setString(7, item.getJarId());
-            affectedRows = insert.executeUpdate();
-
-            insert.close();
-            insert = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing adding grocery", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (insert != null)
-                try {
-                    insert.close();
-                    insert = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-
-        return affectedRows;
+        return repo.save(item);
     }
 
     @Override
-    public int update(Grocery item) {
-        return 0;
+    public Grocery update(Grocery item) {
+        return repo.save(item);
     }
 
     @Override
-    public int delete(Grocery item) {
-        return 0;
+    public void delete(Grocery item) {
+        repo.delete(item);
     }
 
     @Override
-    public Grocery get(String id) {
-        String query = "SELECT * FROM " + GROCERIES_TB_NAME +
-                " WHERE " + GROCERY_ID + "=?";
-        Grocery grocery = new Grocery();
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet result = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, id);
-            result = preparedStatement.executeQuery();
-            while (result.next()) {
-                grocery.setGroceryId(result.getString(GROCERY_ID));
-                grocery.setName(result.getString(GROCERY_NAME));
-                grocery.setDescription(result.getString(GROCERY_DESCRIPTION));
-                grocery.setPrice(result.getDouble(GROCERY_PRICE));
-                grocery.setRequired(result.getInt(REQUIRED_QUANTITY));
-                grocery.setRemaining(result.getInt(REMAINING_QUANTITY));
-                grocery.setJarId(result.getString(MONEY_JAR_ID));
-            }
-
-            result.close();
-            result = null;
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error whilst getting groceries.", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (result != null)
-                try {
-                    result.close();
-                    result = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return grocery;
+    public Grocery get(Long id) {
+        return repo.findById(id).orElse(null);
     }
 
     @Override
     public List<Grocery> getAll() {
-        String query = "SELECT * FROM " + GROCERIES_TB_NAME;
-        ArrayList<Grocery> groceries = new ArrayList<>();
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet result = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-            result = preparedStatement.executeQuery();
-            while (result.next()) {
-                Grocery grocery = new Grocery();
-                grocery.setGroceryId(result.getString(GROCERY_ID));
-                grocery.setName(result.getString(GROCERY_NAME));
-                grocery.setDescription(result.getString(GROCERY_DESCRIPTION));
-                grocery.setPrice(result.getDouble(GROCERY_PRICE));
-                grocery.setRequired(result.getInt(REQUIRED_QUANTITY));
-                grocery.setRemaining(result.getInt(REMAINING_QUANTITY));
-                groceries.add(grocery);
-            }
-
-            result.close();
-            result = null;
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error whilst getting groceries.", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (result != null)
-                try {
-                    result.close();
-                    result = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return groceries;
+        return repo.findAll();
     }
 
     @Override
-    public List<Grocery> getAll(String id) {
-        String query = "SELECT * FROM " + GROCERIES_TB_NAME +
-                " WHERE " + MONEY_JAR_ID + "=?";
-        ArrayList<Grocery> groceries = new ArrayList<>();
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet result = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, id);
-            result = preparedStatement.executeQuery();
-            while (result.next()) {
-                Grocery grocery = new Grocery();
-                grocery.setGroceryId(result.getString(GROCERY_ID));
-                grocery.setName(result.getString(GROCERY_NAME));
-                grocery.setDescription(result.getString(GROCERY_DESCRIPTION));
-                grocery.setPrice(result.getDouble(GROCERY_PRICE));
-                grocery.setRequired(result.getInt(REQUIRED_QUANTITY));
-                grocery.setRemaining(result.getInt(REMAINING_QUANTITY));
-                grocery.setJarId(id);
-                groceries.add(grocery);
-            }
-
-            result.close();
-            result = null;
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error whilst getting groceries.", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (result != null)
-                try {
-                    result.close();
-                    result = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return groceries;
-    }
-
-    @Override
-    public int saveAll(ArrayList<Grocery> items) {
-        return 0;
-    }
-
-    public int deleteGrocery(String parameter) {
-        String query = "DELETE FROM " + GROCERIES_TB_NAME +
-                " WHERE " + GROCERY_ID + "=?";
-        ArrayList<Grocery> groceries = new ArrayList<>();
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        int affected = 0;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, parameter);
-            affected = preparedStatement.executeUpdate();
-            
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error whilst getting groceries.", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return affected;
+    public List<Grocery> saveAll(ArrayList<Grocery> items) {
+        return repo.saveAll(items);
     }
 }
