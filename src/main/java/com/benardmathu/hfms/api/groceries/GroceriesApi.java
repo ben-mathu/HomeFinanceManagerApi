@@ -27,12 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(name = "GroceriesApi", value = GROCERY_URL)
 public class GroceriesApi extends BaseController {
-//    private GroceryDao groceryDao;
+
     @Autowired
     private GroceryRepository groceryRepository;
-//    public GroceriesApi() {
-//        groceryDao = new GroceryDao();
-//    }
 
     @DeleteMapping
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

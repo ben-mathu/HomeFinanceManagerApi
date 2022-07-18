@@ -2,7 +2,7 @@ package com.benardmathu.hfms.api.register;
 
 import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.code.CodeBaseService;
+import com.benardmathu.hfms.data.code.CodeService;
 import com.benardmathu.hfms.data.code.model.Code;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.Identification;
@@ -62,7 +62,7 @@ public class Confirm extends BaseController {
     }
 
     private boolean isCodeCorrect(Identification id) {
-        CodeBaseService dao = new CodeBaseService();
+        CodeService dao = new CodeService();
         Code item = dao.get(id.getUser().getUserId().toString());
 
         if (item.getCode().equals(id.getCode())) {

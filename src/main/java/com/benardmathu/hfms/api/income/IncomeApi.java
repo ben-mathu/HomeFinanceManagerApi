@@ -1,12 +1,10 @@
 package com.benardmathu.hfms.api.income;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.IncomeDto;
-import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
-import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
+import com.benardmathu.hfms.data.income.model.IncomeChangeService;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.status.AccountStatus;
 import com.benardmathu.hfms.data.status.AccountStatusBaseService;
@@ -16,10 +14,9 @@ import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 import com.benardmathu.hfms.utils.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,27 +40,23 @@ import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
 public class IncomeApi extends BaseController {
 
     @Autowired
-    private IncomeRepository incomeRepository;
+    private IncomeBaseService incomeService;
 
     @Autowired
-    private IncomeChangeRepository incomeChangeRepository;
+    private IncomeChangeService incomeChangeService;
 
-    private IncomeBaseService incomeDao;
-    private IncomeChangeDao incomeChangeDao;
-    private AccountStatusBaseService accountStatusDao;
-    
-    public IncomeApi() {
-        incomeDao = new IncomeBaseService();
-        incomeChangeDao = new IncomeChangeDao();
-        accountStatusDao = new AccountStatusBaseService();
-    }
+    @Autowired
+    private AccountStatusBaseService accountStatusService;
 
     @PostMapping
-    protected void doPost(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
-        String userId = httpServletRequest.getParameter(USER_ID);
-        String requestStr = BufferRequestReader.bufferRequest(httpServletRequest);
+    protected ResponseEntity<IncomeDto> addIncome(@RequestParam(USER_ID) String userId, @RequestBody IncomeDto incomeDto,
+                                       HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse
+    ) throws ServletException, IOException {
 
-        IncomeDto incomeDto = gson.fromJson(requestStr, IncomeDto.class);
+//        String userId = httpServletRequest.getParameter(USER_ID);
+//        String requestStr = BufferRequestReader.bufferRequest(httpServletRequest);
+//
+//        IncomeDto incomeDto = gson.fromJson(requestStr, IncomeDto.class);
         Income income = incomeDto.getIncome();
 
         Date date = new Date();
@@ -81,13 +74,13 @@ public class IncomeApi extends BaseController {
         income.setSchedule(income.getSchedule());
         
         OnInComeChange onInComeChange = new OnInComeChange();
-        if (incomeDao.save(income) > 0) {
+        if (incomeService.save(income) != null) {
             onInComeChange.setAmount(income.getAmount());
             onInComeChange.setCreatedAt(today);
             onInComeChange.setIncomeId(incomeId);
             onInComeChange.setOnChangeStatus(true);
 
-            incomeChangeDao.save(onInComeChange);
+            incomeChangeService.save(onInComeChange);
         }
 
         incomeDto.setIncome(income);
@@ -98,10 +91,7 @@ public class IncomeApi extends BaseController {
         Report report = updateIncomeStatus(userId);
         incomeDto.setReport(report);
         
-        String response = gson.toJson(incomeDto);
-        
-        writer = httpServletResponse.getWriter();
-        writer.write(response);
+        return new ResponseEntity<>(incomeDto, HttpStatus.OK);
     }
 
     private Report updateIncomeStatus(String userId) {
@@ -120,7 +110,7 @@ public class IncomeApi extends BaseController {
         accountStatus.setUserId(userId);
 
         Report report = new Report();
-        if (accountStatusDao.updateIncomeStatus(accountStatus)) {
+        if (accountStatusService.updateIncomeStatus(accountStatus)) {
             Log.d(TAG, "Update table " + ACCOUNT_STATUS_TB_NAME);
             report.setStatus(HttpServletResponse.SC_OK);
             report.setMessage("Successfully saved income");
@@ -133,37 +123,36 @@ public class IncomeApi extends BaseController {
     }
 
     @PutMapping
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String requestStr = BufferRequestReader.bufferRequest(req);
-        
-        IncomeDto incomeDto = gson.fromJson(requestStr, IncomeDto.class);
+    protected ResponseEntity<IncomeDto> updateIncomeChange(@RequestBody IncomeDto incomeDto,
+                                      HttpServletRequest req, HttpServletResponse resp
+    ) throws ServletException, IOException {
+
+//        String requestStr = BufferRequestReader.bufferRequest(req);
+//
+//        IncomeDto incomeDto = gson.fromJson(requestStr, IncomeDto.class);
         
         OnInComeChange onInComeChange = new OnInComeChange();
         onInComeChange.setAmount(incomeDto.getIncome().getAmount());
         onInComeChange.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date()));
         
-        Income income = incomeDao.get(req.getParameter(USER_ID));
+        Income income = incomeService.get(req.getParameter(USER_ID));
         incomeDto.getIncome().setAmount(income.getAmount() + incomeDto.getIncome().getAmount());
         
         onInComeChange.setIncomeId(income.getIncomeId());
         
-        int affectedChange = incomeChangeDao.save(onInComeChange);
-        if (affectedChange > 0) {
-            incomeDto.setOnIncomeChange(onInComeChange);
-        }
+        OnInComeChange inComeChange = incomeChangeService.save(onInComeChange);
+        incomeDto.setOnIncomeChange(inComeChange);
         
-        int affected = incomeDao.update(incomeDto.getIncome());
-        
-        if (affected > 0) {
-            Report report = new Report();
-            report.setStatus(HttpServletResponse.SC_OK);
-            report.setMessage("Successfully Updated");
-            
-            incomeDto.setReport(report);
-            
-            resp.setStatus(report.getStatus());
-            writer = resp.getWriter();
-            writer.write(gson.toJson(incomeDto));
-        }
+        Income in = incomeService.save(incomeDto.getIncome());
+
+        Report report = new Report();
+        report.setStatus(HttpServletResponse.SC_OK);
+        report.setMessage("Successfully Updated");
+
+        incomeDto.setReport(report);
+        incomeDto.setIncome(in);
+
+        resp.setStatus(report.getStatus());
+        return new ResponseEntity<>(incomeDto, HttpStatus.OK);
     }
 }

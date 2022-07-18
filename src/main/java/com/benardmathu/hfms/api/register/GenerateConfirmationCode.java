@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.api.register;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.code.CodeBaseService;
+import com.benardmathu.hfms.data.code.CodeService;
 import com.benardmathu.hfms.data.code.CodeRepository;
 import com.benardmathu.hfms.data.code.model.Code;
 import com.benardmathu.hfms.data.user.Identification;
@@ -34,7 +34,7 @@ public class GenerateConfirmationCode extends BaseController {
     @Autowired
     private CodeRepository codeRepository;
 
-    private CodeBaseService dao = new CodeBaseService();
+    private CodeService dao = new CodeService();
 
     @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,7 +44,7 @@ public class GenerateConfirmationCode extends BaseController {
 
         String code = generateCode();
 
-        if (saveCode(code, user.getUser()) > 0) {
+        if (Integer.parseInt(saveCode(code, user.getUser()).getCode()) > 0) {
             dao.sendCodeToEmail(user.getUser(), code);
 
             Report report = new Report();
@@ -69,12 +69,12 @@ public class GenerateConfirmationCode extends BaseController {
         return rand.nextString();
     }
 
-    public int saveCode(String code, User user) {
+    public Code saveCode(String code, User user) {
         Code item = new Code();
         item.setCode(code);
-        int affectedRows = dao.saveCode(item, user.getUserId().toString());
+        item = dao.saveCode(item, user.getUserId().toString());
 
-        Log.d(TAG, "Affected Rows:" + affectedRows);
-        return affectedRows;
+        Log.d(TAG, "Affected Rows:" + item);
+        return item;
     }
 }

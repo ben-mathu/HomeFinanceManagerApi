@@ -29,7 +29,7 @@ public abstract class BaseDao<T> {
         prop = db.getProperties();
     }
     
-    public int save(T item) { return 0; }
+    public T save(T item) { return null; }
     public int update(T item) { return 0; }
     public int delete(T item) { return 0; }
     public T get(String id) { return null; }

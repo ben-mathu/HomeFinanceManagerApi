@@ -4,7 +4,7 @@ import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.config.ConfigureApp;
 import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
-import com.benardmathu.hfms.data.user.UserBaseService;
+import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
@@ -31,6 +31,7 @@ import com.benardmathu.tokengeneration.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,20 +45,24 @@ public class Login extends BaseController {
     @Autowired
     private UserRepository userRepository;
 
-    private UserBaseService userDao = new UserBaseService();
+    @Autowired
+    private UserService userService;
 
     private ConfigureDb db = new ConfigureDb();
     private Properties prop = db.getProperties();
     private JdbcConnection jdbcConnection = new JdbcConnection();
 
     @PostMapping
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String jsonRequest = BufferRequestReader.bufferRequest(request);
+    protected void loginUser(@RequestBody UserRequest userRequest,
+                             HttpServletRequest request, HttpServletResponse response
+    ) throws ServletException, IOException {
 
-        PrintWriter writer;
+//        String jsonRequest = BufferRequestReader.bufferRequest(request);
+//
+//        PrintWriter writer;
+//
+//        UserRequest userRequest = gson.fromJson(jsonRequest, UserRequest.class);
         Report report = null;
-
-        UserRequest userRequest = gson.fromJson(jsonRequest, UserRequest.class);
         User user = userRequest.getUser();
         String username = user.getUsername();
         String password = user.getPassword();
@@ -68,7 +73,7 @@ public class Login extends BaseController {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         // validate credentials
-        User u = userDao.validateCredentials(username, password);
+        User u = userService.validateCredentials(username, password);
         if (u == null) {
             report = new Report();
             report.setStatus(HttpServletResponse.SC_FORBIDDEN);

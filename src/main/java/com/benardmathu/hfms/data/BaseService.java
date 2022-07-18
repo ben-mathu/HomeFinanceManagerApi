@@ -8,10 +8,9 @@ import java.util.List;
  */
 public interface BaseService<T> {
     T save(T item) ;
-    int update(T item);
-    int delete(T item);
-    T get(String id);
+    T update(T item);
+    void delete(T item);
+    T get(Long id);
     List<T> getAll();
-    List<T> getAll(String id);
-    int saveAll(ArrayList<T> items);
+    List<T> saveAll(ArrayList<T> items);
 }

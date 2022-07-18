@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class MoneyJarExpenseDao extends BaseDao<MoneyJarExpenseRel> {
 
     @Override
-    public int save(MoneyJarExpenseRel item) {
+    public MoneyJarExpenseRel save(MoneyJarExpenseRel item) {
         String query = "INSERT INTO " + DbEnvironment.MONEY_JAR_EXPENSE_REL_TB + " (" +
                 DbEnvironment.MONEY_JAR_ID + "," + DbEnvironment.EXPENSE_ID + ") " +
                 "VALUES (?,?)";

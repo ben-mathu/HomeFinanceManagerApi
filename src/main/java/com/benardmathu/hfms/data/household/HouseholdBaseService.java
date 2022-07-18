@@ -5,6 +5,8 @@ import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,8 +21,12 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
+@Service
 public class HouseholdBaseService implements BaseService<Household> {
     public static final String TAG = HouseholdBaseService.class.getSimpleName();
+
+    @Autowired
+    private HouseholdRepository repository;
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
@@ -124,39 +130,8 @@ public class HouseholdBaseService implements BaseService<Household> {
 
     @Override
     public int delete(Household item) {
-        String query = "DELETE FROM " + HOUSEHOLD_TB_NAME +
-                " WHERE " + HOUSEHOLD_ID + "=?";
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        
-        int affectedRows = 0;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, item.getId());
-            affectedRows = preparedStatement.executeUpdate();
-
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing household query", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return affectedRows;
+        repository.delete(item);
+        return 1;
     }
 
     @Override

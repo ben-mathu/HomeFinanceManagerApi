@@ -8,7 +8,7 @@ import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
-import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
+import com.benardmathu.hfms.data.income.model.IncomeChangeService;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.status.AccountStatus;
 import com.benardmathu.hfms.data.status.AccountStatusBaseService;
@@ -19,7 +19,7 @@ import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepos
 import com.benardmathu.hfms.data.transactions.TransactionBaseService;
 import com.benardmathu.hfms.data.transactions.TransactionRepository;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
-import com.benardmathu.hfms.data.user.UserBaseService;
+import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.data.user.UserDto;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
@@ -71,9 +71,9 @@ public class UserApi extends BaseController {
     private HouseholdBaseService householdDao = new HouseholdBaseService();
     private UserHouseholdBaseService userHouseholdDao = new UserHouseholdBaseService();
     private AccountStatusBaseService accountStatusDao = new AccountStatusBaseService();
-    private UserBaseService userDao = new UserBaseService();
+    private UserService userDao = new UserService();
     private TransactionBaseService transactionDao = new TransactionBaseService();
-    private IncomeChangeDao incomeChangeDao = new IncomeChangeDao();
+    private IncomeChangeService incomeChangeService = new IncomeChangeService();
 
     @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -103,7 +103,7 @@ public class UserApi extends BaseController {
         // get account status
         AccountStatus accountStatus = accountStatusDao.get(user.getUserId().toString());
         
-        OnInComeChange onInComeChange = incomeChangeDao.get(income.getIncomeId().toString());
+        OnInComeChange onInComeChange = incomeChangeService.get(income.getIncomeId().toString());
 
         UserDto dto = new UserDto();
         dto.setUser(user);

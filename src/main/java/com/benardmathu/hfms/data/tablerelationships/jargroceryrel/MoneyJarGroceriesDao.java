@@ -17,7 +17,7 @@ import java.util.List;
 public class MoneyJarGroceriesDao extends BaseDao<MoneyJarGroceriesRel>{
     
     @Override
-    public int save(MoneyJarGroceriesRel moneyJarListRel) {
+    public MoneyJarGroceriesRel save(MoneyJarGroceriesRel moneyJarListRel) {
         String query = "INSERT INTO " + DbEnvironment.MONEY_JAR_LIST_REL_TB_NAME + " (" +
                 DbEnvironment.MONEY_JAR_ID + "," + DbEnvironment.GROCERY_ID + ") " +
                 "VALUES (?,?)";

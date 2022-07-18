@@ -2,20 +2,22 @@ package com.benardmathu.hfms.api.household;
 
 import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.household.HouseholdBaseService;
-import com.benardmathu.hfms.data.household.HouseholdRepository;
 import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.user.Members;
-import com.benardmathu.hfms.data.user.UserBaseService;
-import com.benardmathu.hfms.data.user.UserRepository;
+import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.USER_ID;
 import static com.benardmathu.hfms.data.utils.URL.HOUSEHOLDS_URL;
-import com.benardmathu.hfms.utils.BufferRequestReader;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -34,65 +36,70 @@ import javax.servlet.http.HttpServletResponse;
 public class HouseholdApi extends BaseController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserHouseholdBaseService userHouseholdService;
 
     @Autowired
-    private HouseholdRepository householdRepository;
+    private UserService userService;
 
-    private UserHouseholdBaseService userHouseholdDao;
-    private UserBaseService userDao;
-    private HouseholdBaseService householdDao;
+    @Autowired
+    private HouseholdBaseService householdService;
     
-    public HouseholdApi() {
-        userHouseholdDao = new UserHouseholdBaseService();
-        userDao = new UserBaseService();
-        householdDao = new HouseholdBaseService();
-    }
+//    public HouseholdApi() {
+//        userHouseholdDao = new UserHouseholdBaseService();
+//        userDao = new UserBaseService();
+//        householdDao = new HouseholdBaseService();
+//    }
 
     @PutMapping
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String requestStr = BufferRequestReader.bufferRequest(req);
-        
-        String uri = req.getRequestURI();
-        UserHouseholdRel userHouseholdRel = gson.fromJson(requestStr, UserHouseholdRel.class);
+    protected ResponseEntity<Report> changeHousehold(@RequestBody UserHouseholdRel userHouseholdRel,
+                                             HttpServletRequest req, HttpServletResponse resp
+    ) throws ServletException, IOException {
+
+//        String requestStr = BufferRequestReader.bufferRequest(req);
+//
+//        String uri = req.getRequestURI();
+//        UserHouseholdRel userHouseholdRel = gson.fromJson(requestStr, UserHouseholdRel.class);
         
         Report report = new Report();
-        if (userHouseholdDao.update(userHouseholdRel) > 0) {
+        if (userHouseholdService.update(userHouseholdRel) > 0) {
             report.setMessage("Successfully changed, your account will now be deleted.");
-            report.setStatus(HttpServletResponse.SC_OK);
+            report.setStatus(SC_OK);
             
-            resp.setStatus(HttpServletResponse.SC_OK);
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
+            resp.setStatus(SC_OK);
         } else {
             report.setMessage("Could not change ownership");
-            report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            report.setStatus(SC_NOT_MODIFIED);
             
-            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
+            resp.setStatus(SC_NOT_MODIFIED);
         }
+//        writer = resp.getWriter();
+//        writer.write(gson.toJson(report));
+
+        return new ResponseEntity<>(report, HttpStatus.ACCEPTED);
     }
 
     @GetMapping
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter(USER_ID);
+    protected ResponseEntity<Members> getHousehold(@RequestParam(USER_ID) String userId,
+                                HttpServletRequest req, HttpServletResponse resp
+    ) throws ServletException, IOException {
+
+//        String userId = req.getParameter(USER_ID);
         
-        UserHouseholdRel userHousehold = userHouseholdDao.get(userId);
+        UserHouseholdRel userHousehold = userHouseholdService.get(userId);
         
         Members members = new Members();
         if (userHousehold.isOwner()) {
             
-            List<UserHouseholdRel> userHouseholdList = userHouseholdDao.getAll(userHousehold.getHouseId());
+            List<UserHouseholdRel> userHouseholdList = userHouseholdService.getAll(userHousehold.getHouseId());
             
             List<User> userList = new ArrayList<>();
             for (UserHouseholdRel userHouseholdRel : userHouseholdList) {
-                User user = userDao.get(userHouseholdRel.getUserId());
+                User user = userService.get(userHouseholdRel.getUserId());
                 userList.add(user);
             }
             
             if (userList.size() <= 1) {
-                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.setStatus(SC_OK);
                 
                 members.setHouseholdId(userHousehold.getHouseId());
             
@@ -102,26 +109,23 @@ public class HouseholdApi extends BaseController {
 
                 members.setReport(report);
 
-                String responseStr = gson.toJson(members);
-                writer = resp.getWriter();
-                writer.write(responseStr);
+                return new ResponseEntity<>(members, HttpStatus.OK);
             } else {
                 
-                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.setStatus(SC_OK);
                 
                 members.setUsers(userList);
                 members.setHouseholdId(userHousehold.getHouseId());
 
-                Household household = householdDao.get(userHousehold.getHouseId());
+                Household household = householdService.get(userHousehold.getHouseId());
                 members.setHouseholdName(household.getName());
 
                 Report report = new Report();
-                report.setStatus(HttpServletResponse.SC_OK);
+                report.setStatus(SC_OK);
                 report.setMessage("This is the owner of this household");
                 members.setReport(report);
 
-                writer = resp.getWriter();
-                writer.write(gson.toJson(members));
+                return new ResponseEntity<>(members, HttpStatus.OK);
             }
         } else {            
             resp.setStatus(HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION);
@@ -132,35 +136,40 @@ public class HouseholdApi extends BaseController {
             
             members.setReport(report);
             
-            writer = resp.getWriter();
-            writer.write(gson.toJson(members));
+            return new ResponseEntity<>(members, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
     }
     
     @DeleteMapping
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String requestStr = BufferRequestReader.bufferRequest(req);
-        
-        String uri = req.getRequestURI();
-        Long householdId = Long.parseLong(req.getParameter(DbEnvironment.HOUSEHOLD_ID));
+    protected ResponseEntity<Report> deleteHousehold(@RequestParam(DbEnvironment.HOUSEHOLD_ID) Long householdId,
+                                   HttpServletRequest req, HttpServletResponse resp
+    ) throws ServletException, IOException {
+
+//        String requestStr = BufferRequestReader.bufferRequest(req);
+//
+//        String uri = req.getRequestURI();
+//        Long householdId = Long.parseLong(req.getParameter(DbEnvironment.HOUSEHOLD_ID));
         Household household = new Household();
         household.setId(householdId);
         
         Report report = new Report();
-        if (householdDao.delete(household) > 0) {
+        HttpStatus statusCode;
+        if (householdService.delete(household) > 0) {
             report.setMessage("Successfully deleted, your account will now be deleted.");
-            report.setStatus(HttpServletResponse.SC_OK);
+            report.setStatus(SC_OK);
             
-            resp.setStatus(HttpServletResponse.SC_OK);
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
+            resp.setStatus(SC_OK);
+
+            statusCode = HttpStatus.OK;
         } else {
             report.setMessage("Could not delete household");
-            report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            report.setStatus(SC_NOT_MODIFIED);
             
-            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
+            resp.setStatus(SC_NOT_MODIFIED);
+
+            statusCode = HttpStatus.NOT_MODIFIED;
         }
+
+        return new ResponseEntity<>(report, statusCode);
     }
 }

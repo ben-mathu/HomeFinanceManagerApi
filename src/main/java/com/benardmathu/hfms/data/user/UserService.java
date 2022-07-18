@@ -6,6 +6,7 @@ import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,14 +21,15 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
-public class UserBaseService implements BaseService<User> {
-    public static final String TAG = UserBaseService.class.getSimpleName();
+@Service
+public class UserService implements BaseService<User> {
+    public static final String TAG = UserService.class.getSimpleName();
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
     private Properties prop;
 
-    public UserBaseService() {
+    public UserService() {
         jdbcConnection = new JdbcConnection();
         db = new ConfigureDb();
         prop = db.getProperties();

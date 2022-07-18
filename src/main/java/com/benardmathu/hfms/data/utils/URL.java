@@ -25,7 +25,7 @@ public class URL {
     public static final String UPDATE_MONEY_JAR = "/jars/update-money-jar";
     public static final String DELETE_MONEY_JAR = "/jars/delete-money-jar";
     
-    public static final String GROCERY_URL = "/groceries/*";
+    public static final String GROCERY_URL = "/groceries";
     public static final String DELETE_GROCERY = "/groceries/delete-grocery";
 
     public static final String USER_DETAILS = "/users/*";
@@ -63,7 +63,7 @@ public class URL {
     public static final String GET_REPORTS = "/reports/get-reports";
     
     // Households
-    public static final String HOUSEHOLDS_URL = "/household/*";
+    public static final String HOUSEHOLDS_URL = "/household";
     public static final String GET_HOUSEHOLD_MEMBERS = "/household/get-members";
     public static final String UPDATE_USER_HOUSEHOLD_REL = "/household/update-household";
 }

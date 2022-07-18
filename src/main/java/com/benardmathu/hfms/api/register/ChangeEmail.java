@@ -1,7 +1,7 @@
 package com.benardmathu.hfms.api.register;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.user.UserBaseService;
+import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.status.Report;
@@ -30,7 +30,7 @@ public class ChangeEmail extends BaseController {
     @Autowired
     private UserRepository userRepository;
 
-    private UserBaseService userDao = new UserBaseService();
+    private UserService userDao = new UserService();
 
     @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

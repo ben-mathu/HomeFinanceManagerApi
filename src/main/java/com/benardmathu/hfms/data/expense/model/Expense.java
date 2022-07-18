@@ -1,15 +1,13 @@
 package com.benardmathu.hfms.data.expense.model;
 
+import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 
@@ -25,15 +23,15 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 public class Expense {
     @SerializedName(EXPENSE_ID)
     @Id
-    private Long expenseId = "";
+    private Long expenseId;
 
     @SerializedName(AMOUNT)
     @Column(name = AMOUNT)
     private double amount = 0;
 
     @SerializedName(MONEY_JAR_ID)
-    @Column(name = MONEY_JAR_ID)
-    private String jarId = "";
+    @ManyToOne
+    private MoneyJar jar;
 
     @SerializedName(PAYEE_NAME)
     @Column(name = PAYEE_NAME, length = 45)

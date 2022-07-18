@@ -10,7 +10,7 @@ import com.benardmathu.hfms.data.status.Status;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdBaseService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
-import com.benardmathu.hfms.data.user.UserBaseService;
+import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
@@ -63,7 +63,7 @@ public class Register extends BaseController {
     private AccountStatusRepository accountStatusRepository;
 
     // Dao
-    private UserBaseService userDao = new UserBaseService();
+    private UserService userDao = new UserService();
     private HouseholdBaseService householdDao = new HouseholdBaseService();
     private UserHouseholdBaseService userHouseDao = new UserHouseholdBaseService();
     private AccountStatusBaseService accountStatusDao = new AccountStatusBaseService();

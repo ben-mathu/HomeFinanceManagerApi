@@ -1,15 +1,13 @@
 package com.benardmathu.hfms.data.code.model;
 
+import com.benardmathu.hfms.data.user.model.User;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 
@@ -30,9 +28,10 @@ public class Code {
     @Column(name = CODE)
     private String code = "";
 
-    @SerializedName(USER_ID)
-    @Column(name = USER_ID, unique = true)
-    private String userId = "";
+    @SerializedName("user")
+    @OneToOne
+    @JoinColumn(name = USER_ID, referencedColumnName = USER_ID)
+    private User user;
 
     @SerializedName(EMAIL_CONFIRMED)
     @Column(name = EMAIL_CONFIRMED)

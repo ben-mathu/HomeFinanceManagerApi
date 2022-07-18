@@ -5,6 +5,7 @@ import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
@@ -22,6 +24,9 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
  */
 public class IncomeBaseService implements BaseService<Income> {
     public static final String TAG = IncomeBaseService.class.getSimpleName();
+
+    @Autowired
+    private IncomeRepository incomeRepository;
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
@@ -35,46 +40,7 @@ public class IncomeBaseService implements BaseService<Income> {
 
     @Override
     public Income save(Income item) {
-        String query = "INSERT INTO " + INCOME_TB_NAME + "(" +
-                INCOME_ID + "," + AMOUNT + "," + INCOME_TYPE + "," +
-                USER_ID + "," + SCHEDULED_FOR + "," + CREATED_AT + ")" +
-                " VALUES (?,?,?,?,?,?)";
-        int affectedRows = 0;
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, item.getIncomeId());
-            preparedStatement.setDouble(2, item.getAmount());
-            preparedStatement.setString(3, item.getAccountType());
-            preparedStatement.setString(4, item.getUserId());
-            preparedStatement.setString(5, item.getSchedule());
-            preparedStatement.setString(6, item.getCreatedAt());
-            affectedRows = preparedStatement.executeUpdate();
-
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error adding income: ", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return affectedRows;
+        return incomeRepository.save(item);
     }
 
     @Override
@@ -131,58 +97,8 @@ public class IncomeBaseService implements BaseService<Income> {
 
     @Override
     public Income get(String id) {
-        String query = "SELECT * FROM " + INCOME_TB_NAME +
-                " WHERE " + USER_ID + "=?";
-        Income income = new Income();
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, id);
-            resultSet = preparedStatement.executeQuery();
-
-            while(resultSet.next()) {
-                income.setAmount(resultSet.getDouble(AMOUNT));
-                income.setCreatedAt(resultSet.getString(CREATED_AT));
-                income.setAccountType(resultSet.getString(INCOME_TYPE));
-                income.setIncomeId(resultSet.getString(INCOME_ID));
-                income.setSchedule(resultSet.getString(SCHEDULED_FOR));
-                income.setUserId(resultSet.getString(USER_ID));
-            }
-
-            resultSet.close();
-            resultSet = null;
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing income query", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (resultSet != null)
-                try {
-                    resultSet.close();
-                    resultSet = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-        return income;
+        Optional<Income> optional =  incomeRepository.findByUserId(id);
+        return optional.orElse(null);
     }
 
     @Override

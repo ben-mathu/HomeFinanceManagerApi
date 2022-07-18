@@ -7,7 +7,7 @@ import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeBaseService;
 import com.benardmathu.hfms.data.income.IncomeRepository;
 import com.benardmathu.hfms.data.income.model.Income;
-import com.benardmathu.hfms.data.income.model.IncomeChangeDao;
+import com.benardmathu.hfms.data.income.model.IncomeChangeService;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.jar.MoneyJarRepository;
 import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
@@ -68,7 +68,7 @@ public class ReportApi extends BaseController {
     private TransactionRepository transactionRepository;
 
     private IncomeBaseService incomeDao;
-    private IncomeChangeDao incomeChangeDao;
+    private IncomeChangeService incomeChangeService;
     private MoneyJarScheduleDao moneyJarScheduleDao;
     private HouseholdBaseService householdDao;
     private MoneyJarsBaseService moneyJarsDao;
@@ -76,7 +76,7 @@ public class ReportApi extends BaseController {
 
     public ReportApi() {
         incomeDao = new IncomeBaseService();
-        incomeChangeDao = new IncomeChangeDao();
+        incomeChangeService = new IncomeChangeService();
         moneyJarScheduleDao = new MoneyJarScheduleDao();
         householdDao = new HouseholdBaseService();
         moneyJarsDao = new MoneyJarsBaseService();
@@ -120,7 +120,7 @@ public class ReportApi extends BaseController {
 //        String formatFrom = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(from.getTime());
 //        String formatTo = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(to.getTime());
         
-        List<OnInComeChange> incomeChangeList = incomeChangeDao.getAll(
+        List<OnInComeChange> incomeChangeList = incomeChangeService.getAll(
                 income.getIncomeId().toString(),
                 reportRequest.getFrom(),
                 reportRequest.getTo()

@@ -17,7 +17,7 @@ import java.util.List;
 public class MoneyJarScheduleDao extends BaseDao<JarScheduleDateRel> {
 
     @Override
-    public int save(JarScheduleDateRel item) {
+    public JarScheduleDateRel save(JarScheduleDateRel item) {
         String query = "INSERT INTO " + DbEnvironment.MONEY_JAR_SCHEDULE_REL_TB + " ("
                 + DbEnvironment.JAR_SCHEDULE_ID + ","
                 + DbEnvironment.HOUSEHOLD_ID + ","

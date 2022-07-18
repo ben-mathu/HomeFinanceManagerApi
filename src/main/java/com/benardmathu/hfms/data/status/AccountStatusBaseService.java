@@ -4,6 +4,8 @@ import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
@@ -18,8 +21,12 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 /**
  * @author bernard
  */
+@Service
 public class AccountStatusBaseService implements BaseService<AccountStatus> {
     public static final String TAG = AccountStatusBaseService.class.getSimpleName();
+
+    @Autowired
+    private AccountStatusRepository repository;
 
     private JdbcConnection jdbcConnection;
     private ConfigureDb db;
@@ -193,43 +200,11 @@ public class AccountStatusBaseService implements BaseService<AccountStatus> {
     }
 
     public boolean updateIncomeStatus(AccountStatus accountStatus) {
-        String query = "UPDATE " + ACCOUNT_STATUS_TB_NAME +
-                " SET " + INCOME_STATUS + "=?" +
-                " WHERE " + USER_ID + "=?";
-        int affectedRows = 0;
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            conn = jdbcConnection.getDataSource(prop.getProperty("db.main_db")).getConnection();
-            preparedStatement = conn.prepareStatement(query);
-
-            preparedStatement.setString(1, accountStatus.getIncomeStatus());
-            preparedStatement.setString(2, accountStatus.getUserId());
-            affectedRows = preparedStatement.executeUpdate();
-            Log.d(TAG, "Affected Rows: " + affectedRows);
-
-            preparedStatement.close();
-            preparedStatement = null;
-            conn.close();
-            conn = null;
-        } catch (SQLException throwables) {
-            Log.e(TAG, "Error processing income update", throwables);
-        } finally {
-            if (conn != null)
-                try {
-                    conn.close();
-                    conn = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-
-            if (preparedStatement != null)
-                try {
-                    preparedStatement.close();
-                    preparedStatement = null;
-                } catch (Exception e) { /* Intentionally blank */ }
-        }
-
-        return affectedRows == 1;
+        Optional<AccountStatus> optional = repository.findByUserId(accountStatus.getUserId());
+        AccountStatus status = optional.orElse(null);
+        status.setIncomeStatus(accountStatus.getIncomeStatus());
+        accountStatus = repository.save(accountStatus);
+        return false;
     }
 
     public boolean updateHouseholdStatus(AccountStatus accountStatus) {

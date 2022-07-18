@@ -2,7 +2,7 @@ package com.benardmathu.hfms.api.users;
 
 import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.status.Report;
-import com.benardmathu.hfms.data.user.UserBaseService;
+import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
 
@@ -30,10 +30,10 @@ public class ChangeAccountDetailsApi extends BaseController {
     @Autowired
     private UserRepository userRepository;
 
-    private UserBaseService userDao;
+    private UserService userDao;
     
     public ChangeAccountDetailsApi() {
-        userDao = new UserBaseService();
+        userDao = new UserService();
     }
     
     /**
