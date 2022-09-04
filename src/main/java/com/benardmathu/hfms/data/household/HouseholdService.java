@@ -63,4 +63,8 @@ public class HouseholdService implements BaseService<Household> {
     public List<User> getUserId(Long houseId) {
         return repository.findUserListById(houseId);
     }
+
+    public Household getHouseholdByUserId(Long userId) {
+        return repository.findByUserId(userId);
+    }
 }

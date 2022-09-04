@@ -9,10 +9,12 @@ import com.benardmathu.hfms.data.grocery.GroceriesDto;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.InitUrlConnection;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -25,14 +27,12 @@ import static com.benardmathu.hfms.utils.Constants.*;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/jars-controller/*")
-public class MoneyJarServletController extends BaseServlet {
+@Controller("/dashboard/jars-controller/*")
+public class MoneyJarControllerController extends BaseController {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
-
         String requestParam;
         requestParam = "?" + USER_ID + "=" + req.getParameter(USER_ID);
 
@@ -56,10 +56,8 @@ public class MoneyJarServletController extends BaseServlet {
         writer.write(response);
     }
 
-    @Override
+    @PutMapping
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
-        
         String uri = req.getRequestURI();
 
         String token = req.getParameter(TOKEN);
@@ -67,7 +65,7 @@ public class MoneyJarServletController extends BaseServlet {
         String name = req.getParameter(MONEY_EXPENSE_TYPE);
 
         MoneyJarDto jarDto = new MoneyJarDto();
-        jarDto.setId(req.getParameter(MONEY_JAR_ID));
+        jarDto.setId(Long.parseLong(req.getParameter(MONEY_JAR_ID)));
 
         MoneyJar jar = new MoneyJar();
         jar.setCategory(category);
@@ -81,7 +79,7 @@ public class MoneyJarServletController extends BaseServlet {
 
         User user = new User();
         user.setUsername(req.getParameter(USERNAME));
-        user.setUserId(req.getParameter(USER_ID));
+        user.setId(Long.parseLong(req.getParameter(USER_ID)));
 
         GroceriesDto groceriesDto;
         Expense expense = null;
@@ -101,9 +99,9 @@ public class MoneyJarServletController extends BaseServlet {
         BufferedReader streamReader;
         if (uri.endsWith("add-money-jar")) {
             if (JarType.LIST_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))
-                jarDto.getGroceries().forEach(grocery -> grocery.setJarId(jarDto.getJar().getMoneyJarId()));
+                jarDto.getGroceries().forEach(grocery -> grocery.setId(jarDto.getJar().getMoneyJarId()));
             if (JarType.SINGLE_EXPENSE_TYPE.equals(jarDto.getJar().getCategory()))
-                jarDto.getExpense().setJarId(jarDto.getJar().getMoneyJarId());
+                jarDto.getExpense().getJar().setMoneyJarId(jarDto.getJar().getMoneyJarId());
             streamReader = conn.getReader(jarDto, ADD_MONEY_JAR, token, "PUT");
         } else {
             streamReader = conn.getReader(jarDto, UPDATE_MONEY_JAR, token, "PUT");

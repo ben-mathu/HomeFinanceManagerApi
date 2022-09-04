@@ -9,9 +9,9 @@ public class SendTransactionRunnable implements Runnable {
 
     public MpesaResponseListener listener;
     private MoneyJar jar;
-    private final String tId;
+    private final Long tId;
 
-    public SendTransactionRunnable(MoneyJar jar, String tId) {
+    public SendTransactionRunnable(MoneyJar jar, Long tId) {
         this.jar = jar;
         this.tId = tId;
     }

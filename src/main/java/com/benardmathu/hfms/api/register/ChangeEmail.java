@@ -30,7 +30,7 @@ public class ChangeEmail extends BaseController {
     @Autowired
     private UserRepository userRepository;
 
-    private UserService userDao = new UserService();
+    private UserService userService = new UserService();
 
     @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,25 +41,15 @@ public class ChangeEmail extends BaseController {
 
         Report report = new Report();
 
-        if (changeEmail(user) > 0) {
-            report.setMessage("Success");
-            report.setStatus(HttpServletResponse.SC_OK);
-            String responseStr = gson.toJson(report);
-            writer = resp.getWriter();
-            writer.write(responseStr);
-        } else {
-
-            report.setMessage("Error changing email");
-            report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            String responseStr = gson.toJson(report);
-            writer = resp.getWriter();
-            writer.write(responseStr);
-            Log.d(TAG, "Error changing email");
-        }
+        report.setMessage("Success");
+        report.setStatus(HttpServletResponse.SC_OK);
+        String responseStr = gson.toJson(report);
+        writer = resp.getWriter();
+        writer.write(responseStr);
     }
 
     private int changeEmail(User user) {
-        int affectedRows = userDao.updateEmail(user);
+        userService.updateEmail(user);
         return 0;
     }
 }

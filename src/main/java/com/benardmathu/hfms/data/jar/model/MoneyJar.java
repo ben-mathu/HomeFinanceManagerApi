@@ -53,7 +53,7 @@ public class MoneyJar {
 
     @SerializedName(HOUSEHOLD_ID)
     @Column(name = HOUSEHOLD_ID)
-    private String householdId = "";
+    private Long householdId;
 
     @SerializedName(JAR_STATUS)
     @Column(name = JAR_STATUS)

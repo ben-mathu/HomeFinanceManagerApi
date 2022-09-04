@@ -4,10 +4,12 @@ import com.benardmathu.hfms.data.income.IncomeDto;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.utils.InitUrlConnection;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -21,14 +23,12 @@ import static com.benardmathu.hfms.utils.Constants.TOKEN;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/user-controller/*")
-public class UserServletController extends BaseServlet {
+@Controller("/dashboard/user-controller")
+public class UserControllerController extends BaseController {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
-
         String userId = req.getParameter(USER_ID);
         String token = req.getParameter(TOKEN);
 
@@ -50,7 +50,7 @@ public class UserServletController extends BaseServlet {
         }
     }
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
         String incomeType = req.getParameter(INCOME_TYPE);

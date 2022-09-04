@@ -27,8 +27,8 @@ public class MoneyJarExpenseRel {
     private Long id;
 
     @Column(name = MONEY_JAR_ID)
-    private String jarId;
+    private Long jarId;
     
     @Column(name = EXPENSE_ID)
-    private String expenseId;
+    private Long expenseId;
 }

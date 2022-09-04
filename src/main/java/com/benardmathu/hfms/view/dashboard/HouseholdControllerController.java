@@ -1,10 +1,8 @@
 package com.benardmathu.hfms.view.dashboard;
 
-import com.benardmathu.hfms.data.household.HouseholdDto;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.user.Members;
-import com.benardmathu.hfms.data.user.UserDto;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
 import static com.benardmathu.hfms.data.utils.DbEnvironment.USER_ID;
@@ -12,12 +10,15 @@ import static com.benardmathu.hfms.data.utils.URL.GET_HOUSEHOLD_MEMBERS;
 import static com.benardmathu.hfms.data.utils.URL.UPDATE_USER_HOUSEHOLD_REL;
 import static com.benardmathu.hfms.utils.Constants.TOKEN;
 import com.benardmathu.hfms.utils.InitUrlConnection;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,13 +26,11 @@ import javax.servlet.http.HttpServletResponse;
  * Manage HTTP request methods for CRUD operations on household table
  * @author bernard
  */
-@WebServlet(name = "HouseholdServletController", urlPatterns = {"/dashboard/household-controller/*"})
-public class HouseholdServletController extends BaseServlet {
+@Controller("/dashboard/household-controller")
+public class HouseholdControllerController extends BaseController {
 
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
-        
         String userId = USER_ID + "=" + req.getParameter(USER_ID);
         
         String token = req.getParameter(TOKEN);
@@ -61,7 +60,7 @@ public class HouseholdServletController extends BaseServlet {
             
             for (User user : members.getUsers()) {
                 notifier.append("<option value=")
-                        .append(user.getUserId())
+                        .append(user.getId())
                         .append(">")
                         .append(user.getUsername())
                         .append("</option>");
@@ -90,18 +89,16 @@ public class HouseholdServletController extends BaseServlet {
         }
     }
 
-    @Override
+    @PutMapping
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
-        
         String token = req.getParameter(TOKEN);
         String userId = req.getParameter(USER_ID);
         String householdId = req.getParameter(DbEnvironment.HOUSEHOLD_ID);
         String uri = req.getRequestURI();
         
         UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
-        userHouseholdRel.setHouseId(householdId);
-        userHouseholdRel.setUserId(userId);
+        userHouseholdRel.setHouseId(Long.parseLong(householdId));
+        userHouseholdRel.setUserId(Long.parseLong(userId));
         userHouseholdRel.setOwner(true);
         
         InitUrlConnection<UserHouseholdRel> conn = new InitUrlConnection<>();
@@ -124,10 +121,8 @@ public class HouseholdServletController extends BaseServlet {
         writer.write(builder.toString());
     }
     
-    @Override
+    @DeleteMapping
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
-        
         String token = req.getParameter(TOKEN);
         String householdId = DbEnvironment.HOUSEHOLD_ID + "=" + req.getParameter(DbEnvironment.HOUSEHOLD_ID);
         String uri = req.getRequestURI();

@@ -2,15 +2,12 @@ package com.benardmathu.hfms.api.login;
 
 import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.config.ConfigureApp;
-import com.benardmathu.hfms.config.ConfigureDb;
-import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.status.Report;
-import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
 
 import javax.servlet.ServletException;
@@ -18,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
@@ -48,32 +44,19 @@ public class Login extends BaseController {
     @Autowired
     private UserService userService;
 
-    private ConfigureDb db = new ConfigureDb();
-    private Properties prop = db.getProperties();
-    private JdbcConnection jdbcConnection = new JdbcConnection();
-
     @PostMapping
     protected void loginUser(@RequestBody UserRequest userRequest,
-                             HttpServletRequest request, HttpServletResponse response
+                             HttpServletRequest request,
+                             HttpServletResponse response
     ) throws ServletException, IOException {
-
-//        String jsonRequest = BufferRequestReader.bufferRequest(request);
-//
-//        PrintWriter writer;
-//
-//        UserRequest userRequest = gson.fromJson(jsonRequest, UserRequest.class);
-        Report report = null;
+        Report report;
         User user = userRequest.getUser();
         String username = user.getUsername();
         String password = user.getPassword();
-
-        this.db = new ConfigureDb();
-        this.prop = db.getProperties();
-        this.jdbcConnection = new JdbcConnection();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         // validate credentials
-        User u = userService.validateCredentials(username, password);
+        User u = userService.validateCredentials(username);
         if (u == null) {
             report = new Report();
             report.setStatus(HttpServletResponse.SC_FORBIDDEN);

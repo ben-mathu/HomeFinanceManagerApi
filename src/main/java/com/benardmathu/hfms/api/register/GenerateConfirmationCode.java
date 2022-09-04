@@ -34,7 +34,7 @@ public class GenerateConfirmationCode extends BaseController {
     @Autowired
     private CodeRepository codeRepository;
 
-    private CodeService dao = new CodeService();
+    private CodeService service = new CodeService();
 
     @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,7 +45,7 @@ public class GenerateConfirmationCode extends BaseController {
         String code = generateCode();
 
         if (Integer.parseInt(saveCode(code, user.getUser()).getCode()) > 0) {
-            dao.sendCodeToEmail(user.getUser(), code);
+            service.sendCodeToEmail(user.getUser(), code);
 
             Report report = new Report();
             report.setMessage("Success");
@@ -72,7 +72,7 @@ public class GenerateConfirmationCode extends BaseController {
     public Code saveCode(String code, User user) {
         Code item = new Code();
         item.setCode(code);
-        item = dao.saveCode(item, user.getUserId().toString());
+        item = service.saveCode(item, user.getId().toString());
 
         Log.d(TAG, "Affected Rows:" + item);
         return item;

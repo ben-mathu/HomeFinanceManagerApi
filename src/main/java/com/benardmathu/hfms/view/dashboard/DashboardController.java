@@ -1,9 +1,10 @@
 package com.benardmathu.hfms.view.dashboard;
 
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,18 +14,17 @@ import static com.benardmathu.hfms.utils.Constants.REFRESH;
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/controller/*")
-public class DashboardServlet extends BaseServlet {
+@Controller("/dashboard/controller/*")
+public class DashboardController extends BaseController {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
 
         String title = req.getParameter("title");
 
         if (!REFRESH.equals(title)) {
-            String url = BaseServlet.getMap().get(title) == null ? "" : BaseServlet.getMap().get(title);
+            String url = BaseController.getMap().get(title) == null ? "" : BaseController.getMap().get(title);
             if (!url.isEmpty()) {
                 UrlResponse response = new UrlResponse();
                 response.title = title;

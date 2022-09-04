@@ -3,10 +3,11 @@ package com.benardmathu.hfms.view.registration;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.InitUrlConnection;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,14 +21,12 @@ import static com.benardmathu.hfms.data.utils.URL.REGISTRATION;
 /**
  * @author bernard
  */
-@WebServlet(CHANGE_EMAIL)
-public class ChangeEmailServlet extends BaseServlet {
+@Controller(CHANGE_EMAIL)
+public class ChangeEmailController extends BaseController {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-
         String email = req.getParameter(EMAIL);
         String username = req.getParameter(USERNAME);
         String password = req.getParameter(PASSWORD);

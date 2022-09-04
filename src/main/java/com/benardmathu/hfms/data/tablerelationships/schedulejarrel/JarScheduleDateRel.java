@@ -27,10 +27,10 @@ public class JarScheduleDateRel {
     private Long id;
     
     @Column(name = HOUSEHOLD_ID)
-    private String householdId = "";
+    private Long householdId;
     
     @Column(name = MONEY_JAR_ID)
-    private String jarId = "";
+    private Long jarId;
     
     @Column(name = JAR_SCHEDULE_DATE, length = 45)
     private String scheduleDate = "";

@@ -27,7 +27,7 @@ public class MoneyJarGroceriesRel {
     private Long id;
 
     @Column(name = MONEY_JAR_ID)
-    private String jarId;
+    private Long jarId;
     
     @Column(name = GROCERY_ID)
     private String groceryId;

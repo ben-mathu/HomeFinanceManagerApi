@@ -5,10 +5,9 @@ import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.utils.InitUrlConnection;
 import com.benardmathu.hfms.utils.Log;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -20,18 +19,21 @@ import static com.benardmathu.hfms.data.utils.URL.GET_TRANSACTIONS;
 import static com.benardmathu.hfms.data.utils.URL.SEND_TRANSACTION;
 import static com.benardmathu.hfms.utils.Constants.LnmoRequestFields.*;
 import static com.benardmathu.hfms.utils.Constants.TOKEN;
-import com.google.gson.stream.MalformedJsonException;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * @author bernard
  */
-@WebServlet("/dashboard/transactions/*")
-public class TransactionServletController extends BaseServlet {
+@Controller("/dashboard/transactions")
+public class TransactionControllerController extends BaseController {
     private static final long serialVersionUID = 1L;
 
-    public static final String TAG = TransactionServletController.class.getSimpleName();
+    public static final String TAG = TransactionControllerController.class.getSimpleName();
 
-    @Override
+    @GetMapping
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
         String token = req.getParameter(TOKEN);
@@ -51,10 +53,8 @@ public class TransactionServletController extends BaseServlet {
         writer.write(builder.toString());
     }
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-
         String token = req.getParameter(TOKEN);
         String userId = req.getParameter(USER_ID);
 
@@ -75,8 +75,8 @@ public class TransactionServletController extends BaseServlet {
         request.setPhoneNumber(phoneNumber);
         request.setAccountRef(accountRef);
         request.setTransactionDesc(transactionDesc);
-        request.setJarId(jarId);
-        request.setUserId(userId);
+        request.setJarId(Long.parseLong(jarId));
+        request.setUserId(Long.parseLong(userId));
 
         Log.d(TAG, "Request body" + request.toString());
 

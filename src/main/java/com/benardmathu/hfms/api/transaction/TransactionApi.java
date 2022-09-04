@@ -9,14 +9,14 @@ import com.benardmathu.hfms.data.daraja.LnmoRequest;
 import com.benardmathu.hfms.data.daraja.LnmoResponse;
 import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.model.Income;
-import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
+import com.benardmathu.hfms.data.jar.MoneyJarsService;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
-import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
+import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleServices;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
-import com.benardmathu.hfms.data.transactions.TransactionBaseService;
+import com.benardmathu.hfms.data.transactions.TransactionService;
 import com.benardmathu.hfms.data.transactions.TransactionDto;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
 import com.benardmathu.hfms.data.utils.DbEnvironment;
@@ -58,22 +58,22 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping(name = "TransactionApi", value = TRANSACTIONS)
 public class TransactionApi extends BaseController {
-    private final TransactionBaseService transactionDao;
-    private final MoneyJarsBaseService moneyJarsDao;
+    private final TransactionService transactionService;
+    private final MoneyJarsService moneyJarsService;
 
     @Autowired
     private BudgetService budgetService;
 
-    private final UserHouseholdService userHouseholdDao;
-    private final IncomeService incomeDao;
-    private final MoneyJarScheduleDao moneyJarScheduleDao;
+    private final UserHouseholdService userHouseholdService;
+    private final IncomeService incomeService;
+    private final MoneyJarScheduleServices moneyJarScheduleServices;
     
     public TransactionApi() {
-        transactionDao = new TransactionBaseService();
-        moneyJarsDao = new MoneyJarsBaseService();
-        userHouseholdDao = new UserHouseholdService();
-        incomeDao = new IncomeService();
-        moneyJarScheduleDao = new MoneyJarScheduleDao();
+        transactionService = new TransactionService();
+        moneyJarsService = new MoneyJarsService();
+        userHouseholdService = new UserHouseholdService();
+        incomeService = new IncomeService();
+        moneyJarScheduleServices = new MoneyJarScheduleServices();
     }
 
     /**
@@ -90,7 +90,7 @@ public class TransactionApi extends BaseController {
         String userId = request.getParameter(DbEnvironment.USER_ID);
         
         TransactionDto dto = new TransactionDto();
-        dto.setTransactions(transactionDao.getAllByUserId(userId));
+        dto.setTransactions(transactionService.getAllByUserId(Long.parseLong(userId)));
         
 //        List<JarScheduleDateRel> paid = moneyJarScheduleDao.getAllPaid(householdId);
         
@@ -107,11 +107,11 @@ public class TransactionApi extends BaseController {
 
         LnmoRequest request = gson.fromJson(requestStr, LnmoRequest.class);
         
-        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.get(request.getJarId());
+        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleServices.get(request.getJarId());
 
-        MoneyJar jar = moneyJarsDao.get(jarScheduleDateRel.getJarId());
+        MoneyJar jar = moneyJarsService.get(jarScheduleDateRel.getJarId());
 
-        UserHouseholdRel rel = userHouseholdDao.get(request.getUserId());
+        UserHouseholdRel rel = userHouseholdService.get(request.getUserId());
 
         SimpleDateFormat sf = new SimpleDateFormat(DARAJA_DATE_FORMAT);
         Date now = new Date();
@@ -139,17 +139,12 @@ public class TransactionApi extends BaseController {
 
         
         
-        Income income = incomeDao.get(request.getUserId());
+        Income income = incomeService.get(request.getUserId());
         income.setAmount(income.getAmount() - jar.getTotalAmount());
 
-        incomeDao.update(income);
-
-        // create transaction id
-        GenerateRandomString rand = new GenerateRandomString(12);
-        String tId = rand.nextString();
+        incomeService.update(income);
         
         Transaction transaction = new Transaction();
-        transaction.setId(Long.parseLong(tId));
         transaction.setTransactionDesc(jar.getName());
         transaction.setPaymentDetails(gson.toJson(jar));
         transaction.setAmount(jar.getTotalAmount());
@@ -158,19 +153,19 @@ public class TransactionApi extends BaseController {
         transaction.setPaymentStatus(true);
         transaction.setPaymentTimestamp(new SimpleDateFormat(DATE_FORMAT).format(new Date().getTime()));
 
-        int affected = transactionDao.save(transaction);
+        transaction = transactionService.save(transaction);
 
         if (!jarScheduleDateRel.isJarStatus()) {
             jarScheduleDateRel.setJarStatus(true);
         }
 
         jarScheduleDateRel.setPaymentStatus(true);
-        moneyJarScheduleDao.update(jarScheduleDateRel);
-        sendNotification(affected, httpServletResponse);
+        moneyJarScheduleServices.update(jarScheduleDateRel);
+        sendNotification(transaction, httpServletResponse);
         
         // Start server to listen for mpesa callbacks for this request
         ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(new SendTransactionRunnable(jar, tId));
+        service.execute(new SendTransactionRunnable(jar, transaction.getId()));
 
         try {
             Thread.sleep(1000);
@@ -178,7 +173,7 @@ public class TransactionApi extends BaseController {
             Log.e(TAG, "Error: Thread interrupted.", e);
         }
 
-        Log.d(TAG, httpServletRequest.getContextPath() + "\n\tRequest body" + request.toString());
+        Log.d(TAG, httpServletRequest.getContextPath() + "\n\tRequest body" + request);
 
         // sends an mpesa request if a business number has been specified
         if (request.getBusinessShortCode().isEmpty()) {
@@ -217,8 +212,8 @@ public class TransactionApi extends BaseController {
         writer.write(gson.toJson(report));
     }
 
-    private void sendNotification(int affected, HttpServletResponse httpServletResponse) throws IOException {
-        if (affected > 0) {
+    private void sendNotification(Transaction transaction, HttpServletResponse httpServletResponse) throws IOException {
+        if (transaction != null) {
             Report report = new Report();
             report.setMessage("Transaction updated successfully.");
             report.setStatus(HttpServletResponse.SC_ACCEPTED);

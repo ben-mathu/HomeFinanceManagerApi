@@ -48,19 +48,19 @@ public class ChangeAccountDetailsApi extends BaseController {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String uri = request.getRequestURI();
-        int affected = 0;
+        User user = null;
         
         if (uri.endsWith("change-password")) {
-            affected = changePassword(request);
+            user = changePassword(request);
         } else if (uri.endsWith("change-email")) {
-            affected = changeEmail(request);
+            user = changeEmail(request);
         } else if (uri.endsWith("change-username")) {
-            affected = changeUsername(request);
+            user = changeUsername(request);
         } else if (uri.endsWith("change-number")) {
-            affected = changeNumber(request);
+            user = changeNumber(request);
         }
         
-        if (affected > 0) {
+        if (user != null) {
             response.setStatus(HttpServletResponse.SC_OK);
             
             Report report = new Report();
@@ -71,41 +71,41 @@ public class ChangeAccountDetailsApi extends BaseController {
         }
     }
 
-    public int changeNumber(HttpServletRequest request) {
+    public User changeNumber(HttpServletRequest request) {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId().toString());
+        User user = userDao.get(userRequest.getId());
         
         user.setMobNum(userRequest.getMobNum());
         return userDao.update(user);
     }
     
-    public int changeUsername(HttpServletRequest request) {
+    public User changeUsername(HttpServletRequest request) {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId().toString());
+        User user = userDao.get(userRequest.getId());
         
         user.setUsername(userRequest.getUsername());
         return userDao.update(user);
     }
     
-    public int changeEmail(HttpServletRequest request) {
+    public User changeEmail(HttpServletRequest request) {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId().toString());
+        User user = userDao.get(userRequest.getId());
         
         user.setEmail(userRequest.getEmail());
         return userDao.update(user);
     }
     
-    public int changePassword(HttpServletRequest request) {
+    public User changePassword(HttpServletRequest request) {
         String requestStr = BufferRequestReader.bufferRequest(request);
         User userRequest = gson.fromJson(requestStr, User.class);
         
-        User user = userDao.get(userRequest.getUserId().toString());
+        User user = userDao.get(userRequest.getId());
         
         user.setPassword(userRequest.getPassword());
         return userDao.update(user);
@@ -117,20 +117,12 @@ public class ChangeAccountDetailsApi extends BaseController {
         
         User user = gson.fromJson(requestStr, User.class);
         
-        if (userDao.delete(user) > 0) {
-             Report report = new Report();
-             report.setMessage("User already deleted");
-             report.setStatus(HttpServletResponse.SC_ACCEPTED);
-             
-             writer = resp.getWriter();
-             writer.write(gson.toJson(report));
-        } else {
-            Report report = new Report();
-            report.setMessage("Not deleted");
-            report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        userDao.delete(user);
+        Report report = new Report();
+        report.setMessage("User already deleted");
+        report.setStatus(HttpServletResponse.SC_ACCEPTED);
 
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
-        }
+        writer = resp.getWriter();
+        writer.write(gson.toJson(report));
     }
 }

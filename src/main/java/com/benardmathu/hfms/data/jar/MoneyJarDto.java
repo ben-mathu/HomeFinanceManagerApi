@@ -16,7 +16,7 @@ import static com.benardmathu.hfms.utils.Constants.*;
  */
 public class MoneyJarDto {
     @SerializedName(JAR_SCHEDULE_ID)
-    private String id = "";
+    private Long id;
     @SerializedName(JAR)
     private MoneyJar jar;
     @SerializedName(GROCERIES_TB_NAME)
@@ -30,11 +30,11 @@ public class MoneyJarDto {
     @SerializedName(TIME_DIFF)
     private int diff;
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

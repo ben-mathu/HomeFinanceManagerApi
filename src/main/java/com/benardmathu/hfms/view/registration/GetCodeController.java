@@ -4,10 +4,11 @@ import com.benardmathu.hfms.data.user.Identification;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.InitUrlConnection;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -20,14 +21,12 @@ import static com.benardmathu.hfms.data.utils.URL.GET_CONFIRMATION_CODE;
 /**
  * @author bernard
  */
-@WebServlet(GET_CONFIRMATION_CODE)
-public class GetCodeServlet extends BaseServlet {
+@Controller(GET_CONFIRMATION_CODE)
+public class GetCodeController extends BaseController {
     private static final long serialVersionUID = 1L;
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-
         String password = (String) req.getSession().getAttribute(PASSWORD);
         String username = (String) req.getSession().getAttribute(USERNAME);
         String email = (String) req.getSession().getAttribute(EMAIL);
@@ -37,7 +36,7 @@ public class GetCodeServlet extends BaseServlet {
         user.setPassword(password);
         user.setEmail(email);
         user.setUsername(username);
-        user.setUserId(userId);
+        user.setId(Long.parseLong(userId));
         Identification id = new Identification();
         id.setUser(user);
 

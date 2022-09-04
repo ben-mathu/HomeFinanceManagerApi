@@ -1,16 +1,16 @@
 package com.benardmathu.hfms.api.transaction.threadrunner;
 
 import com.google.gson.Gson;
-import com.benardmathu.hfms.data.transactions.TransactionBaseService;
+import com.benardmathu.hfms.data.transactions.TransactionService;
 import com.benardmathu.hfms.data.daraja.callback.CallbackMetadata;
 import com.benardmathu.hfms.data.daraja.callback.CallbackResponse;
 import com.benardmathu.hfms.data.daraja.callback.StkCallback;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
-import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
+import com.benardmathu.hfms.data.jar.MoneyJarsService;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
-import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
+import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleServices;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -25,6 +25,9 @@ import static com.benardmathu.hfms.data.utils.URL.*;
 import com.benardmathu.hfms.utils.Constants;
 import static com.benardmathu.hfms.utils.Constants.DATE_FORMAT;
 import com.benardmathu.hfms.utils.Log;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -37,8 +40,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 
 /**
  * @author bernard
@@ -47,9 +48,9 @@ public class MpesaResponseListener implements StopServerListener {
     private HttpServer server;
     public static final String TAG = MpesaResponseListener.class.getSimpleName();
     private final MoneyJar jar;
-    private final String transactionId;
+    private final Long transactionId;
 
-    public MpesaResponseListener(MoneyJar jar, String transactionId) {
+    public MpesaResponseListener(MoneyJar jar, Long transactionId) {
         this.jar = jar;
         this.transactionId = transactionId;
         
@@ -79,20 +80,20 @@ public class MpesaResponseListener implements StopServerListener {
     public static class ConfirmHandler implements HttpHandler {
 
         private StopServerListener listener;
-        private final TransactionBaseService transactionDao;
-        private final MoneyJarsBaseService moneyJarsDao;
-        private final MoneyJarScheduleDao moneyJarScheduleDao;
+        private final TransactionService transactionService;
+        private final MoneyJarsService moneyJarsDao;
+        private final MoneyJarScheduleServices moneyJarScheduleServices;
         
-        private final String transactionId;
+        private final Long transactionId;
         private final MoneyJar jar;
 
-        public ConfirmHandler(StopServerListener listener, MoneyJar jar, String transactionId) {
+        public ConfirmHandler(StopServerListener listener, MoneyJar jar, Long transactionId) {
             this.listener = listener;
-            this.transactionDao = new TransactionBaseService();
+            this.transactionService = new TransactionService();
             this.jar = jar;
             
-            moneyJarsDao = new MoneyJarsBaseService();
-            moneyJarScheduleDao = new MoneyJarScheduleDao();
+            moneyJarsDao = new MoneyJarsService();
+            moneyJarScheduleServices = new MoneyJarScheduleServices();
             this.transactionId = transactionId;
         }
 
@@ -117,7 +118,7 @@ public class MpesaResponseListener implements StopServerListener {
                 
                 final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url");
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 
@@ -135,7 +136,7 @@ public class MpesaResponseListener implements StopServerListener {
             }
 
             // get transaction already set in the database
-            Transaction transaction = transactionDao.get(transactionId);
+            Transaction transaction = transactionService.get(transactionId);
 
             if (transaction != null) {
                 transaction.setPaymentStatus(true);
@@ -146,12 +147,12 @@ public class MpesaResponseListener implements StopServerListener {
                 String metadataStr = gson.toJson(metadata);
 
                 // save the transaction to database
-                transactionDao.save(transaction);
+                transactionService.save(transaction);
                 
                 jar.setPaymentStatus(true);
                 moneyJarsDao.update(jar);
                 
-                List<JarScheduleDateRel> list = moneyJarScheduleDao.getAllByJarId(jar.getMoneyJarId());
+                List<JarScheduleDateRel> list = moneyJarScheduleServices.getAllByJarId(jar.getMoneyJarId());
                 JarScheduleDateRel jarScheduleDateRel;
                 list.forEach(jarSchedule -> {
                     try {
@@ -168,7 +169,7 @@ public class MpesaResponseListener implements StopServerListener {
 
                 final URL url = new URL(httpExchange.getHttpContext() + "/mpesa/lnmo-url");
                 final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+                conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 
@@ -189,6 +190,6 @@ public class MpesaResponseListener implements StopServerListener {
     }
 
     public static void main(String[] args) {
-        new MpesaResponseListener(null, "");
+        new MpesaResponseListener(null, 0L);
     }
 }

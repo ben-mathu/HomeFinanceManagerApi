@@ -11,5 +11,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HomeFinancialManagerApplication {
     public static void main(String[] args) {
         SpringApplication.run(HomeFinancialManagerApplication.class, args);
+        new Application();
     }
 }

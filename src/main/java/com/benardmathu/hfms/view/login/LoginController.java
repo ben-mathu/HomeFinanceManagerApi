@@ -4,11 +4,12 @@ import com.benardmathu.hfms.data.user.UserRequest;
 import com.benardmathu.hfms.data.user.UserResponse;
 import com.benardmathu.hfms.data.user.model.User;
 import com.benardmathu.hfms.utils.InitUrlConnection;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
 import com.benardmathu.hfms.view.result.ErrorResults;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,18 +21,16 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.URL.LOGIN;
 import static com.benardmathu.hfms.utils.Constants.*;
 import static com.benardmathu.hfms.utils.Constants.TOKEN;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * @author bernard
  */
-@WebServlet(urlPatterns = LOGIN)
-public class LoginServlet extends BaseServlet {
+@Controller(LOGIN)
+public class LoginController extends BaseController {
 
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-
         loginUser(req, resp);
     }
 
@@ -85,7 +84,7 @@ public class LoginServlet extends BaseServlet {
                 } else {
 
                     request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
-                    request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+                    request.getSession().setAttribute(USER_ID, item.getUser().getId());
                     request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
                     request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
                     request.getSession().setAttribute(MOB_NUMBER, item.getUser().getMobNum());
@@ -104,7 +103,7 @@ public class LoginServlet extends BaseServlet {
                     String responseStr = gson.toJson(item);
 
                     response.setStatus(item.getReport().getStatus());
-                    response.setContentType(APPLICATION_JSON);
+                    response.setContentType(APPLICATION_JSON_VALUE);
                     writer = response.getWriter();
                     writer.write(responseStr);
                 }

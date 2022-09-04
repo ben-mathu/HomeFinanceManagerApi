@@ -50,9 +50,9 @@ public class LnmoRequest {
     @Expose
     private String transactionDesc = "";
     @SerializedName(MONEY_JAR_ID)
-    private String jarId;
+    private Long jarId;
     @SerializedName(USER_ID)
-    private String userId;
+    private Long userId;
 
     public String getBusinessShortCode() {
         return businessShortCode;
@@ -144,19 +144,19 @@ public class LnmoRequest {
         this.transactionDesc = transactionDesc;
     }
 
-    public void setJarId(String jarId) {
+    public void setJarId(Long jarId) {
         this.jarId = jarId;
     }
 
-    public String getJarId() {
+    public Long getJarId() {
         return jarId;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

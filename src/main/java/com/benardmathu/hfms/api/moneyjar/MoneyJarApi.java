@@ -1,12 +1,7 @@
 package com.benardmathu.hfms.api.moneyjar;
 
 import com.benardmathu.hfms.api.base.BaseController;
-import com.benardmathu.hfms.data.expense.ExpenseRepository;
-import com.benardmathu.hfms.data.grocery.GroceryRepository;
-import com.benardmathu.hfms.data.household.HouseholdRepository;
-import com.benardmathu.hfms.data.income.IncomeRepository;
-import com.benardmathu.hfms.data.jar.MoneyJarRepository;
-import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
+import com.benardmathu.hfms.data.jar.MoneyJarsService;
 import com.benardmathu.hfms.data.jar.MoneyJarDto;
 import com.benardmathu.hfms.data.jar.MoneyJarsDto;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
@@ -19,20 +14,15 @@ import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.status.*;
 import com.benardmathu.hfms.data.status.Status;
-import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRepository;
-import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesRepository;
-import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRepository;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
-import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
-import com.benardmathu.hfms.data.user.UserRepository;
 import com.benardmathu.hfms.data.user.model.User;
-import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesDao;
+import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesService;
 import com.benardmathu.hfms.data.tablerelationships.jargroceryrel.MoneyJarGroceriesRel;
-import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseDao;
+import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseService;
 import com.benardmathu.hfms.data.tablerelationships.jarexpenserel.MoneyJarExpenseRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
-import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
+import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleServices;
 import com.benardmathu.hfms.data.user.UserService;
 import com.benardmathu.hfms.utils.BufferRequestReader;
 import com.benardmathu.hfms.utils.GenerateRandomString;
@@ -69,38 +59,29 @@ public class MoneyJarApi extends BaseController {
     private SimpleDateFormat sp = new SimpleDateFormat(DATE_FORMAT);
 
     @Autowired
-    private AccountStatusRepository accountStatusRepository;
-    @Autowired
-    private HouseholdRepository householdRepository;
-    @Autowired
-    private UserHouseholdRepository userHouseholdRepository;
-    @Autowired
-    private GroceryRepository groceryRepository;
-    @Autowired
-    private ExpenseRepository expenseRepository;
-    @Autowired
-    private MoneyJarRepository moneyJarRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MoneyJarGroceriesRepository moneyJarGroceriesRepository;
-    @Autowired
-    private MoneyJarExpenseRepository moneyJarExpenseRepository;
-    @Autowired
-    private JarScheduleDateRepository jarScheduleDateRepository;
-    @Autowired
-    private IncomeRepository incomeRepository;
+    private AccountStatusService accountStatusService;
 
-    private final AccountStatusService accountStatusDao;
-    private final HouseholdService householdDao;
-    private final UserHouseholdService userHouseholdDao;
-    private final GroceryService groceryDao;
-    private final ExpenseService expenseDao;
-    private final MoneyJarsBaseService jarDao;
-    private final UserService userDao;
-    private final MoneyJarGroceriesDao moneyJarListDao;
-    private final MoneyJarExpenseDao moneyJarExpenseDao;
-    private final MoneyJarScheduleDao moneyJarScheduleDao;
+    @Autowired
+    private HouseholdService householdService;
+
+    @Autowired
+    private UserHouseholdService userHouseholdService;
+
+    @Autowired
+    private GroceryService groceryService;
+
+    @Autowired
+    private ExpenseService expenseService;
+
+    @Autowired
+    private MoneyJarsService moneyJarsService;
+
+    @Autowired
+    private UserService userService;
+
+    private final MoneyJarGroceriesService moneyJarListDao;
+    private final MoneyJarExpenseService moneyJarExpenseService;
+    private final MoneyJarScheduleServices moneyJarScheduleServices;
     private final IncomeService incomeDao;
 
     private final GenerateRandomString randomString;
@@ -108,16 +89,9 @@ public class MoneyJarApi extends BaseController {
     private final String now;
 
     public MoneyJarApi() {
-        accountStatusDao = new AccountStatusService();
-        householdDao = new HouseholdService();
-        userHouseholdDao = new UserHouseholdService();
-        groceryDao = new GroceryService();
-        expenseDao = new ExpenseService();
-        jarDao = new MoneyJarsBaseService();
-        userDao = new UserService();
-        moneyJarListDao = new MoneyJarGroceriesDao();
-        moneyJarExpenseDao = new MoneyJarExpenseDao();
-        moneyJarScheduleDao = new MoneyJarScheduleDao();
+        moneyJarListDao = new MoneyJarGroceriesService();
+        moneyJarExpenseService = new MoneyJarExpenseService();
+        moneyJarScheduleServices = new MoneyJarScheduleServices();
         incomeDao = new IncomeService();
 
         randomString = new GenerateRandomString(
@@ -136,17 +110,15 @@ public class MoneyJarApi extends BaseController {
         
         MoneyJar jar = new MoneyJar();
         jar.setMoneyJarId(Long.parseLong(jarId));
-        int affected = jarDao.delete(jar);
-        
-        if (affected > 0) {
-            Report report = new Report();
-            report.setMessage("Expense item was successfully deleted.");
-            report.setStatus(HttpServletResponse.SC_OK);
-            
-            resp.setStatus(report.getStatus());
-            writer = resp.getWriter();
-            writer.write(gson.toJson(report));
-        }
+        moneyJarsService.delete(jar);
+
+        Report report = new Report();
+        report.setMessage("Expense item was successfully deleted.");
+        report.setStatus(HttpServletResponse.SC_OK);
+
+        resp.setStatus(report.getStatus());
+        writer = resp.getWriter();
+        writer.write(gson.toJson(report));
     }
 
     @PutMapping
@@ -158,15 +130,8 @@ public class MoneyJarApi extends BaseController {
         MoneyJar jar = dto.getJar();
         
         if (dto.getUser() == null) {
-            String houseId = dto.getJar().getHouseholdId();
-            String userId = "";
-            try {
-                userId = householdDao.getUserId(houseId).get(0);
-            } catch (Exception e) {
-                Log.e(TAG, "I have found you, you cannot hide forever.", e);
-            }
-            
-            User user = userDao.get(userId);
+            Long houseId = dto.getJar().getHouseholdId();
+            User user = householdService.getUserId(houseId).get(0);
             
             dto.setUser(user);
         }
@@ -184,13 +149,13 @@ public class MoneyJarApi extends BaseController {
     
     public void updateJar(MoneyJarDto jarDto, HttpServletRequest request, HttpServletResponse response) throws IOException {
         MoneyJar jar = jarDto.getJar();
-        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.getWithStatusFalse(jarDto.getId());
+        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleServices.getWithStatusFalse(jarDto.getId());
         
         jarScheduleDateRel.setJarStatus(true);
         
-        int affected = moneyJarScheduleDao.update(jarScheduleDateRel);
+        jarScheduleDateRel = moneyJarScheduleServices.update(jarScheduleDateRel);
         
-        if (affected > 0) {
+        if (jarScheduleDateRel != null) {
             Report report = new Report();
             report.setMessage("Successfully added!");
             report.setStatus(HttpServletResponse.SC_OK);
@@ -215,13 +180,13 @@ public class MoneyJarApi extends BaseController {
         JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
         jarScheduleDateRel.setId(Long.parseLong(randomString.nextString()));
         jarScheduleDateRel.setHouseholdId(jar.getHouseholdId());
-        jarScheduleDateRel.setJarId(jar.getMoneyJarId().toString());
+        jarScheduleDateRel.setJarId(jar.getMoneyJarId());
         jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
         jarScheduleDateRel.setAmount(jar.getTotalAmount());
-        
-        int affected = moneyJarScheduleDao.save(jarScheduleDateRel);
-        
-        if (affected > 0) {
+
+        JarScheduleDateRel scheduleDateRel = moneyJarScheduleServices.save(jarScheduleDateRel);
+
+        if (scheduleDateRel != null) {
             Report report = new Report();
             report.setMessage("Successfully added!");
             report.setStatus(HttpServletResponse.SC_OK);
@@ -250,42 +215,35 @@ public class MoneyJarApi extends BaseController {
     public void updateDatabase(MoneyJarDto dto, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MoneyJar jar = dto.getJar();
 
-        int envAffectedRows;
-        int expAffectedRows = 0;
-        int groAffectedRows = 0;
-
         // get household
         User user = dto.getUser();
-        UserHouseholdRel householdRel = userHouseholdDao.get(user.getUserId().toString());
+        UserHouseholdRel householdRel = userHouseholdService.get(user.getId());
 
 //        jar.setHouseholdId(householdRel.getHouseId());
 //        envAffectedRows = jarDao.update(jar);
 
-        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleDao.get(dto.getId());
+        JarScheduleDateRel jarScheduleDateRel = moneyJarScheduleServices.get(dto.getId());
         jarScheduleDateRel.setAmount(jar.getTotalAmount());
-        jar.setMoneyJarId(Long.parseLong(jarScheduleDateRel.getJarId()));
+        jar.setMoneyJarId(jarScheduleDateRel.getJarId());
         
-        envAffectedRows = moneyJarScheduleDao.update(jarScheduleDateRel);
+        jarScheduleDateRel = moneyJarScheduleServices.update(jarScheduleDateRel);
         jar.setHouseholdId(householdRel.getHouseId());
-        jarDao.update(jar);
+        moneyJarsService.update(jar);
         
-        if (envAffectedRows > 0) {
+        if (jarScheduleDateRel != null) {
             jar.setJarStatus(true);
         }
         
         dto.setJar(jar);
 
-
         List<Grocery> groceries = dto.getGroceries();
         if (JarType.LIST_EXPENSE_TYPE.equals(dto.getJar().getCategory())) {
 
             for (Grocery grocery : groceries) {
-                grocery.setJarId(jar.getMoneyJarId().toString());
-//                groAffectedRows += groceryDao.save(grocery, grocery.getGroceryId());
-
+                grocery.setJar(jar);
                 MoneyJarGroceriesRel moneyJarListRel = new MoneyJarGroceriesRel();
                 moneyJarListRel.setGroceryId(grocery.getGroceryId());
-                moneyJarListRel.setJarId(jar.getMoneyJarId().toString());
+                moneyJarListRel.setJarId(jar.getMoneyJarId());
                 
                 String groceryId = "";
                 if (grocery.getGroceryId().isEmpty()) {
@@ -293,37 +251,36 @@ public class MoneyJarApi extends BaseController {
                     grocery.setGroceryId(groceryId);
                     
                     moneyJarListRel.setGroceryId(groceryId);
-                    groceryDao.save(grocery);
+                    groceryService.save(grocery);
                     
                     moneyJarListDao.save(moneyJarListRel);
                 } else {
-                    groceryDao.save(grocery);
+                    groceryService.save(grocery);
                 }
             }
             dto.setGroceries(groceries);
         } else {
             Expense expense = dto.getExpense();
-            expense.setJarId(jar.getMoneyJarId().toString());
-//            expAffectedRows = expenseDao.update(expense);
+            expense.setJar(jar);
 
             dto.setExpense(expense);
             
             MoneyJarExpenseRel moneyJarExpenseRel = new MoneyJarExpenseRel();
-            moneyJarExpenseRel.setExpenseId(expense.getExpenseId().toString());
-            moneyJarExpenseRel.setJarId(jar.getMoneyJarId().toString());
+            moneyJarExpenseRel.setExpenseId(expense.getExpenseId());
+            moneyJarExpenseRel.setJarId(jar.getMoneyJarId());
             
-            expenseDao.update(expense);
+            expenseService.update(expense);
         }
 
         String uri = req.getRequestURI();
         if (uri.endsWith(ADD_MONEY_JAR)) {
-            if (envAffectedRows > 0 && (expAffectedRows > 0 || groAffectedRows > 0)) {
+            if (jarScheduleDateRel != null) {
                 String responseStr = gson.toJson(dto);
 
                 writer = resp.getWriter();
                 writer.write(responseStr);
 
-                updateEnvStatus(user.getUserId().toString());
+                updateEnvStatus(user.getId().toString());
             } else {
                 Report report = new Report();
                 report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -344,76 +301,70 @@ public class MoneyJarApi extends BaseController {
     public void save(MoneyJarDto dto, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MoneyJar jar = dto.getJar();
 
-        int envAffectedRows;
-        int expAffectedRows = 0;
-        int groAffectedRows = 0;
+        boolean jarSaved = false;
+        boolean expSaved = false;
+        boolean groSaved = false;
 
         // get household
         User user = dto.getUser();
-        UserHouseholdRel householdRel = userHouseholdDao.get(user.getUserId().toString());
+        UserHouseholdRel householdRel = userHouseholdService.get(user.getId());
 
-        String jarId = randomString.nextString();
-        jar.setMoneyJarId(Long.parseLong(jarId));
         jar.setCreatedAt(now);
         jar.setHouseholdId(householdRel.getHouseId());
-        envAffectedRows = jarDao.save(jar);
-        
+        jar = moneyJarsService.save(jar);
+        if (jar != null) jarSaved = true;
+
         JarScheduleDateRel jarScheduleDateRel = new JarScheduleDateRel();
         jarScheduleDateRel.setId(Long.parseLong(randomString.nextString()));
         jarScheduleDateRel.setHouseholdId(householdRel.getHouseId());
-        jarScheduleDateRel.setJarId(jarId);
+        jarScheduleDateRel.setJarId(jar.getMoneyJarId());
         jarScheduleDateRel.setScheduleDate(jar.getScheduledFor());
         jarScheduleDateRel.setAmount(jar.getTotalAmount());
         
-        moneyJarScheduleDao.save(jarScheduleDateRel);
+        moneyJarScheduleServices.save(jarScheduleDateRel);
         
         dto.setJar(jar);
-        dto.setId(jarScheduleDateRel.getId().toString());
+        dto.setId(jarScheduleDateRel.getId());
 
         List<Grocery> groceries = dto.getGroceries();
         if (JarType.LIST_EXPENSE_TYPE.equals(dto.getJar().getCategory())) {
-            
-            String groceryId;
 
             for (Grocery grocery : groceries) {
-                groceryId = randomString.nextString();
-                grocery.setGroceryId(groceryId);
-                grocery.setJarId(jarId);
-                groAffectedRows += groceryDao.save(grocery);
-                
-                
+                grocery.setJar(jar);
+                Grocery grox = groceryService.save(grocery);
+                if (grox != null) groSaved = true;
+
                 // set and save the schedule
                 MoneyJarGroceriesRel moneyJarListRel = new MoneyJarGroceriesRel();
-                moneyJarListRel.setGroceryId(groceryId);
-                moneyJarListRel.setJarId(jarId);
+                moneyJarListRel.setGroceryId(grox.getGroceryId());
+                moneyJarListRel.setJarId(jar.getMoneyJarId());
                 
                 moneyJarListDao.save(moneyJarListRel);
             }
             dto.setGroceries(groceries);
         } else {
             Expense expense = dto.getExpense();
-            String expenseId = randomString.nextString();
-            expense.setExpenseId(Long.parseLong(expenseId));
-            expense.setJarId(jarId);
-            expAffectedRows = expenseDao.save(expense);
+            expense.setJar(jar);
+            expense = expenseService.save(expense);
+            if (expense != null) expSaved = true;
             dto.setExpense(expense);
             
             MoneyJarExpenseRel moneyJarExpenseRel = new MoneyJarExpenseRel();
-            moneyJarExpenseRel.setExpenseId(expenseId);
-            moneyJarExpenseRel.setJarId(jarId);
+            moneyJarExpenseRel.setExpenseId(expense.getExpenseId());
+            moneyJarExpenseRel.setJarId(jar.getMoneyJarId());
             
-            moneyJarExpenseDao.save(moneyJarExpenseRel);
+            moneyJarExpenseService.save(moneyJarExpenseRel);
         }
 
         String uri = req.getRequestURI();
         if (uri.endsWith(ADD_MONEY_JAR)) {
-            if (envAffectedRows > 0 && (expAffectedRows > 0 || groAffectedRows > 0)) {
+            if (jarSaved && (expSaved || groSaved)) {
                 String responseStr = gson.toJson(dto);
 
                 writer = resp.getWriter();
                 writer.write(responseStr);
 
-                updateEnvStatus(user.getUserId().toString());
+                updateEnvStatus(user.getId().toString());
             } else {
                 Report report = new Report();
                 report.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -431,10 +382,6 @@ public class MoneyJarApi extends BaseController {
         }
     }
 
-    private String getHouseId(String userId) {
-        return householdDao.getHouseholdByUserId(userId);
-    }
-
     private void updateEnvStatus(String userId) {
         AccountStatus accountStatus = new AccountStatus();
 
@@ -450,7 +397,7 @@ public class MoneyJarApi extends BaseController {
         accountStatus.setJarStatus(statusStr);
         accountStatus.setUserId(userId);
 
-        if (accountStatusDao.updateJarStatus(accountStatus))
+        if (accountStatusService.updateJarStatus(accountStatus))
             Log.d(TAG, "Update table " + ACCOUNT_STATUS_TB_NAME);
     }
 
@@ -462,21 +409,21 @@ public class MoneyJarApi extends BaseController {
 
         // get household
         Report report;
-        UserHouseholdRel userHouseholdRel = userHouseholdDao.get(userId);
+        UserHouseholdRel userHouseholdRel = userHouseholdService.get(Long.parseLong(userId));
         Calendar now = new GregorianCalendar();
         now.setTime(new Date());
         
         Calendar scheduled = new GregorianCalendar();
         
         if (userHouseholdRel != null) {
-            List<JarScheduleDateRel> jarScheduleDateRelList = moneyJarScheduleDao.getAll(userHouseholdRel.getHouseId());
+            List<JarScheduleDateRel> jarScheduleDateRelList = moneyJarScheduleServices.getAll(userHouseholdRel.getHouseId());
             
             assert jarScheduleDateRelList != null;
             jarScheduleDateRelList.forEach(jarScheduleDateRel -> {
                 
                 try {
                     // get jars
-                    MoneyJar jar = jarDao.get(jarScheduleDateRel.getJarId());
+                    MoneyJar jar = moneyJarsService.get(jarScheduleDateRel.getJarId());
                     
                     MoneyJarDto jarDto = new MoneyJarDto();
                     if (jar.getScheduleType().equals(ScheduleType.DAILY)) {
@@ -491,7 +438,7 @@ public class MoneyJarApi extends BaseController {
                             jarScheduleDateRel.setJarStatus(true);
                             jarScheduleDateRel.setScheduleDate(sp.format(scheduled.getTime()));
                             
-                            moneyJarScheduleDao.update(jarScheduleDateRel);
+                            moneyJarScheduleServices.update(jarScheduleDateRel);
                         } else {
                             jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
                         }
@@ -507,7 +454,7 @@ public class MoneyJarApi extends BaseController {
                             jarScheduleDateRel.setJarStatus(true);
                             jarScheduleDateRel.setScheduleDate(sp.format(scheduled.getTime()));
                             
-                            moneyJarScheduleDao.update(jarScheduleDateRel);
+                            moneyJarScheduleServices.update(jarScheduleDateRel);
                         } else {
                             jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
                         }
@@ -523,7 +470,7 @@ public class MoneyJarApi extends BaseController {
                             jarScheduleDateRel.setJarStatus(true);
                             jarScheduleDateRel.setScheduleDate(sp.format(scheduled.getTime()));
                             
-                            moneyJarScheduleDao.update(jarScheduleDateRel);
+                            moneyJarScheduleServices.update(jarScheduleDateRel);
                         } else {
                             jar.setScheduledFor(jarScheduleDateRel.getScheduleDate());
                         }
@@ -536,24 +483,24 @@ public class MoneyJarApi extends BaseController {
                     jar.setTotalAmount(jarScheduleDateRel.getAmount());
                     
                     jarDto.setJar(jar);
-                    jarDto.setId(jarScheduleDateRel.getId().toString());
+                    jarDto.setId(jarScheduleDateRel.getId());
                     
-                    String jarId = jar.getMoneyJarId().toString();
+                    Long jarId = jar.getMoneyJarId();
                     if (JarType.LIST_EXPENSE_TYPE.equals(jar.getCategory())) {
                         
                         // get all grocery ids from moneyjarlistrel table to get all groceries
                         List<String> ids = moneyJarListDao.getIdByJarId(jarId);
                         List<Grocery> groceries = new ArrayList<>();
                         ids.forEach((id) -> {
-                            Grocery grocery = groceryDao.get(id);
+                            Grocery grocery = groceryService.get(Long.parseLong(id));
                             groceries.add(grocery);
                         });
                         
                         jarDto.setGroceries(groceries);
                     } else {
 
-                        String id = moneyJarExpenseDao.getIdByJarId(jarId);
-                        Expense expenses = expenseDao.get(id);
+                        Long id = moneyJarExpenseService.getIdByJarId(jarId);
+                        Expense expenses = expenseService.get(id);
                         jarDto.setExpense(expenses);
                     }
                     
@@ -577,7 +524,7 @@ public class MoneyJarApi extends BaseController {
 
             }
             
-            Income income = incomeDao.get(userId);
+            Income income = incomeDao.get(Long.parseLong(userId));
             
             jarsDto.setReport(report);
             jarsDto.setIncome(income);

@@ -1,16 +1,13 @@
 package com.benardmathu.hfms.data.budget;
 
-import com.benardmathu.hfms.config.ConfigureDb;
 import com.benardmathu.hfms.data.BaseService;
 import com.benardmathu.hfms.data.budget.model.Budget;
-import com.benardmathu.hfms.data.jdbc.JdbcConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 /**
  * @author bernard
@@ -33,32 +30,27 @@ public class BudgetService implements BaseService<Budget> {
     }
 
     @Override
-    public int update(Budget item) {
-        return 0;
+    public Budget update(Budget item) {
+        return budgetRepository.save(item);
     }
 
     @Override
-    public int delete(Budget item) {
-        return 0;
+    public void delete(Budget item) {
+        budgetRepository.delete(item);
     }
 
     @Override
-    public Budget get(String id) {
+    public Budget get(Long id) {
         return null;
     }
 
     @Override
     public List<Budget> getAll() {
-        return null;
+        return budgetRepository.findAll();
     }
 
     @Override
-    public List<Budget> getAll(String id) {
-        return null;
-    }
-
-    @Override
-    public int saveAll(ArrayList<Budget> items) {
-        return 0;
+    public List<Budget> saveAll(ArrayList<Budget> items) {
+        return budgetRepository.saveAll(items);
     }
 }

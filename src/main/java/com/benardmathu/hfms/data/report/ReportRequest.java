@@ -13,7 +13,7 @@ public class ReportRequest {
     @SerializedName("to")
     private String to;
     @SerializedName(USER_ID)
-    private String userId;
+    private Long userId;
 
     public void setFrom(String from) {
         this.from = from;
@@ -31,11 +31,11 @@ public class ReportRequest {
         return to;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 }

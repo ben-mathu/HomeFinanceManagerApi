@@ -3,6 +3,7 @@ package com.benardmathu.hfms.api.report;
 import com.benardmathu.hfms.api.base.BaseController;
 import com.benardmathu.hfms.data.household.HouseholdService;
 import com.benardmathu.hfms.data.household.HouseholdRepository;
+import com.benardmathu.hfms.data.household.model.Household;
 import com.benardmathu.hfms.data.income.IncomeChangeRepository;
 import com.benardmathu.hfms.data.income.IncomeService;
 import com.benardmathu.hfms.data.income.IncomeRepository;
@@ -10,14 +11,14 @@ import com.benardmathu.hfms.data.income.model.Income;
 import com.benardmathu.hfms.data.income.model.IncomeChangeService;
 import com.benardmathu.hfms.data.income.model.OnInComeChange;
 import com.benardmathu.hfms.data.jar.MoneyJarRepository;
-import com.benardmathu.hfms.data.jar.MoneyJarsBaseService;
+import com.benardmathu.hfms.data.jar.MoneyJarsService;
 import com.benardmathu.hfms.data.jar.model.MoneyJar;
 import com.benardmathu.hfms.data.report.ReportDto;
 import com.benardmathu.hfms.data.report.ReportRequest;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRel;
 import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.JarScheduleDateRepository;
-import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleDao;
-import com.benardmathu.hfms.data.transactions.TransactionBaseService;
+import com.benardmathu.hfms.data.tablerelationships.schedulejarrel.MoneyJarScheduleServices;
+import com.benardmathu.hfms.data.transactions.TransactionService;
 import com.benardmathu.hfms.data.transactions.TransactionRepository;
 
 import static com.benardmathu.hfms.data.utils.URL.REPORTS;
@@ -69,26 +70,28 @@ public class ReportApi extends BaseController {
 
     private IncomeService incomeDao;
     private IncomeChangeService incomeChangeService;
-    private MoneyJarScheduleDao moneyJarScheduleDao;
-    private HouseholdService householdDao;
-    private MoneyJarsBaseService moneyJarsDao;
-    private TransactionBaseService transactionDao;
+    private MoneyJarScheduleServices moneyJarScheduleServices;
+    private HouseholdService householdService;
+    private MoneyJarsService moneyJarsService;
+    private TransactionService transactionDao;
 
     public ReportApi() {
         incomeDao = new IncomeService();
         incomeChangeService = new IncomeChangeService();
-        moneyJarScheduleDao = new MoneyJarScheduleDao();
-        householdDao = new HouseholdService();
-        moneyJarsDao = new MoneyJarsBaseService();
+        moneyJarScheduleServices = new MoneyJarScheduleServices();
+        householdService = new HouseholdService();
+        moneyJarsService = new MoneyJarsService();
     }
 
     @PostMapping
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException, ParseException {
+
         String reportRequestStr = BufferRequestReader.bufferRequest(req);
         
         ReportRequest reportRequest = gson.fromJson(reportRequestStr, ReportRequest.class);
         
-        String householdId = householdDao.getHouseholdByUserId(reportRequest.getUserId());
+        Household household = householdService.getHouseholdByUserId(reportRequest.getUserId());
         
         Income income = incomeDao.get(reportRequest.getUserId());
         
@@ -117,13 +120,12 @@ public class ReportApi extends BaseController {
         }
         int monthsDiff = to.get(Calendar.MONTH) - from.get(Calendar.MONTH);
         
-//        String formatFrom = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(from.getTime());
-//        String formatTo = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(to.getTime());
+        SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         
         List<OnInComeChange> incomeChangeList = incomeChangeService.getAll(
-                income.getIncomeId().toString(),
-                reportRequest.getFrom(),
-                reportRequest.getTo()
+                income.getIncomeId(),
+                sp.parse(reportRequest.getFrom()),
+                sp.parse(reportRequest.getTo())
         );
         
         double totalIncome = 0;
@@ -138,8 +140,8 @@ public class ReportApi extends BaseController {
 //            amountMap.put(transaction.getTransactionDesc(), previousAmount + transaction.getAmount());
 //        }
         
-        List<JarScheduleDateRel> paid = moneyJarScheduleDao.getAllPaid(
-                householdId,
+        List<JarScheduleDateRel> paid = moneyJarScheduleServices.getAllPaid(
+                household.getId(),
                 reportRequest.getFrom(),
                 reportRequest.getTo()
         );
@@ -149,7 +151,7 @@ public class ReportApi extends BaseController {
         HashMap<String, MoneyJar> map = new HashMap<>();
         double totalExpenseAmount = 0;
         for (JarScheduleDateRel item : paid) {
-            MoneyJar jar = moneyJarsDao.get(item.getJarId());
+            MoneyJar jar = moneyJarsService.get(item.getJarId());
             
             if (isExpenseTypeExists(jar.getName(), map)) {
                 MoneyJar mappedJar = map.get(jar.getName());
@@ -172,28 +174,6 @@ public class ReportApi extends BaseController {
         reportDto.setIncome(totalIncome);
         reportDto.setMoneyJars(moneyJars);
         reportDto.setTotalExpenseAmount(totalExpenseAmount);
-        
-//        ConfigureApp app = new ConfigureApp();
-//        Properties properties = app.getProperties();
-//        
-//        float rate = 1;
-//        double incomeRange = 16666.67;
-//        double personalRelief = Double.parseDouble(properties.getProperty("gov.tax.relief"));
-//        if (totalIncome <= 24000) {
-//            rate = Float.parseFloat(properties.getProperty("gov.tax.first"));
-//        } else if (totalIncome > 24000 && totalIncome <= 40666.67) {
-//            rate = Float.parseFloat(properties.getProperty("gov.tax.second"));
-//        } else if (totalIncome > 40666.67 && totalIncome <= 57333.34) {
-//            rate = Float.parseFloat(properties.getProperty("gov.tax.third"));
-//        } else if (totalIncome > 57333.34) {
-//            rate = Float.parseFloat(properties.getProperty("gov.tax.forth"));
-//        }
-//        
-//        double tax = rate * totalIncome / 100;
-//        reportDto.setTax(tax);
-//        reportDto.setPersonalRelief(personalRelief);
-//        reportDto.setIncomeAfterTax(totalIncome - tax + personalRelief);
-        
         double netIncome = totalIncome - totalExpenseAmount;
         reportDto.setNetIncome(netIncome);
         

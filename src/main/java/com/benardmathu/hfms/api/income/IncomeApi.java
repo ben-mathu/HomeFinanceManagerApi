@@ -48,14 +48,11 @@ public class IncomeApi extends BaseController {
     private AccountStatusService accountStatusService;
 
     @PostMapping
-    protected ResponseEntity<IncomeDto> addIncome(@RequestParam(USER_ID) String userId, @RequestBody IncomeDto incomeDto,
-                                       HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse
+    protected ResponseEntity<IncomeDto> addIncome(@RequestParam(USER_ID) String userId,
+                                                  @RequestBody IncomeDto incomeDto,
+                                                  HttpServletRequest httpServletRequest,
+                                                  HttpServletResponse httpServletResponse
     ) throws ServletException, IOException {
-
-//        String userId = httpServletRequest.getParameter(USER_ID);
-//        String requestStr = BufferRequestReader.bufferRequest(httpServletRequest);
-//
-//        IncomeDto incomeDto = gson.fromJson(requestStr, IncomeDto.class);
         Income income = incomeDto.getIncome();
 
         Date date = new Date();
@@ -125,16 +122,11 @@ public class IncomeApi extends BaseController {
     protected ResponseEntity<IncomeDto> updateIncomeChange(@RequestBody IncomeDto incomeDto,
                                       HttpServletRequest req, HttpServletResponse resp
     ) throws ServletException, IOException {
-
-//        String requestStr = BufferRequestReader.bufferRequest(req);
-//
-//        IncomeDto incomeDto = gson.fromJson(requestStr, IncomeDto.class);
-        
         OnInComeChange onInComeChange = new OnInComeChange();
         onInComeChange.setAmount(incomeDto.getIncome().getAmount());
         onInComeChange.setCreatedAt(new SimpleDateFormat(DATE_FORMAT).format(new Date()));
         
-        Income income = incomeService.get(req.getParameter(USER_ID));
+        Income income = incomeService.get(Long.parseLong(req.getParameter(USER_ID)));
         incomeDto.getIncome().setAmount(income.getAmount() + incomeDto.getIncome().getAmount());
         
         onInComeChange.setIncomeId(income.getIncomeId());

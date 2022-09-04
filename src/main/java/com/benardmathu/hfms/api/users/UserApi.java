@@ -16,7 +16,7 @@ import com.benardmathu.hfms.data.status.AccountStatusRepository;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdService;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRel;
 import com.benardmathu.hfms.data.tablerelationships.userhouse.UserHouseholdRepository;
-import com.benardmathu.hfms.data.transactions.TransactionBaseService;
+import com.benardmathu.hfms.data.transactions.TransactionService;
 import com.benardmathu.hfms.data.transactions.TransactionRepository;
 import com.benardmathu.hfms.data.transactions.model.Transaction;
 import com.benardmathu.hfms.data.user.UserService;
@@ -72,7 +72,7 @@ public class UserApi extends BaseController {
     private UserHouseholdService userHouseholdDao = new UserHouseholdService();
     private AccountStatusService accountStatusDao = new AccountStatusService();
     private UserService userDao = new UserService();
-    private TransactionBaseService transactionDao = new TransactionBaseService();
+    private TransactionService transactionDao = new TransactionService();
     private IncomeChangeService incomeChangeService = new IncomeChangeService();
 
     @GetMapping
@@ -82,10 +82,10 @@ public class UserApi extends BaseController {
         // get income
         // get household
 
-        String userId = req.getParameter(USER_ID);
+        Long userId = Long.parseLong(req.getParameter(USER_ID));
         User user = userDao.get(userId);
-        Income income = incomeDao.get(user.getUserId().toString());
-        List<UserHouseholdRel> list = userHouseholdDao.getAllByUserId(user.getUserId().toString());
+        Income income = incomeDao.get(user.getId());
+        List<UserHouseholdRel> list = userHouseholdDao.getAllByUserId(user.getId());
 
         ArrayList<Household> households = new ArrayList<>();
         ArrayList<User> members = new ArrayList<>();
@@ -97,13 +97,13 @@ public class UserApi extends BaseController {
         ArrayList<Transaction> transactions = (ArrayList<Transaction>) getAllTransactions(userId);
         
         for (Household household : households) {
-            members.addAll(getUser(household.getId().toString()));
+            members.addAll(getUser(household.getId()));
         }
 
         // get account status
-        AccountStatus accountStatus = accountStatusDao.get(user.getUserId().toString());
+        AccountStatus accountStatus = accountStatusDao.get(user.getId());
         
-        OnInComeChange onInComeChange = incomeChangeService.get(income.getIncomeId().toString());
+        OnInComeChange onInComeChange = incomeChangeService.get(income.getIncomeId());
 
         UserDto dto = new UserDto();
         dto.setUser(user);
@@ -121,11 +121,11 @@ public class UserApi extends BaseController {
         writer.write(response);
     }
 
-    private List<User> getUser(String houseId) {
-        List<String> userIdList = householdDao.getUserId(houseId);
+    private List<User> getUser(Long houseId) {
+        List<User> userIdList = householdDao.getUserId(houseId);
         ArrayList<User> users = new ArrayList<>();
-        for (String userId : userIdList) {
-            users.add(userDao.get(userId));
+        for (User user : userIdList) {
+            users.add(userDao.get(user.getId()));
         }
         return users;
     }
@@ -134,7 +134,7 @@ public class UserApi extends BaseController {
         return householdDao.get(item.getHouseId());
     }
     
-    private List<Transaction> getAllTransactions(String userId) {
+    private List<Transaction> getAllTransactions(Long userId) {
         return transactionDao.getAllByUserId(userId);
     }
 }

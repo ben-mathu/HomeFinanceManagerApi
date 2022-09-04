@@ -6,11 +6,14 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import com.benardmathu.hfms.data.utils.URL;
 import static com.benardmathu.hfms.utils.Constants.TOKEN;
 import com.benardmathu.hfms.utils.InitUrlConnection;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,8 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author bernard
  */
-@WebServlet(name = "ChangePasswordController", urlPatterns = {"/dashboard/account-controller/*"})
-public class ChangeAccountDetailsController extends BaseServlet {
+@Controller("/dashboard/account-controller")
+public class ChangeAccountDetailsController extends BaseController {
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -29,7 +32,7 @@ public class ChangeAccountDetailsController extends BaseServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+    @PostMapping
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String uri = request.getRequestURI();
@@ -41,7 +44,7 @@ public class ChangeAccountDetailsController extends BaseServlet {
         String newPassword = request.getParameter(PASSWORD);
         
         User user = new User();
-        user.setUserId(userId);
+        user.setId(Long.parseLong(userId));
         user.setPassword(newPassword);
         user.setEmail(newEmail);
         user.setUsername(newUSername);
@@ -70,13 +73,13 @@ public class ChangeAccountDetailsController extends BaseServlet {
         }
     }
 
-    @Override
+    @PutMapping
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userId = req.getParameter(USER_ID);
         String token = req.getParameter(TOKEN);
         
         User user = new User();
-        user.setUserId(userId);
+        user.setId(Long.parseLong(userId));
         
         InitUrlConnection<User> conn = new InitUrlConnection<>();
         BufferedReader streamReader = conn.getReader(user, URL.CHANGE_ACCOUNT_DETAILS, token, "PUT");

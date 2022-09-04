@@ -43,25 +43,14 @@ public class HouseholdApi extends BaseController {
 
     @Autowired
     private HouseholdService householdService;
-    
-//    public HouseholdApi() {
-//        userHouseholdDao = new UserHouseholdBaseService();
-//        userDao = new UserBaseService();
-//        householdDao = new HouseholdBaseService();
-//    }
 
     @PutMapping
     protected ResponseEntity<Report> changeHousehold(@RequestBody UserHouseholdRel userHouseholdRel,
                                              HttpServletRequest req, HttpServletResponse resp
     ) throws ServletException, IOException {
-
-//        String requestStr = BufferRequestReader.bufferRequest(req);
-//
-//        String uri = req.getRequestURI();
-//        UserHouseholdRel userHouseholdRel = gson.fromJson(requestStr, UserHouseholdRel.class);
-        
         Report report = new Report();
-        if (userHouseholdService.update(userHouseholdRel) > 0) {
+        UserHouseholdRel rel = userHouseholdService.update(userHouseholdRel);
+        if (rel != null) {
             report.setMessage("Successfully changed, your account will now be deleted.");
             report.setStatus(SC_OK);
             
@@ -72,9 +61,6 @@ public class HouseholdApi extends BaseController {
             
             resp.setStatus(SC_NOT_MODIFIED);
         }
-//        writer = resp.getWriter();
-//        writer.write(gson.toJson(report));
-
         return new ResponseEntity<>(report, HttpStatus.ACCEPTED);
     }
 
@@ -83,16 +69,13 @@ public class HouseholdApi extends BaseController {
                                 HttpServletRequest req, HttpServletResponse resp
     ) throws ServletException, IOException {
 
-//        String userId = req.getParameter(USER_ID);
-        
-        UserHouseholdRel userHousehold = userHouseholdService.get(userId);
-        
+        UserHouseholdRel userHousehold = userHouseholdService.get(Long.parseLong(userId));
         Members members = new Members();
+
         if (userHousehold.isOwner()) {
-            
             List<UserHouseholdRel> userHouseholdList = userHouseholdService.getAll();
-            
             List<User> userList = new ArrayList<>();
+
             for (UserHouseholdRel userHouseholdRel : userHouseholdList) {
                 User user = userService.get(userHouseholdRel.getUserId());
                 userList.add(user);

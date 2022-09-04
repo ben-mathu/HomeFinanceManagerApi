@@ -45,7 +45,7 @@ public class Transaction {
     
     @SerializedName(USER_ID)
     @Column(name = USER_ID)
-    private String userId;
+    private Long userId;
     
     @SerializedName(PAYMENT_TIMESTAMP)
     @Column(name = PAYMENT_TIMESTAMP, length = 45, nullable = false)

@@ -22,7 +22,7 @@ import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 public class User {
     @SerializedName(USER_ID)
     @Id
-    private Long userId;
+    private Long id;
 
     @SerializedName(EMAIL)
     @Column(name = EMAIL, length = 45, unique = true)

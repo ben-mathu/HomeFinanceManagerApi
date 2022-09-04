@@ -125,34 +125,34 @@ public class Register extends BaseController {
             
             user.setPassword(securePassword);
             user.setSalt(salt);
-            user.setUserId(Long.parseLong(userId));
+            user.setId(Long.parseLong(userId));
             
             User userDto = userService.save(user);
 
             AccountStatus accountStatus = new AccountStatus();
-            accountStatus.setUserId(user.getUserId().toString());
+            accountStatus.setUserId(user.getId().toString());
             AccountStatus status = statusService.save(accountStatus);
 
             UserHouseholdRel userHouseholdRel = new UserHouseholdRel();
             if (isJoinHouseHold) {
-                userHouseholdRel.setHouseId(household.getId().toString());
-                userHouseholdRel.setUserId(user.getUserId().toString());
+                userHouseholdRel.setHouseId(household.getId());
+                userHouseholdRel.setUserId(user.getId());
 
                 addUserToHousehold(userHouseholdRel);
 
-                updateHouseholdStatus(user.getUserId().toString());
+                updateHouseholdStatus(user.getId().toString());
             } else if (!household.getName().isEmpty()) {
                 String houseId = randomString.nextString();
                 household.setId(Long.parseLong(houseId));
                 householdService.save(household);
 
-                userHouseholdRel.setUserId(user.getUserId().toString());
-                userHouseholdRel.setHouseId(houseId);
+                userHouseholdRel.setUserId(user.getId());
+                userHouseholdRel.setHouseId(Long.parseLong(houseId));
                 userHouseholdRel.setOwner(true);
 
                 addUserToHousehold(userHouseholdRel);
 
-                updateHouseholdStatus(user.getUserId().toString());
+                updateHouseholdStatus(user.getId().toString());
             }
 
             // generate a token

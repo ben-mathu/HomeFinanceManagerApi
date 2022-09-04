@@ -4,20 +4,17 @@ package com.benardmathu.hfms.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.benardmathu.hfms.config.ConfigureApp;
-import com.benardmathu.hfms.data.status.Report;
+import org.springframework.http.HttpHeaders;
 
-import javax.ws.rs.core.MediaType;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import static javax.ws.rs.core.HttpHeaders.*;
-import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.springframework.http.HttpHeaders.*;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * @author bernard
@@ -43,7 +40,7 @@ public class InitUrlConnection<T> {
         final URL url = new URL(baseUrl + endPoint);
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(method);
-        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         conn.setDoOutput(true);
 
         // Set up the output line/request stream
@@ -71,7 +68,7 @@ public class InitUrlConnection<T> {
         final URL url = new URL(baseUrl + endPoint);
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestProperty(AUTHORIZATION, "Bearer " + token);
-        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
 
@@ -107,7 +104,7 @@ public class InitUrlConnection<T> {
         final URL url = new URL(baseUrl + endPoint);
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestProperty(AUTHORIZATION, "Bearer " + token);
-        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
+        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_FORM_URLENCODED_VALUE);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
 
@@ -140,7 +137,7 @@ public class InitUrlConnection<T> {
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestProperty(HOST, host);
         conn.setRequestProperty(AUTHORIZATION, "Basic " + cipher);
-        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
 
@@ -163,7 +160,7 @@ public class InitUrlConnection<T> {
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestProperty(HOST, host);
         conn.setRequestProperty(AUTHORIZATION, "Bearer " + generateToken);
-        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+        conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         conn.setRequestMethod(method);
         conn.setDoOutput(true);
 

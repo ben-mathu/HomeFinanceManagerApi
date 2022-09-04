@@ -3,7 +3,6 @@ package com.benardmathu.hfms.view.registration;
 import java.io.*;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +16,11 @@ import com.benardmathu.hfms.data.status.Report;
 import com.benardmathu.hfms.utils.Patterns;
 import com.benardmathu.hfms.utils.InitUrlConnection;
 import com.benardmathu.hfms.utils.Log;
-import com.benardmathu.hfms.view.base.BaseServlet;
+import com.benardmathu.hfms.view.base.BaseController;
 import com.benardmathu.hfms.view.result.ErrorResults;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import static com.benardmathu.hfms.data.utils.DbEnvironment.*;
 import static com.benardmathu.hfms.data.utils.URL.REGISTRATION;
 import static com.benardmathu.hfms.utils.Constants.*;
@@ -26,15 +28,15 @@ import static com.benardmathu.hfms.utils.Constants.*;
 /**
  * Servlet implementation class RegistrationServlet
  */
-@WebServlet(urlPatterns = "/registration/register-user", asyncSupported = true)
-public class RegistrationServlet extends BaseServlet {
+@Controller("/registration/register-user")
+public class RegistrationController extends BaseController {
     private static final long serialVersionUID = 1L;
-    private static final String TAG = RegistrationServlet.class.getSimpleName();
+    private static final String TAG = RegistrationController.class.getSimpleName();
 
     /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+     * Post
      */
-    @Override
+    @PostMapping
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         Log.d(TAG, "Request Received.");
@@ -110,7 +112,7 @@ public class RegistrationServlet extends BaseServlet {
                 user.setPassword(request.getParameter(PASSWORD));
                 Household household = new Household();
                 if (joinHousehold) {
-                    household.setId(houseHoldId);
+                    household.setId(Long.parseLong(houseHoldId));
                 } else {
                     household.setName(householdName);
                 }
@@ -146,7 +148,7 @@ public class RegistrationServlet extends BaseServlet {
 
                         request.getSession().setAttribute(USERNAME, item.getUser().getUsername());
                         request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
-                        request.getSession().setAttribute(USER_ID, item.getUser().getUserId());
+                        request.getSession().setAttribute(USER_ID, item.getUser().getId());
                         request.getSession().setAttribute(EMAIL, item.getUser().getEmail());
                         request.getSession().setAttribute(TOKEN, item.getReport().getToken());
                         request.getSession().setAttribute(HOUSEHOLD_NAME, item.getHousehold().getName());
@@ -157,7 +159,7 @@ public class RegistrationServlet extends BaseServlet {
                         cookie.setMaxAge(60*60*24);
                         response.addCookie(cookie);
 
-                        Cookie userIdCookie = new Cookie(USER_ID, item.getUser().getUserId());
+                        Cookie userIdCookie = new Cookie(USER_ID, item.getUser().getId().toString());
                         userIdCookie.setMaxAge(60*60*24);
                         response.addCookie(userIdCookie);
 
