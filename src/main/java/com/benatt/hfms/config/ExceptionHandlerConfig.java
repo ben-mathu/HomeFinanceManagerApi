@@ -2,7 +2,6 @@ package com.benatt.hfms.config;
 
 import com.benatt.hfms.exceptions.EmptyResultException;
 import com.benatt.hfms.exceptions.InvalidFieldException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

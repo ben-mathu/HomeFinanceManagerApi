@@ -1,6 +1,5 @@
 package com.benatt.hfms.utils;
 
-import com.benatt.hfms.utils.Patterns;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
