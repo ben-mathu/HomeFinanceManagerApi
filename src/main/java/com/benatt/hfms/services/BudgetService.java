@@ -10,7 +10,5 @@ import com.benatt.hfms.exceptions.InvalidFieldException;
 public interface BudgetService {
     Budget saveBudget(BudgetRequest request) throws InvalidFieldException;
 
-    Budget addCategory(CategoryRequest request, Long id);
-
     MonthlySummaryResponse calculateMonthlySummary() throws EmptyResultException;
 }

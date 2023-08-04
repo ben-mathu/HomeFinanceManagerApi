@@ -19,13 +19,10 @@ public class BudgetController {
     private BudgetServiceImpl budgetService;
 
     @PostMapping
-    public ResponseEntity<Budget> addBudget(@RequestBody BudgetRequest request) throws InvalidFieldException {
-        return ResponseEntity.ok(budgetService.saveBudget(request));
-    }
+    public ResponseEntity<Budget> addBudget(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody BudgetRequest request)
+            throws InvalidFieldException {
 
-    @GetMapping("{budgetId}/categories/")
-    public ResponseEntity<Budget> addCategory(@RequestBody CategoryRequest request, @PathVariable("budgetId") Long id) {
-        return ResponseEntity.ok(budgetService.addCategory(request, id));
+        return ResponseEntity.ok(budgetService.saveBudget(request));
     }
 
     @GetMapping("calculate-monthly-summary")

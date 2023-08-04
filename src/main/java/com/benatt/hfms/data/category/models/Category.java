@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +22,9 @@ public class Category {
     private double paidIn = 0;
     @Column(nullable = false)
     private double paidOut = 0;
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    private Budget budget;
+    private String transactionId;
+    private String details;
+    private String paidTo;
+    private String paidFrom;
+    private Date dateCompleted;
 }

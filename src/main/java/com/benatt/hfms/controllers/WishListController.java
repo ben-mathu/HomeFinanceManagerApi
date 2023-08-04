@@ -16,7 +16,7 @@ public class WishListController {
     private WishListServiceImpl wishListService;
 
     @PostMapping
-    public ResponseEntity<WishList> addWishList(@RequestBody WishListRequest request) {
+    public ResponseEntity<WishList> addWishList(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody WishListRequest request) {
         return ResponseEntity.ok(wishListService.addWishList(request));
     }
 
