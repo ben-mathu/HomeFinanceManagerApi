@@ -1,5 +1,6 @@
-package com.benatt.hfms.data.budget.models;
+package com.benatt.hfms.data.category.models;
 
+import com.benatt.hfms.data.budget.models.Budget;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +15,12 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
-    private double paidIn;
-    private double paidOut;
+    @Column(nullable = false)
+    private double paidIn = 0;
+    @Column(nullable = false)
+    private double paidOut = 0;
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Budget budget;
 }

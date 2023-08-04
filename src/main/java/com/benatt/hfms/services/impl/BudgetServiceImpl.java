@@ -1,17 +1,30 @@
 package com.benatt.hfms.services.impl;
 
+import com.benatt.hfms.data.budget.dtos.MonthlySummaryResponse;
+import com.benatt.hfms.data.category.CategoryRepository;
 import com.benatt.hfms.data.budget.BudgetRepository;
+import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.budget.dtos.BudgetRequest;
+import com.benatt.hfms.data.category.models.Category;
+import com.benatt.hfms.exceptions.EmptyResultException;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.BudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BudgetServiceImpl implements BudgetService {
     @Autowired
     private BudgetRepository budgetRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public Budget saveBudget(BudgetRequest request) throws InvalidFieldException {
@@ -24,5 +37,54 @@ public class BudgetServiceImpl implements BudgetService {
 
         budget = budgetRepository.save(budget);
         return budget;
+    }
+
+    @Override
+    public Budget addCategory(CategoryRequest request, Long id) {
+        Budget budget = budgetRepository.findById(id).orElse(null);
+
+        if (budget == null)
+            throw new InvalidParameterException("Budget with id: " + id + " was not found.");
+
+        Category category = new Category();
+        category.setName(request.getCategoryName());
+
+        List<Category> categoryList = null;
+        if (budget.getCategories().isEmpty()) {
+            categoryList = new ArrayList<>();
+
+            categoryList.add(category);
+        } else {
+            categoryList = budget.getCategories();
+            categoryList.add(category);
+        }
+
+        budget.setCategories(categoryList);
+        return budgetRepository.save(budget);
+    }
+
+    @Override
+    public MonthlySummaryResponse calculateMonthlySummary() throws EmptyResultException {
+        List<Budget> budgetList = budgetRepository.findAll();
+
+        if (budgetList.isEmpty())
+            throw new EmptyResultException("Budget list is empty");
+
+        double totalPaidInAmount = 0;
+        double totalPaidOutAmount = 0;
+        double totalGrossAmount = 0;
+        for (Budget budget : budgetList)
+            if (!budget.getCategories().isEmpty())
+                for (Category category : budget.getCategories()) {
+                    totalPaidOutAmount += category.getPaidOut();
+                    totalPaidInAmount += category.getPaidIn();
+                    totalGrossAmount += totalPaidInAmount + totalPaidOutAmount;
+                }
+        MonthlySummaryResponse monthlySummaryResponse = new MonthlySummaryResponse();
+        monthlySummaryResponse.setBudgetList(budgetList);
+        monthlySummaryResponse.setTotalPaidInAmount(totalPaidInAmount);
+        monthlySummaryResponse.setTotalPaidOutAmount(totalPaidOutAmount);
+        monthlySummaryResponse.setTotalGrossAmount(totalGrossAmount);
+        return monthlySummaryResponse;
     }
 }
