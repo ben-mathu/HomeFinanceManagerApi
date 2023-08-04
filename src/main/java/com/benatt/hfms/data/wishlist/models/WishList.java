@@ -9,9 +9,11 @@ import javax.persistence.*;
 public class WishList {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
+    private Long id;
     @Column(unique = true, nullable = false)
     private String name;
-    private double amount = 0;
     @Column(nullable = false)
     private boolean bought;
+    @Column(nullable = false)
+    private double amount = 0;
 }

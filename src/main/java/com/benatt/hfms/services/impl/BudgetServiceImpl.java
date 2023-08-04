@@ -44,30 +44,6 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     @Override
-    public Budget addCategory(CategoryRequest request, Long id) {
-        Budget budget = budgetRepository.findById(id).orElse(null);
-
-        if (budget == null)
-            throw new InvalidParameterException("Budget with id: " + id + " was not found.");
-
-        Category category = new Category();
-        category.setName(request.getCategoryName());
-
-        List<Category> categoryList = null;
-        if (budget.getCategories().isEmpty()) {
-            categoryList = new ArrayList<>();
-
-            categoryList.add(category);
-        } else {
-            categoryList = budget.getCategories();
-            categoryList.add(category);
-        }
-
-        budget.setCategories(categoryList);
-        return budgetRepository.save(budget);
-    }
-
-    @Override
     public MonthlySummaryResponse calculateMonthlySummary() throws EmptyResultException {
         List<Budget> budgetList = budgetRepository.findAll();
 
