@@ -7,6 +7,8 @@ import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.category.CategoryRepository;
 import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.category.models.Category;
+import com.benatt.hfms.data.wishlist.WishListRepository;
+import com.benatt.hfms.data.wishlist.models.WishList;
 import com.benatt.hfms.exceptions.EmptyResultException;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.BudgetService;
@@ -24,6 +26,9 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private WishListRepository wishListRepository;
 
     @Override
     public Budget saveBudget(BudgetRequest request) throws InvalidFieldException {
@@ -79,7 +84,19 @@ public class BudgetServiceImpl implements BudgetService {
                     totalPaidInAmount += category.getPaidIn();
                     totalGrossAmount += totalPaidInAmount + totalPaidOutAmount;
                 }
+
         MonthlySummaryResponse monthlySummaryResponse = new MonthlySummaryResponse();
+
+        List<WishList> list = wishListRepository.findAll();
+        if (list.isEmpty())
+            list = new ArrayList<>();
+        else
+            for (WishList wishList : list) {
+                if (wishList.isBought())
+                    totalPaidOutAmount += wishList.getAmount();
+            }
+
+        monthlySummaryResponse.setWishList(list);
         monthlySummaryResponse.setBudgetList(budgetList);
         monthlySummaryResponse.setTotalPaidInAmount(totalPaidInAmount);
         monthlySummaryResponse.setTotalPaidOutAmount(totalPaidOutAmount);
