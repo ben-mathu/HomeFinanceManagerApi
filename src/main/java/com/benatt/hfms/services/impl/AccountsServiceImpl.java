@@ -7,6 +7,8 @@ import com.benatt.hfms.services.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AccountsServiceImpl implements AccountsService {
     @Autowired
@@ -18,5 +20,10 @@ public class AccountsServiceImpl implements AccountsService {
         account.setBalance(request.getBalance());
         account.setName(request.getAccountName());
         return accountsRepository.save(account);
+    }
+
+    @Override
+    public List<Account> getAllAccounts() {
+        return accountsRepository.findAll();
     }
 }

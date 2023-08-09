@@ -31,7 +31,7 @@ public class BudgetServiceImplTest {
 
     @Test(expected = InvalidFieldException.class)
     public void saveBudget_EmptyCategoryName_ThrowException() throws InvalidFieldException {
-        budgetService.saveBudget(new BudgetRequest(""));
+        budgetService.saveBudget(new BudgetRequest(""), 1L);
     }
 
     @Test
@@ -43,6 +43,6 @@ public class BudgetServiceImplTest {
         budget.setCategories(Collections.emptyList());
         when(budgetRepository.save(budget)).thenReturn(budget);
 
-        budgetService.saveBudget(request);
+        budgetService.saveBudget(request, 1L);
     }
 }

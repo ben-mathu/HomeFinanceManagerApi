@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("budget")
 public class BudgetController {
@@ -19,14 +21,20 @@ public class BudgetController {
     private BudgetServiceImpl budgetService;
 
     @PostMapping
-    public ResponseEntity<Budget> addBudget(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody BudgetRequest request)
+    public ResponseEntity<Budget> addBudget(@RequestParam("accountId") Long accountId,
+                                            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody BudgetRequest request)
             throws InvalidFieldException {
 
-        return ResponseEntity.ok(budgetService.saveBudget(request));
+        return ResponseEntity.ok(budgetService.saveBudget(request, accountId));
     }
 
     @GetMapping("calculate-monthly-summary")
     public ResponseEntity<MonthlySummaryResponse> calculateMonthlySummary() throws EmptyResultException {
         return ResponseEntity.ok(budgetService.calculateMonthlySummary());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Budget>> getAll() {
+        return ResponseEntity.ok(budgetService.getAll());
     }
 }
