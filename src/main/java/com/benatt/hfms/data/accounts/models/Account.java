@@ -3,12 +3,9 @@ package com.benatt.hfms.data.accounts.models;
 import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.wishlist.models.WishList;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 

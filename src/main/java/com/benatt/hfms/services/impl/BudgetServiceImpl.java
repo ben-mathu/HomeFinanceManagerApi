@@ -13,7 +13,6 @@ import com.benatt.hfms.data.wishlist.models.WishList;
 import com.benatt.hfms.exceptions.EmptyResultException;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.BudgetService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
