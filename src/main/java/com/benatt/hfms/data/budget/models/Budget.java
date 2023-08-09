@@ -21,11 +21,11 @@ public class Budget {
     private Long id;
     @Column(nullable = false, unique = true)
     private String categoryType;
-    @JsonManagedReference("budget-category")
+    @JsonBackReference("budget-category")
     @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER)
     private List<Category> categories;
 
-    @JsonBackReference("account-budget")
+    @JsonManagedReference("account-budget")
     @ManyToOne(cascade = CascadeType.MERGE)
     private Account account;
 }

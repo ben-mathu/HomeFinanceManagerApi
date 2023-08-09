@@ -2,6 +2,7 @@ package com.benatt.hfms.data.category.models;
 
 import com.benatt.hfms.data.budget.models.Budget;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class Category {
     private String paidTo;
     private String paidFrom;
     private Date dateCompleted;
-    @JsonBackReference("budget-category")
+    @JsonManagedReference("budget-category")
     @ManyToOne(cascade = CascadeType.MERGE)
     private Budget budget;
 }

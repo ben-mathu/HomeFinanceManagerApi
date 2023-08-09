@@ -2,6 +2,7 @@ package com.benatt.hfms.data.wishlist.models;
 
 import com.benatt.hfms.data.accounts.models.Account;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,7 +19,7 @@ public class WishList {
     private boolean bought;
     @Column(nullable = false)
     private double amount = 0;
-    @JsonBackReference("account-wishlist")
+    @JsonManagedReference("account-wishlist")
     @ManyToOne(cascade = CascadeType.MERGE)
     private Account account;
 }

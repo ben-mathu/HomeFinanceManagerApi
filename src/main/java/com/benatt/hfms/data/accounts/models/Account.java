@@ -2,6 +2,7 @@ package com.benatt.hfms.data.accounts.models;
 
 import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.wishlist.models.WishList;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
@@ -27,11 +28,11 @@ public class Account {
     private String name;
     @Column(nullable = false)
     private double balance = 0;
-    @JsonManagedReference("account-budget")
+    @JsonBackReference("account-budget")
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private List<Budget> budgetList;
 
-    @JsonManagedReference("account-wishlist")
+    @JsonBackReference("account-wishlist")
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     private Set<WishList> wishList;
 }
