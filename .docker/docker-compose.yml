@@ -2,7 +2,7 @@ version: "3.8"
 services:
   app:
     container_name: hfms
-    build: .
+    build: ..
 #    image: "ghcr.io/dataintegrated/license-stickers:sha256-589c4ba87880d2d62e2496eba3ffc51d55fc34e0c12b979da49a5db412dc137d.sig"
     restart: always
     environment:
