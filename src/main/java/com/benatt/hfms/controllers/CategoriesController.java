@@ -1,6 +1,5 @@
 package com.benatt.hfms.controllers;
 
-import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.category.models.Category;
 import com.benatt.hfms.services.impl.CategoriesServiceImpl;

@@ -2,7 +2,8 @@ package com.benatt.hfms.data.accounts.dtos;
 
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class AccountRequest {

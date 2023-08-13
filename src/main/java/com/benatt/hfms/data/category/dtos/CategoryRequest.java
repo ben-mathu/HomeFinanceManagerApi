@@ -2,7 +2,6 @@ package com.benatt.hfms.data.category.dtos;
 
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
