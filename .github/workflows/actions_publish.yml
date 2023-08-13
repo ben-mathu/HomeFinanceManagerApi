@@ -48,7 +48,7 @@ jobs:
         run: cosign version
 
       - name: Cosign Help
-        run: cosign help
+        run: cosign sign -h
 
       # used to build and push any image
       # https://github.com/docker/build-push-action
