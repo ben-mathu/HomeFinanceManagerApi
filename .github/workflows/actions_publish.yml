@@ -74,6 +74,7 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          tag: latest
           labels: ${{ steps.meta.outputs.labels }}
 
       # Sign Docker Image Digest
