@@ -71,11 +71,11 @@ jobs:
       - name: Build/Push Docker Image
 #        uses: docker/build-push-action@v4
         run: echo "${{ steps.meta.outputs.tags }}"
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
 
       # Sign Docker Image Digest
       # https://github.com/sigstore/cosign
