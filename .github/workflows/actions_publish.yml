@@ -34,7 +34,7 @@ jobs:
         run: chmod +x mvnw
 
       - name: Create Package
-        run: ./mvnw clean compile
+        run: ./mvnw clean package
 
       # install cosign tool to verify installations.
       # Verifies the integrity of the cosign release during installation.
