@@ -62,6 +62,7 @@ jobs:
       # Extract metadata {tags, labels} fpr docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker Metadata
+        id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
