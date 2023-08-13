@@ -1,4 +1,4 @@
-name: HFMS Publish Docker Image
+name: Published Docker Image
 
 on:
   push:
