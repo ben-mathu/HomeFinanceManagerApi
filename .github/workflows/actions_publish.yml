@@ -3,6 +3,7 @@ name: HFMS Publish Docker Image
 on:
   push:
     branches: [ "master", "develop" ]
+    # Publish release according to semver.org.
     tags: [ 'v*.*.*' ]
 
 env:
@@ -90,4 +91,4 @@ jobs:
           CONSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build_push_image.outputs.digest }}
+        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build_push_image.outputs.digest }} -y
