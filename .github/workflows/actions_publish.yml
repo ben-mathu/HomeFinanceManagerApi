@@ -47,6 +47,9 @@ jobs:
       - name: Cosign Version
         run: cosign version
 
+      - name: Cosign Help
+        run: cosign help
+
       # used to build and push any image
       # https://github.com/docker/build-push-action
       - name: Setup Docker Buildx
