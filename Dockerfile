@@ -4,4 +4,6 @@ WORKDIR /app
 
 COPY . .
 
+RUN chmod +x mvnw
+
 ENTRYPOINT ["./mvnw", "spring-boot:run"]
