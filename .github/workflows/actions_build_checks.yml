@@ -1,0 +1,33 @@
+name: Build Check
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # Used to complete the identity challenge
+      id-token: write
+
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Build Project
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Grant Permissions
+        run: chmod +x mvnw
+
+      - name: Create Package
+        run: ./mvnw clean compile
