@@ -40,7 +40,9 @@ jobs:
       # Verifies the integrity of the cosign release during installation.
       # https://github.com/sigstore/cosign-installer
       - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.1.1
+        uses: sigstore/cosign-installer@7e0881f8fe90b25e305bbf0309761e9314607e25
+        with:
+          cosign-release: 'v1.9.0'
 
       - name: Cosign Version
         run: cosign version
