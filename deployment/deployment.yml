@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hfms
+  labels:
+    app: hfms-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hfms-app
+  template:
+    metadata:
+      labels:
+        app: hfms-app
+    spec:
+      containers:
+      - name: hfms-app
+        image: ghcr.io/ben-mathu/homefinancemanagerapi:develop
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      - name: hfms-db
+        image: postgres
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
