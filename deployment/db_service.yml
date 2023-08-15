@@ -1,0 +1,88 @@
+# Create configuration map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hfms-db-config
+data:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password
+  POSTGRES_DB: hfms
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hfms-pv-volume
+  labels:
+    type: local
+    app: postgres
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data"
+  storageClassName: manual
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hfms-pv-claim
+  labels:
+    app: postgres
+spec:
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: hfms-db-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdb
+      volumes:
+        - name: postgresdb
+          persistentVolumeClaim:
+            claimName: hfms-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hfms-db-service
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432

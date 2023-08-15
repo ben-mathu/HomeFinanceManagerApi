@@ -22,4 +22,4 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=licenseAndStickers
+      - POSTGRES_DB=hfms
