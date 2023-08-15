@@ -31,11 +31,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-#      - name: Grant Permissions
-#        run: chmod +x mvnw
+      - name: Grant Permissions
+        run: chmod +x mvnw
 
-#      - name: Create Package
-#        run: ./mvnw clean install
+      - name: Create Package
+        run: ./mvnw clean package
 
       # install cosign tool to verify installations.
       # Verifies the integrity of the cosign release during installation.
