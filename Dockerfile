@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY target/hfms.jar .
 
-ENTRYPOINT ["java", "-jar", "hfms.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=dev", "hfms.jar"]
