@@ -1,8 +1,9 @@
-name: HFMS Publish Docker Image
+name: Published Docker Image
 
 on:
   push:
     branches: [ "master", "develop" ]
+    # Publish release according to semver.org.
     tags: [ 'v*.*.*' ]
 
 env:
@@ -34,16 +35,21 @@ jobs:
         run: chmod +x mvnw
 
       - name: Create Package
-        run: ./mvnw clean compile
+        run: ./mvnw clean package
 
       # install cosign tool to verify installations.
       # Verifies the integrity of the cosign release during installation.
       # https://github.com/sigstore/cosign-installer
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.1.1
-
-      - name: Cosign Version
-        run: cosign version
+#      - name: Install Cosign
+#        uses: sigstore/cosign-installer@v3.1.1
+#        with:
+#          cosign-release: 'v2.1.1'
+#
+#      - name: Cosign Version
+#        run: cosign version
+#
+#      - name: Cosign Help
+#        run: cosign sign -h
 
       # used to build and push any image
       # https://github.com/docker/build-push-action
@@ -70,18 +76,19 @@ jobs:
       # Build and push image
       # https://github.com/docker/build-push-action
       - name: Build/Push Docker Image
+        id: build_push_image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       # Sign Docker Image Digest
       # https://github.com/sigstore/cosign
-      - name: Sign Docker Image
-        env:
-          CONSIGN_EXPERIMENTAL: "true"
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+#      - name: Sign Docker Image
+#        env:
+#          CONSIGN_EXPERIMENTAL: "true"
+#        # This step uses the identity token to provision an ephemeral certificate
+#        # against the sigstore community Fulcio instance.
+#        run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build_push_image.outputs.digest }} -y

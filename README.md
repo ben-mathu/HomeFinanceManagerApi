@@ -1,3 +1,5 @@
+[![Published Docker Image](https://github.com/ben-mathu/HomeFinanceManagerApi/actions/workflows/actions_publish.yml/badge.svg)](https://github.com/ben-mathu/HomeFinanceManagerApi/actions/workflows/actions_publish.yml)
+
 # Installation Instructions
 
 ## Requirements

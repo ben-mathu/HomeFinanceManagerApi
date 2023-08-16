@@ -2,6 +2,6 @@ FROM openjdk:11-jdk-buster
 
 WORKDIR /app
 
-COPY . ./app
+COPY target/hfms.jar .
 
-ENTRYPOINT ["./mvnw", "spring-boot:run"]
+ENTRYPOINT ["java", "-jar", "hfms.jar"]

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hfms-app
+  labels:
+    app: hfms-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hfms-app
+  template:
+    metadata:
+      labels:
+        app: hfms-app
+    spec:
+      containers:
+      - name: hfms-app
+        image: ghcr.io/ben-mathu/homefinancemanagerapi:develop
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hfms-app-service
+  labels:
+    app: hfms-app
+spec:
+  selector:
+    app: hfms-app
+  ports:
+  - port: 8090
+    targetPort: 8090
