@@ -45,7 +45,7 @@ public class CategoriesServiceImpl implements CategoriesService {
         double totalBudgetAmount = budget.getAmountBudgeted();
         double categoryAmount = request.getAmount();
         if (categoryAmount > totalBudgetAmount)
-            throw new InvalidParameterException(request.getCategoryName() + " has amount greater than total budgeted amount: " + totalBudgetAmount);
+            throw new InvalidParameterException(request.getCategoryName() + " amount must not be more than budget amount " + totalBudgetAmount);
 
         double percentageOfAmount = categoryAmount / totalBudgetAmount * 100;
 
