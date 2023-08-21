@@ -23,13 +23,13 @@ public class Budget {
     @Id
     private Long id;
     @JsonBackReference("budget-category")
-    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Category> categories;
     @Column(nullable = true)
-    private int budgetPeriod;
+    private Integer budgetPeriod;
+    private Double amountBudgeted;
     @CreationTimestamp
     private LocalDateTime createdDateTime;
     @UpdateTimestamp
     private LocalDateTime updatedDateTime;
-    private Double amountBudgeted;
 }

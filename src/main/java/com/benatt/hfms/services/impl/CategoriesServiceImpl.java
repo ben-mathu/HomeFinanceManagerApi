@@ -7,6 +7,7 @@ import com.benatt.hfms.data.category.CategoryRepository;
 import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.category.models.Category;
 import com.benatt.hfms.data.category.models.CategoryType;
+import com.benatt.hfms.exceptions.BadRequestException;
 import com.benatt.hfms.services.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,30 +57,43 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public ResponseEntity<Budget> saveBudgetByCategoryRule(BudgetRequest request) {
+    public ResponseEntity<List<Category>> saveBudgetByCategoryRule(BudgetRequest request) throws BadRequestException {
         Budget budget = new Budget();
         budget.setBudgetPeriod(request.getPeriod());
         budget.setAmountBudgeted(request.getBudgetAmount());
+        budget = budgetRepository.save(budget);
 
-        int[] ruleList = Arrays.stream(RULE.split("-")).mapToInt(Integer::parseInt).toArray();
+        int[] ruleList = Arrays.stream(RULE.split("/")).mapToInt(Integer::parseInt).toArray();
         List<Category> categories = new ArrayList<>();
 
         Category category = new Category();
         category.setCategoryType(CategoryType.NEEDS);
         category.setPercentage(ruleList[0]);
+        category.setBudget(budget);
+        categoryRepository.save(category);
         categories.add(category);
 
         category = new Category();
         category.setCategoryType(CategoryType.WANTS);
         category.setPercentage(ruleList[1]);
+        category.setBudget(budget);
+        categoryRepository.save(category);
         categories.add(category);
 
         category = new Category();
         category.setCategoryType(CategoryType.SAVINGS);
         category.setPercentage(ruleList[2]);
+        category.setBudget(budget);
+        categoryRepository.save(category);
         categories.add(category);
 
         budget.setCategories(categories);
-        return ResponseEntity.ok(budgetRepository.save(budget));
+        return ResponseEntity.ok(categories);
+    }
+
+    @Override
+    public ResponseEntity<List<Category>> getAllByBudgetId(Long budgetId) {
+        List<Category> categoryList = categoryRepository.findByBudgetId(budgetId);
+        return ResponseEntity.ok(categoryList == null ? new ArrayList<>() : categoryList);
     }
 }

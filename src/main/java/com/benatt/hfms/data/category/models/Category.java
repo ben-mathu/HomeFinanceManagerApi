@@ -24,6 +24,6 @@ public class Category {
     private double percentage;
     private CategoryType categoryType;
     @JsonManagedReference("budget-category")
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     private Budget budget;
 }
