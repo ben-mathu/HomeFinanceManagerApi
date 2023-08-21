@@ -18,7 +18,4 @@ public class WishList {
     private boolean bought;
     @Column(nullable = false)
     private double amount = 0;
-    @JsonManagedReference("account-wishlist")
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private Account account;
 }

@@ -1,6 +1,7 @@
 package com.benatt.hfms.data.category.models;
 
 import com.benatt.hfms.data.budget.models.Budget;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,18 +18,12 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String name;
     @Column(nullable = false)
-    private double paidIn = 0;
-    @Column(nullable = false)
-    private double paidOut = 0;
-    private String transactionId;
-    private String details;
-    private String paidTo;
-    private String paidFrom;
-    private Date dateCompleted;
+    private double percentage;
+    private CategoryType categoryType;
     @JsonManagedReference("budget-category")
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     private Budget budget;
 }

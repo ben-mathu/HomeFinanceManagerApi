@@ -65,3 +65,6 @@ Download tomcat from here -> [Tomcat](https://tomcat.apache.org/download-80.cgi)
 Tomcat will extract the .war file, then deploy the application for you.
 
 On a browser, navigate to [http://localhost:8080/hfms](http://localhost:8080/hfms)
+
+## Resources
+[Creating a budget](https://bettermoneyhabits.bankofamerica.com/en/saving-budgeting/creating-a-budget)

@@ -1,17 +1,24 @@
 package com.benatt.hfms.services.impl;
 
 import com.benatt.hfms.data.budget.BudgetRepository;
+import com.benatt.hfms.data.budget.dtos.BudgetRequest;
 import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.category.CategoryRepository;
 import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.category.models.Category;
+import com.benatt.hfms.data.category.models.CategoryType;
+import com.benatt.hfms.exceptions.BadRequestException;
 import com.benatt.hfms.services.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.benatt.hfms.utils.Contants.RULE;
 
 @Service
 public class CategoriesServiceImpl implements CategoriesService {
@@ -22,49 +29,71 @@ public class CategoriesServiceImpl implements CategoriesService {
     private BudgetRepository budgetRepository;
 
     @Override
-    public Category addCategory(CategoryRequest request, Long id) {
+    public ResponseEntity<Category> addCategory(CategoryRequest request, Long id) {
         Budget budget = budgetRepository.findById(id).orElse(null);
 
+        Category category = getCategory(request, id, budget);
+
+        category.setBudget(budget);
+        return ResponseEntity.ok(categoryRepository.save(category));
+    }
+
+    private static Category getCategory(CategoryRequest request, Long id, Budget budget) {
         if (budget == null)
             throw new InvalidParameterException("Budget with id: " + id + " was not found.");
 
-        Category category = new Category();
-        category.setName(request.getCategoryName());
+        double totalBudgetAmount = budget.getAmountBudgeted();
+        double categoryAmount = request.getAmount();
+        if (categoryAmount > totalBudgetAmount)
+            throw new InvalidParameterException(request.getCategoryName() + " amount must not be more than budget amount " + totalBudgetAmount);
 
-        List<Category> categories;
-        if (budget.getCategories().isEmpty()) {
-            categories = new ArrayList<>();
-            categories.add(category);
-        } else {
-            categories = budget.getCategories();
-            categories.add(category);
-        }
-        budget.setCategories(categories);
-        budgetRepository.save(budget);
+        double percentageOfAmount = categoryAmount / totalBudgetAmount * 100;
+
+        Category category = new Category();
+        category.setPercentage(percentageOfAmount);
+        category.setCategoryType(request.getCategoryType());
+        category.setName(request.getCategoryName());
         return category;
     }
 
     @Override
-    public Category addPaidOutAmount(Long categoryId, double amount) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
+    public ResponseEntity<List<Category>> saveBudgetByCategoryRule(BudgetRequest request) throws BadRequestException {
+        Budget budget = new Budget();
+        budget.setBudgetPeriod(request.getPeriod());
+        budget.setAmountBudgeted(request.getBudgetAmount());
+        budget = budgetRepository.save(budget);
 
-        if (category == null)
-            throw new InvalidParameterException("Category with id " + categoryId + " was not found.");
+        int[] ruleList = Arrays.stream(RULE.split("/")).mapToInt(Integer::parseInt).toArray();
+        List<Category> categories = new ArrayList<>();
 
-        category.setPaidOut(category.getPaidOut() + amount);
+        Category category = new Category();
+        category.setCategoryType(CategoryType.NEEDS);
+        category.setPercentage(ruleList[0]);
+        category.setBudget(budget);
+        categoryRepository.save(category);
+        categories.add(category);
 
-        return categoryRepository.save(category);
+        category = new Category();
+        category.setCategoryType(CategoryType.WANTS);
+        category.setPercentage(ruleList[1]);
+        category.setBudget(budget);
+        categoryRepository.save(category);
+        categories.add(category);
+
+        category = new Category();
+        category.setCategoryType(CategoryType.SAVINGS);
+        category.setPercentage(ruleList[2]);
+        category.setBudget(budget);
+        categoryRepository.save(category);
+        categories.add(category);
+
+        budget.setCategories(categories);
+        return ResponseEntity.ok(categories);
     }
 
     @Override
-    public Category addPaidInAmount(Long categoryId, double amount) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-
-        if (category == null)
-            throw new InvalidParameterException("Category with id " + categoryId + " was not found.");
-
-        category.setPaidIn(category.getPaidIn() + amount);
-
-        return categoryRepository.save(category);
+    public ResponseEntity<List<Category>> getAllByBudgetId(Long budgetId) {
+        List<Category> categoryList = categoryRepository.findByBudgetId(budgetId);
+        return ResponseEntity.ok(categoryList == null ? new ArrayList<>() : categoryList);
     }
 }
