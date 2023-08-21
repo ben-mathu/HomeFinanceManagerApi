@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class MonthlySummaryResponse {
-    private List<Budget> budgetList;
+    private Budget budget;
     private List<WishList> wishList;
     private double totalPaidInAmount;
     private double totalPaidOutAmount;

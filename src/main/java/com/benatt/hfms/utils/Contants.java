@@ -1,7 +1,6 @@
 package com.benatt.hfms.utils;
 
 public class Contants {
-    static class Urls {
 
-    }
+    public static final String RULE = "50/30/20";
 }

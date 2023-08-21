@@ -1,7 +1,10 @@
 package com.benatt.hfms.services;
 
+import com.benatt.hfms.data.accounts.dtos.AccountPaidInRequest;
 import com.benatt.hfms.data.accounts.dtos.AccountRequest;
+import com.benatt.hfms.data.accounts.dtos.AccountPaidOutRequest;
 import com.benatt.hfms.data.accounts.models.Account;
+import com.benatt.hfms.data.accounts.models.TransactionDetail;
 import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import org.springframework.http.ResponseEntity;
@@ -16,4 +19,8 @@ public interface AccountsService {
     ResponseEntity<Account> updateAccount(AccountRequest request, Long id);
 
     ResponseEntity<Result> deleteAccount(Long id) throws InvalidFieldException;
+
+    ResponseEntity<TransactionDetail> addPaidInAmount(Long accountId, AccountPaidInRequest request) throws InvalidFieldException;
+
+    ResponseEntity<TransactionDetail> addPaidOutAmount(Long accountId, AccountPaidOutRequest request) throws InvalidFieldException;
 }
