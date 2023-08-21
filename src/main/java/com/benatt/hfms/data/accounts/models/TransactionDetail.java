@@ -16,7 +16,6 @@ public class TransactionDetail {
     private double painOut;
     private String paidFrom;
     private double paidIn;
-    @JsonBackReference("account-tractions")
     @ManyToOne(cascade = CascadeType.MERGE)
     private Account account;
 }

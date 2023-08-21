@@ -18,7 +18,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String name;
     @Column(nullable = false)
     private double percentage;

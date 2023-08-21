@@ -5,6 +5,7 @@ import com.benatt.hfms.data.budget.BudgetRepository;
 import com.benatt.hfms.data.budget.dtos.BudgetRequest;
 import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.category.CategoryRepository;
+import com.benatt.hfms.data.category.models.Category;
 import com.benatt.hfms.data.wishlist.WishListRepository;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.BudgetService;
@@ -13,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BudgetServiceImpl implements BudgetService {
