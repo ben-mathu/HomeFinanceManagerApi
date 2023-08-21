@@ -16,18 +16,6 @@ public class CategoriesController {
     @PostMapping
     public ResponseEntity<Category> addCategory(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody CategoryRequest request,
                                                 @RequestParam("budgetId") Long id) {
-        return ResponseEntity.ok(categoriesService.addCategory(request, id));
-    }
-
-    @PostMapping("{categoryId}/paidOut")
-    public ResponseEntity<Category> addPaidOutAmount(@PathVariable("categoryId") Long categoryId,
-                                                     @RequestParam("amount") double amount) {
-        return ResponseEntity.ok(categoriesService.addPaidOutAmount(categoryId, amount));
-    }
-
-    @PostMapping("{categoryId}/paidIn")
-    public ResponseEntity<Category> addPaidInAmount(@PathVariable("categoryId") Long categoryId,
-                                                    @RequestParam("amount") double amount) {
-        return ResponseEntity.ok(categoriesService.addPaidInAmount(categoryId, amount));
+        return categoriesService.addCategory(request, id);
     }
 }

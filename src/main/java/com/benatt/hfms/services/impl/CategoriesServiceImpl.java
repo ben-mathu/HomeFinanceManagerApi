@@ -7,6 +7,7 @@ import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.category.models.Category;
 import com.benatt.hfms.services.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
@@ -22,13 +23,22 @@ public class CategoriesServiceImpl implements CategoriesService {
     private BudgetRepository budgetRepository;
 
     @Override
-    public Category addCategory(CategoryRequest request, Long id) {
+    public ResponseEntity<Category> addCategory(CategoryRequest request, Long id) {
         Budget budget = budgetRepository.findById(id).orElse(null);
 
         if (budget == null)
             throw new InvalidParameterException("Budget with id: " + id + " was not found.");
 
+        double totalBudgetAmount = budget.getAmountBudgeted();
+        double categoryAmount = request.getAmount();
+        if (categoryAmount > totalBudgetAmount)
+            throw new InvalidParameterException(request.getCategoryName() + " has amount greater than total budgeted amount: " + totalBudgetAmount);
+
+        double percentageOfAmount = categoryAmount / totalBudgetAmount * 100;
+
         Category category = new Category();
+        category.setPercentage(percentageOfAmount);
+        category.setCategoryType(request.getCategoryType());
         category.setName(request.getCategoryName());
 
         List<Category> categories;
@@ -41,30 +51,6 @@ public class CategoriesServiceImpl implements CategoriesService {
         }
         budget.setCategories(categories);
         budgetRepository.save(budget);
-        return category;
-    }
-
-    @Override
-    public Category addPaidOutAmount(Long categoryId, double amount) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-
-        if (category == null)
-            throw new InvalidParameterException("Category with id " + categoryId + " was not found.");
-
-        category.setPaidOut(category.getPaidOut() + amount);
-
-        return categoryRepository.save(category);
-    }
-
-    @Override
-    public Category addPaidInAmount(Long categoryId, double amount) {
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-
-        if (category == null)
-            throw new InvalidParameterException("Category with id " + categoryId + " was not found.");
-
-        category.setPaidIn(category.getPaidIn() + amount);
-
-        return categoryRepository.save(category);
+        return ResponseEntity.ok(category);
     }
 }

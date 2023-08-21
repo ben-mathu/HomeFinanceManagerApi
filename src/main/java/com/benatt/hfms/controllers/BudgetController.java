@@ -20,20 +20,9 @@ public class BudgetController {
     private BudgetServiceImpl budgetService;
 
     @PostMapping
-    public ResponseEntity<Budget> addBudget(@RequestParam("accountId") Long accountId,
-                                            @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody BudgetRequest request)
+    public ResponseEntity<Budget> addBudget(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody BudgetRequest request)
             throws InvalidFieldException {
 
-        return ResponseEntity.ok(budgetService.saveBudget(request, accountId));
-    }
-
-    @GetMapping("calculate-monthly-summary")
-    public ResponseEntity<MonthlySummaryResponse> calculateMonthlySummary() throws EmptyResultException {
-        return ResponseEntity.ok(budgetService.calculateMonthlySummary());
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Budget>> getAll() {
-        return ResponseEntity.ok(budgetService.getAll());
+        return budgetService.saveBudget(request);
     }
 }

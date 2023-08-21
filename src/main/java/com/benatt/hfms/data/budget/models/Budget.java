@@ -7,8 +7,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,13 +22,14 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @Column(nullable = false, unique = true)
-    private String categoryType;
     @JsonBackReference("budget-category")
     @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER)
     private List<Category> categories;
-
-    @JsonManagedReference("account-budget")
-    @ManyToOne(cascade = CascadeType.MERGE)
-    private Account account;
+    @Column(nullable = true)
+    private int budgetPeriod;
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
+    private Double amountBudgeted;
 }
