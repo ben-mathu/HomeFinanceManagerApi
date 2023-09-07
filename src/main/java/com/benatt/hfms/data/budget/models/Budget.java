@@ -22,7 +22,7 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
-    @JsonBackReference("budget-category")
+    @JsonManagedReference("budget-category")
     @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Category> categories;
     @Column(nullable = true)

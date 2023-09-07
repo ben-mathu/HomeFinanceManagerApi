@@ -1,12 +1,12 @@
 package com.benatt.hfms.services.impl;
 
 import com.benatt.hfms.data.accounts.AccountsRepository;
-import com.benatt.hfms.data.accounts.TransactionDetailRepository;
+import com.benatt.hfms.data.transactions.TransactionDetailRepository;
 import com.benatt.hfms.data.accounts.dtos.AccountPaidInRequest;
 import com.benatt.hfms.data.accounts.dtos.AccountRequest;
 import com.benatt.hfms.data.accounts.dtos.AccountPaidOutRequest;
 import com.benatt.hfms.data.accounts.models.Account;
-import com.benatt.hfms.data.accounts.models.TransactionDetail;
+import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.AccountsService;
@@ -63,7 +63,7 @@ public class AccountsServiceImpl implements AccountsService {
     }
 
     @Override
-    public ResponseEntity<TransactionDetail> addPaidOutAmount(Long accountId, AccountPaidOutRequest request) throws InvalidFieldException {
+    public ResponseEntity<Transaction> addPaidOutAmount(Long accountId, AccountPaidOutRequest request) throws InvalidFieldException {
         Account account = accountsRepository.findById(accountId).orElse(null);
         if (account == null)
             throw new InvalidFieldException("Could not find Account with ID: " + accountId);
@@ -74,15 +74,15 @@ public class AccountsServiceImpl implements AccountsService {
 
         account.setBalance(balance);
 
-        TransactionDetail transactionDetail = new TransactionDetail();
-        transactionDetail.setAccount(account);
-        transactionDetail.setPaidTo(request.getPaidTo());
-        transactionDetail.setPaidIn(request.getAmount());
-        return ResponseEntity.ok(transactionDetailRepository.save(transactionDetail));
+        Transaction transaction = new Transaction();
+        transaction.setAccount(account);
+        transaction.setPaidTo(request.getPaidTo());
+        transaction.setPaidIn(request.getAmount());
+        return ResponseEntity.ok(transactionDetailRepository.save(transaction));
     }
 
     @Override
-    public ResponseEntity<TransactionDetail> addPaidInAmount(Long accountId, AccountPaidInRequest request) throws InvalidFieldException {
+    public ResponseEntity<Transaction> addPaidInAmount(Long accountId, AccountPaidInRequest request) throws InvalidFieldException {
         Account account = accountsRepository.findById(accountId).orElse(null);
         if (account == null)
             throw new InvalidFieldException("Could not find Account with ID: " + accountId);
@@ -90,10 +90,10 @@ public class AccountsServiceImpl implements AccountsService {
         double balance = account.getBalance() + request.getAmount();
         account.setBalance(balance);
 
-        TransactionDetail transactionDetail = new TransactionDetail();
-        transactionDetail.setAccount(account);
-        transactionDetail.setPaidTo(request.getPaidFrom());
-        transactionDetail.setPaidIn(request.getAmount());
-        return ResponseEntity.ok(transactionDetailRepository.save(transactionDetail));
+        Transaction transaction = new Transaction();
+        transaction.setAccount(account);
+        transaction.setPaidTo(request.getPaidFrom());
+        transaction.setPaidIn(request.getAmount());
+        return ResponseEntity.ok(transactionDetailRepository.save(transaction));
     }
 }

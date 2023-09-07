@@ -1,5 +1,7 @@
 package com.benatt.hfms.data.accounts.models;
 
+import com.benatt.hfms.data.transactions.models.Transaction;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,4 +35,8 @@ public class Account {
     private LocalDateTime createdDateTime;
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
+
+    @JsonManagedReference("transactions-accounts")
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Transaction> transactions;
 }

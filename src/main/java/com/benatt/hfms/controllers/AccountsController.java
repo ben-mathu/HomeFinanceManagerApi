@@ -4,7 +4,7 @@ import com.benatt.hfms.data.accounts.dtos.AccountPaidInRequest;
 import com.benatt.hfms.data.accounts.dtos.AccountRequest;
 import com.benatt.hfms.data.accounts.dtos.AccountPaidOutRequest;
 import com.benatt.hfms.data.accounts.models.Account;
-import com.benatt.hfms.data.accounts.models.TransactionDetail;
+import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.impl.AccountsServiceImpl;
@@ -41,15 +41,15 @@ public class AccountsController {
     }
 
     @PostMapping("{accountId}/paidOut")
-    public ResponseEntity<TransactionDetail> paidOut(@PathVariable("accountId") Long accountId,
-                                                     @RequestBody AccountPaidOutRequest request) throws InvalidFieldException {
+    public ResponseEntity<Transaction> paidOut(@PathVariable("accountId") Long accountId,
+                                               @RequestBody AccountPaidOutRequest request) throws InvalidFieldException {
 
         return accountsService.addPaidOutAmount(accountId, request);
     }
 
     @PostMapping("{accountId}/paidIn")
-    public ResponseEntity<TransactionDetail> paidIn(@PathVariable("accountId") Long accountId,
-                                                       @RequestBody AccountPaidInRequest request) throws InvalidFieldException {
+    public ResponseEntity<Transaction> paidIn(@PathVariable("accountId") Long accountId,
+                                              @RequestBody AccountPaidInRequest request) throws InvalidFieldException {
 
         return accountsService.addPaidInAmount(accountId, request);
     }

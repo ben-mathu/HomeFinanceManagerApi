@@ -23,7 +23,7 @@ public class Category {
     @Column(nullable = false)
     private double percentage;
     private CategoryType categoryType;
-    @JsonManagedReference("budget-category")
+    @JsonBackReference("budget-category")
     @ManyToOne
     private Budget budget;
 }
