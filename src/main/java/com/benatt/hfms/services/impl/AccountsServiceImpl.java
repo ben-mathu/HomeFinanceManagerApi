@@ -59,7 +59,7 @@ public class AccountsServiceImpl implements AccountsService {
             throw new InvalidFieldException("Could not find Account with ID: " + id);
 
         accountsRepository.delete(account);
-        return ResponseEntity.ok(new Result("Account: " + id + " deleted successfully"));
+        return ResponseEntity.ok(new Result("Account: " + account.getName() + " deleted successfully"));
     }
 
     @Override
