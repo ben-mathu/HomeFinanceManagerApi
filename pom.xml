@@ -12,7 +12,7 @@
 
     <groupId>com.benatt</groupId>
     <artifactId>hfms</artifactId>
-    <version>3.0.7</version>
+    <version>3.0.8</version>
 
 <!--    <packaging>war</packaging>-->
     <name>Financial Manager System</name>

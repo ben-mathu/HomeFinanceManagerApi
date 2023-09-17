@@ -2,8 +2,8 @@ version: "3.8"
 services:
   app:
     container_name: hfms
-    # build: .
-    image: "ghcr.io/ben-mathu/homefinancemanagerapi:develop"
+#    build: .
+    image: "ghcr.io/ben-mathu/homefinancemanagerapi:latest"
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/hfms
