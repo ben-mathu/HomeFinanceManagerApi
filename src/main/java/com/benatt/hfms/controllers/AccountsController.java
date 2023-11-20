@@ -8,6 +8,7 @@ import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.impl.AccountsServiceImpl;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class AccountsController {
     private AccountsServiceImpl accountsService;
 
     @PostMapping
-    public ResponseEntity<Account> addAccount(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody AccountRequest request) {
+    public ResponseEntity<Account> addAccount(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody AccountRequest request) throws PSQLException {
         return accountsService.addAccount(request);
     }
 

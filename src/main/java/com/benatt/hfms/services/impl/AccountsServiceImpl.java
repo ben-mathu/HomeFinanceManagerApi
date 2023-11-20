@@ -10,10 +10,16 @@ import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.AccountsService;
+import net.bytebuddy.asm.Advice;
+import org.postgresql.util.PSQLException;
+import org.postgresql.util.ServerErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityManager;
 import java.security.InvalidParameterException;
 import java.util.List;
 
@@ -26,11 +32,17 @@ public class AccountsServiceImpl implements AccountsService {
     private TransactionDetailRepository transactionDetailRepository;
 
     @Override
+    @Transactional
     public ResponseEntity<Account> addAccount(AccountRequest request) {
-        Account account = new Account();
-        account.setBalance(request.getBalance());
-        account.setName(request.getAccountName());
-        return ResponseEntity.ok(accountsRepository.save(account));
+        Account account = accountsRepository.findByName(request.getAccountName());
+        if (account != null) {
+            return ResponseEntity.ok(account);
+        } else {
+            account = new Account();
+            account.setBalance(request.getBalance());
+            account.setName(request.getAccountName());
+            return ResponseEntity.ok(accountsRepository.save(account));
+        }
     }
 
     @Override
@@ -69,8 +81,8 @@ public class AccountsServiceImpl implements AccountsService {
             throw new InvalidFieldException("Could not find Account with ID: " + accountId);
 
         double balance = account.getBalance() - request.getAmount();
-        if (balance < 0)
-            throw new InvalidFieldException("Account balance is less than 0");
+//        if (balance < 0)
+//            throw new InvalidFieldException("Account balance is less than 0");
 
         account.setBalance(balance);
 
@@ -78,6 +90,7 @@ public class AccountsServiceImpl implements AccountsService {
         transaction.setAccount(account);
         transaction.setPaidTo(request.getPaidTo());
         transaction.setPaidIn(request.getAmount());
+        transaction.setDescription(request.getTransactionDetails());
         return ResponseEntity.ok(transactionDetailRepository.save(transaction));
     }
 
@@ -94,6 +107,7 @@ public class AccountsServiceImpl implements AccountsService {
         transaction.setAccount(account);
         transaction.setPaidTo(request.getPaidFrom());
         transaction.setPaidIn(request.getAmount());
+        transaction.setDescription(request.getTransactionDetails());
         return ResponseEntity.ok(transactionDetailRepository.save(transaction));
     }
 }

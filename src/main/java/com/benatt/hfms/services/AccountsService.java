@@ -7,12 +7,13 @@ import com.benatt.hfms.data.accounts.models.Account;
 import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.InvalidFieldException;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface AccountsService {
-    ResponseEntity<Account> addAccount(AccountRequest request);
+    ResponseEntity<Account> addAccount(AccountRequest request) throws PSQLException;
 
     ResponseEntity<List<Account>> getAllAccounts();
 

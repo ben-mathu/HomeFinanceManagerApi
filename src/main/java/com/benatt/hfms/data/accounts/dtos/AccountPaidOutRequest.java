@@ -6,4 +6,5 @@ import lombok.Data;
 public class AccountPaidOutRequest {
     private String paidTo;
     private double amount;
+    private String transactionDetails;
 }
