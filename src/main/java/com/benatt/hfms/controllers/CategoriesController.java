@@ -25,13 +25,6 @@ public class CategoriesController {
         return categoriesService.addCategory(request, id);
     }
 
-    @PostMapping("by-rule")
-    public ResponseEntity<List<Category>> saveBudgetByCategoryRule(@RequestBody BudgetRequest request)
-            throws InvalidFieldException, BadRequestException {
-
-        return categoriesService.saveBudgetByCategoryRule(request);
-    }
-
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategoryBudgetId(@RequestParam("budgetId") Long budgetId) {
         return categoriesService.getAllByBudgetId(budgetId);

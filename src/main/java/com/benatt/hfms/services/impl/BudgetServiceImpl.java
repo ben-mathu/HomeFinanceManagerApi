@@ -53,8 +53,8 @@ public class BudgetServiceImpl implements BudgetService {
             totalAmount += account.getBalance();
         }
 
-        if (totalAmount > request.getBudgetAmount())
-            throw new InvalidFieldException("Total amount in your accounts is more than what you have budgeted.");
+        if (totalAmount < request.getBudgetAmount())
+            throw new InvalidFieldException("Total amount in your budget is more than what is in your accounts.");
 
         Budget budget = new Budget();
         budget.setAmountBudgeted(request.getBudgetAmount());
