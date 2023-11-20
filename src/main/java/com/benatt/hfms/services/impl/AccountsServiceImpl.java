@@ -1,25 +1,20 @@
 package com.benatt.hfms.services.impl;
 
 import com.benatt.hfms.data.accounts.AccountsRepository;
-import com.benatt.hfms.data.transactions.TransactionDetailRepository;
 import com.benatt.hfms.data.accounts.dtos.AccountPaidInRequest;
-import com.benatt.hfms.data.accounts.dtos.AccountRequest;
 import com.benatt.hfms.data.accounts.dtos.AccountPaidOutRequest;
+import com.benatt.hfms.data.accounts.dtos.AccountRequest;
 import com.benatt.hfms.data.accounts.models.Account;
-import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
+import com.benatt.hfms.data.transactions.TransactionDetailRepository;
+import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.AccountsService;
-import net.bytebuddy.asm.Advice;
-import org.postgresql.util.PSQLException;
-import org.postgresql.util.ServerErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.persistence.EntityManager;
 import java.security.InvalidParameterException;
 import java.util.List;
 

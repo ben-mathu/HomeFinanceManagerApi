@@ -2,9 +2,7 @@ package com.benatt.hfms.data.accounts.models;
 
 import com.benatt.hfms.data.transactions.models.Transaction;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,7 +19,8 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Setter
+@Getter
 @Entity
 public class Account {
     @Id

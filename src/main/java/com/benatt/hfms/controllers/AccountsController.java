@@ -22,7 +22,7 @@ public class AccountsController {
     private AccountsServiceImpl accountsService;
 
     @PostMapping
-    public ResponseEntity<Account> addAccount(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody AccountRequest request) throws PSQLException {
+    public ResponseEntity<Account> addAccount(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody AccountRequest request) {
         return accountsService.addAccount(request);
     }
 

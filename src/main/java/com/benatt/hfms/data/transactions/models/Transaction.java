@@ -3,12 +3,13 @@ package com.benatt.hfms.data.transactions.models;
 import com.benatt.hfms.data.accounts.models.Account;
 import com.benatt.hfms.data.category.models.Category;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Setter
 @Entity
 public class Transaction {
