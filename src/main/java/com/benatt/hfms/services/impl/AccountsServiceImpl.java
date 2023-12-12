@@ -84,7 +84,7 @@ public class AccountsServiceImpl implements AccountsService {
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
         transaction.setPaidTo(request.getPaidTo());
-        transaction.setPaidIn(request.getAmount());
+        transaction.setPaidOut(request.getAmount());
         transaction.setDescription(request.getTransactionDetails());
         return ResponseEntity.ok(transactionDetailRepository.save(transaction));
     }
@@ -100,7 +100,7 @@ public class AccountsServiceImpl implements AccountsService {
 
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
-        transaction.setPaidTo(request.getPaidFrom());
+        transaction.setPaidFrom(request.getPaidFrom());
         transaction.setPaidIn(request.getAmount());
         transaction.setDescription(request.getTransactionDetails());
         return ResponseEntity.ok(transactionDetailRepository.save(transaction));
