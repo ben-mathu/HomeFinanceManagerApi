@@ -21,6 +21,7 @@ public class Transaction {
     private double paidOut;
     private String paidFrom;
     private double paidIn;
+    @Column(unique = true)
     private String description;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JsonBackReference("transactions-accounts")

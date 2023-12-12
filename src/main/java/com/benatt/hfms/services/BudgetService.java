@@ -15,4 +15,6 @@ public interface BudgetService {
     ResponseEntity<Budget> getBudget() throws EmptyResultException;
 
     ResponseEntity<Budget> updateBudget(Long budgetId, BudgetRequest request);
+
+    ResponseEntity<Budget> delete(Long id) throws InvalidFieldException;
 }

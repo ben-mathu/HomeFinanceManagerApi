@@ -32,7 +32,7 @@ public class BudgetController {
     }
 
     @PostMapping("by-rule")
-    public ResponseEntity<List<Category>> saveBudgetByCategoryRule(@RequestBody BudgetRequest request)
+    public ResponseEntity<Budget> saveBudgetByCategoryRule(@RequestBody BudgetRequest request)
             throws InvalidFieldException, BadRequestException {
 
         return categoriesService.saveBudgetByCategoryRule(request);
@@ -46,5 +46,10 @@ public class BudgetController {
     @PutMapping("{budgetId}")
     public ResponseEntity<Budget> updateBudget(@PathVariable("budgetId") Long budgetId, @RequestBody BudgetRequest request) {
         return budgetService.updateBudget(budgetId, request);
+    }
+
+    @DeleteMapping("{budgetId}")
+    public ResponseEntity<Budget> delete(@PathVariable("budgetId") Long id) throws InvalidFieldException {
+        return budgetService.delete(id);
     }
 }

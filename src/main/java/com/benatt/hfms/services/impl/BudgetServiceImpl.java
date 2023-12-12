@@ -53,8 +53,8 @@ public class BudgetServiceImpl implements BudgetService {
             totalAmount += account.getBalance();
         }
 
-        if (totalAmount < request.getBudgetAmount())
-            throw new InvalidFieldException("Total amount in your budget is more than what is in your accounts.");
+//        if (totalAmount < request.getBudgetAmount())
+//            throw new InvalidFieldException("Total amount in your budget is more than what is in your accounts.");
 
         Budget budget = new Budget();
         budget.setAmountBudgeted(request.getBudgetAmount());
@@ -83,5 +83,15 @@ public class BudgetServiceImpl implements BudgetService {
         if (request.getPeriod() != null)
             budget.setBudgetPeriod(request.getPeriod());
         return ResponseEntity.ok(budgetRepository.save(budget));
+    }
+
+    @Override
+    public ResponseEntity<Budget> delete(Long id) throws InvalidFieldException {
+        Budget budget = budgetRepository.findById(id).orElse(null);
+        if (budget == null)
+            throw new InvalidFieldException("Did not find budget");
+
+        budgetRepository.delete(budget);
+        return ResponseEntity.ok(budget);
     }
 }

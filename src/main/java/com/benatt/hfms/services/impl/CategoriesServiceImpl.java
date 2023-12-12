@@ -57,7 +57,7 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
-    public ResponseEntity<List<Category>> saveBudgetByCategoryRule(BudgetRequest request) throws BadRequestException {
+    public ResponseEntity<Budget> saveBudgetByCategoryRule(BudgetRequest request) throws BadRequestException {
         Budget budget = new Budget();
         budget.setBudgetPeriod(request.getPeriod());
         budget.setAmountBudgeted(request.getBudgetAmount());
@@ -88,7 +88,7 @@ public class CategoriesServiceImpl implements CategoriesService {
         categories.add(category);
 
         budget.setCategories(categories);
-        return ResponseEntity.ok(categories);
+        return ResponseEntity.ok(budget);
     }
 
     @Override
