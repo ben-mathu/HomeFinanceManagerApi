@@ -8,7 +8,6 @@ import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.impl.AccountsServiceImpl;
-import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

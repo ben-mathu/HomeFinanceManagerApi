@@ -2,11 +2,9 @@ package com.benatt.hfms.data.category.models;
 
 import com.benatt.hfms.data.budget.models.Budget;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
