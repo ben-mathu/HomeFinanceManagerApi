@@ -21,6 +21,7 @@ public class Category {
     private double percentage;
     private CategoryType categoryType;
     @JsonBackReference("budget-category")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "budget")
     private Budget budget;
 }

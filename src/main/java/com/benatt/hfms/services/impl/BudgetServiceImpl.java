@@ -5,6 +5,8 @@ import com.benatt.hfms.data.accounts.models.Account;
 import com.benatt.hfms.data.budget.BudgetRepository;
 import com.benatt.hfms.data.budget.dtos.BudgetRequest;
 import com.benatt.hfms.data.budget.models.Budget;
+import com.benatt.hfms.data.category.CategoryRepository;
+import com.benatt.hfms.data.category.models.Category;
 import com.benatt.hfms.exceptions.BadRequestException;
 import com.benatt.hfms.exceptions.EmptyResultException;
 import com.benatt.hfms.exceptions.InvalidFieldException;
@@ -24,6 +26,9 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Autowired
     private AccountsRepository accountsRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private Logger logger;
@@ -79,6 +84,10 @@ public class BudgetServiceImpl implements BudgetService {
         Budget budget = budgetRepository.findById(id).orElse(null);
         if (budget == null)
             throw new InvalidFieldException("Did not find budget");
+
+        for (Category category : budget.getCategories()) {
+            categoryRepository.delete(category);
+        }
 
         budgetRepository.delete(budget);
         return ResponseEntity.ok(budget);

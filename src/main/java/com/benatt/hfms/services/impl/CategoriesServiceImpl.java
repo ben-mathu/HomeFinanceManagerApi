@@ -7,6 +7,7 @@ import com.benatt.hfms.data.category.CategoryRepository;
 import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.category.models.Category;
 import com.benatt.hfms.data.category.models.CategoryType;
+import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.exceptions.BadRequestException;
 import com.benatt.hfms.services.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,5 +96,11 @@ public class CategoriesServiceImpl implements CategoriesService {
     public ResponseEntity<List<Category>> getAllByBudgetId(Long budgetId) {
         List<Category> categoryList = categoryRepository.findByBudgetId(budgetId);
         return ResponseEntity.ok(categoryList == null ? new ArrayList<>() : categoryList);
+    }
+
+    public ResponseEntity<Result> deleteCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        categoryRepository.delete(category);
+        return ResponseEntity.ok(new Result("Category successfully deleted"));
     }
 }

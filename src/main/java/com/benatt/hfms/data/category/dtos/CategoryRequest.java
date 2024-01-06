@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class CategoryRequest {
-    @NotBlank
     private CategoryType categoryType;
     @NotBlank(message = "categoryName must not be bank")
     private String categoryName;

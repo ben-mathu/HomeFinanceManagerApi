@@ -21,7 +21,7 @@ public class Budget {
     @Id
     private Long id;
     @JsonManagedReference("budget-category")
-    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Category.class)
     private List<Category> categories;
     @Column(nullable = true)
     private Integer budgetPeriod;
