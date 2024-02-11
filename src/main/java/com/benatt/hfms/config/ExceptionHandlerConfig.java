@@ -20,13 +20,13 @@ public class ExceptionHandlerConfig {
     private Logger logger;
 
     @ExceptionHandler(InvalidFieldException.class)
-    public ResponseEntity<Throwable> handleInvalidFieldException(Throwable throwable) {
-        return new ResponseEntity<>(throwable, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Result> handleInvalidFieldException(Throwable throwable) {
+        return new ResponseEntity<>(new Result(throwable.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Throwable> handleBadRequestException(Throwable throwable) {
-        return new ResponseEntity<>(throwable, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Result> handleBadRequestException(Throwable throwable) {
+        return new ResponseEntity<>(new Result(throwable.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidParameterException.class)
@@ -35,8 +35,8 @@ public class ExceptionHandlerConfig {
     }
 
     @ExceptionHandler(EmptyResultException.class)
-    public ResponseEntity<Throwable> handleEmptyResultException(Throwable throwable) {
-        return new ResponseEntity<>(throwable, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Result> handleEmptyResultException(Throwable throwable) {
+        return new ResponseEntity<>(new Result(throwable.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PSQLException.class)

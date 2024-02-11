@@ -1,18 +1,19 @@
 package com.benatt.hfms.services.impl;
 
 import com.benatt.hfms.data.accounts.AccountsRepository;
-import com.benatt.hfms.data.transactions.TransactionDetailRepository;
 import com.benatt.hfms.data.accounts.dtos.AccountPaidInRequest;
-import com.benatt.hfms.data.accounts.dtos.AccountRequest;
 import com.benatt.hfms.data.accounts.dtos.AccountPaidOutRequest;
+import com.benatt.hfms.data.accounts.dtos.AccountRequest;
 import com.benatt.hfms.data.accounts.models.Account;
-import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.data.logs.dtos.Result;
+import com.benatt.hfms.data.transactions.TransactionDetailRepository;
+import com.benatt.hfms.data.transactions.models.Transaction;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -26,11 +27,17 @@ public class AccountsServiceImpl implements AccountsService {
     private TransactionDetailRepository transactionDetailRepository;
 
     @Override
+    @Transactional
     public ResponseEntity<Account> addAccount(AccountRequest request) {
-        Account account = new Account();
-        account.setBalance(request.getBalance());
-        account.setName(request.getAccountName());
-        return ResponseEntity.ok(accountsRepository.save(account));
+        Account account = accountsRepository.findByName(request.getAccountName());
+        if (account != null) {
+            return ResponseEntity.ok(account);
+        } else {
+            account = new Account();
+            account.setBalance(request.getBalance());
+            account.setName(request.getAccountName());
+            return ResponseEntity.ok(accountsRepository.save(account));
+        }
     }
 
     @Override
@@ -69,15 +76,16 @@ public class AccountsServiceImpl implements AccountsService {
             throw new InvalidFieldException("Could not find Account with ID: " + accountId);
 
         double balance = account.getBalance() - request.getAmount();
-        if (balance < 0)
-            throw new InvalidFieldException("Account balance is less than 0");
+//        if (balance < 0)
+//            throw new InvalidFieldException("Account balance is less than 0");
 
         account.setBalance(balance);
 
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
         transaction.setPaidTo(request.getPaidTo());
-        transaction.setPaidIn(request.getAmount());
+        transaction.setPaidOut(request.getAmount());
+        transaction.setDescription(request.getTransactionDetails());
         return ResponseEntity.ok(transactionDetailRepository.save(transaction));
     }
 
@@ -92,8 +100,9 @@ public class AccountsServiceImpl implements AccountsService {
 
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
-        transaction.setPaidTo(request.getPaidFrom());
+        transaction.setPaidFrom(request.getPaidFrom());
         transaction.setPaidIn(request.getAmount());
+        transaction.setDescription(request.getTransactionDetails());
         return ResponseEntity.ok(transactionDetailRepository.save(transaction));
     }
 }

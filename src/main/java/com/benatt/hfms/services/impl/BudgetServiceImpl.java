@@ -7,22 +7,17 @@ import com.benatt.hfms.data.budget.dtos.BudgetRequest;
 import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.category.CategoryRepository;
 import com.benatt.hfms.data.category.models.Category;
-import com.benatt.hfms.data.wishlist.WishListRepository;
 import com.benatt.hfms.exceptions.BadRequestException;
 import com.benatt.hfms.exceptions.EmptyResultException;
 import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.BudgetService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BudgetServiceImpl implements BudgetService {
@@ -30,13 +25,10 @@ public class BudgetServiceImpl implements BudgetService {
     private BudgetRepository budgetRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private WishListRepository wishListRepository;
-
-    @Autowired
     private AccountsRepository accountsRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private Logger logger;
@@ -53,8 +45,10 @@ public class BudgetServiceImpl implements BudgetService {
             totalAmount += account.getBalance();
         }
 
-        if (totalAmount > request.getBudgetAmount())
-            throw new InvalidFieldException("Total amount in your accounts is more than what you have budgeted.");
+        logger.info("Total Amount: " + totalAmount);
+
+//        if (totalAmount < request.getBudgetAmount())
+//            throw new InvalidFieldException("Total amount in your budget is more than what is in your accounts.");
 
         Budget budget = new Budget();
         budget.setAmountBudgeted(request.getBudgetAmount());
@@ -83,5 +77,19 @@ public class BudgetServiceImpl implements BudgetService {
         if (request.getPeriod() != null)
             budget.setBudgetPeriod(request.getPeriod());
         return ResponseEntity.ok(budgetRepository.save(budget));
+    }
+
+    @Override
+    public ResponseEntity<Budget> delete(Long id) throws InvalidFieldException {
+        Budget budget = budgetRepository.findById(id).orElse(null);
+        if (budget == null)
+            throw new InvalidFieldException("Did not find budget");
+
+        for (Category category : budget.getCategories()) {
+            categoryRepository.delete(category);
+        }
+
+        budgetRepository.delete(budget);
+        return ResponseEntity.ok(budget);
     }
 }

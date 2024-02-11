@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class AccountRequest {
+    private Long id;
     @NotBlank(message = "account name must not be blank")
     private String accountName;
     @Min(value = 0, message = "balance must be >= 0")

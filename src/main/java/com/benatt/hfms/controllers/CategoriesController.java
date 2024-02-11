@@ -1,11 +1,8 @@
 package com.benatt.hfms.controllers;
 
-import com.benatt.hfms.data.budget.dtos.BudgetRequest;
-import com.benatt.hfms.data.budget.models.Budget;
 import com.benatt.hfms.data.category.dtos.CategoryRequest;
 import com.benatt.hfms.data.category.models.Category;
-import com.benatt.hfms.exceptions.BadRequestException;
-import com.benatt.hfms.exceptions.InvalidFieldException;
+import com.benatt.hfms.data.logs.dtos.Result;
 import com.benatt.hfms.services.impl.CategoriesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +17,22 @@ public class CategoriesController {
     private CategoriesServiceImpl categoriesService;
 
     @PostMapping
-    public ResponseEntity<Category> addCategory(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody CategoryRequest request,
-                                                @RequestParam("budgetId") Long id) {
+    public ResponseEntity<Category> addCategory(@RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody CategoryRequest request, @RequestParam("budgetId") Long id) {
         return categoriesService.addCategory(request, id);
     }
 
-    @PostMapping("by-rule")
-    public ResponseEntity<List<Category>> saveBudgetByCategoryRule(@RequestBody BudgetRequest request)
-            throws InvalidFieldException, BadRequestException {
-
-        return categoriesService.saveBudgetByCategoryRule(request);
+    @PutMapping
+    public ResponseEntity<Category> updateCategory(@RequestBody CategoryRequest request, @RequestParam("categoryId") Long categoryId) {
+        return categoriesService.updateCategory(request, categoryId);
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategoryBudgetId(@RequestParam("budgetId") Long budgetId) {
+    public ResponseEntity<List<Category>> getAllCategoryByBudgetId(@RequestParam("budgetId") Long budgetId) {
         return categoriesService.getAllByBudgetId(budgetId);
+    }
+
+    @DeleteMapping("{categoryId}")
+    public ResponseEntity<Result> deleteCategory(@PathVariable("categoryId") Long categoryId) {
+        return categoriesService.deleteCategory(categoryId);
     }
 }

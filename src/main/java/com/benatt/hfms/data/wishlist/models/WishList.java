@@ -1,7 +1,5 @@
 package com.benatt.hfms.data.wishlist.models;
 
-import com.benatt.hfms.data.accounts.models.Account;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;

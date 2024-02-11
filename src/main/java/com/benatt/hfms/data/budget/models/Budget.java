@@ -1,8 +1,6 @@
 package com.benatt.hfms.data.budget.models;
 
-import com.benatt.hfms.data.accounts.models.Account;
 import com.benatt.hfms.data.category.models.Category;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +21,7 @@ public class Budget {
     @Id
     private Long id;
     @JsonManagedReference("budget-category")
-    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "budget", fetch = FetchType.EAGER, cascade = CascadeType.ALL, targetEntity = Category.class)
     private List<Category> categories;
     @Column(nullable = true)
     private Integer budgetPeriod;
