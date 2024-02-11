@@ -46,14 +46,13 @@ public class CategoriesServiceImpl implements CategoriesService {
         double totalBudgetAmount = budget.getAmountBudgeted();
         double categoryAmount = request.getAmount();
         if (categoryAmount > totalBudgetAmount)
-            throw new InvalidParameterException(request.getCategoryName() + " amount must not be more than budget amount " + totalBudgetAmount);
+            throw new InvalidParameterException(request.getCategoryType() + " amount must not be more than budget amount " + totalBudgetAmount);
 
         double percentageOfAmount = categoryAmount / totalBudgetAmount * 100;
 
         Category category = new Category();
         category.setPercentage(percentageOfAmount);
         category.setCategoryType(request.getCategoryType());
-        category.setName(request.getCategoryName());
         return category;
     }
 
@@ -102,5 +101,15 @@ public class CategoriesServiceImpl implements CategoriesService {
         Category category = categoryRepository.findById(categoryId).orElse(null);
         categoryRepository.delete(category);
         return ResponseEntity.ok(new Result("Category successfully deleted"));
+    }
+
+    public ResponseEntity<Category> updateCategory(CategoryRequest request, Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        
+        if (category == null)
+            throw new InvalidParameterException(String.format("Catery id %d does not exist", categoryId));
+
+        category.setCategoryType(request.getCategoryType());
+        return ResponseEntity.ok(categoryRepository.save(category));
     }
 }

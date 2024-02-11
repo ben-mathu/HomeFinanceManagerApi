@@ -21,8 +21,13 @@ public class CategoriesController {
         return categoriesService.addCategory(request, id);
     }
 
+    @PutMapping
+    public ResponseEntity<Category> updateCategory(@RequestBody CategoryRequest request, @RequestParam("categoryId") Long categoryId) {
+        return categoriesService.updateCategory(request, categoryId);
+    }
+
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategoryBudgetId(@RequestParam("budgetId") Long budgetId) {
+    public ResponseEntity<List<Category>> getAllCategoryByBudgetId(@RequestParam("budgetId") Long budgetId) {
         return categoriesService.getAllByBudgetId(budgetId);
     }
 
