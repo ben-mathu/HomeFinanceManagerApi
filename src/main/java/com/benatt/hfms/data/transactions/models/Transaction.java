@@ -5,7 +5,12 @@ import com.benatt.hfms.data.category.models.Category;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,9 +28,13 @@ public class Transaction {
     private double paidIn;
     @Column(unique = true)
     private String description;
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
+    @UpdateTimestamp
+    private LocalDateTime updatedDateTime;
     @ManyToOne(cascade = CascadeType.MERGE)
     @JsonBackReference("transactions-accounts")
     private Account account;
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     private Category category;
 }
