@@ -31,9 +31,11 @@ public class AccountsServiceImpl implements AccountsService {
     public ResponseEntity<Account> addAccount(AccountRequest request) {
         Account account = accountsRepository.findByName(request.getAccountName());
         if (account != null) {
-            return ResponseEntity.ok(account);
+            account.setBalance(request.getBalance());
+            return ResponseEntity.ok(accountsRepository.save(account));
         } else {
             account = new Account();
+            account.setId(request.getId());
             account.setBalance(request.getBalance());
             account.setName(request.getAccountName());
             return ResponseEntity.ok(accountsRepository.save(account));

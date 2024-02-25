@@ -33,27 +33,39 @@ public class CategoriesServiceImpl implements CategoriesService {
     public ResponseEntity<Category> addCategory(CategoryRequest request, Long id) {
         Budget budget = budgetRepository.findById(id).orElse(null);
 
-        Category category = getCategory(request, id, budget);
-
-        category.setBudget(budget);
-        return ResponseEntity.ok(categoryRepository.save(category));
+        return ResponseEntity.ok(categoryRepository.save(getCategory(request, id, budget)));
     }
 
-    private static Category getCategory(CategoryRequest request, Long id, Budget budget) {
+    private Category getCategory(CategoryRequest request, Long id, Budget budget) {
         if (budget == null)
             throw new InvalidParameterException("Budget with id: " + id + " was not found.");
 
-        double totalBudgetAmount = budget.getAmountBudgeted();
-        double categoryAmount = request.getAmount();
-        if (categoryAmount > totalBudgetAmount)
-            throw new InvalidParameterException(request.getCategoryType() + " amount must not be more than budget amount " + totalBudgetAmount);
-
-        double percentageOfAmount = categoryAmount / totalBudgetAmount * 100;
+        double percentageOfAmount = getPercentageOfAmount(request, budget.getAmountBudgeted());
 
         Category category = new Category();
         category.setPercentage(percentageOfAmount);
         category.setCategoryType(request.getCategoryType());
+        category.setBudget(budget);
         return category;
+    }
+
+    private double getPercentageOfAmount(CategoryRequest request, double totalBudgetAmount) {
+        if ((getTotalCategoryAmount(totalBudgetAmount) + request.getAmount()) > totalBudgetAmount)
+            throw new InvalidParameterException(request.getCategoryType() + " amount must not be more than budget amount " + totalBudgetAmount);
+
+        return request.getAmount() / totalBudgetAmount * 100;
+    }
+
+    private double getTotalCategoryAmount(double totalBudgetedAmount) {
+        List<Category> categories = categoryRepository.findAll();
+        double totalCategoryAmount = 0D;
+
+        for (Category category : categories) {
+            double amount = category.getPercentage() * totalBudgetedAmount * 100;
+            totalCategoryAmount += amount;
+        }
+
+        return totalCategoryAmount;
     }
 
     @Override

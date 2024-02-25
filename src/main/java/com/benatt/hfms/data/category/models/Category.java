@@ -17,6 +17,7 @@ public class Category {
     private Long id;
     @Column(nullable = false)
     private double percentage;
+    @Column(nullable = false, unique = true)
     private CategoryType categoryType;
     @JsonBackReference("budget-category")
     @ManyToOne(fetch = FetchType.LAZY)
