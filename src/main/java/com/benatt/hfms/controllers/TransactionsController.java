@@ -1,7 +1,6 @@
 package com.benatt.hfms.controllers;
 
 import com.benatt.hfms.data.transactions.models.Transaction;
-import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.impl.TransactionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

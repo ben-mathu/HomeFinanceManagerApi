@@ -4,7 +4,6 @@ import com.benatt.hfms.data.category.CategoryRepository;
 import com.benatt.hfms.data.category.models.Category;
 import com.benatt.hfms.data.transactions.TransactionDetailRepository;
 import com.benatt.hfms.data.transactions.models.Transaction;
-import com.benatt.hfms.exceptions.InvalidFieldException;
 import com.benatt.hfms.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
